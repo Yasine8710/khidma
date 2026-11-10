@@ -1154,4 +1154,165 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get reqPhotosFailed => 'Impossible de charger les photos.';
+
+  @override
+  String get proInboxTitle => 'Demandes ouvertes';
+
+  @override
+  String get proInboxMyArea => 'Dans mon gouvernorat';
+
+  @override
+  String get proInboxAllCategories => 'Tous les métiers';
+
+  @override
+  String get proInboxEmptyTitle => 'Aucune demande pour le moment';
+
+  @override
+  String get proInboxEmptyBody =>
+      'Les nouvelles demandes de clients apparaîtront ici.';
+
+  @override
+  String get proInboxNeedsPublished =>
+      'Publiez votre profil pour voir les demandes et envoyer des offres.';
+
+  @override
+  String get offerStatusPending => 'En attente';
+
+  @override
+  String get offerStatusAccepted => 'Acceptée';
+
+  @override
+  String get offerStatusDeclined => 'Refusée';
+
+  @override
+  String get offerStatusWithdrawn => 'Retirée';
+
+  @override
+  String offerYours(String status) {
+    return 'Votre offre : $status';
+  }
+
+  @override
+  String get offersTitle => 'Mes offres';
+
+  @override
+  String get offersEmpty => 'Vous n’avez pas encore envoyé d’offre.';
+
+  @override
+  String get jobsTitle => 'Mes chantiers';
+
+  @override
+  String get jobsEmpty =>
+      'Aucun chantier pour le moment. Un chantier naît quand un client accepte votre offre.';
+
+  @override
+  String get jobScheduled => 'Planifié';
+
+  @override
+  String get jobInProgress => 'En cours';
+
+  @override
+  String get jobPendingConfirmation => 'En attente de confirmation du client';
+
+  @override
+  String get jobCompleted => 'Terminé';
+
+  @override
+  String get jobCancelled => 'Annulé';
+
+  @override
+  String get jobStart => 'Démarrer';
+
+  @override
+  String get jobDone => 'Marquer comme terminé';
+
+  @override
+  String get jobCancel => 'Annuler le chantier';
+
+  @override
+  String get jobCancelTitle => 'Annuler ce chantier ?';
+
+  @override
+  String get jobCancelBody =>
+      'Le client sera informé. Cette action est définitive.';
+
+  @override
+  String get jobKeep => 'Garder le chantier';
+
+  @override
+  String jobAgreedPrice(String amount) {
+    return 'Prix convenu : $amount';
+  }
+
+  @override
+  String get offerTitle => 'Votre offre';
+
+  @override
+  String get offerPrice => 'Prix en TND';
+
+  @override
+  String get offerMessage => 'Message au client (facultatif)';
+
+  @override
+  String get offerDays => 'Délai estimé en jours (facultatif)';
+
+  @override
+  String get offerSend => 'Envoyer l’offre';
+
+  @override
+  String get offerUpdate => 'Mettre à jour l’offre';
+
+  @override
+  String get offerWithdraw => 'Retirer mon offre';
+
+  @override
+  String get offerSent => 'Offre envoyée.';
+
+  @override
+  String get offerWithdrawn => 'Offre retirée.';
+
+  @override
+  String get offerErrPrice => 'Entre 1 et 1 000 000 TND.';
+
+  @override
+  String get offerErrMessage => '1000 caractères au maximum.';
+
+  @override
+  String get offerErrDays => 'Entre 1 et 365 jours.';
+
+  @override
+  String get offerDeclinedNote => 'Le client n’a pas retenu votre offre.';
+
+  @override
+  String get offerAcceptedNote =>
+      'Votre offre est acceptée : suivez le chantier dans Mes chantiers.';
+
+  @override
+  String offerOthers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count offres déjà reçues',
+      one: '1 offre déjà reçue',
+      zero: 'Aucune autre offre pour l’instant',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reqFailOwn =>
+      'Vous ne pouvez pas répondre à votre propre demande.';
+
+  @override
+  String get reqFailOfferClosed => 'Cette offre ne peut plus être modifiée.';
+
+  @override
+  String get reqFailTransition => 'Cette étape n’est plus possible.';
+
+  @override
+  String get reqFailForbidden => 'Publiez d’abord votre profil professionnel.';
+
+  @override
+  String get offerFailLimit =>
+      'Vous avez 50 offres en attente. Retirez-en une avant d’en envoyer une autre.';
 }

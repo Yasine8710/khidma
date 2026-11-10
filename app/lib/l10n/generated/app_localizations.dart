@@ -2103,6 +2103,288 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Impossible de charger les photos.'**
   String get reqPhotosFailed;
+
+  /// No description provided for @proInboxTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demandes ouvertes'**
+  String get proInboxTitle;
+
+  /// No description provided for @proInboxMyArea.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dans mon gouvernorat'**
+  String get proInboxMyArea;
+
+  /// No description provided for @proInboxAllCategories.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les métiers'**
+  String get proInboxAllCategories;
+
+  /// No description provided for @proInboxEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune demande pour le moment'**
+  String get proInboxEmptyTitle;
+
+  /// No description provided for @proInboxEmptyBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les nouvelles demandes de clients apparaîtront ici.'**
+  String get proInboxEmptyBody;
+
+  /// No description provided for @proInboxNeedsPublished.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publiez votre profil pour voir les demandes et envoyer des offres.'**
+  String get proInboxNeedsPublished;
+
+  /// No description provided for @offerStatusPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente'**
+  String get offerStatusPending;
+
+  /// No description provided for @offerStatusAccepted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Acceptée'**
+  String get offerStatusAccepted;
+
+  /// No description provided for @offerStatusDeclined.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refusée'**
+  String get offerStatusDeclined;
+
+  /// No description provided for @offerStatusWithdrawn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirée'**
+  String get offerStatusWithdrawn;
+
+  /// No description provided for @offerYours.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre offre : {status}'**
+  String offerYours(String status);
+
+  /// No description provided for @offersTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes offres'**
+  String get offersTitle;
+
+  /// No description provided for @offersEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous n’avez pas encore envoyé d’offre.'**
+  String get offersEmpty;
+
+  /// No description provided for @jobsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes chantiers'**
+  String get jobsTitle;
+
+  /// No description provided for @jobsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun chantier pour le moment. Un chantier naît quand un client accepte votre offre.'**
+  String get jobsEmpty;
+
+  /// No description provided for @jobScheduled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Planifié'**
+  String get jobScheduled;
+
+  /// No description provided for @jobInProgress.
+  ///
+  /// In fr, this message translates to:
+  /// **'En cours'**
+  String get jobInProgress;
+
+  /// No description provided for @jobPendingConfirmation.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente de confirmation du client'**
+  String get jobPendingConfirmation;
+
+  /// No description provided for @jobCompleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminé'**
+  String get jobCompleted;
+
+  /// No description provided for @jobCancelled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulé'**
+  String get jobCancelled;
+
+  /// No description provided for @jobStart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Démarrer'**
+  String get jobStart;
+
+  /// No description provided for @jobDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marquer comme terminé'**
+  String get jobDone;
+
+  /// No description provided for @jobCancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler le chantier'**
+  String get jobCancel;
+
+  /// No description provided for @jobCancelTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler ce chantier ?'**
+  String get jobCancelTitle;
+
+  /// No description provided for @jobCancelBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le client sera informé. Cette action est définitive.'**
+  String get jobCancelBody;
+
+  /// No description provided for @jobKeep.
+  ///
+  /// In fr, this message translates to:
+  /// **'Garder le chantier'**
+  String get jobKeep;
+
+  /// No description provided for @jobAgreedPrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix convenu : {amount}'**
+  String jobAgreedPrice(String amount);
+
+  /// No description provided for @offerTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre offre'**
+  String get offerTitle;
+
+  /// No description provided for @offerPrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix en TND'**
+  String get offerPrice;
+
+  /// No description provided for @offerMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message au client (facultatif)'**
+  String get offerMessage;
+
+  /// No description provided for @offerDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'Délai estimé en jours (facultatif)'**
+  String get offerDays;
+
+  /// No description provided for @offerSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer l’offre'**
+  String get offerSend;
+
+  /// No description provided for @offerUpdate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mettre à jour l’offre'**
+  String get offerUpdate;
+
+  /// No description provided for @offerWithdraw.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer mon offre'**
+  String get offerWithdraw;
+
+  /// No description provided for @offerSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Offre envoyée.'**
+  String get offerSent;
+
+  /// No description provided for @offerWithdrawn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Offre retirée.'**
+  String get offerWithdrawn;
+
+  /// No description provided for @offerErrPrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entre 1 et 1 000 000 TND.'**
+  String get offerErrPrice;
+
+  /// No description provided for @offerErrMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'1000 caractères au maximum.'**
+  String get offerErrMessage;
+
+  /// No description provided for @offerErrDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entre 1 et 365 jours.'**
+  String get offerErrDays;
+
+  /// No description provided for @offerDeclinedNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le client n’a pas retenu votre offre.'**
+  String get offerDeclinedNote;
+
+  /// No description provided for @offerAcceptedNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre offre est acceptée : suivez le chantier dans Mes chantiers.'**
+  String get offerAcceptedNote;
+
+  /// No description provided for @offerOthers.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Aucune autre offre pour l’instant} =1{1 offre déjà reçue} other{{count} offres déjà reçues}}'**
+  String offerOthers(int count);
+
+  /// No description provided for @reqFailOwn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous ne pouvez pas répondre à votre propre demande.'**
+  String get reqFailOwn;
+
+  /// No description provided for @reqFailOfferClosed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette offre ne peut plus être modifiée.'**
+  String get reqFailOfferClosed;
+
+  /// No description provided for @reqFailTransition.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette étape n’est plus possible.'**
+  String get reqFailTransition;
+
+  /// No description provided for @reqFailForbidden.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publiez d’abord votre profil professionnel.'**
+  String get reqFailForbidden;
+
+  /// No description provided for @offerFailLimit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez 50 offres en attente. Retirez-en une avant d’en envoyer une autre.'**
+  String get offerFailLimit;
 }
 
 class _AppLocalizationsDelegate

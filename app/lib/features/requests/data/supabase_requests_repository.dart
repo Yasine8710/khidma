@@ -39,6 +39,11 @@ RequestsFailure mapRequestsException(Object error) {
           return RequestsFailure.notOpen;
         }
         if (m.contains('invalid_input')) return RequestsFailure.invalidInput;
+        if (m.contains('own_request')) return RequestsFailure.ownRequest;
+        if (m.contains('offer_closed')) return RequestsFailure.offerClosed;
+        if (m.contains('invalid_transition')) {
+          return RequestsFailure.invalidTransition;
+        }
         return RequestsFailure.unknown;
     }
     return RequestsFailure.unknown;

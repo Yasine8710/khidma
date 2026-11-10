@@ -13,6 +13,9 @@ import '../../features/home/presentation/home_screen.dart';
 import '../../features/marketplace/presentation/professional_screen.dart';
 import '../../features/marketplace/presentation/search_screen.dart';
 import '../../features/messages/presentation/messages_screen.dart';
+import '../../features/offers/presentation/my_offers_screen.dart';
+import '../../features/offers/presentation/pro_inbox_screen.dart';
+import '../../features/offers/presentation/pro_request_screen.dart';
 import '../../features/portfolio/presentation/portfolio_screen.dart';
 import '../../features/requests/presentation/new_request_screen.dart';
 import '../../features/requests/presentation/request_detail_screen.dart';
@@ -99,6 +102,23 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.request,
         builder: (context, state) =>
             RequestDetailScreen(id: state.pathParameters['id'] ?? ''),
+      ),
+      GoRoute(
+        path: AppRoutes.proInbox,
+        builder: (context, state) => const ProInboxScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.proRequest,
+        builder: (context, state) =>
+            ProRequestScreen(id: state.pathParameters['id'] ?? ''),
+      ),
+      GoRoute(
+        path: AppRoutes.proOffers,
+        builder: (context, state) => const MyOffersScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.proJobs,
+        builder: (context, state) => const JobsScreen(),
       ),
       GoRoute(
         path: AppRoutes.proPortfolio,

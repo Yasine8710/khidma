@@ -1140,4 +1140,163 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reqPhotosFailed => 'Couldn’t load the photos.';
+
+  @override
+  String get proInboxTitle => 'Open requests';
+
+  @override
+  String get proInboxMyArea => 'In my governorate';
+
+  @override
+  String get proInboxAllCategories => 'All trades';
+
+  @override
+  String get proInboxEmptyTitle => 'No requests right now';
+
+  @override
+  String get proInboxEmptyBody => 'New customer requests will show up here.';
+
+  @override
+  String get proInboxNeedsPublished =>
+      'Publish your profile to see requests and send offers.';
+
+  @override
+  String get offerStatusPending => 'Pending';
+
+  @override
+  String get offerStatusAccepted => 'Accepted';
+
+  @override
+  String get offerStatusDeclined => 'Declined';
+
+  @override
+  String get offerStatusWithdrawn => 'Withdrawn';
+
+  @override
+  String offerYours(String status) {
+    return 'Your offer: $status';
+  }
+
+  @override
+  String get offersTitle => 'My offers';
+
+  @override
+  String get offersEmpty => 'You haven’t sent any offers yet.';
+
+  @override
+  String get jobsTitle => 'My jobs';
+
+  @override
+  String get jobsEmpty =>
+      'No jobs yet. A job starts when a customer accepts your offer.';
+
+  @override
+  String get jobScheduled => 'Scheduled';
+
+  @override
+  String get jobInProgress => 'In progress';
+
+  @override
+  String get jobPendingConfirmation => 'Waiting for the customer to confirm';
+
+  @override
+  String get jobCompleted => 'Completed';
+
+  @override
+  String get jobCancelled => 'Cancelled';
+
+  @override
+  String get jobStart => 'Start';
+
+  @override
+  String get jobDone => 'Mark as done';
+
+  @override
+  String get jobCancel => 'Cancel job';
+
+  @override
+  String get jobCancelTitle => 'Cancel this job?';
+
+  @override
+  String get jobCancelBody =>
+      'The customer will be told. This cannot be undone.';
+
+  @override
+  String get jobKeep => 'Keep job';
+
+  @override
+  String jobAgreedPrice(String amount) {
+    return 'Agreed price: $amount';
+  }
+
+  @override
+  String get offerTitle => 'Your offer';
+
+  @override
+  String get offerPrice => 'Price in TND';
+
+  @override
+  String get offerMessage => 'Message to the customer (optional)';
+
+  @override
+  String get offerDays => 'Estimated days (optional)';
+
+  @override
+  String get offerSend => 'Send offer';
+
+  @override
+  String get offerUpdate => 'Update offer';
+
+  @override
+  String get offerWithdraw => 'Withdraw my offer';
+
+  @override
+  String get offerSent => 'Offer sent.';
+
+  @override
+  String get offerWithdrawn => 'Offer withdrawn.';
+
+  @override
+  String get offerErrPrice => 'Between 1 and 1,000,000 TND.';
+
+  @override
+  String get offerErrMessage => '1000 characters at most.';
+
+  @override
+  String get offerErrDays => 'Between 1 and 365 days.';
+
+  @override
+  String get offerDeclinedNote => 'The customer did not choose your offer.';
+
+  @override
+  String get offerAcceptedNote =>
+      'Your offer was accepted: follow the job in My jobs.';
+
+  @override
+  String offerOthers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count offers already received',
+      one: '1 offer already received',
+      zero: 'No other offers yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reqFailOwn => 'You cannot answer your own request.';
+
+  @override
+  String get reqFailOfferClosed => 'This offer can no longer be changed.';
+
+  @override
+  String get reqFailTransition => 'That step is no longer possible.';
+
+  @override
+  String get reqFailForbidden => 'Publish your professional profile first.';
+
+  @override
+  String get offerFailLimit =>
+      'You have 50 pending offers. Withdraw one before sending another.';
 }

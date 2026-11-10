@@ -163,6 +163,27 @@ class _BodyState extends ConsumerState<_Body> {
           variant: AppButtonVariant.secondary,
           onPressed: () => context.push(AppRoutes.proPortfolio),
         ),
+        const SizedBox(height: AppSpacing.sm),
+        AppButton(
+          label: l10n.proInboxTitle,
+          icon: Icons.inbox_outlined,
+          variant: AppButtonVariant.secondary,
+          onPressed: () => context.push(AppRoutes.proInbox),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        AppButton(
+          label: l10n.offersTitle,
+          icon: Icons.local_offer_outlined,
+          variant: AppButtonVariant.secondary,
+          onPressed: () => context.push(AppRoutes.proOffers),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        AppButton(
+          label: l10n.jobsTitle,
+          icon: Icons.handyman_outlined,
+          variant: AppButtonVariant.secondary,
+          onPressed: () => context.push(AppRoutes.proJobs),
+        ),
         const SizedBox(height: AppSpacing.xl),
         Semantics(
           header: true,

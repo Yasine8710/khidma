@@ -107,6 +107,15 @@ enum RequestsFailure {
 
   /// The request is no longer open (answered, cancelled or expired).
   notOpen,
+
+  /// You cannot offer on your own request.
+  ownRequest,
+
+  /// The offer was declined or already accepted: it can no longer change.
+  offerClosed,
+
+  /// That step is not possible from the current status.
+  invalidTransition,
   notFound,
   notConfigured,
   unknown,

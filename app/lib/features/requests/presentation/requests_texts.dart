@@ -33,5 +33,9 @@ String requestFailureText(AppLocalizations l10n, RequestsFailure f) =>
       RequestsFailure.invalidInput => l10n.reqFailInvalid,
       RequestsFailure.notOpen => l10n.reqFailNotOpen,
       RequestsFailure.notConfigured => l10n.reqFailNotConfigured,
+      RequestsFailure.ownRequest => l10n.reqFailOwn,
+      RequestsFailure.offerClosed => l10n.reqFailOfferClosed,
+      RequestsFailure.invalidTransition => l10n.reqFailTransition,
+      RequestsFailure.forbidden => l10n.reqFailForbidden,
       _ => l10n.reqFailGeneric,
     };
