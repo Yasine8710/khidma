@@ -19,8 +19,18 @@ void main() {
     final c = await pumpApp(tester);
     await tester.tap(find.text('Profil'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Design gallery').last);
-    await tester.tap(find.text('Design gallery').last);
+    // The Profile list is lazy: scroll until the developer entry is built.
+    await tester.scrollUntilVisible(
+      find.text('Design gallery'),
+      300,
+      scrollable: find
+          .descendant(
+            of: find.byType(ListView),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.tap(find.text('Design gallery'));
     // The gallery has a looping shimmer, so settle by time, not by idle.
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));

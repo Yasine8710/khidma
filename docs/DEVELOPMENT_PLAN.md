@@ -5,6 +5,9 @@ Each phase ends with executed tests and updated docs. Status tracked in `AI_COLL
 ## Phase 0 — done
 Repo, license, docs, Flutter scaffold, CI file, Codex architecture review.
 
+## Phase 2 — Authentication and profiles (client and backend implemented; real-project verification pending)
+Issues #6-#11 and #32. Done offline: validated config, database foundation with RLS tests, auth, Apple sign-in client, profile and account type, account deletion. Waiting for the owner: Supabase project and dashboard settings (#6), Apple capability and device test (#9), Apple token revocation (#32). See docs/SECURITY.md for the exact checklist.
+
 ## Phase 1 — Design system and foundations (implementation complete; CI acceptance pending billing unlock)
 
 **Goal:** a navigable, localized (FR/AR/EN, real RTL), themed app shell with reusable components and onboarding. No backend. Brand locked: Bleu Sidi Bou, Inter + IBM Plex Sans Arabic (tokens and theme already on `feat/design-tokens`).

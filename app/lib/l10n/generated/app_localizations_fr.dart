@@ -175,4 +175,247 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get back => 'Précédent';
+
+  @override
+  String get signIn => 'Se connecter';
+
+  @override
+  String get createAccount => 'Créer un compte';
+
+  @override
+  String get signOut => 'Se déconnecter';
+
+  @override
+  String get emailLabel => 'Adresse e-mail';
+
+  @override
+  String get passwordLabel => 'Mot de passe';
+
+  @override
+  String get fullNameLabel => 'Nom complet';
+
+  @override
+  String get forgotPassword => 'Mot de passe oublié ?';
+
+  @override
+  String get sendResetLink => 'Envoyer le lien';
+
+  @override
+  String get noAccountYet => 'Pas encore de compte ?';
+
+  @override
+  String get haveAccount => 'Déjà un compte ?';
+
+  @override
+  String get signInTitle => 'Bon retour';
+
+  @override
+  String get signInSubtitle =>
+      'Connectez-vous pour demander des devis et suivre vos demandes.';
+
+  @override
+  String get registerTitle => 'Créez votre compte';
+
+  @override
+  String get registerSubtitle => 'Quelques secondes suffisent.';
+
+  @override
+  String get forgotTitle => 'Réinitialiser le mot de passe';
+
+  @override
+  String get forgotSubtitle =>
+      'Entrez votre e-mail : nous vous envoyons un lien pour choisir un nouveau mot de passe.';
+
+  @override
+  String get resetSentTitle => 'Vérifiez vos e-mails';
+
+  @override
+  String resetSentBody(String email) {
+    return 'Si un compte existe pour $email, un lien de réinitialisation vient d\'être envoyé.';
+  }
+
+  @override
+  String get confirmEmailTitle => 'Confirmez votre adresse e-mail';
+
+  @override
+  String confirmEmailBody(String email) {
+    return 'Nous avons envoyé un lien de confirmation à $email. Ouvrez-le pour activer votre compte.';
+  }
+
+  @override
+  String get backToSignIn => 'Retour à la connexion';
+
+  @override
+  String get errEmailRequired => 'Saisissez votre adresse e-mail.';
+
+  @override
+  String get errEmailInvalid => 'Adresse e-mail invalide.';
+
+  @override
+  String get errPasswordRequired => 'Saisissez votre mot de passe.';
+
+  @override
+  String get errPasswordShort => '8 caractères minimum.';
+
+  @override
+  String get errPasswordLong => 'Mot de passe trop long.';
+
+  @override
+  String get errNameRequired => 'Saisissez votre nom.';
+
+  @override
+  String get failInvalidCredentials => 'E-mail ou mot de passe incorrect.';
+
+  @override
+  String get failEmailNotConfirmed =>
+      'Confirmez d\'abord votre adresse e-mail (lien reçu par e-mail).';
+
+  @override
+  String get failWeakPassword =>
+      'Mot de passe trop faible. Choisissez-en un plus long et moins courant.';
+
+  @override
+  String get failSignUpDisabled =>
+      'Les inscriptions sont fermées pour le moment.';
+
+  @override
+  String get failRateLimited =>
+      'Trop de tentatives. Réessayez dans quelques minutes.';
+
+  @override
+  String get failNetwork => 'Connexion impossible. Vérifiez votre réseau.';
+
+  @override
+  String get failNotConfigured =>
+      'Les comptes ne sont pas disponibles dans cette version de l\'application.';
+
+  @override
+  String get failUnknown => 'Une erreur est survenue. Réessayez.';
+
+  @override
+  String get signedOutProfileTitle => 'Connectez-vous ou créez un compte';
+
+  @override
+  String get signedOutProfileBody =>
+      'Pour demander un devis et contacter des professionnels.';
+
+  @override
+  String get requestsSignedOutTitle => 'Connectez-vous pour voir vos demandes';
+
+  @override
+  String get requestsSignedOutBody =>
+      'Vos demandes de devis et les offres reçues apparaîtront ici.';
+
+  @override
+  String get messagesSignedOutTitle => 'Connectez-vous pour discuter';
+
+  @override
+  String get messagesSignedOutBody =>
+      'Vos conversations avec les professionnels apparaîtront ici.';
+
+  @override
+  String signedInAs(String email) {
+    return 'Connecté en tant que $email';
+  }
+
+  @override
+  String get newPasswordTitle => 'Nouveau mot de passe';
+
+  @override
+  String get newPasswordSubtitle =>
+      'Choisissez un mot de passe que vous n\'utilisez nulle part ailleurs.';
+
+  @override
+  String get savePassword => 'Enregistrer le mot de passe';
+
+  @override
+  String get passwordUpdated => 'Mot de passe mis à jour.';
+
+  @override
+  String get linkExpiredTitle => 'Lien expiré ou invalide';
+
+  @override
+  String get linkExpiredBody =>
+      'Demandez un nouveau lien de réinitialisation depuis l\'écran de connexion.';
+
+  @override
+  String get accountTypeTitle => 'Je souhaite…';
+
+  @override
+  String get accountCustomerTitle => 'Trouver un professionnel';
+
+  @override
+  String get accountCustomerBody =>
+      'Demander des devis et contacter des artisans.';
+
+  @override
+  String get accountProfessionalTitle => 'Proposer mes services';
+
+  @override
+  String get accountProfessionalBody =>
+      'Créer un profil professionnel et recevoir des demandes.';
+
+  @override
+  String get becomeProfessionalTitle => 'Proposez vos services';
+
+  @override
+  String get becomeProfessionalBody =>
+      'Créez votre profil professionnel pour recevoir des demandes de clients.';
+
+  @override
+  String get becomeProfessionalCta => 'Devenir professionnel';
+
+  @override
+  String get professionalBadge => 'Professionnel';
+
+  @override
+  String get editProfile => 'Modifier le profil';
+
+  @override
+  String get save => 'Enregistrer';
+
+  @override
+  String get phoneLabel => 'Téléphone';
+
+  @override
+  String get phoneHelper => 'Visible uniquement par vous.';
+
+  @override
+  String get profileSaved => 'Profil enregistré.';
+
+  @override
+  String get failProfileLoad => 'Impossible de charger votre profil.';
+
+  @override
+  String get failProfileInvalid => 'Certaines informations sont invalides.';
+
+  @override
+  String get continueWithApple => 'Continuer avec Apple';
+
+  @override
+  String get orSeparator => 'ou';
+
+  @override
+  String get deleteAccount => 'Supprimer mon compte';
+
+  @override
+  String get deleteAccountTitle => 'Supprimer votre compte ?';
+
+  @override
+  String get deleteAccountBody =>
+      'Votre profil, vos informations et vos données associées seront supprimés définitivement. Cette action est irréversible.';
+
+  @override
+  String get deleteConfirmWord => 'SUPPRIMER';
+
+  @override
+  String deleteTypeToConfirm(String word) {
+    return 'Saisissez $word pour confirmer';
+  }
+
+  @override
+  String get cancel => 'Annuler';
+
+  @override
+  String get accountDeleted => 'Votre compte a été supprimé.';
 }
