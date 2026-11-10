@@ -5,7 +5,7 @@ on:
   pull_request:
 jobs:
   flutter:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: app
@@ -14,8 +14,28 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: 3.47.9
           cache: true
       - run: flutter pub get
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
-      - run: flutter test
+      # Goldens are OS-specific; run them locally (see gallery_golden_test.dart).
+      - run: flutter test --exclude-tags golden
+      - run: flutter build web --release
+  ios-build:
+    # Unsigned compile check only (no signing identity yet). Allowed to fail
+    # until it has been seen green once on a real runner.
+    runs-on: macos-latest
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.9
+          cache: true
+      - run: flutter pub get
+      - run: flutter build ios --release --no-codesign

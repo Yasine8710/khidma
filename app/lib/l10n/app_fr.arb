@@ -1,0 +1,77 @@
+{
+  "@@locale": "fr",
+  "appName": "Khidma",
+  "tagline": "Des professionnels de confiance, près de chez vous.",
+  "chooseLanguage": "Choisir la langue",
+  "languageFrench": "Français",
+  "languageArabic": "العربية",
+  "languageEnglish": "English",
+  "priceOnQuote": "Sur devis",
+  "professionalsCount": "{count, plural, =0{Aucun professionnel} =1{1 professionnel} other{{count} professionnels}}",
+  "@professionalsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "phoneInvalid": "Numéro tunisien invalide. Exemple : +216 20 123 456",
+  "navHome": "Accueil",
+  "navRequests": "Demandes",
+  "navMessages": "Messages",
+  "navProfile": "Profil",
+  "homeEmptyTitle": "Les professionnels arrivent bientôt",
+  "homeEmptyBody": "La recherche et les catégories de services seront disponibles ici.",
+  "requestsEmptyTitle": "Aucune demande pour l'instant",
+  "requestsEmptyBody": "Vos demandes de devis apparaîtront ici.",
+  "messagesEmptyTitle": "Aucun message",
+  "messagesEmptyBody": "Vos conversations avec les professionnels apparaîtront ici.",
+  "themeTitle": "Apparence",
+  "themeSystem": "Automatique",
+  "themeLight": "Clair",
+  "themeDark": "Sombre",
+  "notFoundTitle": "Page introuvable",
+  "notFoundBody": "Cette page n'existe pas ou a été déplacée.",
+  "backToHome": "Retour à l'accueil",
+  "verified": "Vérifié",
+  "ratingNone": "Pas encore d'avis",
+  "ratingSummary": "Note {value} sur 5, {count, plural, =1{1 avis} other{{count} avis}}",
+  "errorTitle": "Une erreur est survenue",
+  "errorBody": "Vérifiez votre connexion et réessayez.",
+  "retry": "Réessayer",
+  "loading": "Chargement…",
+  "@ratingSummary": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "showPassword": "Afficher le mot de passe",
+  "hidePassword": "Masquer le mot de passe",
+  "onbTitle1": "Trouvez des professionnels de confiance",
+  "onbBody1": "Plombiers, électriciens, mécaniciens… découvrez des artisans près de chez vous, avec leurs réalisations et leurs avis.",
+  "onbTitle2": "Comparez et demandez un devis",
+  "onbBody2": "Décrivez votre besoin une fois, recevez des offres de plusieurs professionnels et choisissez la meilleure.",
+  "onbTitle3": "Contactez-les directement",
+  "onbBody3": "Appelez, écrivez sur WhatsApp ou discutez dans l'application. Le paiement se règle directement avec le professionnel.",
+  "languageStepBody": "Vous pourrez la changer à tout moment dans Profil.",
+  "next": "Suivant",
+  "start": "Commencer",
+  "skip": "Passer",
+  "pageOf": "Page {current} sur {total}",
+  "@pageOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "back": "Précédent"
+}
