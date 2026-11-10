@@ -2086,12 +2086,6 @@ abstract class AppLocalizations {
   /// **'Demande annulée.'**
   String get reqCancelled;
 
-  /// No description provided for @reqOffersSoon.
-  ///
-  /// In fr, this message translates to:
-  /// **'La comparaison des offres arrive bientôt.'**
-  String get reqOffersSoon;
-
   /// No description provided for @reqPhotoLabel.
   ///
   /// In fr, this message translates to:
@@ -2385,6 +2379,150 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Vous avez 50 offres en attente. Retirez-en une avant d’en envoyer une autre.'**
   String get offerFailLimit;
+
+  /// No description provided for @offersReceived.
+  ///
+  /// In fr, this message translates to:
+  /// **'Offres reçues'**
+  String get offersReceived;
+
+  /// No description provided for @offersNoneYet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore d’offre. Les professionnels ont jusqu’à l’expiration de la demande pour répondre.'**
+  String get offersNoneYet;
+
+  /// No description provided for @sortOffersBy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trier les offres'**
+  String get sortOffersBy;
+
+  /// No description provided for @sortOffersPrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix'**
+  String get sortOffersPrice;
+
+  /// No description provided for @sortOffersRating.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note'**
+  String get sortOffersRating;
+
+  /// No description provided for @sortOffersDelay.
+  ///
+  /// In fr, this message translates to:
+  /// **'Délai'**
+  String get sortOffersDelay;
+
+  /// No description provided for @offerLowest.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix le plus bas'**
+  String get offerLowest;
+
+  /// No description provided for @offerDelay.
+  ///
+  /// In fr, this message translates to:
+  /// **'Délai : {count} j'**
+  String offerDelay(int count);
+
+  /// No description provided for @offerAccept.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accepter'**
+  String get offerAccept;
+
+  /// No description provided for @offerDecline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refuser'**
+  String get offerDecline;
+
+  /// No description provided for @offerAcceptTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accepter cette offre ?'**
+  String get offerAcceptTitle;
+
+  /// No description provided for @offerAcceptBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{name} réalisera le travail pour {price}. Les autres offres seront refusées et la demande sera attribuée.'**
+  String offerAcceptBody(String name, String price);
+
+  /// No description provided for @offerDeclineTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refuser cette offre ?'**
+  String get offerDeclineTitle;
+
+  /// No description provided for @offerDeclineBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le professionnel ne pourra pas la proposer à nouveau.'**
+  String get offerDeclineBody;
+
+  /// No description provided for @offerAcceptedMsg.
+  ///
+  /// In fr, this message translates to:
+  /// **'Offre acceptée.'**
+  String get offerAcceptedMsg;
+
+  /// No description provided for @offerDeclinedMsg.
+  ///
+  /// In fr, this message translates to:
+  /// **'Offre refusée.'**
+  String get offerDeclinedMsg;
+
+  /// No description provided for @offerProUnknown.
+  ///
+  /// In fr, this message translates to:
+  /// **'Professionnel'**
+  String get offerProUnknown;
+
+  /// No description provided for @bookingTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chantier'**
+  String get bookingTitle;
+
+  /// No description provided for @bookingConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer que le travail est terminé'**
+  String get bookingConfirm;
+
+  /// No description provided for @bookingConfirmed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Merci, chantier terminé.'**
+  String get bookingConfirmed;
+
+  /// No description provided for @bookingCancelled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chantier annulé.'**
+  String get bookingCancelled;
+
+  /// No description provided for @bookingCancelTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler ce chantier ?'**
+  String get bookingCancelTitle;
+
+  /// No description provided for @bookingCancelBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le professionnel sera informé. Cette action est définitive.'**
+  String get bookingCancelBody;
+
+  /// No description provided for @bookingWaitingForYou.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le professionnel indique avoir terminé. Le travail est-il bien fait ?'**
+  String get bookingWaitingForYou;
 }
 
 class _AppLocalizationsDelegate

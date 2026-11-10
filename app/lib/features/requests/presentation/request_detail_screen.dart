@@ -14,6 +14,7 @@ import '../../marketplace/application/marketplace_providers.dart';
 import '../../portfolio/presentation/portfolio_image.dart';
 import '../application/requests_providers.dart';
 import '../domain/requests_domain.dart';
+import 'received_offers_section.dart';
 import 'requests_texts.dart';
 
 /// One request: details, photos, status, and cancelling while it is open.
@@ -187,9 +188,9 @@ class _Details extends ConsumerWidget {
           ),
         ],
         const SizedBox(height: AppSpacing.xl),
-        Text(l10n.reqOffers(request.offerCount), style: text.titleMedium),
-        const SizedBox(height: AppSpacing.xs),
-        Text(l10n.reqOffersSoon, style: text.bodySmall?.copyWith(color: muted)),
+        ReceivedOffersSection(request: request),
+        if (request.status == RequestStatus.awarded)
+          BookingSection(requestId: request.id),
         if (request.isOpen) ...[
           const SizedBox(height: AppSpacing.xl),
           AppButton(

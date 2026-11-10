@@ -479,7 +479,6 @@
   "reqCancelBody": "Les offres reçues seront refusées. Cette action est définitive.",
   "reqCancelKeep": "Garder la demande",
   "reqCancelled": "Demande annulée.",
-  "reqOffersSoon": "La comparaison des offres arrive bientôt.",
   "reqPhotoLabel": "Photo {index} sur {total}",
   "@reqOffers": {
     "placeholders": {
@@ -604,5 +603,46 @@
       }
     }
   },
-  "offerFailLimit": "Vous avez 50 offres en attente. Retirez-en une avant d’en envoyer une autre."
+  "offerFailLimit": "Vous avez 50 offres en attente. Retirez-en une avant d’en envoyer une autre.",
+  "offersReceived": "Offres reçues",
+  "offersNoneYet": "Pas encore d’offre. Les professionnels ont jusqu’à l’expiration de la demande pour répondre.",
+  "sortOffersBy": "Trier les offres",
+  "sortOffersPrice": "Prix",
+  "sortOffersRating": "Note",
+  "sortOffersDelay": "Délai",
+  "offerLowest": "Prix le plus bas",
+  "offerDelay": "Délai : {count} j",
+  "offerAccept": "Accepter",
+  "offerDecline": "Refuser",
+  "offerAcceptTitle": "Accepter cette offre ?",
+  "offerAcceptBody": "{name} réalisera le travail pour {price}. Les autres offres seront refusées et la demande sera attribuée.",
+  "offerDeclineTitle": "Refuser cette offre ?",
+  "offerDeclineBody": "Le professionnel ne pourra pas la proposer à nouveau.",
+  "offerAcceptedMsg": "Offre acceptée.",
+  "offerDeclinedMsg": "Offre refusée.",
+  "offerProUnknown": "Professionnel",
+  "bookingTitle": "Chantier",
+  "bookingConfirm": "Confirmer que le travail est terminé",
+  "bookingConfirmed": "Merci, chantier terminé.",
+  "bookingCancelled": "Chantier annulé.",
+  "bookingCancelTitle": "Annuler ce chantier ?",
+  "bookingCancelBody": "Le professionnel sera informé. Cette action est définitive.",
+  "bookingWaitingForYou": "Le professionnel indique avoir terminé. Le travail est-il bien fait ?",
+  "@offerDelay": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@offerAcceptBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  }
 }

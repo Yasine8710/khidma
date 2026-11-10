@@ -1145,9 +1145,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get reqCancelled => 'Demande annulée.';
 
   @override
-  String get reqOffersSoon => 'La comparaison des offres arrive bientôt.';
-
-  @override
   String reqPhotoLabel(int index, int total) {
     return 'Photo $index sur $total';
   }
@@ -1315,4 +1312,84 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get offerFailLimit =>
       'Vous avez 50 offres en attente. Retirez-en une avant d’en envoyer une autre.';
+
+  @override
+  String get offersReceived => 'Offres reçues';
+
+  @override
+  String get offersNoneYet =>
+      'Pas encore d’offre. Les professionnels ont jusqu’à l’expiration de la demande pour répondre.';
+
+  @override
+  String get sortOffersBy => 'Trier les offres';
+
+  @override
+  String get sortOffersPrice => 'Prix';
+
+  @override
+  String get sortOffersRating => 'Note';
+
+  @override
+  String get sortOffersDelay => 'Délai';
+
+  @override
+  String get offerLowest => 'Prix le plus bas';
+
+  @override
+  String offerDelay(int count) {
+    return 'Délai : $count j';
+  }
+
+  @override
+  String get offerAccept => 'Accepter';
+
+  @override
+  String get offerDecline => 'Refuser';
+
+  @override
+  String get offerAcceptTitle => 'Accepter cette offre ?';
+
+  @override
+  String offerAcceptBody(String name, String price) {
+    return '$name réalisera le travail pour $price. Les autres offres seront refusées et la demande sera attribuée.';
+  }
+
+  @override
+  String get offerDeclineTitle => 'Refuser cette offre ?';
+
+  @override
+  String get offerDeclineBody =>
+      'Le professionnel ne pourra pas la proposer à nouveau.';
+
+  @override
+  String get offerAcceptedMsg => 'Offre acceptée.';
+
+  @override
+  String get offerDeclinedMsg => 'Offre refusée.';
+
+  @override
+  String get offerProUnknown => 'Professionnel';
+
+  @override
+  String get bookingTitle => 'Chantier';
+
+  @override
+  String get bookingConfirm => 'Confirmer que le travail est terminé';
+
+  @override
+  String get bookingConfirmed => 'Merci, chantier terminé.';
+
+  @override
+  String get bookingCancelled => 'Chantier annulé.';
+
+  @override
+  String get bookingCancelTitle => 'Annuler ce chantier ?';
+
+  @override
+  String get bookingCancelBody =>
+      'Le professionnel sera informé. Cette action est définitive.';
+
+  @override
+  String get bookingWaitingForYou =>
+      'Le professionnel indique avoir terminé. Le travail est-il bien fait ?';
 }

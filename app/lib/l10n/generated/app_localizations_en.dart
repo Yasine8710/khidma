@@ -1131,9 +1131,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reqCancelled => 'Request cancelled.';
 
   @override
-  String get reqOffersSoon => 'Comparing offers is coming soon.';
-
-  @override
   String reqPhotoLabel(int index, int total) {
     return 'Photo $index of $total';
   }
@@ -1299,4 +1296,84 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get offerFailLimit =>
       'You have 50 pending offers. Withdraw one before sending another.';
+
+  @override
+  String get offersReceived => 'Offers received';
+
+  @override
+  String get offersNoneYet =>
+      'No offers yet. Professionals can answer until the request expires.';
+
+  @override
+  String get sortOffersBy => 'Sort offers';
+
+  @override
+  String get sortOffersPrice => 'Price';
+
+  @override
+  String get sortOffersRating => 'Rating';
+
+  @override
+  String get sortOffersDelay => 'Delay';
+
+  @override
+  String get offerLowest => 'Lowest price';
+
+  @override
+  String offerDelay(int count) {
+    return 'Delay: $count d';
+  }
+
+  @override
+  String get offerAccept => 'Accept';
+
+  @override
+  String get offerDecline => 'Decline';
+
+  @override
+  String get offerAcceptTitle => 'Accept this offer?';
+
+  @override
+  String offerAcceptBody(String name, String price) {
+    return '$name will do the work for $price. The other offers will be declined and the request awarded.';
+  }
+
+  @override
+  String get offerDeclineTitle => 'Decline this offer?';
+
+  @override
+  String get offerDeclineBody =>
+      'The professional will not be able to offer again.';
+
+  @override
+  String get offerAcceptedMsg => 'Offer accepted.';
+
+  @override
+  String get offerDeclinedMsg => 'Offer declined.';
+
+  @override
+  String get offerProUnknown => 'Professional';
+
+  @override
+  String get bookingTitle => 'Job';
+
+  @override
+  String get bookingConfirm => 'Confirm the work is done';
+
+  @override
+  String get bookingConfirmed => 'Thank you, job completed.';
+
+  @override
+  String get bookingCancelled => 'Job cancelled.';
+
+  @override
+  String get bookingCancelTitle => 'Cancel this job?';
+
+  @override
+  String get bookingCancelBody =>
+      'The professional will be told. This cannot be undone.';
+
+  @override
+  String get bookingWaitingForYou =>
+      'The professional says the work is done. Is it done properly?';
 }

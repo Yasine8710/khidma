@@ -13,6 +13,7 @@ import 'package:khidma/features/auth/domain/auth_domain.dart';
 import 'package:khidma/features/marketplace/application/home_providers.dart';
 import 'package:khidma/features/portfolio/application/portfolio_providers.dart';
 import 'package:khidma/features/portfolio/domain/portfolio_domain.dart';
+import 'package:khidma/features/requests/application/customer_offers_providers.dart';
 import 'package:khidma/features/requests/application/requests_providers.dart';
 import 'package:khidma/features/requests/data/supabase_requests_repository.dart';
 import 'package:khidma/features/requests/domain/requests_domain.dart';
@@ -20,6 +21,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
 import '../support/fake_auth_repository.dart';
 import '../support/fake_portfolio.dart';
+import '../support/fake_customer_offers.dart';
 import '../support/fake_requests.dart';
 import '../test_helpers.dart';
 
@@ -42,6 +44,9 @@ Future<dynamic> _open(
     prefs: prefs,
     overrides: [
       requestsRepositoryProvider.overrideWithValue(repo),
+      customerOffersRepositoryProvider.overrideWithValue(
+        FakeCustomerOffersRepository(),
+      ),
       photoPickerProvider.overrideWithValue(picker ?? FakePhotoPicker()),
       photoPreparerProvider.overrideWithValue((b) async => _photo(b.length)),
     ],

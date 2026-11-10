@@ -1126,9 +1126,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reqCancelled => 'تم إلغاء الطلب.';
 
   @override
-  String get reqOffersSoon => 'مقارنة العروض قادمة قريبًا.';
-
-  @override
   String reqPhotoLabel(int index, int total) {
     return 'الصورة $index من $total';
   }
@@ -1293,4 +1290,82 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get offerFailLimit =>
       'لديك 50 عرضًا قيد الانتظار. اسحب عرضًا قبل إرسال آخر.';
+
+  @override
+  String get offersReceived => 'العروض المستلمة';
+
+  @override
+  String get offersNoneYet =>
+      'لا توجد عروض بعد. يمكن للحرفيين الرد إلى أن ينتهي الطلب.';
+
+  @override
+  String get sortOffersBy => 'ترتيب العروض';
+
+  @override
+  String get sortOffersPrice => 'السعر';
+
+  @override
+  String get sortOffersRating => 'التقييم';
+
+  @override
+  String get sortOffersDelay => 'المدة';
+
+  @override
+  String get offerLowest => 'أقل سعر';
+
+  @override
+  String offerDelay(int count) {
+    return 'المدة: $count يوم';
+  }
+
+  @override
+  String get offerAccept => 'قبول';
+
+  @override
+  String get offerDecline => 'رفض';
+
+  @override
+  String get offerAcceptTitle => 'قبول هذا العرض؟';
+
+  @override
+  String offerAcceptBody(String name, String price) {
+    return 'سينجز $name العمل مقابل $price. سيتم رفض العروض الأخرى وإسناد الطلب.';
+  }
+
+  @override
+  String get offerDeclineTitle => 'رفض هذا العرض؟';
+
+  @override
+  String get offerDeclineBody => 'لن يتمكن الحرفي من تقديمه مجددًا.';
+
+  @override
+  String get offerAcceptedMsg => 'تم قبول العرض.';
+
+  @override
+  String get offerDeclinedMsg => 'تم رفض العرض.';
+
+  @override
+  String get offerProUnknown => 'حرفي';
+
+  @override
+  String get bookingTitle => 'العمل';
+
+  @override
+  String get bookingConfirm => 'تأكيد أن العمل انتهى';
+
+  @override
+  String get bookingConfirmed => 'شكرًا، اكتمل العمل.';
+
+  @override
+  String get bookingCancelled => 'تم إلغاء العمل.';
+
+  @override
+  String get bookingCancelTitle => 'إلغاء هذا العمل؟';
+
+  @override
+  String get bookingCancelBody => 'سيتم إعلام الحرفي. لا يمكن التراجع.';
+
+  @override
+  String get bookingWaitingForYou =>
+      'يقول الحرفي إنه أنهى العمل. هل أُنجز كما يجب؟';
 }
