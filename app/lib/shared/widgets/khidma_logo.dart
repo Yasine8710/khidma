@@ -75,8 +75,9 @@ class KhidmaLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final ar = Localizations.localeOf(context).languageCode == 'ar';
     return Semantics(
-      label: 'Khidma',
+      label: ar ? 'خدمة' : 'Khidma',
       excludeSemantics: true,
       // Shrinks instead of overflowing in narrow spaces.
       child: FittedBox(

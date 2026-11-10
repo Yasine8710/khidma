@@ -1,11 +1,11 @@
 {
-    "name": "khidma",
-    "short_name": "khidma",
+    "name": "Khidma",
+    "short_name": "Khidma",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#1F5AA6",
     "theme_color": "#1F5AA6",
-    "description": "A new Flutter project.",
+    "description": "A trusted local services marketplace built for Tunisia.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
