@@ -36,6 +36,18 @@ void main() {
     });
     test('negative', () {
       expect(formatTnd(-5, fr), '-5 DT');
+      expect(formatTnd(-5, ar), '\u2066-5\u2069 د.ت');
+    });
+    test('rounding and sign edge cases', () {
+      expect(formatTnd(0.9996, fr), '1 DT');
+      expect(formatTnd(-0.0004, fr), '0 DT');
+      expect(formatTnd(-0.0, fr), '0 DT');
+      expect(formatTnd(0.001, en), '0.001 DT');
+    });
+    test('rejects non-displayable amounts', () {
+      expect(() => formatTnd(double.nan, fr), throwsArgumentError);
+      expect(() => formatTnd(double.infinity, fr), throwsArgumentError);
+      expect(() => formatTnd(1e21, fr), throwsArgumentError);
     });
   });
 
@@ -50,6 +62,10 @@ void main() {
         '21620123456',
         '20-123-456',
         '٢٠١٢٣٤٥٦',
+        '\u200E+216 20 123 456\u200F',
+        '\u061C+216 20 123 456',
+        '\u2066+216 20 123 456\u2069',
+        '\u202A20123456\u202C',
       ]) {
         expect(TunisianPhone.parse(s), '20123456', reason: s);
       }
@@ -65,6 +81,9 @@ void main() {
         '+33 6 12 34 56 78',
         'abcdefgh',
         '+216 20 123 45',
+        '+216',
+        '00216',
+        '216',
       ]) {
         expect(TunisianPhone.isValid(s), isFalse, reason: s);
       }

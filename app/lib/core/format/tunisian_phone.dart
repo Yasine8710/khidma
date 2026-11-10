@@ -11,7 +11,12 @@ abstract final class TunisianPhone {
   /// Returns the 8-digit national number, or null when invalid.
   /// Accepts `20123456`, `+216 20 123 456`, `00216 20-123-456`, `216...`.
   static String? parse(String input) {
-    var s = toWesternDigits(input).replaceAll(RegExp(r'[\s\-.()‎‏]'), '');
+    // Strip spaces, separators and invisible bidi controls (LRM/RLM/ALM,
+    // embeddings/overrides, isolates) that RTL keyboards and pasted text add.
+    var s = toWesternDigits(input).replaceAll(
+      RegExp(r'[\s\-.()\u200E\u200F\u061C\u202A-\u202E\u2066-\u2069]'),
+      '',
+    );
     if (s.startsWith('+216')) {
       s = s.substring(4);
     } else if (s.startsWith('00216')) {

@@ -4,6 +4,7 @@ import '../../../core/format/money.dart';
 import '../../../core/format/tunisian_phone.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/widgets/aligned_text.dart';
 import 'language_selector.dart';
 
 /// Temporary landing screen until navigation (slice 1.2) and onboarding
@@ -38,7 +39,11 @@ class FoundationScreen extends StatelessWidget {
             const SizedBox(height: AppSpacing.xs),
             Text(l10n.priceOnQuote, style: text.bodyMedium),
             const SizedBox(height: AppSpacing.xs),
-            Text(TunisianPhone.display('20123456')!, style: text.bodyMedium),
+            AlignedText(
+              TunisianPhone.display('20123456')!,
+              textDirection: TextDirection.ltr,
+              style: text.bodyMedium,
+            ),
           ],
         ),
       ),

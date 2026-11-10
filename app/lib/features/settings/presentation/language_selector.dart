@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/l10n/locale_controller.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/widgets/aligned_text.dart';
 
 /// Language list. Each option is labelled in its own language so users can
 /// always find theirs. Reused by onboarding and by Profile settings.
@@ -30,6 +31,7 @@ class LanguageSelector extends ConsumerWidget {
             child: Semantics(
               button: true,
               selected: locale == current,
+              localeForSubtree: locale,
               child: Material(
                 color: locale == current
                     ? scheme.primaryContainer
@@ -54,7 +56,7 @@ class LanguageSelector extends ConsumerWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Text(
+                          child: AlignedText(
                             label,
                             textDirection: locale.isRtl
                                 ? TextDirection.rtl

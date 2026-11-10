@@ -25,12 +25,18 @@ class LocaleController extends Notifier<Locale> {
     );
   }
 
-  Future<void> setLocale(Locale locale) async {
-    if (!supportedLocales.contains(locale)) return;
+  /// Applies [locale] immediately, then persists it. Returns whether the
+  /// choice was saved; the UI keeps the new language even when saving fails.
+  Future<bool> setLocale(Locale locale) async {
+    if (!supportedLocales.contains(locale)) return false;
     state = locale;
-    await ref
-        .read(sharedPreferencesProvider)
-        .setString(_prefsKey, locale.languageCode);
+    try {
+      return await ref
+          .read(sharedPreferencesProvider)
+          .setString(_prefsKey, locale.languageCode);
+    } catch (_) {
+      return false;
+    }
   }
 }
 
