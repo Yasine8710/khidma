@@ -58,6 +58,7 @@ class RatingStars extends StatelessWidget {
             ),
           ),
           Text.rich(
+            textDirection: TextDirection.ltr,
             TextSpan(
               children: [
                 TextSpan(text: value, style: text.labelMedium),

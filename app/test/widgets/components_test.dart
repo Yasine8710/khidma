@@ -76,7 +76,15 @@ void main() {
       await tester.tap(find.text('Envoyer'), warnIfMissed: false);
       expect(n, 0);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      expect(find.bySemanticsLabel('Envoyer, Chargement…'), findsOneWidget);
+      // The spinner's label merges into the (disabled) button's own node.
+      final node = tester.getSemantics(
+        find.bySemanticsLabel(RegExp('Envoyer')),
+      );
+      expect(node.label, contains('Chargement'));
+      expect(
+        node,
+        isSemantics(isButton: true, isEnabled: false, hasEnabledState: true),
+      );
       handle.dispose();
     });
 
@@ -160,6 +168,48 @@ void main() {
       expect(find.byTooltip('Masquer le mot de passe'), findsOneWidget);
     });
 
+    testWidgets('password toggle is its own actionable node', (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        host(const AppTextField(label: 'Mot de passe', obscureText: true)),
+      );
+      expect(
+        tester.getSemantics(find.byTooltip('Afficher le mot de passe')),
+        isSemantics(isButton: true, hasTapAction: true),
+      );
+      expect(find.bySemanticsLabel(RegExp('Mot de passe')), findsWidgets);
+      handle.dispose();
+    });
+
+    testWidgets('disabled field disables the password toggle', (tester) async {
+      await tester.pumpWidget(
+        host(
+          const AppTextField(
+            label: 'Mot de passe',
+            obscureText: true,
+            enabled: false,
+          ),
+        ),
+      );
+      expect(
+        tester.widget<IconButton>(find.byType(IconButton)).onPressed,
+        isNull,
+      );
+    });
+
+    testWidgets('obscureText change re-syncs the toggle state', (tester) async {
+      Widget field(bool o) => host(AppTextField(label: 'x', obscureText: o));
+      EditableText e() =>
+          tester.widget<EditableText>(find.byType(EditableText));
+      await tester.pumpWidget(field(true));
+      await tester.tap(find.byType(IconButton));
+      await tester.pump();
+      expect(e().obscureText, isFalse);
+      await tester.pumpWidget(field(false));
+      await tester.pumpWidget(field(true));
+      expect(e().obscureText, isTrue);
+    });
+
     testWidgets('label is part of the field semantics', (tester) async {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(host(const AppTextField(label: 'Nom')));
@@ -210,6 +260,95 @@ void main() {
     });
   });
 
+  group('layout', () {
+    testWidgets('chips pack side by side in a Wrap', (tester) async {
+      await tester.pumpWidget(
+        host(
+          Wrap(
+            children: [
+              AppChip(label: 'Plomberie', selected: false, onSelected: (_) {}),
+              AppChip(
+                label: 'Électricité',
+                selected: false,
+                onSelected: (_) {},
+              ),
+              AppChip(
+                label: 'Climatisation',
+                selected: true,
+                onSelected: (_) {},
+              ),
+            ],
+          ),
+        ),
+      );
+      final y = [
+        for (final l in ['Plomberie', 'Électricité', 'Climatisation'])
+          tester.getCenter(find.text(l)).dy,
+      ];
+      expect(y.toSet().length, 1, reason: 'all on one run: $y');
+    });
+
+    testWidgets('long chip label wraps instead of overflowing', (tester) async {
+      tester.view.physicalSize = const Size(200 * 3, 600 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        host(
+          AppChip(
+            label: 'Réparation et entretien de climatiseurs',
+            selected: false,
+            onSelected: (_) {},
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('inline (non-expanded) buttons lay out in a Row', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        host(
+          Row(
+            children: [
+              AppButton(
+                label: 'Appeler',
+                onPressed: () {},
+                expand: false,
+                icon: Icons.phone,
+              ),
+              const SizedBox(width: 8),
+              AppButton(
+                label: 'WhatsApp',
+                onPressed: () {},
+                expand: false,
+                variant: AppButtonVariant.secondary,
+              ),
+            ],
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.text('Appeler'), findsOneWidget);
+    });
+
+    testWidgets('long header action stays on screen at 320 px', (tester) async {
+      tester.view.physicalSize = const Size(320 * 3, 600 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        host(
+          SectionHeader(
+            title: 'Professionnels les mieux notés près de chez vous',
+            actionLabel: 'Voir tous les professionnels',
+            onAction: () {},
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+    });
+  });
+
   group('AppCard / SectionHeader', () {
     testWidgets('tappable card calls onTap; plain card is not a button', (
       tester,
@@ -234,8 +373,9 @@ void main() {
       expect(n, 1);
       expect(
         tester.getSemantics(find.bySemanticsLabel('Profil')),
-        isSemantics(isButton: true),
+        isSemantics(label: 'Profil', isButton: true, hasTapAction: true),
       );
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
       handle.dispose();
     });
 
@@ -313,6 +453,11 @@ void main() {
       expect(find.text('4,5 (3)', findRichText: true), findsOneWidget);
     });
 
+    test('formatRating handles infinity', () {
+      expect(formatRating(double.infinity, const Locale('fr')), '5,0');
+      expect(formatRating(double.negativeInfinity, const Locale('fr')), '0,0');
+    });
+
     test('formatRating clamps and survives NaN', () {
       const fr = Locale('fr');
       expect(formatRating(7, fr), '5,0');
@@ -343,6 +488,46 @@ void main() {
       expect(AppAvatar.initialsOf('خالد المنصوري'), 'خا');
       expect(AppAvatar.initialsOf(''), '?');
       expect(AppAvatar.initialsOf('   '), '?');
+      // Grapheme clusters: a decomposed accent and skin-tone emoji stay whole.
+      expect(AppAvatar.initialsOf('E\u0301mile Ben'), 'E\u0301B');
+      expect(
+        AppAvatar.initialsOf('\u{1F44B}\u{1F3FD} Sam').characters.first,
+        '\u{1F44B}\u{1F3FD}',
+      );
+    });
+
+    testWidgets(
+      'decorative and nameless avatars are hidden from screen readers',
+      (tester) async {
+        final handle = tester.ensureSemantics();
+        await tester.pumpWidget(
+          host(
+            const Column(
+              children: [
+                AppAvatar(name: 'Karim Ben Salah', decorative: true),
+                AppAvatar(name: ''),
+              ],
+            ),
+          ),
+        );
+        expect(find.bySemanticsLabel('Karim Ben Salah'), findsNothing);
+        handle.dispose();
+      },
+    );
+
+    testWidgets('tiny device pixel ratio does not crash', (tester) async {
+      tester.view.devicePixelRatio = 0.0001;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        host(
+          const AppAvatar(
+            name: 'Karim',
+            imageUrl: 'http://localhost/a.png',
+            size: 2,
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
     });
 
     testWidgets('missing or failing image falls back to initials', (
@@ -386,6 +571,49 @@ void main() {
             reason: '$tone ${theme.brightness}',
           );
         }
+      }
+    });
+  });
+
+  group('color contrast of component pairings', () {
+    test('text and control boundaries meet WCAG AA in both themes', () {
+      for (final theme in [
+        AppTheme.light(const Locale('fr')),
+        AppTheme.dark(const Locale('fr')),
+      ]) {
+        final cs = theme.colorScheme;
+        final b = theme.brightness;
+        final bgPage = theme.scaffoldBackgroundColor;
+        final textPairs = <String, (Color, Color)>{
+          'onSurface/surface': (cs.onSurface, cs.surface),
+          'onSurface/background': (cs.onSurface, bgPage),
+          'onSurfaceVariant/surface': (cs.onSurfaceVariant, cs.surface),
+          'onSurfaceVariant/background': (cs.onSurfaceVariant, bgPage),
+          'primary/surface': (cs.primary, cs.surface),
+          'onPrimary/primary': (cs.onPrimary, cs.primary),
+          'onPrimaryContainer/primaryContainer': (
+            cs.onPrimaryContainer,
+            cs.primaryContainer,
+          ),
+        };
+        textPairs.forEach((name, p) {
+          expect(
+            _ratio(p.$1, p.$2),
+            greaterThanOrEqualTo(4.5),
+            reason: '$b $name',
+          );
+        });
+        for (final bg in [cs.surface, bgPage]) {
+          expect(
+            _ratio(cs.outline, bg),
+            greaterThanOrEqualTo(3.0),
+            reason: '$b outline',
+          );
+        }
+        expect(
+          _ratio(cs.outlineVariant, cs.surface),
+          lessThan(_ratio(cs.outline, cs.surface)),
+        );
       }
     });
   });

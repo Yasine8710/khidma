@@ -4,7 +4,8 @@ import '../../core/haptics.dart';
 import '../../core/theme/app_spacing.dart';
 
 /// Selectable filter chip (category, price range, availability...).
-/// Visual height 40, hit area 48.
+/// At least 40 high visually and 48x48 to hit; grows with text size. The
+/// border uses the control color (>= 3:1) so an unselected chip is visible.
 class AppChip extends StatelessWidget {
   const AppChip({
     super.key,
@@ -23,26 +24,28 @@ class AppChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final fg = selected ? scheme.onPrimaryContainer : scheme.onSurface;
-    return Semantics(
-      button: true,
-      selected: selected,
-      label: label,
-      excludeSemantics: true,
-      onTap: () => onSelected(!selected),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        onTap: () {
-          AppHaptics.selection();
-          onSelected(!selected);
-        },
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 48),
-          child: Center(
+    return InkWell(
+      borderRadius: BorderRadius.circular(AppRadius.lg),
+      onTap: () {
+        AppHaptics.selection();
+        onSelected(!selected);
+      },
+      // InkWell provides tap and focus semantics; the inner node names it.
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+        child: Center(
+          widthFactor: 1,
+          child: Semantics(
+            button: true,
+            selected: selected,
+            label: label,
+            excludeSemantics: true,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
-              height: 40,
+              constraints: const BoxConstraints(minHeight: 40),
               padding: const EdgeInsetsDirectional.symmetric(
                 horizontal: AppSpacing.lg,
+                vertical: AppSpacing.sm,
               ),
               decoration: BoxDecoration(
                 color: selected ? scheme.primaryContainer : scheme.surface,
@@ -58,11 +61,15 @@ class AppChip extends StatelessWidget {
                     Icon(icon, size: 18, color: fg),
                     const SizedBox(width: AppSpacing.sm),
                   ],
-                  Text(
-                    label,
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: fg,
-                      fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                  Flexible(
+                    child: Text(
+                      label,
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        color: fg,
+                        fontWeight: selected
+                            ? FontWeight.w600
+                            : FontWeight.w500,
+                      ),
                     ),
                   ),
                 ],

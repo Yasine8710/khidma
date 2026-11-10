@@ -29,11 +29,17 @@ class SectionHeader extends StatelessWidget {
             ),
           ),
           if (actionLabel != null && onAction != null)
-            AppButton(
-              label: actionLabel!,
-              onPressed: onAction,
-              variant: AppButtonVariant.text,
-              expand: false,
+            // Capped so a long translation wraps instead of crowding the title.
+            Flexible(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 160),
+                child: AppButton(
+                  label: actionLabel!,
+                  onPressed: onAction,
+                  variant: AppButtonVariant.text,
+                  expand: false,
+                ),
+              ),
             ),
         ],
       ),

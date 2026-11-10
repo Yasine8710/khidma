@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_spacing.dart';
 
-/// Bordered surface card (see CardTheme). Tappable when [onTap] is set.
+/// Bordered surface card (see CardTheme). Tappable when [onTap] is set; the
+/// whole card is then one button node (label + tap together), at least 48
+/// high. Interactive children inside a tappable card keep their own nodes.
 class AppCard extends StatelessWidget {
   const AppCard({
     super.key,
@@ -16,26 +18,29 @@ class AppCard extends StatelessWidget {
   final VoidCallback? onTap;
   final EdgeInsetsGeometry padding;
 
-  /// Spoken name for tappable cards; defaults to the merged child text.
+  /// Spoken name for tappable cards (e.g. professional name and profession).
   final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
-    final card = Card(
-      clipBehavior: Clip.antiAlias,
-      child: onTap == null
-          ? Padding(padding: padding, child: child)
-          : InkWell(
-              onTap: onTap,
-              child: Padding(padding: padding, child: child),
-            ),
-    );
-    if (onTap == null) return card;
+    final body = Padding(padding: padding, child: child);
+    if (onTap == null) return Card(child: body);
     return Semantics(
+      container: true,
       button: true,
       label: semanticLabel,
-      container: true,
-      child: card,
+      onTap: onTap,
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          excludeFromSemantics: true,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 48),
+            child: body,
+          ),
+        ),
+      ),
     );
   }
 }

@@ -32,7 +32,7 @@ class AppBottomNav extends StatelessWidget {
     // of the buttons stay visible on top of the surface.
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: scheme.outline)),
+        border: Border(top: BorderSide(color: scheme.outlineVariant)),
       ),
       child: Material(
         color: scheme.surface,
