@@ -258,7 +258,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get errPasswordShort => '8 caractères minimum.';
 
   @override
-  String get errPasswordLong => '72 caractères maximum.';
+  String get errPasswordLong => 'Mot de passe trop long.';
 
   @override
   String get errNameRequired => 'Saisissez votre nom.';
@@ -317,4 +317,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String signedInAs(String email) {
     return 'Connecté en tant que $email';
   }
+
+  @override
+  String get newPasswordTitle => 'Nouveau mot de passe';
+
+  @override
+  String get newPasswordSubtitle =>
+      'Choisissez un mot de passe que vous n\'utilisez nulle part ailleurs.';
+
+  @override
+  String get savePassword => 'Enregistrer le mot de passe';
+
+  @override
+  String get passwordUpdated => 'Mot de passe mis à jour.';
+
+  @override
+  String get linkExpiredTitle => 'Lien expiré ou invalide';
+
+  @override
+  String get linkExpiredBody =>
+      'Demandez un nouveau lien de réinitialisation depuis l\'écran de connexion.';
 }

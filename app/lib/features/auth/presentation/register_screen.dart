@@ -40,13 +40,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   Future<void> _submit() async {
     if (!(_form.currentState?.validate() ?? false)) return;
-    TextInput.finishAutofillContext();
     setState(() => _failure = null);
     final email = _email.text.trim();
     final result = await ref
         .read(authActionsProvider.notifier)
         .signUp(email: email, password: _password.text, fullName: _name.text);
     if (!mounted) return;
+    TextInput.finishAutofillContext(shouldSave: result.isOk);
     if (!result.isOk) {
       setState(() => _failure = result.failure);
     } else if (result.outcome == SignUpOutcome.signedIn) {

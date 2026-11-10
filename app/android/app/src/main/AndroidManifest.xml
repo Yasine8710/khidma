@@ -26,6 +26,18 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Email links (password reset) bring the user back here. The URL
+                 must also be listed in the Supabase dashboard (Additional
+                 Redirect URLs): tn.khidma.app://auth-callback -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="tn.khidma.app" android:host="auth-callback"/>
+            </intent-filter>
+            <!-- supabase_flutter handles the link itself; stop Flutter from also
+                 pushing it into the router as a route. -->
+            <meta-data android:name="flutter_deeplinking_enabled" android:value="false"/>
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

@@ -63,6 +63,13 @@ abstract interface class AuthRepository {
   Future<void> signIn({required String email, required String password});
   Future<void> signOut();
   Future<void> sendPasswordReset(String email);
+
+  /// Fires when the user opens a password-reset link and the app has a
+  /// recovery session. The app then shows the new-password screen.
+  Stream<void> get passwordRecoveryRequests;
+
+  /// Sets a new password for the signed-in (or recovery-session) user.
+  Future<void> updatePassword(String newPassword);
 }
 
 /// Used when the app runs without a backend (fresh checkout). Honest: every
@@ -95,4 +102,8 @@ class NotConfiguredAuthRepository implements AuthRepository {
   Future<void> signOut() async {}
   @override
   Future<void> sendPasswordReset(String email) async => _fail();
+  @override
+  Stream<void> get passwordRecoveryRequests => const Stream.empty();
+  @override
+  Future<void> updatePassword(String newPassword) async => _fail();
 }

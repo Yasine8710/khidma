@@ -46,12 +46,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _submit() async {
     if (!(_form.currentState?.validate() ?? false)) return;
-    TextInput.finishAutofillContext();
     setState(() => _failure = null);
     final result = await ref
         .read(authActionsProvider.notifier)
         .signIn(_email.text, _password.text);
     if (!mounted) return;
+    // Offer to save credentials only when they actually worked.
+    TextInput.finishAutofillContext(shouldSave: result.isOk);
     if (result.isOk) {
       leaveAuth(context);
     } else {

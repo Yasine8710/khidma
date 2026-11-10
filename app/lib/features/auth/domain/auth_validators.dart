@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 /// Field problems the UI turns into localized messages.
 enum FieldProblem { required, invalidEmail, passwordTooShort, passwordTooLong }
 
 const minPasswordLength = 8;
-const maxPasswordLength = 72; // bcrypt (used by Supabase Auth) ignores the rest
+// Supabase Auth: minimum counted in Unicode characters, maximum in UTF-8
+// bytes (bcrypt reads at most 72). Arabic letters are 2 bytes, emoji 4.
+const maxPasswordBytes = 72;
 
 final _email = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]{2,}$');
 
@@ -17,8 +21,12 @@ FieldProblem? validateEmail(String? value) {
 FieldProblem? validateNewPassword(String? value) {
   final v = value ?? '';
   if (v.isEmpty) return FieldProblem.required;
-  if (v.length < minPasswordLength) return FieldProblem.passwordTooShort;
-  if (v.length > maxPasswordLength) return FieldProblem.passwordTooLong;
+  if (v.runes.length < minPasswordLength) {
+    return FieldProblem.passwordTooShort;
+  }
+  if (utf8.encode(v).length > maxPasswordBytes) {
+    return FieldProblem.passwordTooLong;
+  }
   return null;
 }
 

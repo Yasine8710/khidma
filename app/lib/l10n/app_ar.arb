@@ -72,7 +72,7 @@
   "errEmailInvalid": "بريد إلكتروني غير صالح.",
   "errPasswordRequired": "أدخل كلمة المرور.",
   "errPasswordShort": "8 أحرف على الأقل.",
-  "errPasswordLong": "72 حرفًا على الأكثر.",
+  "errPasswordLong": "كلمة المرور طويلة جدًا.",
   "errNameRequired": "أدخل اسمك.",
   "failInvalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
   "failEmailNotConfirmed": "أكّد بريدك الإلكتروني أولًا (الرابط في صندوق الوارد).",
@@ -88,5 +88,11 @@
   "requestsSignedOutBody": "ستظهر هنا طلبات عروض الأسعار والعروض التي تصلك.",
   "messagesSignedOutTitle": "سجّل الدخول للمحادثة",
   "messagesSignedOutBody": "ستظهر هنا محادثاتك مع الحرفيين.",
-  "signedInAs": "تم تسجيل الدخول بحساب {email}"
+  "signedInAs": "تم تسجيل الدخول بحساب {email}",
+  "newPasswordTitle": "كلمة مرور جديدة",
+  "newPasswordSubtitle": "اختر كلمة مرور لا تستخدمها في أي مكان آخر.",
+  "savePassword": "حفظ كلمة المرور",
+  "passwordUpdated": "تم تحديث كلمة المرور.",
+  "linkExpiredTitle": "الرابط منتهي أو غير صالح",
+  "linkExpiredBody": "اطلب رابط إعادة تعيين جديدًا من شاشة تسجيل الدخول."
 }

@@ -535,7 +535,7 @@ abstract class AppLocalizations {
   /// No description provided for @errPasswordLong.
   ///
   /// In fr, this message translates to:
-  /// **'72 caractères maximum.'**
+  /// **'Mot de passe trop long.'**
   String get errPasswordLong;
 
   /// No description provided for @errNameRequired.
@@ -633,6 +633,42 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Connecté en tant que {email}'**
   String signedInAs(String email);
+
+  /// No description provided for @newPasswordTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau mot de passe'**
+  String get newPasswordTitle;
+
+  /// No description provided for @newPasswordSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez un mot de passe que vous n\'utilisez nulle part ailleurs.'**
+  String get newPasswordSubtitle;
+
+  /// No description provided for @savePassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer le mot de passe'**
+  String get savePassword;
+
+  /// No description provided for @passwordUpdated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe mis à jour.'**
+  String get passwordUpdated;
+
+  /// No description provided for @linkExpiredTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien expiré ou invalide'**
+  String get linkExpiredTitle;
+
+  /// No description provided for @linkExpiredBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demandez un nouveau lien de réinitialisation depuis l\'écran de connexion.'**
+  String get linkExpiredBody;
 }
 
 class _AppLocalizationsDelegate

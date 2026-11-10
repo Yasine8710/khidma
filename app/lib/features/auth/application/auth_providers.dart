@@ -21,6 +21,11 @@ final authUserProvider = StreamProvider<AuthUser?>((ref) async* {
   yield* repo.authStateChanges;
 });
 
+/// Emits when a password-recovery link was opened (see AuthRepository).
+final passwordRecoveryProvider = StreamProvider<void>(
+  (ref) => ref.watch(authRepositoryProvider).passwordRecoveryRequests,
+);
+
 /// Convenience: the user right now, null while loading or signed out.
 final currentUserProvider = Provider<AuthUser?>(
   (ref) => ref.watch(authUserProvider).value,
@@ -85,6 +90,12 @@ class AuthActions extends Notifier<bool> {
     await r.sendPasswordReset(email);
     return null;
   });
+
+  Future<AuthActionResult> updatePassword(String newPassword) =>
+      _run((r) async {
+        await r.updatePassword(newPassword);
+        return null;
+      });
 
   Future<AuthActionResult> signOut() => _run((r) async {
     await r.signOut();

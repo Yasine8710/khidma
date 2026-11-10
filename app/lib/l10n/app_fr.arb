@@ -99,7 +99,7 @@
   "errEmailInvalid": "Adresse e-mail invalide.",
   "errPasswordRequired": "Saisissez votre mot de passe.",
   "errPasswordShort": "8 caractères minimum.",
-  "errPasswordLong": "72 caractères maximum.",
+  "errPasswordLong": "Mot de passe trop long.",
   "errNameRequired": "Saisissez votre nom.",
   "failInvalidCredentials": "E-mail ou mot de passe incorrect.",
   "failEmailNotConfirmed": "Confirmez d'abord votre adresse e-mail (lien reçu par e-mail).",
@@ -136,5 +136,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "newPasswordTitle": "Nouveau mot de passe",
+  "newPasswordSubtitle": "Choisissez un mot de passe que vous n'utilisez nulle part ailleurs.",
+  "savePassword": "Enregistrer le mot de passe",
+  "passwordUpdated": "Mot de passe mis à jour.",
+  "linkExpiredTitle": "Lien expiré ou invalide",
+  "linkExpiredBody": "Demandez un nouveau lien de réinitialisation depuis l'écran de connexion."
 }

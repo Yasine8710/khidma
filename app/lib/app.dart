@@ -6,6 +6,8 @@ import 'core/l10n/locale_controller.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_mode_controller.dart';
+import 'core/router/app_routes.dart';
+import 'features/auth/application/auth_providers.dart';
 import 'l10n/generated/app_localizations.dart';
 
 class KhidmaApp extends ConsumerWidget {
@@ -14,6 +16,10 @@ class KhidmaApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
+    // Opening a password-reset link brings the user to the new-password screen.
+    ref.listen(passwordRecoveryProvider, (_, next) {
+      if (next.hasValue) ref.read(routerProvider).go(AppRoutes.resetPassword);
+    });
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appName,
       debugShowCheckedModeBanner: false,

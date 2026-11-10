@@ -259,7 +259,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errPasswordShort => '8 أحرف على الأقل.';
 
   @override
-  String get errPasswordLong => '72 حرفًا على الأكثر.';
+  String get errPasswordLong => 'كلمة المرور طويلة جدًا.';
 
   @override
   String get errNameRequired => 'أدخل اسمك.';
@@ -315,4 +315,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String signedInAs(String email) {
     return 'تم تسجيل الدخول بحساب $email';
   }
+
+  @override
+  String get newPasswordTitle => 'كلمة مرور جديدة';
+
+  @override
+  String get newPasswordSubtitle =>
+      'اختر كلمة مرور لا تستخدمها في أي مكان آخر.';
+
+  @override
+  String get savePassword => 'حفظ كلمة المرور';
+
+  @override
+  String get passwordUpdated => 'تم تحديث كلمة المرور.';
+
+  @override
+  String get linkExpiredTitle => 'الرابط منتهي أو غير صالح';
+
+  @override
+  String get linkExpiredBody =>
+      'اطلب رابط إعادة تعيين جديدًا من شاشة تسجيل الدخول.';
 }

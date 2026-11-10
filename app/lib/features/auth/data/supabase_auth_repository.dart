@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
 import '../domain/auth_domain.dart';
@@ -38,6 +39,12 @@ AuthFailure mapAuthException(Object error) {
   }
   return AuthFailure.unknown;
 }
+
+/// Where password-reset (and other email) links bring the user back to the
+/// app on a phone. The exact value must be listed under "Additional Redirect
+/// URLs" in the Supabase dashboard, and registered natively (Android intent
+/// filter, iOS URL type). On web the project's Site URL is used instead.
+const authRedirectUrl = 'tn.khidma.app://auth-callback';
 
 /// Supabase Auth behind the app's [AuthRepository].
 class SupabaseAuthRepository implements AuthRepository {
@@ -101,6 +108,19 @@ class SupabaseAuthRepository implements AuthRepository {
   Future<void> signOut() => _guard(() => _auth.signOut());
 
   @override
-  Future<void> sendPasswordReset(String email) =>
-      _guard(() => _auth.resetPasswordForEmail(email.trim()));
+  Future<void> sendPasswordReset(String email) => _guard(
+    () => _auth.resetPasswordForEmail(
+      email.trim(),
+      redirectTo: kIsWeb ? null : authRedirectUrl,
+    ),
+  );
+
+  @override
+  Stream<void> get passwordRecoveryRequests => _auth.onAuthStateChange
+      .where((s) => s.event == sb.AuthChangeEvent.passwordRecovery)
+      .map((_) {});
+
+  @override
+  Future<void> updatePassword(String newPassword) =>
+      _guard(() => _auth.updateUser(sb.UserAttributes(password: newPassword)));
 }

@@ -8,6 +8,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../auth/presentation/auth_texts.dart';
 import '../../gallery/gallery_config.dart';
 import '../../settings/presentation/language_selector.dart';
 import '../../../core/haptics.dart';
@@ -127,7 +128,14 @@ class _AccountCard extends ConsumerWidget {
             label: l10n.signOut,
             variant: AppButtonVariant.secondary,
             isLoading: busy,
-            onPressed: () => ref.read(authActionsProvider.notifier).signOut(),
+            onPressed: () async {
+              final r = await ref.read(authActionsProvider.notifier).signOut();
+              if (!r.isOk && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.failureText(r.failure!))),
+                );
+              }
+            },
           ),
         ],
       ),

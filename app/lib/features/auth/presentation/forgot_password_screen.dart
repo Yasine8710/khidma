@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -69,7 +70,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           AppButton(
             label: l10n.backToSignIn,
             variant: AppButtonVariant.secondary,
-            onPressed: () => context.pop(),
+            onPressed: () =>
+                context.canPop() ? context.pop() : context.go(AppRoutes.login),
           ),
         ],
       );

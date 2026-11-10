@@ -257,7 +257,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errPasswordShort => 'At least 8 characters.';
 
   @override
-  String get errPasswordLong => 'At most 72 characters.';
+  String get errPasswordLong => 'Password too long.';
 
   @override
   String get errNameRequired => 'Enter your name.';
@@ -315,4 +315,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String signedInAs(String email) {
     return 'Signed in as $email';
   }
+
+  @override
+  String get newPasswordTitle => 'New password';
+
+  @override
+  String get newPasswordSubtitle =>
+      'Choose a password you do not use anywhere else.';
+
+  @override
+  String get savePassword => 'Save password';
+
+  @override
+  String get passwordUpdated => 'Password updated.';
+
+  @override
+  String get linkExpiredTitle => 'Link expired or invalid';
+
+  @override
+  String get linkExpiredBody =>
+      'Request a new reset link from the sign-in screen.';
 }

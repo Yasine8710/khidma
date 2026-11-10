@@ -72,7 +72,7 @@
   "errEmailInvalid": "Invalid email address.",
   "errPasswordRequired": "Enter your password.",
   "errPasswordShort": "At least 8 characters.",
-  "errPasswordLong": "At most 72 characters.",
+  "errPasswordLong": "Password too long.",
   "errNameRequired": "Enter your name.",
   "failInvalidCredentials": "Incorrect email or password.",
   "failEmailNotConfirmed": "Please confirm your email address first (check your inbox).",
@@ -88,5 +88,11 @@
   "requestsSignedOutBody": "Your quote requests and the offers you receive will appear here.",
   "messagesSignedOutTitle": "Sign in to chat",
   "messagesSignedOutBody": "Your conversations with professionals will appear here.",
-  "signedInAs": "Signed in as {email}"
+  "signedInAs": "Signed in as {email}",
+  "newPasswordTitle": "New password",
+  "newPasswordSubtitle": "Choose a password you do not use anywhere else.",
+  "savePassword": "Save password",
+  "passwordUpdated": "Password updated.",
+  "linkExpiredTitle": "Link expired or invalid",
+  "linkExpiredBody": "Request a new reset link from the sign-in screen."
 }
