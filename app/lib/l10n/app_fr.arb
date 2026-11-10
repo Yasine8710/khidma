@@ -316,5 +316,71 @@
   "showMap": "Afficher la carte",
   "showList": "Afficher la liste",
   "mapNothingTitle": "Rien à placer sur la carte",
-  "mapNothingBody": "Aucun de ces professionnels n’a de position connue."
+  "mapNothingBody": "Aucun de ces professionnels n’a de position connue.",
+  "regTitle": "Profil professionnel",
+  "regStepOf": "Étape {current} sur {total}",
+  "regNext": "Continuer",
+  "regBack": "Retour",
+  "regStepBusiness": "Votre activité",
+  "regStepLocation": "Où travaillez-vous ?",
+  "regStepAreas": "Zones d’intervention",
+  "regStepServices": "Autres services",
+  "regStepContact": "Contact",
+  "regStepReview": "Vérifier et publier",
+  "regBusinessName": "Nom affiché (entreprise ou personne)",
+  "regYears": "Années d’expérience (facultatif)",
+  "regCategory": "Métier principal",
+  "regDescription": "Description de vos services",
+  "regDescriptionHelper": "Au moins 20 caractères.",
+  "regGovernorate": "Gouvernorat",
+  "regCity": "Ville (facultatif)",
+  "regAreasBody": "Choisissez les gouvernorats où vous vous déplacez, en plus du vôtre.",
+  "regServicesBody": "Ajoutez d’autres services que vous proposez.",
+  "regPhone": "Téléphone de contact",
+  "regPhoneHelper": "Seuls les membres connectés le voient, et seulement s’ils le demandent.",
+  "regPhotoLater": "La photo de profil arrive bientôt.",
+  "regErrName": "Entre 2 et 120 caractères.",
+  "regErrDescription": "Entre 20 et 2000 caractères.",
+  "regErrCategory": "Choisissez un métier.",
+  "regErrGovernorate": "Choisissez un gouvernorat.",
+  "regErrYears": "Entre 0 et 60.",
+  "regErrPhone": "Numéro tunisien invalide (8 chiffres).",
+  "regReviewBody": "Voici ce que verront les clients.",
+  "regPublish": "Publier mon profil",
+  "regUnpublish": "Retirer de la liste",
+  "regSaveDraft": "Enregistrer et quitter",
+  "regPublished": "Votre profil est publié.",
+  "regDraft": "Brouillon : invisible pour les clients.",
+  "regMissing": "Pour publier, il manque : {items}.",
+  "gapName": "le nom",
+  "gapCategory": "le métier",
+  "gapDescription": "la description",
+  "gapLocation": "le gouvernorat",
+  "gapPhone": "le téléphone",
+  "regFailNetwork": "Connexion impossible. Vos réponses sont conservées, réessayez.",
+  "regFailInvalid": "Certaines informations sont refusées. Vérifiez-les.",
+  "regFailForbidden": "Action non autorisée pour ce compte.",
+  "regFailGeneric": "Impossible d’enregistrer. Réessayez.",
+  "regFailNotConfigured": "Le service n’est pas disponible pour le moment.",
+  "proCompleteCta": "Compléter mon profil",
+  "proEditCta": "Modifier mon profil professionnel",
+  "proStatusDraft": "Profil non publié",
+  "proStatusPublished": "Profil publié",
+  "@regStepOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@regMissing": {
+    "placeholders": {
+      "items": {
+        "type": "String"
+      }
+    }
+  }
 }

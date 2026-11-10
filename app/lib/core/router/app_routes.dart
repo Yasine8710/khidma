@@ -11,6 +11,7 @@ abstract final class AppRoutes {
   static const resetPassword = '/reset-password';
   static const editProfile = '/edit-profile';
   static const favorites = '/favorites';
+  static const proRegistration = '/pro/profile';
   static const search = '/search';
   static const professional = '/professional/:id';
   static String professionalPath(String id) =>

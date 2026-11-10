@@ -10,6 +10,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../auth/application/auth_providers.dart';
 import 'delete_account_dialog.dart';
+import '../../professional/application/professional_providers.dart';
 import '../application/profile_providers.dart';
 import 'edit_profile_screen.dart';
 import '../../auth/presentation/auth_texts.dart';
@@ -190,15 +191,44 @@ class _ProfessionalSection extends ConsumerWidget {
     if (profile == null) return const SizedBox.shrink();
     final text = Theme.of(context).textTheme;
     if (profile.isProfessional) {
+      final draft = ref.watch(myProfessionalProvider).value;
       return Padding(
         padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
-        child: Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: AppBadge(
-            label: l10n.professionalBadge,
-            tone: BadgeTone.info,
-            icon: Icons.handyman_outlined,
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.xs,
+                children: [
+                  AppBadge(
+                    label: l10n.professionalBadge,
+                    tone: BadgeTone.info,
+                    icon: Icons.handyman_outlined,
+                  ),
+                  if (draft != null)
+                    AppBadge(
+                      label: draft.isPublished
+                          ? l10n.proStatusPublished
+                          : l10n.proStatusDraft,
+                      tone: draft.isPublished
+                          ? BadgeTone.success
+                          : BadgeTone.warning,
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            AppButton(
+              label: draft != null && draft.isPublished
+                  ? l10n.proEditCta
+                  : l10n.proCompleteCta,
+              variant: AppButtonVariant.secondary,
+              onPressed: () => context.push(AppRoutes.proRegistration),
+            ),
+          ],
         ),
       );
     }
@@ -224,6 +254,9 @@ class _ProfessionalSection extends ConsumerWidget {
               final r = await ref
                   .read(profileActionsProvider.notifier)
                   .becomeProfessional();
+              if (r.isOk && context.mounted) {
+                context.push(AppRoutes.proRegistration);
+              }
               if (!r.isOk && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(profileFailureText(l10n, r.failure!))),

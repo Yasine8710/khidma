@@ -709,4 +709,157 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get mapNothingBody => 'لا يملك أيٌّ من هؤلاء الحرفيين موقعًا معروفًا.';
+
+  @override
+  String get regTitle => 'الملف المهني';
+
+  @override
+  String regStepOf(int current, int total) {
+    return 'الخطوة $current من $total';
+  }
+
+  @override
+  String get regNext => 'متابعة';
+
+  @override
+  String get regBack => 'رجوع';
+
+  @override
+  String get regStepBusiness => 'نشاطك';
+
+  @override
+  String get regStepLocation => 'أين تعمل؟';
+
+  @override
+  String get regStepAreas => 'مناطق التدخل';
+
+  @override
+  String get regStepServices => 'خدمات أخرى';
+
+  @override
+  String get regStepContact => 'التواصل';
+
+  @override
+  String get regStepReview => 'المراجعة والنشر';
+
+  @override
+  String get regBusinessName => 'الاسم المعروض (مؤسسة أو شخص)';
+
+  @override
+  String get regYears => 'سنوات الخبرة (اختياري)';
+
+  @override
+  String get regCategory => 'المهنة الرئيسية';
+
+  @override
+  String get regDescription => 'صف خدماتك';
+
+  @override
+  String get regDescriptionHelper => '20 حرفًا على الأقل.';
+
+  @override
+  String get regGovernorate => 'الولاية';
+
+  @override
+  String get regCity => 'المدينة (اختياري)';
+
+  @override
+  String get regAreasBody =>
+      'اختر الولايات التي تتنقل إليها، إضافة إلى ولايتك.';
+
+  @override
+  String get regServicesBody => 'أضف خدمات أخرى تقدمها.';
+
+  @override
+  String get regPhone => 'هاتف التواصل';
+
+  @override
+  String get regPhoneHelper =>
+      'لا يراه إلا الأعضاء المسجلون، وعند طلبهم له فقط.';
+
+  @override
+  String get regPhotoLater => 'الصورة الشخصية قادمة قريبًا.';
+
+  @override
+  String get regErrName => 'بين 2 و120 حرفًا.';
+
+  @override
+  String get regErrDescription => 'بين 20 و2000 حرف.';
+
+  @override
+  String get regErrCategory => 'اختر مهنة.';
+
+  @override
+  String get regErrGovernorate => 'اختر ولاية.';
+
+  @override
+  String get regErrYears => 'بين 0 و60.';
+
+  @override
+  String get regErrPhone => 'رقم تونسي غير صالح (8 أرقام).';
+
+  @override
+  String get regReviewBody => 'هذا ما سيراه الزبائن.';
+
+  @override
+  String get regPublish => 'نشر ملفي';
+
+  @override
+  String get regUnpublish => 'إزالة من القائمة';
+
+  @override
+  String get regSaveDraft => 'حفظ ومغادرة';
+
+  @override
+  String get regPublished => 'ملفك منشور.';
+
+  @override
+  String get regDraft => 'مسودة: غير ظاهرة للزبائن.';
+
+  @override
+  String regMissing(String items) {
+    return 'للنشر ينقصك: $items.';
+  }
+
+  @override
+  String get gapName => 'الاسم';
+
+  @override
+  String get gapCategory => 'المهنة';
+
+  @override
+  String get gapDescription => 'الوصف';
+
+  @override
+  String get gapLocation => 'الولاية';
+
+  @override
+  String get gapPhone => 'الهاتف';
+
+  @override
+  String get regFailNetwork => 'لا يوجد اتصال. إجاباتك محفوظة، أعد المحاولة.';
+
+  @override
+  String get regFailInvalid => 'تم رفض بعض البيانات. تحقق منها.';
+
+  @override
+  String get regFailForbidden => 'هذا الحساب غير مسموح له بذلك.';
+
+  @override
+  String get regFailGeneric => 'تعذّر الحفظ. حاول مجددًا.';
+
+  @override
+  String get regFailNotConfigured => 'الخدمة غير متاحة حاليًا.';
+
+  @override
+  String get proCompleteCta => 'أكمل ملفي';
+
+  @override
+  String get proEditCta => 'تعديل ملفي المهني';
+
+  @override
+  String get proStatusDraft => 'الملف غير منشور';
+
+  @override
+  String get proStatusPublished => 'الملف منشور';
 }

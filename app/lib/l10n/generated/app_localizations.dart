@@ -1335,6 +1335,300 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Aucun de ces professionnels n’a de position connue.'**
   String get mapNothingBody;
+
+  /// No description provided for @regTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil professionnel'**
+  String get regTitle;
+
+  /// No description provided for @regStepOf.
+  ///
+  /// In fr, this message translates to:
+  /// **'Étape {current} sur {total}'**
+  String regStepOf(int current, int total);
+
+  /// No description provided for @regNext.
+  ///
+  /// In fr, this message translates to:
+  /// **'Continuer'**
+  String get regNext;
+
+  /// No description provided for @regBack.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour'**
+  String get regBack;
+
+  /// No description provided for @regStepBusiness.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre activité'**
+  String get regStepBusiness;
+
+  /// No description provided for @regStepLocation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Où travaillez-vous ?'**
+  String get regStepLocation;
+
+  /// No description provided for @regStepAreas.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zones d’intervention'**
+  String get regStepAreas;
+
+  /// No description provided for @regStepServices.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autres services'**
+  String get regStepServices;
+
+  /// No description provided for @regStepContact.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contact'**
+  String get regStepContact;
+
+  /// No description provided for @regStepReview.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifier et publier'**
+  String get regStepReview;
+
+  /// No description provided for @regBusinessName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom affiché (entreprise ou personne)'**
+  String get regBusinessName;
+
+  /// No description provided for @regYears.
+  ///
+  /// In fr, this message translates to:
+  /// **'Années d’expérience (facultatif)'**
+  String get regYears;
+
+  /// No description provided for @regCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Métier principal'**
+  String get regCategory;
+
+  /// No description provided for @regDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Description de vos services'**
+  String get regDescription;
+
+  /// No description provided for @regDescriptionHelper.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au moins 20 caractères.'**
+  String get regDescriptionHelper;
+
+  /// No description provided for @regGovernorate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gouvernorat'**
+  String get regGovernorate;
+
+  /// No description provided for @regCity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ville (facultatif)'**
+  String get regCity;
+
+  /// No description provided for @regAreasBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez les gouvernorats où vous vous déplacez, en plus du vôtre.'**
+  String get regAreasBody;
+
+  /// No description provided for @regServicesBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez d’autres services que vous proposez.'**
+  String get regServicesBody;
+
+  /// No description provided for @regPhone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone de contact'**
+  String get regPhone;
+
+  /// No description provided for @regPhoneHelper.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuls les membres connectés le voient, et seulement s’ils le demandent.'**
+  String get regPhoneHelper;
+
+  /// No description provided for @regPhotoLater.
+  ///
+  /// In fr, this message translates to:
+  /// **'La photo de profil arrive bientôt.'**
+  String get regPhotoLater;
+
+  /// No description provided for @regErrName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entre 2 et 120 caractères.'**
+  String get regErrName;
+
+  /// No description provided for @regErrDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entre 20 et 2000 caractères.'**
+  String get regErrDescription;
+
+  /// No description provided for @regErrCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez un métier.'**
+  String get regErrCategory;
+
+  /// No description provided for @regErrGovernorate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez un gouvernorat.'**
+  String get regErrGovernorate;
+
+  /// No description provided for @regErrYears.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entre 0 et 60.'**
+  String get regErrYears;
+
+  /// No description provided for @regErrPhone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Numéro tunisien invalide (8 chiffres).'**
+  String get regErrPhone;
+
+  /// No description provided for @regReviewBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voici ce que verront les clients.'**
+  String get regReviewBody;
+
+  /// No description provided for @regPublish.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publier mon profil'**
+  String get regPublish;
+
+  /// No description provided for @regUnpublish.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer de la liste'**
+  String get regUnpublish;
+
+  /// No description provided for @regSaveDraft.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer et quitter'**
+  String get regSaveDraft;
+
+  /// No description provided for @regPublished.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre profil est publié.'**
+  String get regPublished;
+
+  /// No description provided for @regDraft.
+  ///
+  /// In fr, this message translates to:
+  /// **'Brouillon : invisible pour les clients.'**
+  String get regDraft;
+
+  /// No description provided for @regMissing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour publier, il manque : {items}.'**
+  String regMissing(String items);
+
+  /// No description provided for @gapName.
+  ///
+  /// In fr, this message translates to:
+  /// **'le nom'**
+  String get gapName;
+
+  /// No description provided for @gapCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'le métier'**
+  String get gapCategory;
+
+  /// No description provided for @gapDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'la description'**
+  String get gapDescription;
+
+  /// No description provided for @gapLocation.
+  ///
+  /// In fr, this message translates to:
+  /// **'le gouvernorat'**
+  String get gapLocation;
+
+  /// No description provided for @gapPhone.
+  ///
+  /// In fr, this message translates to:
+  /// **'le téléphone'**
+  String get gapPhone;
+
+  /// No description provided for @regFailNetwork.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion impossible. Vos réponses sont conservées, réessayez.'**
+  String get regFailNetwork;
+
+  /// No description provided for @regFailInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Certaines informations sont refusées. Vérifiez-les.'**
+  String get regFailInvalid;
+
+  /// No description provided for @regFailForbidden.
+  ///
+  /// In fr, this message translates to:
+  /// **'Action non autorisée pour ce compte.'**
+  String get regFailForbidden;
+
+  /// No description provided for @regFailGeneric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d’enregistrer. Réessayez.'**
+  String get regFailGeneric;
+
+  /// No description provided for @regFailNotConfigured.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le service n’est pas disponible pour le moment.'**
+  String get regFailNotConfigured;
+
+  /// No description provided for @proCompleteCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compléter mon profil'**
+  String get proCompleteCta;
+
+  /// No description provided for @proEditCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier mon profil professionnel'**
+  String get proEditCta;
+
+  /// No description provided for @proStatusDraft.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil non publié'**
+  String get proStatusDraft;
+
+  /// No description provided for @proStatusPublished.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil publié'**
+  String get proStatusPublished;
 }
 
 class _AppLocalizationsDelegate

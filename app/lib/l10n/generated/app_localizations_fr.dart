@@ -720,4 +720,160 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get mapNothingBody =>
       'Aucun de ces professionnels n’a de position connue.';
+
+  @override
+  String get regTitle => 'Profil professionnel';
+
+  @override
+  String regStepOf(int current, int total) {
+    return 'Étape $current sur $total';
+  }
+
+  @override
+  String get regNext => 'Continuer';
+
+  @override
+  String get regBack => 'Retour';
+
+  @override
+  String get regStepBusiness => 'Votre activité';
+
+  @override
+  String get regStepLocation => 'Où travaillez-vous ?';
+
+  @override
+  String get regStepAreas => 'Zones d’intervention';
+
+  @override
+  String get regStepServices => 'Autres services';
+
+  @override
+  String get regStepContact => 'Contact';
+
+  @override
+  String get regStepReview => 'Vérifier et publier';
+
+  @override
+  String get regBusinessName => 'Nom affiché (entreprise ou personne)';
+
+  @override
+  String get regYears => 'Années d’expérience (facultatif)';
+
+  @override
+  String get regCategory => 'Métier principal';
+
+  @override
+  String get regDescription => 'Description de vos services';
+
+  @override
+  String get regDescriptionHelper => 'Au moins 20 caractères.';
+
+  @override
+  String get regGovernorate => 'Gouvernorat';
+
+  @override
+  String get regCity => 'Ville (facultatif)';
+
+  @override
+  String get regAreasBody =>
+      'Choisissez les gouvernorats où vous vous déplacez, en plus du vôtre.';
+
+  @override
+  String get regServicesBody => 'Ajoutez d’autres services que vous proposez.';
+
+  @override
+  String get regPhone => 'Téléphone de contact';
+
+  @override
+  String get regPhoneHelper =>
+      'Seuls les membres connectés le voient, et seulement s’ils le demandent.';
+
+  @override
+  String get regPhotoLater => 'La photo de profil arrive bientôt.';
+
+  @override
+  String get regErrName => 'Entre 2 et 120 caractères.';
+
+  @override
+  String get regErrDescription => 'Entre 20 et 2000 caractères.';
+
+  @override
+  String get regErrCategory => 'Choisissez un métier.';
+
+  @override
+  String get regErrGovernorate => 'Choisissez un gouvernorat.';
+
+  @override
+  String get regErrYears => 'Entre 0 et 60.';
+
+  @override
+  String get regErrPhone => 'Numéro tunisien invalide (8 chiffres).';
+
+  @override
+  String get regReviewBody => 'Voici ce que verront les clients.';
+
+  @override
+  String get regPublish => 'Publier mon profil';
+
+  @override
+  String get regUnpublish => 'Retirer de la liste';
+
+  @override
+  String get regSaveDraft => 'Enregistrer et quitter';
+
+  @override
+  String get regPublished => 'Votre profil est publié.';
+
+  @override
+  String get regDraft => 'Brouillon : invisible pour les clients.';
+
+  @override
+  String regMissing(String items) {
+    return 'Pour publier, il manque : $items.';
+  }
+
+  @override
+  String get gapName => 'le nom';
+
+  @override
+  String get gapCategory => 'le métier';
+
+  @override
+  String get gapDescription => 'la description';
+
+  @override
+  String get gapLocation => 'le gouvernorat';
+
+  @override
+  String get gapPhone => 'le téléphone';
+
+  @override
+  String get regFailNetwork =>
+      'Connexion impossible. Vos réponses sont conservées, réessayez.';
+
+  @override
+  String get regFailInvalid =>
+      'Certaines informations sont refusées. Vérifiez-les.';
+
+  @override
+  String get regFailForbidden => 'Action non autorisée pour ce compte.';
+
+  @override
+  String get regFailGeneric => 'Impossible d’enregistrer. Réessayez.';
+
+  @override
+  String get regFailNotConfigured =>
+      'Le service n’est pas disponible pour le moment.';
+
+  @override
+  String get proCompleteCta => 'Compléter mon profil';
+
+  @override
+  String get proEditCta => 'Modifier mon profil professionnel';
+
+  @override
+  String get proStatusDraft => 'Profil non publié';
+
+  @override
+  String get proStatusPublished => 'Profil publié';
 }

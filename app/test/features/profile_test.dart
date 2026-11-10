@@ -362,7 +362,7 @@ void main() {
       'a customer sees the invitation; tapping it makes them a professional',
       (tester) async {
         final profiles = FakeProfileRepository(profile: _aliProfile);
-        await pumpApp(
+        final c = await pumpApp(
           tester,
           auth: FakeAuthRepository(signedIn: _ali),
           profiles: profiles,
@@ -376,6 +376,10 @@ void main() {
         await tester.tap(find.text('Devenir professionnel'));
         await tester.pumpAndSettle();
         expect(profiles.becomeProfessionalCalls, 1);
+        // The professional profile steps open straight away.
+        expect(find.text('Profil professionnel'), findsOneWidget);
+        c.read(routerProvider).pop();
+        await tester.pumpAndSettle();
         expect(find.text('Professionnel'), findsOneWidget);
         expect(find.text('Devenir professionnel'), findsNothing);
       },
