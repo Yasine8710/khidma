@@ -14,8 +14,10 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: 3.47.9
           cache: true
       - run: flutter pub get
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
-      - run: flutter test
+      # Goldens are OS-specific; run them locally (see gallery_golden_test.dart).
+      - run: flutter test --exclude-tags golden

@@ -5,4 +5,5 @@ abstract final class AppRoutes {
   static const messages = '/messages';
   static const profile = '/profile';
   static const onboarding = '/onboarding';
+  static const gallery = '/gallery'; // debug / GALLERY builds only
 }

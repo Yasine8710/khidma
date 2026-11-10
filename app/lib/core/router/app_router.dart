@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/gallery/gallery_config.dart';
+import '../../features/gallery/gallery_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/messages/presentation/messages_screen.dart';
 import '../../features/onboarding/application/onboarding_controller.dart';
@@ -54,6 +56,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.onboarding,
         builder: (context, state) => const OnboardingScreen(),
       ),
+      if (kShowGallery)
+        GoRoute(
+          path: AppRoutes.gallery,
+          builder: (context, state) => const GalleryScreen(),
+        ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(navigationShell: shell),
         branches: [

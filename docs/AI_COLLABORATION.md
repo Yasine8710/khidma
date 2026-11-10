@@ -5,7 +5,7 @@
 Claude plans → delegates to Codex (review or isolated-branch implementation) → Claude reviews/integrates → tests → docs. No two agents edit the same files; use branches/worktrees.
 
 ## Status
-- Phase: 1 (design system). Slices 1.0-1.5 merged to develop; next 1.6 gallery (#3), 1.7 gate (#4).
+- Phase: 1 (design system). Slices 1.0-1.6 merged to develop; next 1.7 phase gate (#4).
 - Claude: repo, license, docs, Flutter bootstrap
 - Codex: architecture review DONE (raw output: docs/reviews-codex-phase0.md)
 - Accepted from Codex: manual Riverpod, lifecycle state machine, atomic accept, permission matrix, multi-role flags, outbox notifications, privacy split, early signed-iOS proof, Google Maps pending benchmark.
@@ -68,3 +68,10 @@ Mark: doorway arch (Sidi Bou Said) with a saffron lantern dot; one geometry in `
 Also found by looking at the screens: onboarding stretched edge to edge on wide screens (now max 520 px) and the logo disappeared on screens under 700 px high (now only under 560 px or large text).
 Regeneration order and the two post-generator fixes are documented in the script and pubspec.
 Tests: 124 pass, analyze clean. Web build compiles. Not verified: real Android/iOS rendering of the icons (no device/Mac).
+
+## Phase 1, slice 1.6 (gallery + goldens): Codex review, 2026-11-10
+Built the debug-only gallery (all shared components except the whole-screen AppShell/NotFound, all type tokens, colors, disabled/loading/error/RTL/dark states) and 6 golden images (FR/AR/EN x light/dark). First real look at every component in a browser (FR light, AR dark) found one bug tests had missed: a forced-LTR phone field showed its hint reversed in Arabic (`hintTextDirection` now follows the field). Test helpers now load the bundled fonts and the Material icon font, so widget tests measure real text widths and goldens show real glyphs.
+Codex fixes: comparator disposes images and restores itself; goldens tagged `golden` and excluded from CI (baselines are Windows-made; refresh with `flutter test --update-goldens --tags golden`); CI pins Flutter 3.47.9; gallery coverage widened; interaction tests at a normal phone height; phone field found by key; config comment corrected.
+Release exclusion verified on real builds: default release web bundle has 0 occurrences of gallery strings; `--dart-define=GALLERY=true` has them.
+Known limits: golden tolerance is 0.5% of pixels regardless of magnitude (coarse); AppButton's indeterminate spinner is not frozen in goldens (deterministic in test time); Linux CI baselines not generated (CI is billing-locked anyway).
+Tests: 141 pass (6 are goldens), analyze clean.
