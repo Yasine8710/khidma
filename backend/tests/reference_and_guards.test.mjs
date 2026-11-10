@@ -136,6 +136,9 @@ describe('structural security guards', () => {
       'authenticated:service_areas:SELECT',
       'authenticated:service_areas:INSERT',
       'authenticated:service_areas:DELETE',
+      'authenticated:favorites:SELECT',
+      'authenticated:favorites:INSERT',
+      'authenticated:favorites:DELETE',
     ];
     assert.deepEqual([...got].sort(), [...expected].sort());
   });
@@ -192,6 +195,7 @@ describe('structural security guards', () => {
     assert.equal(await can('authenticated', 'public.handle_new_user()'), false);
     assert.equal(await can('authenticated', 'public.set_updated_at()'), false);
     assert.equal(await can('anon', 'public.is_admin()'), true);
+    assert.equal(await can('authenticated', 'public.enforce_favorites_limit()'), false);
   });
 
   test('the new-user trigger is installed on auth.users', async () => {

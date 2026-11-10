@@ -12,6 +12,7 @@ import '../application/home_providers.dart';
 import '../application/marketplace_providers.dart';
 import '../application/search_providers.dart';
 import '../domain/marketplace_domain.dart';
+import '../../favorites/presentation/favorite_button.dart';
 import 'contact_section.dart';
 import 'marketplace_failure_view.dart';
 import 'professional_card.dart';
@@ -48,7 +49,14 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          FavoriteButton(
+            professionalId: widget.id,
+            professionalName: async.value?.name,
+          ),
+        ],
+      ),
       body: SafeArea(
         child: async.when(
           loading: () => const SkeletonGroup(

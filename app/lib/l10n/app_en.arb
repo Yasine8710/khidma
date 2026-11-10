@@ -181,5 +181,16 @@
   "contactLaunchFailed": "Couldn’t open the app.",
   "servicesTitle": "Services",
   "areasTitle": "Areas served",
-  "areaWhole": "{place} (whole governorate)"
+  "areaWhole": "{place} (whole governorate)",
+  "favoritesTitle": "My favorites",
+  "favoriteAdd": "Add to favorites",
+  "favoriteRemove": "Remove from favorites",
+  "favoritesEmptyTitle": "No favorites yet",
+  "favoritesEmptyBody": "Tap the heart on a profile to find it here.",
+  "favoritesSignInTitle": "Keep your favorites",
+  "favoritesSignInBody": "Sign in to save professionals and find them on all your devices.",
+  "favoriteLimit": "You have reached the limit of 200 favorites.",
+  "favoriteFailed": "Couldn’t update your favorites. Try again.",
+  "favoriteAddNamed": "Add {name} to favorites",
+  "favoriteRemoveNamed": "Remove {name} from favorites"
 }

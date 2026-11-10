@@ -148,9 +148,6 @@ final recentProfessionalsProvider = FutureProvider<List<ProfessionalSummary>>(
     final ids = ref.watch(recentlyViewedProvider);
     if (ids.isEmpty) return const [];
     final repo = ref.watch(marketplaceRepositoryProvider);
-    final found = await Future.wait([
-      for (final id in ids) repo.professional(id),
-    ]);
-    return [for (final p in found) ?p];
+    return repo.professionals(ids);
   },
 );

@@ -107,6 +107,11 @@ class DemoMarketplaceRepository implements MarketplaceRepository {
   }
 
   @override
+  Future<List<ProfessionalSummary>> professionals(List<String> ids) async => [
+    for (final id in ids) ..._pros.where((p) => p.id == id),
+  ];
+
+  @override
   Future<ProfessionalDetails> details(String id) async {
     final p = await professional(id);
     if (p == null) return const ProfessionalDetails();

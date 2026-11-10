@@ -632,4 +632,42 @@ class AppLocalizationsAr extends AppLocalizations {
   String areaWhole(String place) {
     return '$place (كل الولاية)';
   }
+
+  @override
+  String get favoritesTitle => 'مفضلتي';
+
+  @override
+  String get favoriteAdd => 'إضافة إلى المفضلة';
+
+  @override
+  String get favoriteRemove => 'إزالة من المفضلة';
+
+  @override
+  String get favoritesEmptyTitle => 'لا توجد مفضلات';
+
+  @override
+  String get favoritesEmptyBody => 'المس القلب في أي ملف لتجده هنا.';
+
+  @override
+  String get favoritesSignInTitle => 'احتفظ بمفضلتك';
+
+  @override
+  String get favoritesSignInBody =>
+      'سجّل الدخول لحفظ الحرفيين وإيجادهم على كل أجهزتك.';
+
+  @override
+  String get favoriteLimit => 'وصلت إلى الحد الأقصى: 200 مفضلة.';
+
+  @override
+  String get favoriteFailed => 'تعذّر تحديث المفضلة. حاول مجددًا.';
+
+  @override
+  String favoriteAddNamed(String name) {
+    return 'إضافة $name إلى المفضلة';
+  }
+
+  @override
+  String favoriteRemoveNamed(String name) {
+    return 'إزالة $name من المفضلة';
+  }
 }

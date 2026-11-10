@@ -11,6 +11,8 @@ import 'features/auth/application/auth_providers.dart';
 import 'features/auth/data/secure_auth_storage.dart';
 import 'features/auth/data/supabase_auth_repository.dart';
 import 'features/auth/domain/auth_domain.dart';
+import 'features/favorites/application/favorites_providers.dart';
+import 'features/favorites/data/supabase_favorites_repository.dart';
 import 'features/marketplace/application/marketplace_providers.dart';
 import 'features/marketplace/data/supabase_marketplace_repository.dart';
 import 'features/profile/application/profile_providers.dart';
@@ -30,6 +32,10 @@ Future<void> main() async {
         keyValueStoreProvider.overrideWithValue(store),
         authRepositoryProvider.overrideWithValue(auth),
         profileRepositoryProvider.overrideWithValue(profiles),
+        if (auth.isAvailable)
+          favoritesRepositoryProvider.overrideWithValue(
+            SupabaseFavoritesRepository(Supabase.instance.client),
+          ),
         if (auth.isAvailable)
           marketplaceRepositoryProvider.overrideWithValue(
             SupabaseMarketplaceRepository(Supabase.instance.client),

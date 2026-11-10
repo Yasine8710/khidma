@@ -278,5 +278,30 @@
         "type": "String"
       }
     }
+  },
+  "favoritesTitle": "Mes favoris",
+  "favoriteAdd": "Ajouter aux favoris",
+  "favoriteRemove": "Retirer des favoris",
+  "favoritesEmptyTitle": "Aucun favori",
+  "favoritesEmptyBody": "Touchez le cœur sur un profil pour le retrouver ici.",
+  "favoritesSignInTitle": "Retrouvez vos favoris",
+  "favoritesSignInBody": "Connectez-vous pour enregistrer des professionnels et les retrouver sur tous vos appareils.",
+  "favoriteLimit": "Vous avez atteint la limite de 200 favoris.",
+  "favoriteFailed": "Impossible de modifier vos favoris. Réessayez.",
+  "favoriteAddNamed": "Ajouter {name} aux favoris",
+  "favoriteRemoveNamed": "Retirer {name} des favoris",
+  "@favoriteAddNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@favoriteRemoveNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

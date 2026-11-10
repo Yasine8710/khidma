@@ -181,5 +181,16 @@
   "contactLaunchFailed": "تعذّر فتح التطبيق.",
   "servicesTitle": "الخدمات",
   "areasTitle": "مناطق التدخل",
-  "areaWhole": "{place} (كل الولاية)"
+  "areaWhole": "{place} (كل الولاية)",
+  "favoritesTitle": "مفضلتي",
+  "favoriteAdd": "إضافة إلى المفضلة",
+  "favoriteRemove": "إزالة من المفضلة",
+  "favoritesEmptyTitle": "لا توجد مفضلات",
+  "favoritesEmptyBody": "المس القلب في أي ملف لتجده هنا.",
+  "favoritesSignInTitle": "احتفظ بمفضلتك",
+  "favoritesSignInBody": "سجّل الدخول لحفظ الحرفيين وإيجادهم على كل أجهزتك.",
+  "favoriteLimit": "وصلت إلى الحد الأقصى: 200 مفضلة.",
+  "favoriteFailed": "تعذّر تحديث المفضلة. حاول مجددًا.",
+  "favoriteAddNamed": "إضافة {name} إلى المفضلة",
+  "favoriteRemoveNamed": "إزالة {name} من المفضلة"
 }

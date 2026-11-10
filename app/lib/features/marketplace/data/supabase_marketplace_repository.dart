@@ -18,6 +18,8 @@ MarketplaceFailure mapMarketplaceException(Object error) {
       case 'P0001':
         return error.message.contains('rate_limited')
             ? MarketplaceFailure.rateLimited
+            : error.message.contains('favorites_limit')
+            ? MarketplaceFailure.limitReached
             : MarketplaceFailure.unknown;
       case '42501': // permission denied: grants or policies are wrong
         return MarketplaceFailure.forbidden;
@@ -147,6 +149,32 @@ class SupabaseMarketplaceRepository implements MarketplaceRepository {
         .maybeSingle();
     return row == null ? null : _summary(row);
   });
+
+  static const _summaryCols =
+      'user_id, business_name, primary_category_id, description, years_experience, '
+      'governorate_id, city_id, neighborhood_id, latitude, longitude, availability, '
+      'verification_status, rating_avg, review_count';
+
+  @override
+  Future<List<ProfessionalSummary>> professionals(List<String> ids) =>
+      _guard(() async {
+        final unique = ids.toSet().toList();
+        if (unique.isEmpty) return const <ProfessionalSummary>[];
+        final byId = <String, ProfessionalSummary>{};
+        // Chunked so the request URL stays short.
+        for (var i = 0; i < unique.length; i += 50) {
+          final rows = await _client
+              .from('professional_profiles')
+              .select(_summaryCols)
+              .inFilter('user_id', unique.skip(i).take(50).toList())
+              .eq('is_published', true);
+          for (final r in rows) {
+            final p = _summary(r);
+            byId[p.id] = p;
+          }
+        }
+        return [for (final id in ids) ?byId[id]];
+      });
 
   @override
   Future<ProfessionalDetails> details(String id) => _guard(() async {

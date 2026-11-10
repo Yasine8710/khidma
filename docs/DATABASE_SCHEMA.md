@@ -10,6 +10,7 @@ auth.users (Supabase)
   ├─ customer_profiles 1:1   default_governorate_id, default_city_id
   ├─ admin_users 0..1        membership row; no client access
   ├─ contact_reveals N       rate-limit/audit log of phone reveals; no client access
+  ├─ favorites N             saved professionals (user_id, professional_id), private, max 200
   └─ professional_profiles 0..1
        business_name, primary_category_id, description, years_experience,
        governorate_id / city_id / neighborhood_id, latitude/longitude (rounded to ~1.1 km),

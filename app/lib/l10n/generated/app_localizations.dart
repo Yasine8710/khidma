@@ -1191,6 +1191,72 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{place} (tout le gouvernorat)'**
   String areaWhole(String place);
+
+  /// No description provided for @favoritesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes favoris'**
+  String get favoritesTitle;
+
+  /// No description provided for @favoriteAdd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter aux favoris'**
+  String get favoriteAdd;
+
+  /// No description provided for @favoriteRemove.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer des favoris'**
+  String get favoriteRemove;
+
+  /// No description provided for @favoritesEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun favori'**
+  String get favoritesEmptyTitle;
+
+  /// No description provided for @favoritesEmptyBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Touchez le cœur sur un profil pour le retrouver ici.'**
+  String get favoritesEmptyBody;
+
+  /// No description provided for @favoritesSignInTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retrouvez vos favoris'**
+  String get favoritesSignInTitle;
+
+  /// No description provided for @favoritesSignInBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connectez-vous pour enregistrer des professionnels et les retrouver sur tous vos appareils.'**
+  String get favoritesSignInBody;
+
+  /// No description provided for @favoriteLimit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez atteint la limite de 200 favoris.'**
+  String get favoriteLimit;
+
+  /// No description provided for @favoriteFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de modifier vos favoris. Réessayez.'**
+  String get favoriteFailed;
+
+  /// No description provided for @favoriteAddNamed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter {name} aux favoris'**
+  String favoriteAddNamed(String name);
+
+  /// No description provided for @favoriteRemoveNamed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer {name} des favoris'**
+  String favoriteRemoveNamed(String name);
 }
 
 class _AppLocalizationsDelegate

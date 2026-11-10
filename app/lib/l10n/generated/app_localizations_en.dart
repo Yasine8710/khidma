@@ -632,4 +632,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String areaWhole(String place) {
     return '$place (whole governorate)';
   }
+
+  @override
+  String get favoritesTitle => 'My favorites';
+
+  @override
+  String get favoriteAdd => 'Add to favorites';
+
+  @override
+  String get favoriteRemove => 'Remove from favorites';
+
+  @override
+  String get favoritesEmptyTitle => 'No favorites yet';
+
+  @override
+  String get favoritesEmptyBody =>
+      'Tap the heart on a profile to find it here.';
+
+  @override
+  String get favoritesSignInTitle => 'Keep your favorites';
+
+  @override
+  String get favoritesSignInBody =>
+      'Sign in to save professionals and find them on all your devices.';
+
+  @override
+  String get favoriteLimit => 'You have reached the limit of 200 favorites.';
+
+  @override
+  String get favoriteFailed => 'Couldn’t update your favorites. Try again.';
+
+  @override
+  String favoriteAddNamed(String name) {
+    return 'Add $name to favorites';
+  }
+
+  @override
+  String favoriteRemoveNamed(String name) {
+    return 'Remove $name from favorites';
+  }
 }

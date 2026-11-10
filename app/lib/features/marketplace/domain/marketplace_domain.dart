@@ -274,6 +274,9 @@ enum MarketplaceFailure {
 
   /// The professional is gone or not published.
   notFound,
+
+  /// The 200-favorites cap was reached.
+  limitReached,
   unknown,
 }
 
@@ -296,6 +299,10 @@ abstract interface class MarketplaceRepository {
   /// One published professional by id, or null if there is none (unpublished,
   /// deleted or unknown ids look the same on purpose).
   Future<ProfessionalSummary?> professional(String id);
+
+  /// The published professionals among [ids], in the order given. Unknown or
+  /// unpublished ids are simply absent.
+  Future<List<ProfessionalSummary>> professionals(List<String> ids);
 
   /// Other services and service areas of a published professional.
   Future<ProfessionalDetails> details(String id);
@@ -321,6 +328,9 @@ class EmptyMarketplaceRepository implements MarketplaceRepository {
   Future<List<ProfessionalSummary>> search(SearchQuery query) async => const [];
   @override
   Future<ProfessionalSummary?> professional(String id) async => null;
+  @override
+  Future<List<ProfessionalSummary>> professionals(List<String> ids) async =>
+      const [];
   @override
   Future<ProfessionalDetails> details(String id) async =>
       const ProfessionalDetails();

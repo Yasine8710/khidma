@@ -6,6 +6,7 @@ import '../../features/auth/presentation/forgot_password_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/new_password_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
+import '../../features/favorites/presentation/favorites_screen.dart';
 import '../../features/gallery/gallery_config.dart';
 import '../../features/gallery/gallery_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -82,6 +83,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.forgotPassword,
         builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.favorites,
+        builder: (context, state) => const FavoritesScreen(),
       ),
       GoRoute(
         path: AppRoutes.search,

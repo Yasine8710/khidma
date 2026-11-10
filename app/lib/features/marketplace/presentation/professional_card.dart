@@ -7,6 +7,7 @@ import '../../../shared/widgets/app_avatar.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/rating_stars.dart';
+import '../../favorites/presentation/favorite_button.dart';
 import '../application/marketplace_providers.dart';
 import '../domain/marketplace_domain.dart';
 
@@ -101,6 +102,7 @@ class ProfessionalCard extends ConsumerWidget {
               ],
             ),
           ),
+          FavoriteButton(professionalId: p.id, professionalName: p.name),
         ],
       ),
     );

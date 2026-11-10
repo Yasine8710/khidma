@@ -29,6 +29,7 @@ Reporting vulnerabilities: see the root [SECURITY.md](../SECURITY.md).
 | professional_profiles | R published, **never** `contact_phone` / `verified_at` | same as anon | R own (draft too); U profile fields, `is_published`; own phone via `get_my_professional_contact()` | R all rows; verification via RPC |
 | professional_services, service_areas | R when profile published | R when profile published | R, C, D own | R as above |
 | contact_reveals (rate-limit log) | - | - | - | - |
+| favorites | - | - | R, C, D own only (registered accounts, published professionals, max 200, one insert at a time per user) | no access |
 
 Functions (all `SECURITY DEFINER` ones pin `search_path = ''`; no function is callable by PUBLIC; a test enumerates exactly who can execute what):
 - `become_professional()`, `get_my_professional_contact()`, `reveal_professional_contact(uuid)`: `authenticated` only, and they refuse Supabase anonymous-auth users (JWT `is_anonymous`).

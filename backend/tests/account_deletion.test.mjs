@@ -35,6 +35,9 @@ describe('delete_my_account', () => {
     // They look at each other's phone numbers: reveal logs reference both.
     await user(db, leaving).query('select public.reveal_professional_contact($1)', [staying]);
     await user(db, staying).query('select public.reveal_professional_contact($1)', [leaving]);
+    // ...and save each other: favorites rows reference both.
+    await user(db, leaving).query('insert into public.favorites (user_id, professional_id) values ($1, $2)', [leaving, staying]);
+    await user(db, staying).query('insert into public.favorites (user_id, professional_id) values ($1, $2)', [staying, leaving]);
   });
 
   test('the leaving person is gone everywhere; the other person is untouched', async () => {
@@ -46,6 +49,8 @@ describe('delete_my_account', () => {
       assert.equal(await count(db, `select count(*)::int as n from public.${table} where ${col} = $1`, [leaving]), 0, table);
     }
     assert.equal(await count(db, 'select count(*)::int as n from public.contact_reveals where user_id = $1 or professional_id = $1', [leaving]), 0, 'reveal log both ways');
+    assert.equal(await count(db, 'select count(*)::int as n from public.favorites where user_id = $1 or professional_id = $1', [leaving]), 0, 'favorites both ways');
+    assert.equal(await count(db, 'select count(*)::int as n from public.favorites where user_id = $1', [staying]), 0, 'the deleted person is no longer saved by the other');
     assert.equal(await count(db, 'select count(*)::int as n from auth.users where id = $1', [leaving]), 0);
 
     const left = await anon(db).query('select user_id from public.professional_profiles');
