@@ -153,6 +153,108 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Numéro tunisien invalide. Exemple : +216 20 123 456'**
   String get phoneInvalid;
+
+  /// No description provided for @navHome.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accueil'**
+  String get navHome;
+
+  /// No description provided for @navRequests.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demandes'**
+  String get navRequests;
+
+  /// No description provided for @navMessages.
+  ///
+  /// In fr, this message translates to:
+  /// **'Messages'**
+  String get navMessages;
+
+  /// No description provided for @navProfile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil'**
+  String get navProfile;
+
+  /// No description provided for @homeEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les professionnels arrivent bientôt'**
+  String get homeEmptyTitle;
+
+  /// No description provided for @homeEmptyBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'La recherche et les catégories de services seront disponibles ici.'**
+  String get homeEmptyBody;
+
+  /// No description provided for @requestsEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune demande pour l\'instant'**
+  String get requestsEmptyTitle;
+
+  /// No description provided for @requestsEmptyBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos demandes de devis apparaîtront ici.'**
+  String get requestsEmptyBody;
+
+  /// No description provided for @messagesEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun message'**
+  String get messagesEmptyTitle;
+
+  /// No description provided for @messagesEmptyBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos conversations avec les professionnels apparaîtront ici.'**
+  String get messagesEmptyBody;
+
+  /// No description provided for @themeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Apparence'**
+  String get themeTitle;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In fr, this message translates to:
+  /// **'Automatique'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clair'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sombre'**
+  String get themeDark;
+
+  /// No description provided for @notFoundTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Page introuvable'**
+  String get notFoundTitle;
+
+  /// No description provided for @notFoundBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette page n\'existe pas ou a été déplacée.'**
+  String get notFoundBody;
+
+  /// No description provided for @backToHome.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour à l\'accueil'**
+  String get backToHome;
 }
 
 class _AppLocalizationsDelegate
