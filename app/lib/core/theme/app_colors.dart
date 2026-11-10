@@ -13,6 +13,8 @@ abstract final class AppColors {
   static const ink = Color(0xFF14181F);
   static const muted = Color(0xFF6B7280);
   static const border = Color(0xFFE6E3DC);
+  // Darker than [muted]: text on tinted backgrounds (neutral badges).
+  static const mutedStrong = Color(0xFF4B5563);
 
   static const darkBackground = Color(0xFF0E1117);
   static const darkSurface = Color(0xFF171B23);
@@ -24,4 +26,8 @@ abstract final class AppColors {
   static const success = Color(0xFF16794C);
   static const warning = Color(0xFF9A5B00);
   static const error = Color(0xFFB3261E);
+
+  static const darkSuccess = Color(0xFF5DD39E);
+  static const darkWarning = Color(0xFFF0B45A);
+  static const darkError = Color(0xFFF2B8B5);
 }

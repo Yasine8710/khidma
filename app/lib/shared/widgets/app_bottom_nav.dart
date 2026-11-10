@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../core/theme/app_spacing.dart';
+import '../../core/haptics.dart';
 
 class NavItem {
   const NavItem(this.icon, this.selectedIcon, this.label);
@@ -49,7 +49,7 @@ class AppBottomNav extends StatelessWidget {
                       item: items[i],
                       selected: i == currentIndex,
                       onTap: () {
-                        HapticFeedback.selectionClick();
+                        AppHaptics.selection();
                         onSelected(i);
                       },
                     ),

@@ -255,6 +255,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Retour à l\'accueil'**
   String get backToHome;
+
+  /// No description provided for @verified.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifié'**
+  String get verified;
+
+  /// No description provided for @ratingNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore d\'avis'**
+  String get ratingNone;
+
+  /// No description provided for @ratingSummary.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note {value} sur 5, {count, plural, =1{1 avis} other{{count} avis}}'**
+  String ratingSummary(String value, int count);
+
+  /// No description provided for @errorTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une erreur est survenue'**
+  String get errorTitle;
+
+  /// No description provided for @errorBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifiez votre connexion et réessayez.'**
+  String get errorBody;
+
+  /// No description provided for @retry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réessayer'**
+  String get retry;
+
+  /// No description provided for @loading.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement…'**
+  String get loading;
+
+  /// No description provided for @showPassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher le mot de passe'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Masquer le mot de passe'**
+  String get hidePassword;
 }
 
 class _AppLocalizationsDelegate

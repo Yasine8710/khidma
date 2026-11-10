@@ -32,5 +32,24 @@
   "themeDark": "Sombre",
   "notFoundTitle": "Page introuvable",
   "notFoundBody": "Cette page n'existe pas ou a été déplacée.",
-  "backToHome": "Retour à l'accueil"
+  "backToHome": "Retour à l'accueil",
+  "verified": "Vérifié",
+  "ratingNone": "Pas encore d'avis",
+  "ratingSummary": "Note {value} sur 5, {count, plural, =1{1 avis} other{{count} avis}}",
+  "errorTitle": "Une erreur est survenue",
+  "errorBody": "Vérifiez votre connexion et réessayez.",
+  "retry": "Réessayer",
+  "loading": "Chargement…",
+  "@ratingSummary": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "showPassword": "Afficher le mot de passe",
+  "hidePassword": "Masquer le mot de passe"
 }
