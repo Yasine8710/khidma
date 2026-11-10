@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:khidma/core/storage/preferences_provider.dart';
 import 'package:khidma/app.dart';
@@ -24,6 +25,7 @@ Future<ProviderContainer> pumpApp(
   Map<String, Object> prefs = const {},
   AuthRepository? auth,
   ProfileRepository? profiles,
+  List<Override> overrides = const [],
 }) async {
   // Tests start past onboarding unless they say otherwise.
   SharedPreferences.setMockInitialValues({'onboardingSeen': true, ...prefs});
@@ -36,6 +38,7 @@ Future<ProviderContainer> pumpApp(
       profileRepositoryProvider.overrideWithValue(
         profiles ?? FakeProfileRepository(),
       ),
+      ...overrides,
     ],
   );
   addTearDown(container.dispose);

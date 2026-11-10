@@ -8,9 +8,11 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
+import '../../profile/application/profile_providers.dart';
 import '../application/auth_providers.dart';
 import '../domain/auth_domain.dart';
 import '../domain/auth_validators.dart';
+import 'apple_sign_in_button.dart';
 import 'auth_scaffold.dart';
 import 'auth_texts.dart';
 
@@ -56,6 +58,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     if (result.isOk) {
       leaveAuth(context);
     } else {
+      setState(() => _failure = result.failure);
+    }
+  }
+
+  Future<void> _apple() async {
+    setState(() => _failure = null);
+    final result = await ref
+        .read(authActionsProvider.notifier)
+        .signInWithApple();
+    if (!mounted) return;
+    if (result.isOk) {
+      final name = result.sharedName;
+      if (name != null) {
+        await ref.read(profileActionsProvider.notifier).adoptSharedName(name);
+      }
+      if (!mounted) return;
+      leaveAuth(context);
+    } else if (result.failure != AuthFailure.cancelled) {
       setState(() => _failure = result.failure);
     }
   }
@@ -122,6 +142,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
           ),
         ),
+        AppleSignInSection(onPressed: _apple),
         const SizedBox(height: AppSpacing.xl),
         Wrap(
           alignment: WrapAlignment.center,

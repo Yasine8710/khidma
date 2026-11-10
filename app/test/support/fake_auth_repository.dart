@@ -37,6 +37,16 @@ class FakeAuthRepository implements AuthRepository {
       <({String email, String password, String fullName, String language})>[];
   final resetCalls = <String>[];
   int signOutCalls = 0;
+  int appleCalls = 0;
+
+  /// The name Apple shares on a first sign-in (null otherwise).
+  String? appleSharedName;
+
+  /// The user a successful Apple sign-in produces.
+  AuthUser appleUser = const AuthUser(
+    id: 'apple-user',
+    email: 'apple@privaterelay.example',
+  );
 
   @override
   bool get isAvailable => available;
@@ -95,6 +105,14 @@ class FakeAuthRepository implements AuthRepository {
       emit(AuthUser(id: 'new', email: email.trim(), fullName: fullName.trim()));
     }
     return signUpOutcome;
+  }
+
+  @override
+  Future<String?> signInWithApple() async {
+    appleCalls++;
+    await _pre();
+    emit(appleUser);
+    return appleSharedName;
   }
 
   @override

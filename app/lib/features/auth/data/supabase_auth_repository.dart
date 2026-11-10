@@ -4,12 +4,14 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
 import '../domain/auth_domain.dart';
+import 'apple_sign_in.dart';
 
 /// Maps whatever the Supabase client throws to an [AuthFailure]. Pure, so it
 /// can be tested without a network. Messages are never forwarded: they can be
 /// technical, and "invalid credentials" deliberately does not say whether the
 /// email or the password was wrong.
 AuthFailure mapAuthException(Object error) {
+  if (isAppleCancellation(error)) return AuthFailure.cancelled;
   if (error is sb.AuthWeakPasswordException) return AuthFailure.weakPassword;
   // The client wraps connection failures in AuthRetryableFetchException.
   if (error is sb.AuthRetryableFetchException || error is TimeoutException) {
@@ -48,8 +50,13 @@ const authRedirectUrl = 'tn.khidma.app://auth-callback';
 
 /// Supabase Auth behind the app's [AuthRepository].
 class SupabaseAuthRepository implements AuthRepository {
-  SupabaseAuthRepository(this._auth);
+  SupabaseAuthRepository(
+    this._auth, {
+    AppleCredentialProvider appleCredential = platformAppleCredential,
+    // ignore: prefer_initializing_formals
+  }) : _appleCredential = appleCredential;
   final sb.GoTrueClient _auth;
+  final AppleCredentialProvider _appleCredential;
 
   @override
   bool get isAvailable => true;
@@ -106,6 +113,33 @@ class SupabaseAuthRepository implements AuthRepository {
 
   @override
   Future<void> signOut() => _guard(() => _auth.signOut());
+
+  @override
+  Future<String?> signInWithApple() => _guard(() async {
+    // Apple gets the hash; Supabase gets the original and verifies the pair.
+    final rawNonce = generateNonce();
+    final credential = await _appleCredential(hashedNonce: sha256Hex(rawNonce));
+    final idToken = credential.identityToken;
+    if (idToken == null || idToken.isEmpty) {
+      throw const AuthError(AuthFailure.unknown);
+    }
+    await _auth.signInWithIdToken(
+      provider: sb.OAuthProvider.apple,
+      idToken: idToken,
+      nonce: rawNonce,
+    );
+    // Apple shares the name only the first time; keep it if we got it.
+    final name = credential.fullName;
+    if (name != null &&
+        (_auth.currentUser?.userMetadata?['full_name'] ?? '') == '') {
+      try {
+        await _auth.updateUser(sb.UserAttributes(data: {'full_name': name}));
+      } catch (_) {
+        // The name is a convenience; signing in already succeeded.
+      }
+    }
+    return name;
+  });
 
   @override
   Future<void> sendPasswordReset(String email) => _guard(

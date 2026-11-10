@@ -102,3 +102,9 @@ Fixed: choice bound to the sign-up email + 7-day expiry + identity re-check befo
 Found by writing the tests: Riverpod 3 auto-retries failing providers (disabled for the profile load, which has an explicit retry button).
 Deferred: keyboard-visibility and RTL scroll tests of the longer register form; avatar upload (Phase 4).
 Tests: 255 pass (6 goldens), analyze clean.
+
+## Phase 2, #9 (Sign in with Apple, offline part): Codex review, 2026-11-10
+Codex verified: fresh `Random.secure()` nonce, SHA-256 to Apple and original to Supabase, correct provider/token arguments, null/empty token rejected, no token logging, entitlements wired into all three Runner configurations, label/disabled semantics. Findings: P1 no account deletion (App Store 5.1.1(v)) -> new issue #32; P2 Apple authorization code discarded (needed for token revocation, server-side) -> #32; P2 register flow raced a second direct `becomeProfessional` call and ignored its failure -> now one coordinator (identity-bound pending choice); P2 Apple's shared name only reached auth metadata, leaving the profile blank -> `adoptSharedName` fills an empty profile name only; P2 Hide-My-Email relay accounts are separate from password accounts -> documented, explicit linking deferred; test gaps -> transport tests for token edge cases, name preservation, failing metadata update, pending-choice interplay.
+Found by tests: reading the user from the stream-backed provider right after sign-in raced the stream (email was null and the choice was skipped); the repository's `currentUser` is used instead.
+Not verified (needs owner/device): the real Apple sheet, capability provisioning with a paid team, Supabase Apple provider settings.
+Tests: 283 pass (6 goldens), analyze clean.

@@ -765,6 +765,18 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Certaines informations sont invalides.'**
   String get failProfileInvalid;
+
+  /// No description provided for @continueWithApple.
+  ///
+  /// In fr, this message translates to:
+  /// **'Continuer avec Apple'**
+  String get continueWithApple;
+
+  /// No description provided for @orSeparator.
+  ///
+  /// In fr, this message translates to:
+  /// **'ou'**
+  String get orSeparator;
 }
 
 class _AppLocalizationsDelegate

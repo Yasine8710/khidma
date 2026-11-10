@@ -14,6 +14,7 @@ import '../../profile/presentation/account_type_selector.dart';
 import '../application/auth_providers.dart';
 import '../domain/auth_domain.dart';
 import '../domain/auth_validators.dart';
+import 'apple_sign_in_button.dart';
 import 'auth_scaffold.dart';
 import 'auth_texts.dart';
 import 'login_screen.dart' show leaveAuth;
@@ -76,6 +77,41 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       leaveAuth(context);
     } else {
       setState(() => _confirmationSentTo = email);
+    }
+  }
+
+  Future<void> _apple() async {
+    if (_submitting) return;
+    _submitting = true;
+    try {
+      setState(() => _failure = null);
+      final result = await ref
+          .read(authActionsProvider.notifier)
+          .signInWithApple();
+      if (!mounted) return;
+      if (result.isOk) {
+        // One coordinator applies the account type: record the choice for this
+        // account's email and let the app-wide account setup apply it (with
+        // the Profile card as manual fallback), instead of racing it here.
+        // The repository knows the signed-in user right away; the stream-backed
+        // provider may not have caught up yet.
+        final email = ref.read(authRepositoryProvider).currentUser?.email;
+        if (email != null) {
+          await ref
+              .read(pendingAccountChoiceProvider.notifier)
+              .remember(_type, email);
+        }
+        final name = result.sharedName;
+        if (name != null) {
+          await ref.read(profileActionsProvider.notifier).adoptSharedName(name);
+        }
+        if (!mounted) return;
+        leaveAuth(context);
+      } else if (result.failure != AuthFailure.cancelled) {
+        setState(() => _failure = result.failure);
+      }
+    } finally {
+      _submitting = false;
     }
   }
 
@@ -168,6 +204,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             ),
           ),
         ),
+        AppleSignInSection(onPressed: _apple),
         const SizedBox(height: AppSpacing.xl),
         Wrap(
           alignment: WrapAlignment.center,
