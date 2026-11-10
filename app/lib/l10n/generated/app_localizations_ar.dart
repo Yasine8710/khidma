@@ -136,4 +136,45 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get hidePassword => 'إخفاء كلمة المرور';
+
+  @override
+  String get onbTitle1 => 'اعثر على حرفيين موثوقين';
+
+  @override
+  String get onbBody1 =>
+      'سبّاكون وكهربائيون وميكانيكيون وغيرهم: اكتشف حرفيين بالقرب منك مع أعمالهم وتقييماتهم.';
+
+  @override
+  String get onbTitle2 => 'قارن واطلب عرض سعر';
+
+  @override
+  String get onbBody2 =>
+      'صف حاجتك مرة واحدة، واستقبل عروضًا من عدة حرفيين، ثم اختر الأنسب.';
+
+  @override
+  String get onbTitle3 => 'تواصل معهم مباشرة';
+
+  @override
+  String get onbBody3 =>
+      'اتصل بهم أو راسلهم عبر واتساب أو تحدث داخل التطبيق. يتم الدفع مباشرة مع الحرفي.';
+
+  @override
+  String get languageStepBody => 'يمكنك تغييرها في أي وقت من حسابي.';
+
+  @override
+  String get next => 'التالي';
+
+  @override
+  String get start => 'ابدأ';
+
+  @override
+  String get skip => 'تخطَّ';
+
+  @override
+  String pageOf(int current, int total) {
+    return 'الصفحة $current من $total';
+  }
+
+  @override
+  String get back => 'السابق';
 }

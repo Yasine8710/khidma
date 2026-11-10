@@ -10,7 +10,8 @@ Future<ProviderContainer> pumpApp(
   WidgetTester tester, {
   Map<String, Object> prefs = const {},
 }) async {
-  SharedPreferences.setMockInitialValues(prefs);
+  // Tests start past onboarding unless they say otherwise.
+  SharedPreferences.setMockInitialValues({'onboardingSeen': true, ...prefs});
   final sp = await SharedPreferences.getInstance();
   final container = ProviderContainer(
     overrides: [sharedPreferencesProvider.overrideWithValue(sp)],

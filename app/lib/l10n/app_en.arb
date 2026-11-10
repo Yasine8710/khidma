@@ -34,5 +34,17 @@
   "retry": "Try again",
   "loading": "Loading…",
   "showPassword": "Show password",
-  "hidePassword": "Hide password"
+  "hidePassword": "Hide password",
+  "onbTitle1": "Find trusted professionals",
+  "onbBody1": "Plumbers, electricians, mechanics and more: discover craftspeople near you, with their work and reviews.",
+  "onbTitle2": "Compare and request quotes",
+  "onbBody2": "Describe your need once, receive offers from several professionals and pick the best one.",
+  "onbTitle3": "Contact them directly",
+  "onbBody3": "Call, message on WhatsApp or chat in the app. Payment is arranged directly with the professional.",
+  "languageStepBody": "You can change it any time in Profile.",
+  "next": "Next",
+  "start": "Get started",
+  "skip": "Skip",
+  "pageOf": "Page {current} of {total}",
+  "back": "Previous"
 }
