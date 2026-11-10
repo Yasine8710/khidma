@@ -16,6 +16,7 @@ class SearchFilters {
     this.minRating,
     this.availableOnly = false,
     this.sort = ProfessionalSort.rating,
+    this.radiusKm,
   });
 
   final int? categoryId;
@@ -23,33 +24,40 @@ class SearchFilters {
   final bool availableOnly;
   final ProfessionalSort sort;
 
+  /// Only with a device position.
+  final double? radiusKm;
+
   /// How many filters differ from the defaults (sorting is not a filter).
   int get activeCount =>
       (categoryId != null ? 1 : 0) +
       (minRating != null ? 1 : 0) +
-      (availableOnly ? 1 : 0);
+      (availableOnly ? 1 : 0) +
+      (radiusKm != null ? 1 : 0);
 }
 
 const _ratingChoices = <double?>[null, 3, 4, 4.5];
 
 /// Sorting offered today. 'Nearest' needs the device location (map slice).
 const _sortChoices = [ProfessionalSort.rating, ProfessionalSort.reviews];
+const _radiusChoices = <double?>[null, 5, 10, 25, 50];
 
 Future<SearchFilters?> showFiltersSheet(
   BuildContext context,
-  SearchFilters current,
-) => showModalBottomSheet<SearchFilters>(
+  SearchFilters current, {
+  bool hasPosition = false,
+}) => showModalBottomSheet<SearchFilters>(
   context: context,
   isScrollControlled: true,
   showDragHandle: true,
   useSafeArea: true,
-  builder: (_) => _FiltersSheet(initial: current),
+  builder: (_) => _FiltersSheet(initial: current, hasPosition: hasPosition),
 );
 
 class _FiltersSheet extends ConsumerStatefulWidget {
-  const _FiltersSheet({required this.initial});
+  const _FiltersSheet({required this.initial, required this.hasPosition});
 
   final SearchFilters initial;
+  final bool hasPosition;
 
   @override
   ConsumerState<_FiltersSheet> createState() => _FiltersSheetState();
@@ -60,6 +68,7 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
   late double? _minRating = widget.initial.minRating;
   late bool _available = widget.initial.availableOnly;
   late ProfessionalSort _sort = widget.initial.sort;
+  late double? _radius = widget.initial.radiusKm;
 
   @override
   Widget build(BuildContext context) {
@@ -152,15 +161,38 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
                   value: _available,
                   onChanged: (v) => setState(() => _available = v),
                 ),
+                if (widget.hasPosition) ...[
+                  heading(l10n.filterRadius),
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: [
+                      for (final r in _radiusChoices)
+                        ChoiceChip(
+                          label: Text(
+                            r == null
+                                ? l10n.filterRadiusAny
+                                : l10n.distanceKm(r.toStringAsFixed(0)),
+                          ),
+                          selected: _radius == r,
+                          onSelected: (_) => setState(() => _radius = r),
+                        ),
+                    ],
+                  ),
+                ],
                 heading(l10n.sortBy),
                 Wrap(
                   spacing: AppSpacing.sm,
                   runSpacing: AppSpacing.sm,
                   children: [
-                    for (final s in _sortChoices)
+                    for (final s in [
+                      ..._sortChoices,
+                      if (widget.hasPosition) ProfessionalSort.nearest,
+                    ])
                       ChoiceChip(
                         label: Text(switch (s) {
                           ProfessionalSort.reviews => l10n.sortReviews,
+                          ProfessionalSort.nearest => l10n.sortNearest,
                           _ => l10n.sortRating,
                         }),
                         selected: _sort == s,
@@ -199,6 +231,7 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
                         minRating: _minRating,
                         availableOnly: _available,
                         sort: _sort,
+                        radiusKm: widget.hasPosition ? _radius : null,
                       ),
                     ),
                   ),

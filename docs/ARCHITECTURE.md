@@ -40,8 +40,14 @@ Postgres on Supabase; SQL migrations in `backend/supabase/migrations`, tested wi
 ## Client data layer (Phase 2)
 `features/auth` and `features/profile` follow `domain` (interfaces, failures, validators) / `data` (Supabase repositories, error mapping) / `application` (Riverpod notifiers) / `presentation`. Repositories are interfaces with a "not configured" implementation, so a fresh checkout runs; tests use in-memory fakes and, for the Supabase repositories, the real client over a recorded fake HTTP layer. Error messages from the server are never shown or logged: they map to localized categories. Session and PKCE verifier live in secure storage. The UI only ever shows the profile of the account signed in right now.
 
+## Location and map (Phase 3)
+- **Near me** uses `LocationService` (geolocator, coarse accuracy, when-in-use only). The position is rounded to ~1 km, kept in memory only, and sent only as search parameters; Android declares `ACCESS_COARSE_LOCATION` and removes the plugin's precise permission.
+- Distance, nearest sort and radius run in `search_professionals` (haversine over the rounded coordinates).
+- The list/map toggle depends on the `MapProvider` interface (`map_provider.dart`), not on a vendor. The default reports itself unavailable and the toggle is hidden; no map is shown until one is plugged in and keyed.
+- **Benchmark plan (needs the owner's keys and a device).** Take 60 real Tunisian addresses (20 Greater Tunis, 20 other governorates incl. Sfax/Sousse, 20 informal: landmark, "près de ...", Arabic-only). For each candidate (Google Maps, Apple Maps, MapLibre + an OSM tile source): tiles and labels render in Arabic and French, pin lands within 100 m of the true spot, cold start time, size added to the app, monthly cost at 10k MAU. Pick the best; implement `MapProvider` for it, add the key through `--dart-define`, restrict the key by bundle id / package + SHA-1, and enable the toggle.
+
 ## Admin
 Separate web app in `admin/` (Phase 7), role-gated by RLS and server checks.
 
 ## Open questions
-PostGIS on the chosen Supabase plan; Google Maps vs Mapbox (benchmark 50-100 Tunisian addresses before Phase 3); iOS signing/APNs proof needs a Mac and iPhone; Linux golden baselines once CI is unlocked.
+PostGIS on the chosen Supabase plan; map vendor (benchmark plan above; needs keys); iOS signing/APNs proof needs a Mac and iPhone; Linux golden baselines once CI is unlocked.

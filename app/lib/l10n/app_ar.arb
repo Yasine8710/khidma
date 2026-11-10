@@ -192,5 +192,18 @@
   "favoriteLimit": "وصلت إلى الحد الأقصى: 200 مفضلة.",
   "favoriteFailed": "تعذّر تحديث المفضلة. حاول مجددًا.",
   "favoriteAddNamed": "إضافة {name} إلى المفضلة",
-  "favoriteRemoveNamed": "إزالة {name} من المفضلة"
+  "favoriteRemoveNamed": "إزالة {name} من المفضلة",
+  "nearMe": "بالقرب مني",
+  "sortNearest": "الأقرب",
+  "filterRadius": "أقصى مسافة",
+  "filterRadiusAny": "أي مسافة",
+  "locationDenied": "اسمح بالموقع لرؤية الحرفيين القريبين منك.",
+  "locationDeniedForever": "الموقع محظور. اسمح به من الإعدادات.",
+  "locationServiceOff": "خدمة الموقع متوقفة على هذا الجهاز.",
+  "locationUnavailable": "تعذّر تحديد موقعك. حاول مجددًا.",
+  "openSettings": "الإعدادات",
+  "showMap": "عرض الخريطة",
+  "showList": "عرض القائمة",
+  "mapNothingTitle": "لا شيء لعرضه على الخريطة",
+  "mapNothingBody": "لا يملك أيٌّ من هؤلاء الحرفيين موقعًا معروفًا."
 }

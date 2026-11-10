@@ -192,5 +192,18 @@
   "favoriteLimit": "You have reached the limit of 200 favorites.",
   "favoriteFailed": "Couldn’t update your favorites. Try again.",
   "favoriteAddNamed": "Add {name} to favorites",
-  "favoriteRemoveNamed": "Remove {name} from favorites"
+  "favoriteRemoveNamed": "Remove {name} from favorites",
+  "nearMe": "Near me",
+  "sortNearest": "Nearest",
+  "filterRadius": "Maximum distance",
+  "filterRadiusAny": "Any",
+  "locationDenied": "Allow location to see professionals near you.",
+  "locationDeniedForever": "Location is blocked. Allow it in Settings.",
+  "locationServiceOff": "Location is turned off on this device.",
+  "locationUnavailable": "Couldn’t find your position. Try again.",
+  "openSettings": "Settings",
+  "showMap": "Show map",
+  "showList": "Show list",
+  "mapNothingTitle": "Nothing to show on the map",
+  "mapNothingBody": "None of these professionals has a known position."
 }

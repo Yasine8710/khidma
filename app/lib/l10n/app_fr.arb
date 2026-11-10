@@ -303,5 +303,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "nearMe": "Près de moi",
+  "sortNearest": "Plus proches",
+  "filterRadius": "Distance maximale",
+  "filterRadiusAny": "Peu importe",
+  "locationDenied": "Autorisez la localisation pour voir les professionnels près de vous.",
+  "locationDeniedForever": "La localisation est bloquée. Autorisez-la dans les réglages.",
+  "locationServiceOff": "La localisation est désactivée sur cet appareil.",
+  "locationUnavailable": "Position introuvable. Réessayez.",
+  "openSettings": "Réglages",
+  "showMap": "Afficher la carte",
+  "showList": "Afficher la liste",
+  "mapNothingTitle": "Rien à placer sur la carte",
+  "mapNothingBody": "Aucun de ces professionnels n’a de position connue."
 }

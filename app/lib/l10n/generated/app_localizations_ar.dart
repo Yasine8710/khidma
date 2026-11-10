@@ -670,4 +670,43 @@ class AppLocalizationsAr extends AppLocalizations {
   String favoriteRemoveNamed(String name) {
     return 'إزالة $name من المفضلة';
   }
+
+  @override
+  String get nearMe => 'بالقرب مني';
+
+  @override
+  String get sortNearest => 'الأقرب';
+
+  @override
+  String get filterRadius => 'أقصى مسافة';
+
+  @override
+  String get filterRadiusAny => 'أي مسافة';
+
+  @override
+  String get locationDenied => 'اسمح بالموقع لرؤية الحرفيين القريبين منك.';
+
+  @override
+  String get locationDeniedForever => 'الموقع محظور. اسمح به من الإعدادات.';
+
+  @override
+  String get locationServiceOff => 'خدمة الموقع متوقفة على هذا الجهاز.';
+
+  @override
+  String get locationUnavailable => 'تعذّر تحديد موقعك. حاول مجددًا.';
+
+  @override
+  String get openSettings => 'الإعدادات';
+
+  @override
+  String get showMap => 'عرض الخريطة';
+
+  @override
+  String get showList => 'عرض القائمة';
+
+  @override
+  String get mapNothingTitle => 'لا شيء لعرضه على الخريطة';
+
+  @override
+  String get mapNothingBody => 'لا يملك أيٌّ من هؤلاء الحرفيين موقعًا معروفًا.';
 }

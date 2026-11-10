@@ -10,7 +10,10 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/skeleton.dart';
+import '../../location/application/location_providers.dart';
+import '../../location/domain/location_domain.dart';
 import '../application/home_providers.dart';
+import 'map_provider.dart';
 import '../application/marketplace_providers.dart';
 import '../application/search_providers.dart';
 import '../domain/marketplace_domain.dart';
@@ -42,6 +45,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   late String _text = widget.initialText;
   late SearchFilters _filters = SearchFilters(categoryId: widget.categoryId);
   int _pages = 1;
+  bool _map = false;
 
   @override
   void didUpdateWidget(SearchScreen old) {
@@ -52,6 +56,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         minRating: _filters.minRating,
         availableOnly: _filters.availableOnly,
         sort: _filters.sort,
+        radiusKm: _filters.radiusKm,
       );
       _pages = 1;
     }
@@ -76,8 +81,41 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     });
   }
 
+  Future<void> _toggleNearMe(bool on) async {
+    final position = ref.read(devicePositionProvider.notifier);
+    if (!on) {
+      position.clear();
+      return;
+    }
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context);
+    final failure = await position.locate();
+    if (failure == null || !mounted) return;
+    messenger.clearSnackBars();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(switch (failure) {
+          LocationFailure.denied => l10n.locationDenied,
+          LocationFailure.deniedForever => l10n.locationDeniedForever,
+          LocationFailure.serviceOff => l10n.locationServiceOff,
+          LocationFailure.unavailable => l10n.locationUnavailable,
+        }),
+        action: failure == LocationFailure.deniedForever
+            ? SnackBarAction(
+                label: l10n.openSettings,
+                onPressed: ref.read(locationServiceProvider).openSettings,
+              )
+            : null,
+      ),
+    );
+  }
+
   Future<void> _openFilters() async {
-    final result = await showFiltersSheet(context, _filters);
+    final result = await showFiltersSheet(
+      context,
+      _filters,
+      hasPosition: ref.read(devicePositionProvider) != null,
+    );
     if (result != null && mounted) {
       setState(() {
         _filters = result;
@@ -86,14 +124,20 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     }
   }
 
-  SearchQuery _query(Place? place, int page) => SearchQuery(
+  SearchQuery _query(Place? place, LocationFix? where, int page) => SearchQuery(
     text: _text.trim().isEmpty ? null : _text,
     categoryId: _filters.categoryId,
     governorateId: place?.governorateId,
     cityId: place?.cityId,
     minRating: _filters.minRating,
     availableOnly: _filters.availableOnly,
-    sort: _filters.sort,
+    // Nearest and radius mean nothing without a position.
+    sort: where == null && _filters.sort == ProfessionalSort.nearest
+        ? ProfessionalSort.rating
+        : _filters.sort,
+    latitude: where?.latitude,
+    longitude: where?.longitude,
+    radiusKm: where == null ? null : _filters.radiusKm,
     limit: searchPageSize,
     offset: page * searchPageSize,
   );
@@ -102,16 +146,50 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final place = ref.watch(selectedPlaceProvider);
+    final where = ref.watch(devicePositionProvider);
+    final mapAvailable = ref.watch(mapProviderProvider).isAvailable;
+    ref.listen(devicePositionProvider, (_, now) {
+      // Without a position, nearest/radius no longer apply.
+      if (now == null &&
+          (_filters.sort == ProfessionalSort.nearest ||
+              _filters.radiusKm != null)) {
+        setState(() {
+          _filters = SearchFilters(
+            categoryId: _filters.categoryId,
+            minRating: _filters.minRating,
+            availableOnly: _filters.availableOnly,
+            // Only 'nearest' needs a position; other sorting stays.
+            sort: _filters.sort == ProfessionalSort.nearest
+                ? ProfessionalSort.rating
+                : _filters.sort,
+          );
+          _pages = 1;
+        });
+      } else {
+        setState(() => _pages = 1);
+      }
+    });
     final govs = ref.watch(governoratesProvider).value ?? const <Governorate>[];
     final cities = ref.watch(citiesProvider(null)).value ?? const <City>[];
     final locale = Localizations.localeOf(context);
 
     // Nothing asked yet: no text, no category and no other filter.
     final browsing =
-        _text.trim().isEmpty && _filters.activeCount == 0 && place == null;
+        _text.trim().isEmpty &&
+        _filters.activeCount == 0 &&
+        place == null &&
+        where == null;
 
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          if (mapAvailable)
+            IconButton(
+              tooltip: _map ? l10n.showList : l10n.showMap,
+              icon: Icon(_map ? Icons.list_rounded : Icons.map_outlined),
+              onPressed: () => setState(() => _map = !_map),
+            ),
+        ],
         title: TextField(
           controller: _controller,
           autofocus: widget.categoryId == null && widget.initialText.isEmpty,
@@ -155,6 +233,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       if (mounted) setState(() => _pages = 1);
                     },
                   ),
+                  FilterChip(
+                    avatar: const Icon(Icons.my_location_rounded, size: 18),
+                    label: Text(l10n.nearMe),
+                    selected: where != null,
+                    onSelected: (on) => _toggleNearMe(on),
+                  ),
                   Semantics(
                     label: l10n.filtersActive(_filters.activeCount),
                     excludeSemantics: true,
@@ -180,8 +264,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       title: l10n.searchStartTitle,
                       body: l10n.searchStartBody,
                     )
+                  : _map && mapAvailable
+                  ? _MapResults(
+                      queryFor: (page) => _query(place, where, page),
+                      pages: _pages,
+                      where: where,
+                      onMore: () => setState(() => _pages++),
+                    )
                   : _Results(
-                      queryFor: (page) => _query(place, page),
+                      queryFor: (page) => _query(place, where, page),
                       pages: _pages,
                       onMore: () => setState(() => _pages++),
                     ),
@@ -308,4 +399,100 @@ class _ResultsSkeleton extends StatelessWidget {
       ],
     ),
   );
+}
+
+/// The loaded pages as markers on the map provider's map.
+class _MapResults extends ConsumerWidget {
+  const _MapResults({
+    required this.queryFor,
+    required this.pages,
+    required this.where,
+    required this.onMore,
+  });
+
+  final SearchQuery Function(int page) queryFor;
+  final int pages;
+  final LocationFix? where;
+  final VoidCallback onMore;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final markers = <MapMarker>[];
+    Widget? footer;
+    for (var page = 0; page < pages; page++) {
+      final async = ref.watch(searchPageProvider(queryFor(page)));
+      if (page == 0 && async.hasError && !async.hasValue) {
+        return MarketplaceFailureView(
+          error: async.error!,
+          onRetry: () => ref.invalidate(searchPageProvider(queryFor(0))),
+        );
+      }
+      if (page == 0 && !async.hasValue) return const _ResultsSkeleton();
+      if (page > 0 && async.hasError && !async.hasValue) {
+        footer = AppButton(
+          label: l10n.retry,
+          variant: AppButtonVariant.secondary,
+          onPressed: () => ref.invalidate(searchPageProvider(queryFor(page))),
+        );
+        break;
+      }
+      if (page > 0 && !async.hasValue) {
+        footer = const Skeleton(height: 48);
+        break;
+      }
+      final list = async.requireValue;
+      if (page == pages - 1 &&
+          list.length == searchPageSize &&
+          (page + 1) * searchPageSize <= _maxOffset) {
+        footer = AppButton(
+          label: l10n.loadMore,
+          variant: AppButtonVariant.secondary,
+          onPressed: onMore,
+        );
+      }
+      for (final p in list) {
+        // Only professionals with a position can be pinned.
+        if (p.latitude != null && p.longitude != null) {
+          markers.add(
+            MapMarker(
+              id: p.id,
+              title: p.name,
+              latitude: p.latitude!,
+              longitude: p.longitude!,
+            ),
+          );
+        }
+      }
+    }
+    final Widget map = markers.isEmpty
+        ? EmptyState(
+            icon: Icons.map_outlined,
+            title: l10n.mapNothingTitle,
+            body: l10n.mapNothingBody,
+          )
+        : ref
+              .watch(mapProviderProvider)
+              .build(
+                context,
+                MapRequest(
+                  markers: markers,
+                  center: where,
+                  onSelect: (id) =>
+                      context.push(AppRoutes.professionalPath(id)),
+                ),
+              );
+    // More pages can be asked for even when the loaded ones had nothing to
+    // pin.
+    return Column(
+      children: [
+        Expanded(child: map),
+        if (footer != null)
+          Padding(
+            padding: const EdgeInsetsDirectional.all(AppSpacing.md),
+            child: footer,
+          ),
+      ],
+    );
+  }
 }

@@ -1257,6 +1257,84 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Retirer {name} des favoris'**
   String favoriteRemoveNamed(String name);
+
+  /// No description provided for @nearMe.
+  ///
+  /// In fr, this message translates to:
+  /// **'Près de moi'**
+  String get nearMe;
+
+  /// No description provided for @sortNearest.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus proches'**
+  String get sortNearest;
+
+  /// No description provided for @filterRadius.
+  ///
+  /// In fr, this message translates to:
+  /// **'Distance maximale'**
+  String get filterRadius;
+
+  /// No description provided for @filterRadiusAny.
+  ///
+  /// In fr, this message translates to:
+  /// **'Peu importe'**
+  String get filterRadiusAny;
+
+  /// No description provided for @locationDenied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autorisez la localisation pour voir les professionnels près de vous.'**
+  String get locationDenied;
+
+  /// No description provided for @locationDeniedForever.
+  ///
+  /// In fr, this message translates to:
+  /// **'La localisation est bloquée. Autorisez-la dans les réglages.'**
+  String get locationDeniedForever;
+
+  /// No description provided for @locationServiceOff.
+  ///
+  /// In fr, this message translates to:
+  /// **'La localisation est désactivée sur cet appareil.'**
+  String get locationServiceOff;
+
+  /// No description provided for @locationUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Position introuvable. Réessayez.'**
+  String get locationUnavailable;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réglages'**
+  String get openSettings;
+
+  /// No description provided for @showMap.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher la carte'**
+  String get showMap;
+
+  /// No description provided for @showList.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher la liste'**
+  String get showList;
+
+  /// No description provided for @mapNothingTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rien à placer sur la carte'**
+  String get mapNothingTitle;
+
+  /// No description provided for @mapNothingBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun de ces professionnels n’a de position connue.'**
+  String get mapNothingBody;
 }
 
 class _AppLocalizationsDelegate

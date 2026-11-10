@@ -671,4 +671,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String favoriteRemoveNamed(String name) {
     return 'Remove $name from favorites';
   }
+
+  @override
+  String get nearMe => 'Near me';
+
+  @override
+  String get sortNearest => 'Nearest';
+
+  @override
+  String get filterRadius => 'Maximum distance';
+
+  @override
+  String get filterRadiusAny => 'Any';
+
+  @override
+  String get locationDenied => 'Allow location to see professionals near you.';
+
+  @override
+  String get locationDeniedForever =>
+      'Location is blocked. Allow it in Settings.';
+
+  @override
+  String get locationServiceOff => 'Location is turned off on this device.';
+
+  @override
+  String get locationUnavailable => 'Couldn’t find your position. Try again.';
+
+  @override
+  String get openSettings => 'Settings';
+
+  @override
+  String get showMap => 'Show map';
+
+  @override
+  String get showList => 'Show list';
+
+  @override
+  String get mapNothingTitle => 'Nothing to show on the map';
+
+  @override
+  String get mapNothingBody =>
+      'None of these professionals has a known position.';
 }

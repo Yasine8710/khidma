@@ -43,6 +43,7 @@ dependencies:
   sign_in_with_apple: ^8.2.0
   crypto: ^3.0.8
   url_launcher: ^6.3.2
+  geolocator: ^14.1.2
 
 dev_dependencies:
   flutter_test:

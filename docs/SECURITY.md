@@ -95,6 +95,10 @@ Not yet verified against a real project: the end-to-end link flow on a device, t
 - **Demo data** (made-up businesses, ratings and verification badges) exists only in debug builds or with `--dart-define=DEMO_DATA=true`, never in a normal release, and the UI must show a visible "demo" notice whenever it is on (enforced in the Home slice, issue #13, with a test). `DEMO_DATA=true` in a release is for screenshots only and must not be distributed.
 - Permission failures from the database (`42501`) surface as "forbidden", not as "signed out", so broken grants are not mistaken for an expired session.
 
+### Location (Phase 3.6)
+- Only an approximate position (rounded to ~1 km) is used, in memory only, for 10 minutes; it is sent only as search parameters. Android requests coarse location only; iOS asks when-in-use with reduced accuracy by default.
+- **Before an App Store upload (needs a Mac):** confirm the release binary does not reference `requestAlwaysAuthorization` (geolocator's `BYPASS_PERMISSION_LOCATION_ALWAYS=1`, set in CI, may not be honoured under Swift Package Manager; known upstream issue). If Apple reports ITMS-90683, add an honest `NSLocationAlwaysAndWhenInUseUsageDescription` ("not used") as the fallback.
+
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.
 - The Supabase SDK's own debug logger is disabled; the app prints only error types, and only in debug builds.

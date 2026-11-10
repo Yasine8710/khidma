@@ -677,4 +677,47 @@ class AppLocalizationsFr extends AppLocalizations {
   String favoriteRemoveNamed(String name) {
     return 'Retirer $name des favoris';
   }
+
+  @override
+  String get nearMe => 'Près de moi';
+
+  @override
+  String get sortNearest => 'Plus proches';
+
+  @override
+  String get filterRadius => 'Distance maximale';
+
+  @override
+  String get filterRadiusAny => 'Peu importe';
+
+  @override
+  String get locationDenied =>
+      'Autorisez la localisation pour voir les professionnels près de vous.';
+
+  @override
+  String get locationDeniedForever =>
+      'La localisation est bloquée. Autorisez-la dans les réglages.';
+
+  @override
+  String get locationServiceOff =>
+      'La localisation est désactivée sur cet appareil.';
+
+  @override
+  String get locationUnavailable => 'Position introuvable. Réessayez.';
+
+  @override
+  String get openSettings => 'Réglages';
+
+  @override
+  String get showMap => 'Afficher la carte';
+
+  @override
+  String get showList => 'Afficher la liste';
+
+  @override
+  String get mapNothingTitle => 'Rien à placer sur la carte';
+
+  @override
+  String get mapNothingBody =>
+      'Aucun de ces professionnels n’a de position connue.';
 }
