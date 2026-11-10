@@ -24,6 +24,14 @@ Future<void> _openLogin(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+/// Scrolls the (long) form to the submit button, then taps it.
+Future<void> _tapButton(WidgetTester tester, String label) async {
+  final b = find.widgetWithText(FilledButton, label);
+  await tester.ensureVisible(b);
+  await tester.pumpAndSettle();
+  await tester.tap(b);
+}
+
 Finder _field(String label) => find.descendant(
   of: find.ancestor(of: find.text(label), matching: find.byType(Column)).first,
   matching: find.byType(TextField),
@@ -262,14 +270,14 @@ void main() {
       final fake = FakeAuthRepository();
       await pumpApp(tester, auth: fake);
       await openRegister(tester);
-      await tester.tap(find.widgetWithText(FilledButton, 'Créer un compte'));
+      await _tapButton(tester, 'Créer un compte');
       await tester.pumpAndSettle();
       expect(find.text('Saisissez votre nom.'), findsOneWidget);
       expect(find.text('Saisissez votre adresse e-mail.'), findsOneWidget);
       await tester.enterText(_field('Nom complet'), 'Ali');
       await tester.enterText(_field('Adresse e-mail'), 'ali@example.tn');
       await tester.enterText(_field('Mot de passe'), 'court');
-      await tester.tap(find.widgetWithText(FilledButton, 'Créer un compte'));
+      await _tapButton(tester, 'Créer un compte');
       await tester.pumpAndSettle();
       expect(find.text('8 caractères minimum.'), findsWidgets);
       expect(fake.signUpCalls, isEmpty);
@@ -284,7 +292,7 @@ void main() {
         await tester.enterText(_field('Nom complet'), '  Ali Ben Salah ');
         await tester.enterText(_field('Adresse e-mail'), ' ali@example.tn ');
         await tester.enterText(_field('Mot de passe'), ' mot de passe 1 ');
-        await tester.tap(find.widgetWithText(FilledButton, 'Créer un compte'));
+        await _tapButton(tester, 'Créer un compte');
         await tester.pumpAndSettle();
         final call = fake.signUpCalls.single;
         expect(call.email, 'ali@example.tn');
@@ -308,7 +316,7 @@ void main() {
       await tester.enterText(_field('Nom complet'), 'Ali');
       await tester.enterText(_field('Adresse e-mail'), 'ali@example.tn');
       await tester.enterText(_field('Mot de passe'), 'long-enough-1');
-      await tester.tap(find.widgetWithText(FilledButton, 'Créer un compte'));
+      await _tapButton(tester, 'Créer un compte');
       await tester.pumpAndSettle();
       expect(find.text('Connecté en tant que ali@example.tn'), findsOneWidget);
     });
@@ -323,7 +331,7 @@ void main() {
       await tester.enterText(_field('Adresse e-mail'), 'ali@example.tn');
       await tester.enterText(_field('Mot de passe'), '12345678');
       fake.failNext = AuthFailure.weakPassword;
-      await tester.tap(find.widgetWithText(FilledButton, 'Créer un compte'));
+      await _tapButton(tester, 'Créer un compte');
       await tester.pumpAndSettle();
       expect(find.textContaining('Mot de passe trop faible'), findsOneWidget);
       fake.failNext = AuthFailure.signUpDisabled;
@@ -332,7 +340,7 @@ void main() {
         find.widgetWithText(FilledButton, 'Créer un compte'),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(FilledButton, 'Créer un compte'));
+      await _tapButton(tester, 'Créer un compte');
       await tester.pumpAndSettle();
       expect(
         find.text('Les inscriptions sont fermées pour le moment.'),
@@ -352,7 +360,7 @@ void main() {
       await tester.enterText(_field('الاسم الكامل'), 'خالد');
       await tester.enterText(_field('البريد الإلكتروني'), 'k@example.tn');
       await tester.enterText(_field('كلمة المرور'), 'long-enough-1');
-      await tester.tap(find.widgetWithText(FilledButton, 'إنشاء حساب'));
+      await _tapButton(tester, 'إنشاء حساب');
       await tester.pumpAndSettle();
       expect(fake.signUpCalls.single.language, 'ar');
       expect(fake.signUpCalls.single.fullName, 'خالد');

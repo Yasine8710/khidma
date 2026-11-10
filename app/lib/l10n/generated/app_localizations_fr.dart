@@ -337,4 +337,55 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get linkExpiredBody =>
       'Demandez un nouveau lien de réinitialisation depuis l\'écran de connexion.';
+
+  @override
+  String get accountTypeTitle => 'Je souhaite…';
+
+  @override
+  String get accountCustomerTitle => 'Trouver un professionnel';
+
+  @override
+  String get accountCustomerBody =>
+      'Demander des devis et contacter des artisans.';
+
+  @override
+  String get accountProfessionalTitle => 'Proposer mes services';
+
+  @override
+  String get accountProfessionalBody =>
+      'Créer un profil professionnel et recevoir des demandes.';
+
+  @override
+  String get becomeProfessionalTitle => 'Proposez vos services';
+
+  @override
+  String get becomeProfessionalBody =>
+      'Créez votre profil professionnel pour recevoir des demandes de clients.';
+
+  @override
+  String get becomeProfessionalCta => 'Devenir professionnel';
+
+  @override
+  String get professionalBadge => 'Professionnel';
+
+  @override
+  String get editProfile => 'Modifier le profil';
+
+  @override
+  String get save => 'Enregistrer';
+
+  @override
+  String get phoneLabel => 'Téléphone';
+
+  @override
+  String get phoneHelper => 'Visible uniquement par vous.';
+
+  @override
+  String get profileSaved => 'Profil enregistré.';
+
+  @override
+  String get failProfileLoad => 'Impossible de charger votre profil.';
+
+  @override
+  String get failProfileInvalid => 'Certaines informations sont invalides.';
 }

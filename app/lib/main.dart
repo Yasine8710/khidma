@@ -11,16 +11,23 @@ import 'features/auth/application/auth_providers.dart';
 import 'features/auth/data/secure_auth_storage.dart';
 import 'features/auth/data/supabase_auth_repository.dart';
 import 'features/auth/domain/auth_domain.dart';
+import 'features/profile/application/profile_providers.dart';
+import 'features/profile/data/supabase_profile_repository.dart';
+import 'features/profile/domain/profile_domain.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final store = await _openStore();
   final auth = await _openAuth();
+  final ProfileRepository profiles = auth.isAvailable
+      ? SupabaseProfileRepository(Supabase.instance.client)
+      : const NotConfiguredProfileRepository();
   runApp(
     ProviderScope(
       overrides: [
         keyValueStoreProvider.overrideWithValue(store),
         authRepositoryProvider.overrideWithValue(auth),
+        profileRepositoryProvider.overrideWithValue(profiles),
       ],
       child: const KhidmaApp(),
     ),

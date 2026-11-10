@@ -9,5 +9,6 @@ abstract final class AppRoutes {
   static const register = '/register';
   static const forgotPassword = '/forgot-password';
   static const resetPassword = '/reset-password';
+  static const editProfile = '/edit-profile';
   static const gallery = '/gallery'; // debug / GALLERY builds only
 }

@@ -335,4 +335,54 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get linkExpiredBody =>
       'Request a new reset link from the sign-in screen.';
+
+  @override
+  String get accountTypeTitle => 'I want to…';
+
+  @override
+  String get accountCustomerTitle => 'Find a professional';
+
+  @override
+  String get accountCustomerBody => 'Request quotes and contact craftspeople.';
+
+  @override
+  String get accountProfessionalTitle => 'Offer my services';
+
+  @override
+  String get accountProfessionalBody =>
+      'Create a professional profile and receive requests.';
+
+  @override
+  String get becomeProfessionalTitle => 'Offer your services';
+
+  @override
+  String get becomeProfessionalBody =>
+      'Create your professional profile to receive customer requests.';
+
+  @override
+  String get becomeProfessionalCta => 'Become a professional';
+
+  @override
+  String get professionalBadge => 'Professional';
+
+  @override
+  String get editProfile => 'Edit profile';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get phoneLabel => 'Phone';
+
+  @override
+  String get phoneHelper => 'Only visible to you.';
+
+  @override
+  String get profileSaved => 'Profile saved.';
+
+  @override
+  String get failProfileLoad => 'Couldn\'t load your profile.';
+
+  @override
+  String get failProfileInvalid => 'Some details are invalid.';
 }
