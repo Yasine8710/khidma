@@ -5,7 +5,7 @@
 Claude plans → delegates to Codex (review or isolated-branch implementation) → Claude reviews/integrates → tests → docs. No two agents edit the same files; use branches/worktrees.
 
 ## Status
-- Phase: 1 (design system). Slices 1.0-1.6 merged to develop; next 1.7 phase gate (#4).
+- Phase: 1 (design system) implementation complete on develop; gate review done; merging to main with tag v0.1.0-phase1.
 - Claude: repo, license, docs, Flutter bootstrap
 - Codex: architecture review DONE (raw output: docs/reviews-codex-phase0.md)
 - Accepted from Codex: manual Riverpod, lifecycle state machine, atomic accept, permission matrix, multi-role flags, outbox notifications, privacy split, early signed-iOS proof, Google Maps pending benchmark.
@@ -75,3 +75,13 @@ Codex fixes: comparator disposes images and restores itself; goldens tagged `gol
 Release exclusion verified on real builds: default release web bundle has 0 occurrences of gallery strings; `--dart-define=GALLERY=true` has them.
 Known limits: golden tolerance is 0.5% of pixels regardless of magnitude (coarse); AppButton's indeterminate spinner is not frozen in goldens (deterministic in test time); Linux CI baselines not generated (CI is billing-locked anyway).
 Tests: 141 pass (6 are goldens), analyze clean.
+
+## Phase 1 gate (#4): whole-phase Codex review, 2026-11-10
+Codex reviewed the whole phase (static). Fixed:
+- P1 Android release builds had no INTERNET permission (only debug/profile): added to the main manifest; `allowBackup=false` until per-account data exists.
+- P1 A failing `SharedPreferences` load would crash before the first frame: storage is now a small `KeyValueStore` interface (`PrefsStore`, `MemoryStore` fallback); this also replaced brittle `noSuchMethod` test fakes. Storage moved out of `core/l10n` into `core/storage`.
+- Password fields: no autocorrect or suggestions (also while shown).
+- CI: added web release build and an allowed-to-fail unsigned iOS build job; Flutter pinned.
+- Main widget suites now load real fonts (all still pass); README no longer claims `.env` configures anything; "complete" reworded to "implementation complete, acceptance pending"; web page description and duplicate viewport fixed; unused `cupertino_icons` removed.
+Deferred (noted): gallery samples use French for English; gallery and two test files exceed ~300 lines; Linux golden baselines.
+Tests: 151 pass (6 goldens), analyze clean.

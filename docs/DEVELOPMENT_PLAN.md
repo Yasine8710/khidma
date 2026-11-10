@@ -5,7 +5,7 @@ Each phase ends with executed tests and updated docs. Status tracked in `AI_COLL
 ## Phase 0 — done
 Repo, license, docs, Flutter scaffold, CI file, Codex architecture review.
 
-## Phase 1 — Design system and foundations (plan, awaiting approval)
+## Phase 1 — Design system and foundations (implementation complete; CI acceptance pending billing unlock)
 
 **Goal:** a navigable, localized (FR/AR/EN, real RTL), themed app shell with reusable components and onboarding. No backend. Brand locked: Bleu Sidi Bou, Inter + IBM Plex Sans Arabic (tokens and theme already on `feat/design-tokens`).
 
@@ -47,8 +47,8 @@ Order: 1.0 → 1.1 → 1.2 → 1.3 → 1.4 → 1.5 → 1.6. 1.1 first because RT
 
 ### Known limits (stated, not hidden)
 - No Mac: iOS look, safe areas and haptics are unverified until a Mac/iPhone is available; Phase 1 is verified on Android/web only.
-- CI iOS job has not yet run on GitHub; first push of `develop` will show whether it passes.
-- Logo/icon quality cannot be judged until it appears in the shell (slice 1.5 after 1.2/1.3).
+- CI has never run on GitHub (account billing lock). The workflow has an Ubuntu job (format, analyze, tests without goldens, web release build) and an allowed-to-fail unsigned iOS build job on macOS; neither has been seen green.
+- Icons and splash were checked by decoded-pixel tests and in a browser only, not on a real Android or iOS device.
 
 ### Decisions (confirmed 2026-11-10)
 1. Digits: Western 0-9 in all languages.

@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:khidma/core/storage/preferences_provider.dart';
 import 'package:khidma/app.dart';
 import 'package:khidma/core/theme/app_theme.dart';
 import 'package:khidma/l10n/generated/app_localizations.dart';
-import 'package:khidma/core/l10n/locale_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Pumps the full app with mock preferences and returns its container.
@@ -18,7 +18,7 @@ Future<ProviderContainer> pumpApp(
   SharedPreferences.setMockInitialValues({'onboardingSeen': true, ...prefs});
   final sp = await SharedPreferences.getInstance();
   final container = ProviderContainer(
-    overrides: [sharedPreferencesProvider.overrideWithValue(sp)],
+    overrides: [keyValueStoreProvider.overrideWithValue(PrefsStore(sp))],
   );
   addTearDown(container.dispose);
   await tester.pumpWidget(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../l10n/locale_controller.dart';
+import '../storage/preferences_provider.dart';
 
 const _prefsKey = 'themeMode';
 
@@ -13,7 +13,7 @@ final themeModeProvider = NotifierProvider<ThemeModeController, ThemeMode>(
 class ThemeModeController extends Notifier<ThemeMode> {
   @override
   ThemeMode build() {
-    final saved = ref.read(sharedPreferencesProvider).getString(_prefsKey);
+    final saved = ref.read(keyValueStoreProvider).getString(_prefsKey);
     return ThemeMode.values.firstWhere(
       (m) => m.name == saved,
       orElse: () => ThemeMode.system,
@@ -26,7 +26,7 @@ class ThemeModeController extends Notifier<ThemeMode> {
     state = mode;
     try {
       return await ref
-          .read(sharedPreferencesProvider)
+          .read(keyValueStoreProvider)
           .setString(_prefsKey, mode.name);
     } catch (_) {
       return false;
