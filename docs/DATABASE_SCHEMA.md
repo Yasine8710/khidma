@@ -9,10 +9,11 @@ auth.users (Supabase)
   │                          is_customer, is_professional, timestamps
   ├─ customer_profiles 1:1   default_governorate_id, default_city_id
   ├─ admin_users 0..1        membership row; no client access
+  ├─ contact_reveals N       rate-limit/audit log of phone reveals; no client access
   └─ professional_profiles 0..1
        business_name, primary_category_id, description, years_experience,
-       governorate_id / city_id / neighborhood_id, latitude/longitude (rounded),
-       contact_phone, availability, is_published,
+       governorate_id / city_id / neighborhood_id, latitude/longitude (rounded to ~1.1 km),
+       contact_phone (not selectable; revealed by RPC), availability, is_published,
        verification_status, verified_at, rating_avg, review_count
        ├─ professional_services  (professional_id, category_id)   N:M
        └─ service_areas          (professional_id, governorate_id, city_id?)

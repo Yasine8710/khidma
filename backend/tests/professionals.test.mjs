@@ -95,23 +95,26 @@ describe('professional profile visibility', () => {
     assert.equal(r.rows.length, 2);
   });
 
-  test('the contact phone is hidden from anonymous visitors', async () => {
-    await denies(anon(db).query('select contact_phone from public.professional_profiles'), DENIED);
-    await denies(anon(db).query('select * from public.professional_profiles'), DENIED);
+  test('the contact phone is not selectable by anyone, signed in or not', async () => {
+    for (const who of [anon(db), user(db, viewer), user(db, pub)]) {
+      await denies(who.query('select contact_phone from public.professional_profiles'), DENIED);
+      await denies(who.query('select * from public.professional_profiles'), DENIED);
+      await denies(who.query('select verified_at from public.professional_profiles'), DENIED);
+    }
     const ok = await anon(db).query('select user_id, business_name, rating_avg from public.professional_profiles');
     assert.equal(ok.rows.length, 1);
   });
 
-  test('signed-in users can read the contact phone of a published profile', async () => {
-    const r = await user(db, viewer).query(
-      'select contact_phone from public.professional_profiles where user_id = $1', [pub]);
-    assert.equal(r.rows[0].contact_phone, GOOD.phone);
+  test('a signed-in user reveals a published phone through the function', async () => {
+    const r = await user(db, viewer).query('select public.reveal_professional_contact($1) as phone', [pub]);
+    assert.equal(r.rows[0].phone, GOOD.phone);
   });
 
-  test('a draft\'s contact phone is not exposed to others', async () => {
+  test('a draft\'s phone cannot be revealed to others, but the owner can read it', async () => {
     await user(db, draft).query(`update public.professional_profiles set contact_phone = '+21671123456' where user_id = $1`, [draft]);
-    const r = await user(db, viewer).query('select contact_phone from public.professional_profiles where user_id = $1', [draft]);
-    assert.equal(r.rows.length, 0);
+    await denies(user(db, viewer).query('select public.reveal_professional_contact($1)', [draft]), 'P0002');
+    const own = await user(db, draft).query('select public.get_my_professional_contact() as phone');
+    assert.equal(own.rows[0].phone, '+21671123456');
   });
 });
 
@@ -162,11 +165,11 @@ describe('professional profile writes', () => {
     await denies(user(db, a).query('delete from public.professional_profiles where user_id = $1', [a]), DENIED);
   });
 
-  test('location is rounded to ~110 m and must come as a pair', async () => {
+  test('location is rounded to ~1.1 km and must come as a pair', async () => {
     await user(db, a).query('update public.professional_profiles set latitude = 36.874321, longitude = 10.324567 where user_id = $1', [a]);
     const r = await user(db, a).query('select latitude, longitude from public.professional_profiles where user_id = $1', [a]);
-    assert.equal(r.rows[0].latitude, 36.874);
-    assert.equal(r.rows[0].longitude, 10.325);
+    assert.equal(r.rows[0].latitude, 36.87);
+    assert.equal(r.rows[0].longitude, 10.32);
     await denies(user(db, a).query('update public.professional_profiles set latitude = 36.8, longitude = null where user_id = $1', [a]), CHECK);
     await denies(user(db, a).query('update public.professional_profiles set latitude = 95, longitude = 10 where user_id = $1', [a]), CHECK);
   });

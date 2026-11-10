@@ -34,10 +34,9 @@ describe('service categories', () => {
     assert.equal(names.rows[0].n, 0);
   });
 
-  test('admins manage categories; deactivated ones disappear for the public', async () => {
-    const ins = await user(db, admin).query(
-      `insert into public.service_categories (slug, name_fr, name_ar, name_en) values ('welding', 'Soudure', 'اللحام', 'Welding')`);
-    assert.equal(ins.affectedRows, 1);
+  test('admins edit categories; deactivated ones disappear for the public', async () => {
+    // Creation is a migration / service-role action (no API insert grant).
+    await db.query(`insert into public.service_categories (slug, name_fr, name_ar, name_en) values ('welding', 'Soudure', 'اللحام', 'Welding')`);
     await user(db, admin).query(`update public.service_categories set is_active = false where slug = 'welding'`);
     const pub = await anon(db).query(`select slug from public.service_categories where slug = 'welding'`);
     assert.equal(pub.rows.length, 0);
@@ -48,7 +47,7 @@ describe('service categories', () => {
   });
 
   test('slugs are validated', async () => {
-    await denies(user(db, admin).query(`insert into public.service_categories (slug, name_fr, name_ar, name_en) values ('Bad Slug', 'x', 'x', 'x')`), CHECK);
+    await denies(db.query(`insert into public.service_categories (slug, name_fr, name_ar, name_en) values ('Bad Slug', 'x', 'x', 'x')`), CHECK);
   });
 });
 
@@ -127,12 +126,10 @@ describe('structural security guards', () => {
       'anon:professional_services:SELECT',
       'anon:service_areas:SELECT',
       ...reference.map((t) => `authenticated:${t}:SELECT`),
-      'authenticated:service_categories:INSERT',
       'authenticated:service_categories:UPDATE',
       'authenticated:service_categories:DELETE',
       'authenticated:profiles:SELECT',
       'authenticated:customer_profiles:SELECT',
-      'authenticated:professional_profiles:SELECT',
       'authenticated:professional_services:SELECT',
       'authenticated:professional_services:INSERT',
       'authenticated:professional_services:DELETE',

@@ -22,22 +22,35 @@ Reporting vulnerabilities: see the root [SECURITY.md](../SECURITY.md).
 | Table | anon | authenticated (other) | owner | admin |
 |---|---|---|---|---|
 | governorates, cities, neighborhoods | R | R | R | R (writes by migration) |
-| service_categories | R active | R active | R active | R all, C, U, D |
+| service_categories | R active | R active | R active | R all, U, D (no API insert: see below) |
 | profiles | - | - | R own; U `full_name, avatar_url, phone, preferred_language` | - |
 | customer_profiles | - | - | R own; U `default_governorate_id, default_city_id` | - |
 | admin_users | - | - | - | - (service role only) |
-| professional_profiles | R published, **without** `contact_phone` / `verified_at` | R published incl. `contact_phone` | R own (draft too); U profile fields, `is_published` | R all; verification via RPC |
+| professional_profiles | R published, **never** `contact_phone` / `verified_at` | same as anon | R own (draft too); U profile fields, `is_published`; own phone via `get_my_professional_contact()` | R all rows; verification via RPC |
 | professional_services, service_areas | R when profile published | R when profile published | R, C, D own | R as above |
+| contact_reveals (rate-limit log) | - | - | - | - |
 
-Functions: `become_professional()` and `admin_set_verification()` are `SECURITY DEFINER` with a pinned `search_path`, executable by `authenticated` only (the second also checks `is_admin()`). `handle_new_user()` and `set_updated_at()` are not executable by clients.
+Functions (all `SECURITY DEFINER` ones pin `search_path = ''`; no function is callable by PUBLIC; a test enumerates exactly who can execute what):
+- `become_professional()`, `get_my_professional_contact()`, `reveal_professional_contact(uuid)`: `authenticated` only, and they refuse Supabase anonymous-auth users (JWT `is_anonymous`).
+- `admin_set_verification(uuid, text)`: `authenticated`, but checks `is_admin()` inside.
+- `is_admin()`: anon + authenticated (policies need it; it only answers about the caller).
+- trigger and helper functions are not executable by clients.
 
-## Privacy decisions
-- `profiles.phone` and customer data are private to the owner. A professional's public contact is a separate column, hidden from anonymous visitors.
-- Professional coordinates are rounded to 3 decimals (~110 m) by a trigger: approximate location only.
+## Privacy and abuse decisions (from the Codex audit, 2026-11-10)
+- `profiles.phone` and customer data are private to the owner.
+- **Contact phones cannot be scraped.** `professional_profiles.contact_phone` is not selectable by any client role. A registered user reveals one published professional's phone at a time with `reveal_professional_contact()`, limited to 40 per hour, and every reveal is logged. (The log also becomes the "contact" analytic later.)
+- **Coordinates are approximate by design:** rounded to 2 decimals (~1.1 km) by a trigger, so a home-based professional is not pinpointed. The UI must present it as an area, never a pin on a house.
+- **Verification means something:** changing the business name or contact phone withdraws a verified badge until an admin re-verifies.
+- **No half-empty public profile:** publishing requires an active category, a description (>= 20 chars), a governorate and a contact phone. Inactive categories cannot be newly assigned or published with.
+- **Categories cannot be created through the API.** A rejected INSERT still consumes an identity value, so a direct insert grant would let anyone exhaust the sequence. Creation is a migration/service-role action until the admin RPC in Phase 7. Clients hold no privileges on any sequence.
+- **Anonymous sign-ins must stay disabled** in Supabase Auth settings. If they were ever enabled, such users get the `authenticated` role; the sensitive functions already refuse them (`is_anonymous`), and a test covers it.
+- **Accepted:** anyone can list published professionals' ids (needed for browsing); no emails are exposed. The sign-up trigger must never raise (a failure blocks registration): a test feeds it hostile metadata.
 - A profile cannot be published unless it has a category, a description (>= 20 chars), a governorate and a contact phone.
 - Deleting an auth user cascades to all their rows.
 
 ## How it is tested
 `backend/tests` runs the real migrations on PGlite (Postgres compiled to WebAssembly) with a Supabase stub (roles, `auth.uid()`, the permissive default grants). Tests act as `anon` and as `authenticated` users with different JWT subjects. Structural guards fail the build if a new table lacks RLS, if the table or column privilege matrix drifts, if a definer function lacks a pinned `search_path`, or if function EXECUTE rights change. The suite was mutation-tested: removing a revoke, disabling RLS, widening a column grant, trusting metadata roles, un-pinning a search_path, exposing `contact_phone` and relaxing the publish check were each caught.
+
+The suite was mutation-tested twice (19 mutations: revokes removed, RLS disabled, column grants widened, metadata trusted, search_path unpinned, phone exposed, rate limit removed, anonymous-auth accepted, sequences left open, a leaky function added, ...); every one was caught.
 
 Limits: PGlite is not a full Supabase stack (no Auth service, Storage, PostGIS or realtime). Storage policies, Edge Functions and JWT handling need testing against a real Supabase project (blocked on issue #6). Seed names, especially Arabic, need native-speaker review.

@@ -19,7 +19,7 @@ const SUPABASE_STUB = `
   create table auth.users (
     id uuid primary key,
     email text,
-    raw_user_meta_data jsonb not null default '{}'::jsonb,
+    raw_user_meta_data jsonb default '{}'::jsonb,
     created_at timestamptz not null default now()
   );
   create function auth.uid() returns uuid language sql stable as $$
@@ -28,7 +28,14 @@ const SUPABASE_STUB = `
       (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')
     )::uuid
   $$;
+  create function auth.jwt() returns jsonb language sql stable as $$
+    select coalesce(
+      nullif(current_setting('request.jwt.claim', true), ''),
+      nullif(current_setting('request.jwt.claims', true), '')
+    )::jsonb
+  $$;
   grant usage on schema public, auth to anon, authenticated, service_role;
+  grant execute on function auth.jwt() to anon, authenticated, service_role;
   grant execute on function auth.uid() to anon, authenticated, service_role;
   alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
   alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
@@ -64,21 +71,27 @@ export async function makeAdmin(db, userId) {
  * Runs SQL the way the API would: with a database role and a JWT subject.
  * `sub` null means an authenticated role without a user (should be useless).
  */
-export function as(db, role, sub = null) {
+export function as(db, role, sub = null, claims = {}) {
   const run = async (sql, params = []) => {
     await db.query(`select set_config('request.jwt.claim.sub', $1, false)`, [sub ?? '']);
+    await db.query(`select set_config('request.jwt.claims', $1, false)`, [
+      JSON.stringify({ sub, role, ...claims }),
+    ]);
     await db.exec(`set role ${role}`);
     try {
       return await db.query(sql, params);
     } finally {
       await db.exec('reset role');
       await db.query(`select set_config('request.jwt.claim.sub', '', false)`);
+      await db.query(`select set_config('request.jwt.claims', '', false)`);
     }
   };
   return { query: run };
 }
 export const anon = (db) => as(db, 'anon');
 export const user = (db, id) => as(db, 'authenticated', id);
+/** A Supabase anonymous-auth user: `authenticated` role, is_anonymous claim. */
+export const anonymousAuthUser = (db, id) => as(db, 'authenticated', id, { is_anonymous: true });
 
 /** Asserts a query fails with a Postgres SQLSTATE (e.g. 42501, 23514). */
 export async function denies(promise, code) {
