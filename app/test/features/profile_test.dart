@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,6 +24,13 @@ const _aliProfile = AppProfile(
   fullName: 'Ali Ben Salah',
   phone: '+21620123456',
 );
+
+/// A stored pending choice, as the app writes it.
+String _pending(String email, {Duration age = Duration.zero}) => jsonEncode({
+  'type': 'professional',
+  'email': email,
+  'at': DateTime.now().subtract(age).millisecondsSinceEpoch,
+});
 
 Finder _field(String label) => find.descendant(
   of: find.ancestor(of: find.text(label), matching: find.byType(Column)).first,
@@ -139,13 +147,13 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text('Confirmez votre adresse e-mail'), findsOneWidget);
         expect(profiles.becomeProfessionalCalls, 0, reason: 'no session yet');
-        expect(c.read(pendingAccountTypeProvider), AccountType.professional);
+        expect(c.read(pendingAccountChoiceProvider)?.email, 'ali@example.tn');
 
         // The user opens the confirmation link: a session appears.
         auth.emit(_ali);
         await tester.pumpAndSettle();
         expect(profiles.becomeProfessionalCalls, 1);
-        expect(c.read(pendingAccountTypeProvider), isNull);
+        expect(c.read(pendingAccountChoiceProvider), isNull);
         auth.emit(null);
         auth.emit(_ali);
         await tester.pumpAndSettle();
@@ -180,7 +188,7 @@ void main() {
       await _tapButton(tester, 'Créer un compte');
       await tester.pumpAndSettle();
       expect(profiles.becomeProfessionalCalls, 0);
-      expect(c.read(pendingAccountTypeProvider), isNull);
+      expect(c.read(pendingAccountChoiceProvider), isNull);
     });
 
     testWidgets('a failed sign-up forgets the choice', (tester) async {
@@ -191,38 +199,161 @@ void main() {
       await _choose(tester, 'Proposer mes services');
       await _tapButton(tester, 'Créer un compte');
       await tester.pumpAndSettle();
-      expect(c.read(pendingAccountTypeProvider), isNull);
+      expect(c.read(pendingAccountChoiceProvider), isNull);
     });
 
-    testWidgets('the pending choice survives an app restart', (tester) async {
-      final c = await pumpApp(
-        tester,
-        prefs: {'pendingAccountType': 'professional'},
-      );
-      expect(c.read(pendingAccountTypeProvider), AccountType.professional);
-      final other = await pumpApp(
-        tester,
-        prefs: {'pendingAccountType': 'garbage'},
-      );
-      expect(other.read(pendingAccountTypeProvider), isNull);
-    });
+    testWidgets(
+      'a stored choice survives a restart; garbage and expired ones do not',
+      (tester) async {
+        final c = await pumpApp(
+          tester,
+          prefs: {'pendingAccountChoice': _pending('ali@example.tn')},
+        );
+        expect(c.read(pendingAccountChoiceProvider)?.email, 'ali@example.tn');
+        final garbage = await pumpApp(
+          tester,
+          prefs: {'pendingAccountChoice': 'garbage'},
+        );
+        expect(garbage.read(pendingAccountChoiceProvider), isNull);
+        final old = await pumpApp(
+          tester,
+          prefs: {
+            'pendingAccountChoice': _pending(
+              'ali@example.tn',
+              age: const Duration(days: 8),
+            ),
+          },
+        );
+        expect(
+          old.read(pendingAccountChoiceProvider),
+          isNull,
+          reason: 'expired after 7 days',
+        );
+      },
+    );
 
-    testWidgets('if setup fails (offline), the choice stays pending', (
-      tester,
-    ) async {
+    testWidgets('an expired choice is never applied', (tester) async {
       final auth = FakeAuthRepository();
-      final profiles = FakeProfileRepository(profile: _aliProfile)
-        ..failNext = ProfileFailure.network;
-      final c = await pumpApp(
+      final profiles = FakeProfileRepository(profile: _aliProfile);
+      await pumpApp(
         tester,
         auth: auth,
         profiles: profiles,
-        prefs: {'pendingAccountType': 'professional'},
+        prefs: {
+          'pendingAccountChoice': _pending(
+            'ali@example.tn',
+            age: const Duration(days: 30),
+          ),
+        },
       );
       auth.emit(_ali);
       await tester.pumpAndSettle();
-      expect(profiles.becomeProfessionalCalls, 1);
-      expect(c.read(pendingAccountTypeProvider), AccountType.professional);
+      expect(profiles.becomeProfessionalCalls, 0);
+    });
+
+    testWidgets(
+      'only the account that made the choice can act on it (case-insensitive email)',
+      (tester) async {
+        final auth = FakeAuthRepository();
+        final profiles = FakeProfileRepository(
+          profile: const AppProfile(id: 'u2'),
+        );
+        final c = await pumpApp(
+          tester,
+          auth: auth,
+          profiles: profiles,
+          prefs: {'pendingAccountChoice': _pending('ali@example.tn')},
+        );
+        // A different person signs in on this device first.
+        auth.emit(const AuthUser(id: 'u2', email: 'sami@example.tn'));
+        await tester.pumpAndSettle();
+        expect(profiles.becomeProfessionalCalls, 0, reason: 'not their choice');
+        expect(
+          c.read(pendingAccountChoiceProvider)?.email,
+          'ali@example.tn',
+          reason: 'left untouched',
+        );
+        // Then the right person (different letter case) signs in.
+        profiles.profile = _aliProfile;
+        auth.emit(const AuthUser(id: 'u1', email: 'ALI@Example.TN'));
+        await tester.pumpAndSettle();
+        expect(profiles.becomeProfessionalCalls, 1);
+        expect(c.read(pendingAccountChoiceProvider), isNull);
+      },
+    );
+
+    testWidgets(
+      'if setup fails (offline), the choice stays pending for that account',
+      (tester) async {
+        final auth = FakeAuthRepository();
+        final profiles = FakeProfileRepository(profile: _aliProfile)
+          ..failNext = ProfileFailure.network;
+        final c = await pumpApp(
+          tester,
+          auth: auth,
+          profiles: profiles,
+          prefs: {'pendingAccountChoice': _pending('ali@example.tn')},
+        );
+        auth.emit(_ali);
+        await tester.pumpAndSettle();
+        expect(profiles.becomeProfessionalCalls, 1);
+        expect(c.read(pendingAccountChoiceProvider)?.email, 'ali@example.tn');
+      },
+    );
+
+    testWidgets(
+      'a persistence failure does not lose the choice for this session',
+      (tester) async {
+        final c = await pumpApp(tester);
+        await c
+            .read(pendingAccountChoiceProvider.notifier)
+            .remember(AccountType.professional, ' Ali@Example.tn ');
+        expect(
+          c.read(pendingAccountChoiceProvider)?.email,
+          'ali@example.tn',
+          reason: 'trimmed and lower-cased',
+        );
+        await c
+            .read(pendingAccountChoiceProvider.notifier)
+            .remember(AccountType.customer, 'ali@example.tn');
+        expect(
+          c.read(pendingAccountChoiceProvider),
+          isNull,
+          reason: 'picking customer forgets it',
+        );
+      },
+    );
+  });
+
+  group('PendingAccountChoice parsing', () {
+    test('accepts only well-formed professional choices', () {
+      expect(
+        PendingAccountChoice.tryParse(_pending('a@b.co'))?.email,
+        'a@b.co',
+      );
+      for (final bad in [
+        null,
+        '',
+        'not json',
+        '[]',
+        '{"type":"admin","email":"a@b.co","at":1}',
+        '{"type":"professional","email":"","at":1}',
+        '{"type":"professional","email":"a@b.co"}',
+        '{"type":"professional","email":3,"at":1}',
+        '{"type":"professional","email":"a@b.co","at":"x"}',
+      ]) {
+        expect(PendingAccountChoice.tryParse(bad), isNull, reason: '$bad');
+      }
+    });
+
+    test('isFor ignores case and whitespace but not the address', () {
+      final c = PendingAccountChoice(
+        email: 'ali@example.tn',
+        createdAt: DateTime.now(),
+      );
+      expect(c.isFor(' ALI@example.TN '), isTrue);
+      expect(c.isFor('sami@example.tn'), isFalse);
+      expect(c.isFor(null), isFalse);
     });
   });
 
@@ -318,6 +449,78 @@ void main() {
       expect(find.text('Professionnel'), findsNothing);
       expect(find.text('Devenir professionnel'), findsOneWidget);
       expect(c.read(myProfileProvider).value?.id, 'u2');
+    });
+
+    testWidgets(
+      "while the next account's profile loads, nothing of the previous one shows",
+      (tester) async {
+        final auth = FakeAuthRepository(signedIn: _ali);
+        final profiles = FakeProfileRepository(
+          profile: _aliProfile.copyWith(isProfessional: true),
+        );
+        await pumpApp(tester, auth: auth, profiles: profiles);
+        await tester.tap(find.text('Profil'));
+        await tester.pumpAndSettle();
+        expect(find.text('Professionnel'), findsOneWidget);
+        // Account B signs in; B's profile is slow, and then fails.
+        profiles.gate = Completer<void>();
+        auth.emit(const AuthUser(id: 'u2', email: 'sami@example.tn'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 50));
+        expect(
+          find.text('Professionnel'),
+          findsNothing,
+          reason: 'loading: no stale badge',
+        );
+        expect(find.text('Devenir professionnel'), findsNothing);
+        profiles.failNext = ProfileFailure.network;
+        profiles.gate!.complete();
+        await tester.pumpAndSettle();
+        expect(
+          find.text('Professionnel'),
+          findsNothing,
+          reason: 'failed: still no stale badge',
+        );
+        expect(
+          find.text('Connecté en tant que sami@example.tn'),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets('signing out clears the profile immediately', (tester) async {
+      final auth = FakeAuthRepository(signedIn: _ali);
+      final profiles = FakeProfileRepository(
+        profile: _aliProfile.copyWith(isProfessional: true),
+      );
+      final c = await pumpApp(tester, auth: auth, profiles: profiles);
+      await tester.tap(find.text('Profil'));
+      await tester.pumpAndSettle();
+      auth.emit(null);
+      await tester.pumpAndSettle();
+      expect(find.text('Professionnel'), findsNothing);
+      expect(c.read(visibleProfileProvider), isNull);
+    });
+
+    testWidgets('after saving, the header shows the saved name', (
+      tester,
+    ) async {
+      final profiles = FakeProfileRepository(profile: _aliProfile);
+      await pumpApp(
+        tester,
+        auth: FakeAuthRepository(signedIn: _ali),
+        profiles: profiles,
+      );
+      await tester.tap(find.text('Profil'));
+      await tester.pumpAndSettle();
+      expect(find.text('Ali Ben Salah'), findsOneWidget);
+      await tester.tap(find.text('Modifier le profil'));
+      await tester.pumpAndSettle();
+      await tester.enterText(_field('Nom complet'), 'Nouveau Nom');
+      await _tapButton(tester, 'Enregistrer');
+      await tester.pumpAndSettle();
+      expect(find.text('Nouveau Nom'), findsOneWidget);
+      expect(find.text('Ali Ben Salah'), findsNothing);
     });
 
     testWidgets('a profile that belongs to someone else is rejected', (

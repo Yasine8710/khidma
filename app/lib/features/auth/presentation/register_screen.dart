@@ -42,20 +42,34 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     super.dispose();
   }
 
+  bool _submitting = false;
+
   Future<void> _submit() async {
-    if (!(_form.currentState?.validate() ?? false)) return;
+    // One submission at a time, from the first await to the last.
+    if (_submitting || !(_form.currentState?.validate() ?? false)) return;
+    _submitting = true;
+    try {
+      await _submitLocked();
+    } finally {
+      _submitting = false;
+    }
+  }
+
+  Future<void> _submitLocked() async {
     setState(() => _failure = null);
     final email = _email.text.trim();
     // Remember the choice before signing up: with no email confirmation the
     // session (and the account setup that reads this) starts immediately.
-    await ref.read(pendingAccountTypeProvider.notifier).set(_type);
+    await ref
+        .read(pendingAccountChoiceProvider.notifier)
+        .remember(_type, email);
     final result = await ref
         .read(authActionsProvider.notifier)
         .signUp(email: email, password: _password.text, fullName: _name.text);
     if (!mounted) return;
     TextInput.finishAutofillContext(shouldSave: result.isOk);
     if (!result.isOk) {
-      await ref.read(pendingAccountTypeProvider.notifier).set(null);
+      await ref.read(pendingAccountChoiceProvider.notifier).forget();
       if (!mounted) return;
       setState(() => _failure = result.failure);
     } else if (result.outcome == SignUpOutcome.signedIn) {

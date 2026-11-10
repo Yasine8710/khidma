@@ -35,14 +35,16 @@ ProfileFailure mapProfileException(Object error) {
 /// `profiles` through PostgREST. Row Level Security limits every call to the
 /// caller's own row; the code does not rely on that alone and filters by id.
 class SupabaseProfileRepository implements ProfileRepository {
-  SupabaseProfileRepository(this._client);
+  SupabaseProfileRepository(this._client, {String? Function()? userId})
+    : _userId = userId ?? (() => _client.auth.currentUser?.id);
   final sb.SupabaseClient _client;
+  final String? Function() _userId;
 
   static const _columns =
       'id, full_name, phone, preferred_language, is_customer, is_professional';
 
   String get _uid {
-    final id = _client.auth.currentUser?.id;
+    final id = _userId();
     if (id == null) throw const ProfileError(ProfileFailure.notSignedIn);
     return id;
   }

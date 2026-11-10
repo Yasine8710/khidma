@@ -78,6 +78,7 @@ class _Option extends StatelessWidget {
     final fg = selected ? scheme.onPrimaryContainer : scheme.onSurface;
     return Semantics(
       inMutuallyExclusiveGroup: true,
+      enabled: onTap != null,
       checked: selected,
       button: true,
       label: '$title. $body',

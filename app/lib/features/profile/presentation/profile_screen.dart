@@ -86,6 +86,7 @@ class _AccountCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final user = ref.watch(currentUserProvider);
+    final myProfile = ref.watch(visibleProfileProvider);
     final busy = ref.watch(authActionsProvider);
     final text = Theme.of(context).textTheme;
     final muted = Theme.of(context).colorScheme.onSurfaceVariant;
@@ -120,8 +121,13 @@ class _AccountCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (user.fullName != null && user.fullName!.isNotEmpty)
-            Text(user.fullName!, style: text.titleMedium),
+          // The saved profile name wins over the sign-up metadata, so an edit
+          // shows up here right away.
+          if ((myProfile?.fullName ?? user.fullName)?.isNotEmpty ?? false)
+            Text(
+              (myProfile?.fullName ?? user.fullName)!,
+              style: text.titleMedium,
+            ),
           Text(
             l10n.signedInAs(user.email),
             style: text.bodyMedium?.copyWith(color: muted),
@@ -162,7 +168,7 @@ class _ProfessionalSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final profile = ref.watch(myProfileProvider).value;
+    final profile = ref.watch(visibleProfileProvider);
     final busy = ref.watch(profileActionsProvider);
     if (profile == null) return const SizedBox.shrink();
     final text = Theme.of(context).textTheme;

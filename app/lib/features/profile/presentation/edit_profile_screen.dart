@@ -32,8 +32,17 @@ class EditProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final profile = ref.watch(myProfileProvider);
-    return profile.when(
+    final async = ref.watch(myProfileProvider);
+    final mine = ref.watch(visibleProfileProvider);
+    // While the profile reloads (e.g. the account just changed) show progress,
+    // never the previous account's form.
+    if (async.isLoading && mine == null) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+    return async.when(
       loading: () => Scaffold(
         appBar: AppBar(),
         body: const Center(child: CircularProgressIndicator()),
@@ -45,13 +54,17 @@ class EditProfileScreen extends ConsumerWidget {
           onRetry: () => ref.invalidate(myProfileProvider),
         ),
       ),
-      data: (p) => p == null ? const SizedBox.shrink() : _EditForm(profile: p),
+      // Keyed by account, and only ever the *current* account's profile, so
+      // one person's name or phone can never be saved into another's.
+      data: (p) => (p == null || mine == null)
+          ? const SizedBox.shrink()
+          : _EditForm(key: ValueKey(mine.id), profile: mine),
     );
   }
 }
 
 class _EditForm extends ConsumerStatefulWidget {
-  const _EditForm({required this.profile});
+  const _EditForm({super.key, required this.profile});
   final AppProfile profile;
 
   @override
