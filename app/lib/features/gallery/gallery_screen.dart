@@ -5,7 +5,9 @@ import '../../core/format/tunisian_phone.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../shared/widgets/aligned_text.dart';
 import '../../shared/widgets/app_avatar.dart';
+import '../../shared/widgets/app_bottom_nav.dart';
 import '../../shared/widgets/app_badge.dart';
 import '../../shared/widgets/app_button.dart';
 import '../../shared/widgets/app_card.dart';
@@ -18,7 +20,8 @@ import '../../shared/widgets/rating_stars.dart';
 import '../../shared/widgets/section_header.dart';
 import '../../shared/widgets/skeleton.dart';
 
-/// Developer-only catalogue of every shared component, token and state, for
+/// Developer-only catalogue of the shared components (all except AppShell and
+/// NotFoundScreen, which are whole-screen wrappers), tokens and states, for
 /// visual review in LTR/RTL and light/dark. Sample text is demo data; it is
 /// not localized on purpose (it only needs to exercise both scripts).
 class GalleryScreen extends StatelessWidget {
@@ -40,6 +43,7 @@ class GalleryScreen extends StatelessWidget {
           _Section('Text fields', _FieldsSection(s)),
           _Section('Chips', _ChipsSection(s)),
           _Section('Cards, rating, avatar, badges', _CardsSection(s)),
+          _Section('Navigation and text helpers', const _NavSection()),
           _Section('Loading', const _LoadingSection()),
           _Section('Empty and error states', const _StatesSection()),
           const SizedBox(height: AppSpacing.xxl),
@@ -168,11 +172,16 @@ class _TypeSection extends StatelessWidget {
       children: [
         Text(s.type, style: t.displaySmall),
         Text(s.type, style: t.headlineMedium),
+        Text(s.type, style: t.headlineSmall),
         Text(s.type, style: t.titleLarge),
         Text(s.type, style: t.titleMedium),
+        Text(s.type, style: t.titleSmall),
         Text(s.body, style: t.bodyLarge),
         Text(s.body, style: t.bodyMedium),
         Text(s.body, style: t.bodySmall),
+        Text(s.label, style: t.labelLarge),
+        Text(s.label, style: t.labelMedium),
+        Text(s.label, style: t.labelSmall),
       ],
     );
   }
@@ -199,6 +208,26 @@ class _ButtonsSection extends StatelessWidget {
         AppButton(label: s.action, onPressed: () {}, isLoading: true),
         const SizedBox(height: AppSpacing.sm),
         AppButton(label: s.action, onPressed: null),
+        const SizedBox(height: AppSpacing.sm),
+        AppButton(
+          label: s.action,
+          onPressed: () {},
+          isLoading: true,
+          variant: AppButtonVariant.secondary,
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        AppButton(
+          label: s.action,
+          onPressed: null,
+          variant: AppButtonVariant.secondary,
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        AppButton(
+          label: s.action,
+          onPressed: null,
+          variant: AppButtonVariant.text,
+          expand: false,
+        ),
         const SizedBox(height: AppSpacing.sm),
         // Button groups use Wrap so they flow to a second line on narrow
         // screens or with large text instead of overflowing.
@@ -249,6 +278,7 @@ class _FieldsSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.lg),
         AppTextField(
+          key: const Key('gallery-phone'),
           label: s.rtl ? 'الهاتف' : 'Téléphone',
           hint: TunisianPhone.display('20123456'),
           keyboardType: TextInputType.phone,
@@ -262,6 +292,12 @@ class _FieldsSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.lg),
         AppTextField(label: s.label, enabled: false),
+        const SizedBox(height: AppSpacing.lg),
+        AppTextField(
+          label: s.rtl ? 'وصف المشكلة' : 'Description du problème',
+          helper: s.rtl ? 'أضف تفاصيل مفيدة' : 'Ajoutez des détails utiles',
+          maxLines: 3,
+        ),
       ],
     );
   }
@@ -290,6 +326,12 @@ class _ChipsSectionState extends State<_ChipsSection> {
             selected: i == _selected,
             onSelected: (_) => setState(() => _selected = i),
           ),
+        AppChip(
+          label: widget.s.rtl ? 'متاح الآن' : 'Disponible',
+          icon: Icons.bolt_rounded,
+          selected: false,
+          onSelected: (_) {},
+        ),
       ],
     );
   }
@@ -361,6 +403,65 @@ class _CardsSection extends StatelessWidget {
             const AppBadge(label: 'Neutral'),
             const AppBadge(label: 'Warning', tone: BadgeTone.warning),
             const AppBadge(label: 'Error', tone: BadgeTone.error),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _NavSection extends StatelessWidget {
+  const _NavSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final rtl = Localizations.localeOf(context).languageCode == 'ar';
+    final labels = rtl
+        ? ['الرئيسية', 'طلباتي', 'الرسائل', 'حسابي']
+        : ['Accueil', 'Demandes', 'Messages', 'Profil'];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          child: AppBottomNav(
+            currentIndex: 1,
+            onSelected: (_) {},
+            items: [
+              NavItem(Icons.home_outlined, Icons.home_rounded, labels[0]),
+              NavItem(
+                Icons.assignment_outlined,
+                Icons.assignment_rounded,
+                labels[1],
+              ),
+              NavItem(
+                Icons.chat_bubble_outline_rounded,
+                Icons.chat_bubble_rounded,
+                labels[2],
+              ),
+              NavItem(
+                Icons.person_outline_rounded,
+                Icons.person_rounded,
+                labels[3],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        // A value forced LTR inside an RTL screen still aligns to the start.
+        const AlignedText('+216 20 123 456', textDirection: TextDirection.ltr),
+        const SizedBox(height: AppSpacing.lg),
+        const Row(
+          children: [
+            AppAvatar(name: 'Karim Ben Salah', size: 40),
+            SizedBox(width: AppSpacing.sm),
+            AppAvatar(name: 'Meriem', size: 40),
+            SizedBox(width: AppSpacing.sm),
+            AppAvatar(
+              name: 'Sami Gharbi',
+              size: 40,
+              imageUrl: 'http://localhost:1/missing.png',
+            ),
           ],
         ),
       ],

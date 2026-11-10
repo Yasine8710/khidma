@@ -1,3 +1,6 @@
+@Tags(['golden'])
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,6 +11,10 @@ import '../test_helpers.dart';
 /// Golden images are rendered with the bundled fonts, so text is real, not
 /// placeholder boxes. Glyph anti-aliasing differs slightly between
 /// operating systems, so a small pixel difference is tolerated.
+///
+/// Tagged `golden`: CI (Linux) excludes them until baselines are generated
+/// there. Refresh locally with
+///   flutter test --update-goldens --tags golden
 class _TolerantComparator extends LocalFileComparator {
   _TolerantComparator(super.testFile, this.tolerance);
 
@@ -19,8 +26,12 @@ class _TolerantComparator extends LocalFileComparator {
       imageBytes,
       await getGoldenBytes(golden),
     );
-    if (result.passed || result.diffPercent <= tolerance) return true;
-    throw FlutterError(await generateFailureOutput(result, golden, basedir));
+    try {
+      if (result.passed || result.diffPercent <= tolerance) return true;
+      throw FlutterError(await generateFailureOutput(result, golden, basedir));
+    } finally {
+      result.dispose();
+    }
   }
 }
 
@@ -28,16 +39,28 @@ Widget _gallery(String lang, {required bool dark}) =>
     bareApp(const GalleryScreen(), lang: lang, dark: dark);
 
 void main() {
+  late GoldenFileComparator previous;
+
   setUpAll(() async {
+    previous = goldenFileComparator;
     final current = goldenFileComparator as LocalFileComparator;
     goldenFileComparator = _TolerantComparator(
-      Uri.parse('${current.basedir}gallery_golden_test.dart'),
+      current.basedir.resolve('gallery_golden_test.dart'),
       0.005, // 0.5% of pixels
     );
     await loadAppFonts();
   });
 
-  for (final c in [('fr', false), ('ar', true), ('en', false)]) {
+  tearDownAll(() => goldenFileComparator = previous);
+
+  for (final c in [
+    ('fr', false),
+    ('fr', true),
+    ('ar', false),
+    ('ar', true),
+    ('en', false),
+    ('en', true),
+  ]) {
     final (lang, dark) = c;
     final name = 'gallery_${lang}_${dark ? 'dark' : 'light'}';
     testWidgets('golden: $name', (tester) async {

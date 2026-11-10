@@ -72,8 +72,69 @@ void main() {
     await tester.pumpWidget(bareApp(const GalleryScreen(), lang: 'ar'));
     await tester.pump(const Duration(milliseconds: 50));
     final field = tester.widget<TextField>(
-      find.widgetWithText(TextField, '').at(2),
+      find.descendant(
+        of: find.byKey(const Key('gallery-phone')),
+        matching: find.byType(TextField),
+      ),
     );
     expect(field.decoration?.hintTextDirection, TextDirection.ltr);
+  });
+
+  testWidgets(
+    'works on a normal phone: scrolls, chips select, password toggles',
+    (tester) async {
+      tester.view.physicalSize = const Size(390 * 2, 844 * 2);
+      tester.view.devicePixelRatio = 2;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(bareApp(const GalleryScreen()));
+      await tester.pump(const Duration(milliseconds: 50));
+      final list = find.byType(Scrollable).first;
+
+      // Every section is reachable by scrolling.
+      for (final section in ['COLORS', 'CHIPS', 'EMPTY AND ERROR STATES']) {
+        await tester.dragUntilVisible(
+          find.text(section),
+          list,
+          const Offset(0, -300),
+        );
+        expect(find.text(section), findsOneWidget);
+      }
+      await tester.dragUntilVisible(
+        find.text('Climatisation'),
+        list,
+        const Offset(0, 300),
+      );
+      await tester.tap(find.text('Climatisation'));
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+
+      await tester.dragUntilVisible(
+        find.byTooltip('Afficher le mot de passe'),
+        list,
+        const Offset(0, 300),
+      );
+      await tester.ensureVisible(find.byTooltip('Afficher le mot de passe'));
+      await tester.pump();
+      await tester.tap(find.byTooltip('Afficher le mot de passe'));
+      await tester.pump();
+      expect(find.byTooltip('Masquer le mot de passe'), findsOneWidget);
+    },
+  );
+
+  testWidgets('enlarged text (1.5x) still renders every section', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(390 * 2, 6000 * 2);
+    tester.view.devicePixelRatio = 2;
+    tester.platformDispatcher.textScaleFactorTestValue = 1.5;
+    addTearDown(() {
+      tester.view.reset();
+      tester.platformDispatcher.clearTextScaleFactorTestValue();
+    });
+    for (final lang in ['fr', 'ar']) {
+      await tester.pumpWidget(bareApp(const GalleryScreen(), lang: lang));
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(tester.takeException(), isNull, reason: lang);
+    }
   });
 }
