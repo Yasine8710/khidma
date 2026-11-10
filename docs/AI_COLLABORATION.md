@@ -5,7 +5,7 @@
 Claude plans → delegates to Codex (review or isolated-branch implementation) → Claude reviews/integrates → tests → docs. No two agents edit the same files; use branches/worktrees.
 
 ## Status
-- Phase: 1 (design system). Slices 1.0-1.4 merged to develop; next 1.5 brand assets (#2), 1.6 gallery (#3), 1.7 gate (#4).
+- Phase: 1 (design system). Slices 1.0-1.5 merged to develop; next 1.6 gallery (#3), 1.7 gate (#4).
 - Claude: repo, license, docs, Flutter bootstrap
 - Codex: architecture review DONE (raw output: docs/reviews-codex-phase0.md)
 - Accepted from Codex: manual Riverpod, lifecycle state machine, atomic accept, permission matrix, multi-role flags, outbox notifications, privacy split, early signed-iOS proof, Google Maps pending benchmark.
@@ -58,3 +58,13 @@ No redirect loops or disposal problems found. Fixed: first-run redirect now keep
 Bug found by our own new test (not by Codex): `animateToPage` asserts on `Duration.zero`, so Next/Back would have thrown with reduce-motion on; now uses `jumpToPage` in that case.
 Deferred: direction-aware arrow-key shortcuts (Back button covers keyboard use).
 Tests: 103 pass, analyze clean.
+
+## Phase 1, slice 1.5 (brand assets): Codex review, 2026-11-10
+Mark: doorway arch (Sidi Bou Said) with a saffron lantern dot; one geometry in `scripts/make_brand_assets.py`, mirrored in the Dart painter and SVG (a test fails if they drift). Codex verified dark-mode contrast of the mark (7.1-8.7:1) and that iOS icons are opaque and correctly sized. Fixed:
+- `flutter_launcher_icons` rewrote an Xcode build setting to `AppIcon` (invalid): restored, guarded by a test.
+- Generated web viewport disabled user zoom: removed, guarded by a test.
+- Added Android monochrome (themed icon) layer and separately padded web maskable icons (`--maskable` step), with decoded-pixel safe-zone tests (maskable 40% circle, adaptive 66dp zone after the 16% inset, Android 12 splash circle).
+- Names standardized to "Khidma" (web manifest, title, Android label); web description replaced; Arabic locale gets an Arabic logo semantic name; Pillow pinned in `scripts/requirements.txt`.
+Also found by looking at the screens: onboarding stretched edge to edge on wide screens (now max 520 px) and the logo disappeared on screens under 700 px high (now only under 560 px or large text).
+Regeneration order and the two post-generator fixes are documented in the script and pubspec.
+Tests: 124 pass, analyze clean. Web build compiles. Not verified: real Android/iOS rendering of the icons (no device/Mac).
