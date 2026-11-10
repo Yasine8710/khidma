@@ -3,8 +3,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/l10n/locale_controller.dart';
+import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
-import 'features/settings/presentation/foundation_screen.dart';
+import 'core/theme/theme_mode_controller.dart';
 import 'l10n/generated/app_localizations.dart';
 
 class KhidmaApp extends ConsumerWidget {
@@ -13,7 +14,7 @@ class KhidmaApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
-    return MaterialApp(
+    return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appName,
       debugShowCheckedModeBanner: false,
       locale: locale,
@@ -26,7 +27,8 @@ class KhidmaApp extends ConsumerWidget {
       ],
       theme: AppTheme.light(locale),
       darkTheme: AppTheme.dark(locale),
-      home: const FoundationScreen(),
+      themeMode: ref.watch(themeModeProvider),
+      routerConfig: ref.watch(routerProvider),
     );
   }
 }

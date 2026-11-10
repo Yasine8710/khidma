@@ -10,8 +10,27 @@
   "professionalsCount": "{count, plural, =0{Aucun professionnel} =1{1 professionnel} other{{count} professionnels}}",
   "@professionalsCount": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
-  "phoneInvalid": "Numéro tunisien invalide. Exemple : +216 20 123 456"
+  "phoneInvalid": "Numéro tunisien invalide. Exemple : +216 20 123 456",
+  "navHome": "Accueil",
+  "navRequests": "Demandes",
+  "navMessages": "Messages",
+  "navProfile": "Profil",
+  "homeEmptyTitle": "Les professionnels arrivent bientôt",
+  "homeEmptyBody": "La recherche et les catégories de services seront disponibles ici.",
+  "requestsEmptyTitle": "Aucune demande pour l'instant",
+  "requestsEmptyBody": "Vos demandes de devis apparaîtront ici.",
+  "messagesEmptyTitle": "Aucun message",
+  "messagesEmptyBody": "Vos conversations avec les professionnels apparaîtront ici.",
+  "themeTitle": "Apparence",
+  "themeSystem": "Automatique",
+  "themeLight": "Clair",
+  "themeDark": "Sombre",
+  "notFoundTitle": "Page introuvable",
+  "notFoundBody": "Cette page n'existe pas ou a été déplacée.",
+  "backToHome": "Retour à l'accueil"
 }

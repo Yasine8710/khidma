@@ -47,4 +47,55 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get phoneInvalid => 'رقم هاتف تونسي غير صالح. مثال: ‎+216 20 123 456';
+
+  @override
+  String get navHome => 'الرئيسية';
+
+  @override
+  String get navRequests => 'طلباتي';
+
+  @override
+  String get navMessages => 'الرسائل';
+
+  @override
+  String get navProfile => 'حسابي';
+
+  @override
+  String get homeEmptyTitle => 'الحرفيون قادمون قريبًا';
+
+  @override
+  String get homeEmptyBody => 'سيتوفر البحث وفئات الخدمات هنا.';
+
+  @override
+  String get requestsEmptyTitle => 'لا توجد طلبات حتى الآن';
+
+  @override
+  String get requestsEmptyBody => 'ستظهر طلبات عروض الأسعار هنا.';
+
+  @override
+  String get messagesEmptyTitle => 'لا توجد رسائل';
+
+  @override
+  String get messagesEmptyBody => 'ستظهر محادثاتك مع الحرفيين هنا.';
+
+  @override
+  String get themeTitle => 'المظهر';
+
+  @override
+  String get themeSystem => 'تلقائي';
+
+  @override
+  String get themeLight => 'فاتح';
+
+  @override
+  String get themeDark => 'داكن';
+
+  @override
+  String get notFoundTitle => 'الصفحة غير موجودة';
+
+  @override
+  String get notFoundBody => 'هذه الصفحة غير موجودة أو تم نقلها.';
+
+  @override
+  String get backToHome => 'العودة إلى الرئيسية';
 }

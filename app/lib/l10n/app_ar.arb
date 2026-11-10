@@ -8,5 +8,22 @@
   "languageEnglish": "English",
   "priceOnQuote": "حسب عرض السعر",
   "professionalsCount": "{count, plural, =0{لا يوجد حرفيون} =1{حرفي واحد} =2{حرفيان} few{{count} حرفيين} many{{count} حرفيًا} other{{count} حرفي}}",
-  "phoneInvalid": "رقم هاتف تونسي غير صالح. مثال: ‎+216 20 123 456"
+  "phoneInvalid": "رقم هاتف تونسي غير صالح. مثال: ‎+216 20 123 456",
+  "navHome": "الرئيسية",
+  "navRequests": "طلباتي",
+  "navMessages": "الرسائل",
+  "navProfile": "حسابي",
+  "homeEmptyTitle": "الحرفيون قادمون قريبًا",
+  "homeEmptyBody": "سيتوفر البحث وفئات الخدمات هنا.",
+  "requestsEmptyTitle": "لا توجد طلبات حتى الآن",
+  "requestsEmptyBody": "ستظهر طلبات عروض الأسعار هنا.",
+  "messagesEmptyTitle": "لا توجد رسائل",
+  "messagesEmptyBody": "ستظهر محادثاتك مع الحرفيين هنا.",
+  "themeTitle": "المظهر",
+  "themeSystem": "تلقائي",
+  "themeLight": "فاتح",
+  "themeDark": "داكن",
+  "notFoundTitle": "الصفحة غير موجودة",
+  "notFoundBody": "هذه الصفحة غير موجودة أو تم نقلها.",
+  "backToHome": "العودة إلى الرئيسية"
 }

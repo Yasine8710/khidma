@@ -45,4 +45,57 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get phoneInvalid =>
       'Numéro tunisien invalide. Exemple : +216 20 123 456';
+
+  @override
+  String get navHome => 'Accueil';
+
+  @override
+  String get navRequests => 'Demandes';
+
+  @override
+  String get navMessages => 'Messages';
+
+  @override
+  String get navProfile => 'Profil';
+
+  @override
+  String get homeEmptyTitle => 'Les professionnels arrivent bientôt';
+
+  @override
+  String get homeEmptyBody =>
+      'La recherche et les catégories de services seront disponibles ici.';
+
+  @override
+  String get requestsEmptyTitle => 'Aucune demande pour l\'instant';
+
+  @override
+  String get requestsEmptyBody => 'Vos demandes de devis apparaîtront ici.';
+
+  @override
+  String get messagesEmptyTitle => 'Aucun message';
+
+  @override
+  String get messagesEmptyBody =>
+      'Vos conversations avec les professionnels apparaîtront ici.';
+
+  @override
+  String get themeTitle => 'Apparence';
+
+  @override
+  String get themeSystem => 'Automatique';
+
+  @override
+  String get themeLight => 'Clair';
+
+  @override
+  String get themeDark => 'Sombre';
+
+  @override
+  String get notFoundTitle => 'Page introuvable';
+
+  @override
+  String get notFoundBody => 'Cette page n\'existe pas ou a été déplacée.';
+
+  @override
+  String get backToHome => 'Retour à l\'accueil';
 }

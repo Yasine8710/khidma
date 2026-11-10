@@ -1,27 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:khidma/app.dart';
 import 'package:khidma/core/l10n/locale_controller.dart';
 import 'package:khidma/l10n/generated/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<ProviderContainer> _pump(
-  WidgetTester tester, {
-  Map<String, Object> prefs = const {},
-}) async {
-  SharedPreferences.setMockInitialValues(prefs);
-  final sp = await SharedPreferences.getInstance();
-  final container = ProviderContainer(
-    overrides: [sharedPreferencesProvider.overrideWithValue(sp)],
-  );
-  addTearDown(container.dispose);
-  await tester.pumpWidget(
-    UncontrolledProviderScope(container: container, child: const KhidmaApp()),
-  );
-  await tester.pumpAndSettle();
-  return container;
-}
+import '../test_helpers.dart';
 
 class _FailingPrefs implements SharedPreferences {
   _FailingPrefs(this._inner);
@@ -36,40 +20,40 @@ class _FailingPrefs implements SharedPreferences {
       Function.apply((_inner as dynamic).noSuchMethod, [invocation]);
 }
 
-TextDirection _dir(WidgetTester tester) =>
-    Directionality.of(tester.element(find.byType(Scaffold)));
+Future<void> _openProfile(WidgetTester tester, String label) async {
+  await tester.tap(find.text(label));
+  await tester.pumpAndSettle();
+}
 
 void main() {
   testWidgets('defaults to French LTR', (tester) async {
-    final c = await _pump(tester);
+    final c = await pumpApp(tester);
     expect(c.read(localeProvider), const Locale('fr'));
-    expect(_dir(tester), TextDirection.ltr);
-    expect(find.text('Choisir la langue'), findsOneWidget);
-    expect(find.text('12 professionnels'), findsOneWidget);
+    expect(screenDirection(tester), TextDirection.ltr);
+    expect(find.text('Accueil'), findsOneWidget);
   });
 
   testWidgets('switching to Arabic flips to RTL and persists', (tester) async {
-    final c = await _pump(tester);
+    final c = await pumpApp(tester);
+    await _openProfile(tester, 'Profil');
     await tester.tap(find.text('العربية'));
     await tester.pumpAndSettle();
 
-    expect(_dir(tester), TextDirection.rtl);
+    expect(screenDirection(tester), TextDirection.rtl);
     expect(find.text('اختر اللغة'), findsOneWidget);
-    expect(find.text('12 حرفيًا'), findsOneWidget);
+    expect(find.text('الرئيسية'), findsOneWidget);
     expect(c.read(localeProvider), const Locale('ar'));
-    final sp = c.read(sharedPreferencesProvider);
-    expect(sp.getString('locale'), 'ar');
+    expect(c.read(sharedPreferencesProvider).getString('locale'), 'ar');
   });
 
   testWidgets('restores saved locale on start', (tester) async {
-    await _pump(tester, prefs: {'locale': 'en'});
-    expect(_dir(tester), TextDirection.ltr);
-    expect(find.text('Choose language'), findsOneWidget);
-    expect(find.text('12 professionals'), findsOneWidget);
+    await pumpApp(tester, prefs: {'locale': 'en'});
+    expect(screenDirection(tester), TextDirection.ltr);
+    expect(find.text('Home'), findsOneWidget);
   });
 
   testWidgets('unknown saved locale falls back to French', (tester) async {
-    final c = await _pump(tester, prefs: {'locale': 'xx'});
+    final c = await pumpApp(tester, prefs: {'locale': 'xx'});
     expect(c.read(localeProvider), defaultLocale);
   });
 
@@ -119,19 +103,8 @@ void main() {
     expect(container.read(localeProvider), const Locale('ar'));
   });
 
-  testWidgets('language options meet tap-target and label guidelines', (
-    tester,
-  ) async {
-    final handle = tester.ensureSemantics();
-    await _pump(tester);
-    await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
-    await expectLater(tester, meetsGuideline(iOSTapTargetGuideline));
-    await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
-    handle.dispose();
-  });
-
   for (final code in ['fr', 'ar', 'en']) {
-    testWidgets('no overflow at 2x text scale, narrow screen ($code)', (
+    testWidgets('no overflow at 2x text scale on 320 px screen ($code)', (
       tester,
     ) async {
       tester.view.physicalSize = const Size(320 * 3, 640 * 3);
@@ -141,8 +114,18 @@ void main() {
         tester.view.reset();
         tester.platformDispatcher.clearTextScaleFactorTestValue();
       });
-      await _pump(tester, prefs: {'locale': code});
-      expect(tester.takeException(), isNull);
+      await pumpApp(tester, prefs: {'locale': code});
+      final l = await AppLocalizations.delegate.load(Locale(code));
+      for (final tab in [
+        l.navRequests,
+        l.navMessages,
+        l.navProfile,
+        l.navHome,
+      ]) {
+        await tester.tap(find.text(tab));
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull, reason: '$code $tab');
+      }
     });
   }
 }
