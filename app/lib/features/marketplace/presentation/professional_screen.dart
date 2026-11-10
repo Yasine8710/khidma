@@ -11,6 +11,8 @@ import '../../../shared/widgets/skeleton.dart';
 import '../application/home_providers.dart';
 import '../application/marketplace_providers.dart';
 import '../application/search_providers.dart';
+import '../domain/marketplace_domain.dart';
+import 'contact_section.dart';
 import 'marketplace_failure_view.dart';
 import 'professional_card.dart';
 
@@ -126,6 +128,9 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
                   const SizedBox(height: AppSpacing.sm),
                   Text(p.description, style: text.bodyLarge),
                 ],
+                ..._detailSections(context, ref, p, locale),
+                const SizedBox(height: AppSpacing.xl),
+                ContactSection(professionalId: p.id),
               ],
             );
           },
@@ -133,4 +138,55 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
       ),
     );
   }
+}
+
+/// Other services and areas served. Hidden entirely while loading, on failure
+/// or when there is nothing to show.
+List<Widget> _detailSections(
+  BuildContext context,
+  WidgetRef ref,
+  ProfessionalSummary p,
+  Locale locale,
+) {
+  final l10n = AppLocalizations.of(context);
+  final text = Theme.of(context).textTheme;
+  final details = ref.watch(professionalDetailsProvider(p.id)).value;
+  if (details == null) return const [];
+  final categories = ref.watch(categoriesProvider).value ?? const [];
+  final governorates = ref.watch(governoratesProvider).value ?? const [];
+  final cities = ref.watch(citiesProvider(null)).value ?? const [];
+
+  final services = [
+    for (final id in details.serviceCategoryIds)
+      if (id != p.categoryId)
+        ...categories.where((c) => c.id == id).map((c) => c.nameFor(locale)),
+  ];
+  final areas = <String>[
+    for (final a in details.areas)
+      if (a.cityId != null)
+        ...cities.where((c) => c.id == a.cityId).map((c) => c.nameFor(locale))
+      else
+        ...governorates
+            .where((g) => g.id == a.governorateId)
+            .map((g) => l10n.areaWhole(g.nameFor(locale))),
+  ];
+
+  Widget chips(String title, List<String> items) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const SizedBox(height: AppSpacing.xl),
+      Semantics(header: true, child: Text(title, style: text.titleMedium)),
+      const SizedBox(height: AppSpacing.sm),
+      Wrap(
+        spacing: AppSpacing.sm,
+        runSpacing: AppSpacing.sm,
+        children: [for (final s in items) Chip(label: Text(s))],
+      ),
+    ],
+  );
+
+  return [
+    if (services.isNotEmpty) chips(l10n.servicesTitle, services),
+    if (areas.isNotEmpty) chips(l10n.areasTitle, areas),
+  ];
 }

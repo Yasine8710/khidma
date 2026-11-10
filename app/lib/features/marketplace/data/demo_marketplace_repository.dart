@@ -106,6 +106,24 @@ class DemoMarketplaceRepository implements MarketplaceRepository {
     return null;
   }
 
+  @override
+  Future<ProfessionalDetails> details(String id) async {
+    final p = await professional(id);
+    if (p == null) return const ProfessionalDetails();
+    return ProfessionalDetails(
+      areas: [
+        if (p.governorateId != null)
+          ServiceArea(governorateId: p.governorateId!, cityId: p.cityId),
+      ],
+    );
+  }
+
+  /// Demo professionals have no phone number on purpose: nothing here can be
+  /// dialled.
+  @override
+  Future<String> revealContact(String id) async =>
+      throw const MarketplaceError(MarketplaceFailure.notConfigured);
+
   bool _matches(ProfessionalSummary p, SearchQuery q, String text) {
     if (q.availableOnly && p.availability != Availability.available) {
       return false;

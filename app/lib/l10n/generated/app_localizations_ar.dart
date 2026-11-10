@@ -586,4 +586,50 @@ class AppLocalizationsAr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get contactTitle => 'التواصل';
+
+  @override
+  String get contactShow => 'إظهار رقم التواصل';
+
+  @override
+  String get contactSignIn => 'سجّل الدخول لعرض رقم التواصل';
+
+  @override
+  String get contactCall => 'اتصال';
+
+  @override
+  String get contactWhatsApp => 'واتساب';
+
+  @override
+  String get contactWhy =>
+      'يظهر الرقم للأعضاء المسجلين فقط، لحماية الحرفيين من الإزعاج.';
+
+  @override
+  String get contactDemo => 'رقم التواصل غير متاح مع البيانات التجريبية.';
+
+  @override
+  String get contactRateLimited =>
+      'عدد كبير من الأرقام في وقت قصير. حاول بعد ساعة.';
+
+  @override
+  String get contactNotFound => 'هذا الحرفي لم يعد متاحًا.';
+
+  @override
+  String get contactFailed => 'تعذّر تحميل رقم التواصل. حاول مجددًا.';
+
+  @override
+  String get contactLaunchFailed => 'تعذّر فتح التطبيق.';
+
+  @override
+  String get servicesTitle => 'الخدمات';
+
+  @override
+  String get areasTitle => 'مناطق التدخل';
+
+  @override
+  String areaWhole(String place) {
+    return '$place (كل الولاية)';
+  }
 }

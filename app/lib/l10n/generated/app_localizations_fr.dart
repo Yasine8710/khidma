@@ -591,4 +591,51 @@ class AppLocalizationsFr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get contactTitle => 'Contact';
+
+  @override
+  String get contactShow => 'Afficher le contact';
+
+  @override
+  String get contactSignIn => 'Connectez-vous pour voir le contact';
+
+  @override
+  String get contactCall => 'Appeler';
+
+  @override
+  String get contactWhatsApp => 'WhatsApp';
+
+  @override
+  String get contactWhy =>
+      'Le numéro est affiché aux membres connectés, pour protéger les professionnels du démarchage abusif.';
+
+  @override
+  String get contactDemo =>
+      'Le contact n’est pas disponible avec les données de démonstration.';
+
+  @override
+  String get contactRateLimited =>
+      'Trop de numéros consultés en peu de temps. Réessayez dans une heure.';
+
+  @override
+  String get contactNotFound => 'Ce professionnel n’est plus disponible.';
+
+  @override
+  String get contactFailed => 'Impossible de charger le contact. Réessayez.';
+
+  @override
+  String get contactLaunchFailed => 'Impossible d’ouvrir l’application.';
+
+  @override
+  String get servicesTitle => 'Services';
+
+  @override
+  String get areasTitle => 'Zones d’intervention';
+
+  @override
+  String areaWhole(String place) {
+    return '$place (tout le gouvernorat)';
+  }
 }

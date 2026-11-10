@@ -87,6 +87,23 @@ class City with Localized {
   final String nameEn;
 }
 
+/// A place a professional serves: a whole governorate (cityId null) or a city.
+class ServiceArea {
+  const ServiceArea({required this.governorateId, this.cityId});
+  final int governorateId;
+  final int? cityId;
+}
+
+/// What the profile screen shows beyond the card: other services and areas.
+class ProfessionalDetails {
+  const ProfessionalDetails({
+    this.serviceCategoryIds = const [],
+    this.areas = const [],
+  });
+  final List<int> serviceCategoryIds;
+  final List<ServiceArea> areas;
+}
+
 enum Availability { available, busy, offline }
 
 enum Verification { unverified, pending, verified, rejected }
@@ -251,6 +268,12 @@ enum MarketplaceFailure {
   notSignedIn,
   forbidden,
   notConfigured,
+
+  /// The reveal limit (40 per hour) was reached.
+  rateLimited,
+
+  /// The professional is gone or not published.
+  notFound,
   unknown,
 }
 
@@ -273,6 +296,14 @@ abstract interface class MarketplaceRepository {
   /// One published professional by id, or null if there is none (unpublished,
   /// deleted or unknown ids look the same on purpose).
   Future<ProfessionalSummary?> professional(String id);
+
+  /// Other services and service areas of a published professional.
+  Future<ProfessionalDetails> details(String id);
+
+  /// The phone number (E.164) of a published professional. Needs a registered
+  /// account and is rate limited on the server: it is never part of a list or
+  /// a profile load. Throws [MarketplaceError].
+  Future<String> revealContact(String id);
 }
 
 /// Used when there is no backend and demo data is not enabled: honestly empty.
@@ -290,4 +321,10 @@ class EmptyMarketplaceRepository implements MarketplaceRepository {
   Future<List<ProfessionalSummary>> search(SearchQuery query) async => const [];
   @override
   Future<ProfessionalSummary?> professional(String id) async => null;
+  @override
+  Future<ProfessionalDetails> details(String id) async =>
+      const ProfessionalDetails();
+  @override
+  Future<String> revealContact(String id) async =>
+      throw const MarketplaceError(MarketplaceFailure.notConfigured);
 }

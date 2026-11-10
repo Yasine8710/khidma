@@ -257,5 +257,26 @@
         "type": "int"
       }
     }
+  },
+  "contactTitle": "Contact",
+  "contactShow": "Afficher le contact",
+  "contactSignIn": "Connectez-vous pour voir le contact",
+  "contactCall": "Appeler",
+  "contactWhatsApp": "WhatsApp",
+  "contactWhy": "Le numéro est affiché aux membres connectés, pour protéger les professionnels du démarchage abusif.",
+  "contactDemo": "Le contact n’est pas disponible avec les données de démonstration.",
+  "contactRateLimited": "Trop de numéros consultés en peu de temps. Réessayez dans une heure.",
+  "contactNotFound": "Ce professionnel n’est plus disponible.",
+  "contactFailed": "Impossible de charger le contact. Réessayez.",
+  "contactLaunchFailed": "Impossible d’ouvrir l’application.",
+  "servicesTitle": "Services",
+  "areasTitle": "Zones d’intervention",
+  "areaWhole": "{place} (tout le gouvernorat)",
+  "@areaWhole": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
   }
 }

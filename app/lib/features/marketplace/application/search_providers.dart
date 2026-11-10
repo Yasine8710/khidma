@@ -21,3 +21,11 @@ final professionalProvider = FutureProvider.autoDispose
       retry: (n, e) => null,
       (ref, id) => ref.watch(marketplaceRepositoryProvider).professional(id),
     );
+
+/// Other services and areas of one professional. Failing to load them hides
+/// those sections; the profile itself still works.
+final professionalDetailsProvider = FutureProvider.autoDispose
+    .family<ProfessionalDetails, String>(
+      retry: (n, e) => null,
+      (ref, id) => ref.watch(marketplaceRepositoryProvider).details(id),
+    );

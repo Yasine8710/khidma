@@ -1107,6 +1107,90 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{count, plural, =0{Filtres} =1{Filtres, 1 actif} other{Filtres, {count} actifs}}'**
   String filtersActive(int count);
+
+  /// No description provided for @contactTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contact'**
+  String get contactTitle;
+
+  /// No description provided for @contactShow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher le contact'**
+  String get contactShow;
+
+  /// No description provided for @contactSignIn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connectez-vous pour voir le contact'**
+  String get contactSignIn;
+
+  /// No description provided for @contactCall.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appeler'**
+  String get contactCall;
+
+  /// No description provided for @contactWhatsApp.
+  ///
+  /// In fr, this message translates to:
+  /// **'WhatsApp'**
+  String get contactWhatsApp;
+
+  /// No description provided for @contactWhy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le numéro est affiché aux membres connectés, pour protéger les professionnels du démarchage abusif.'**
+  String get contactWhy;
+
+  /// No description provided for @contactDemo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le contact n’est pas disponible avec les données de démonstration.'**
+  String get contactDemo;
+
+  /// No description provided for @contactRateLimited.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop de numéros consultés en peu de temps. Réessayez dans une heure.'**
+  String get contactRateLimited;
+
+  /// No description provided for @contactNotFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce professionnel n’est plus disponible.'**
+  String get contactNotFound;
+
+  /// No description provided for @contactFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger le contact. Réessayez.'**
+  String get contactFailed;
+
+  /// No description provided for @contactLaunchFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d’ouvrir l’application.'**
+  String get contactLaunchFailed;
+
+  /// No description provided for @servicesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Services'**
+  String get servicesTitle;
+
+  /// No description provided for @areasTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zones d’intervention'**
+  String get areasTitle;
+
+  /// No description provided for @areaWhole.
+  ///
+  /// In fr, this message translates to:
+  /// **'{place} (tout le gouvernorat)'**
+  String areaWhole(String place);
 }
 
 class _AppLocalizationsDelegate

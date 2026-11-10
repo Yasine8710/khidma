@@ -167,5 +167,19 @@
   "filtersApply": "Apply",
   "filtersReset": "Reset",
   "loadMore": "Show more",
-  "filtersActive": "{count, plural, =0{Filters} =1{Filters, 1 active} other{Filters, {count} active}}"
+  "filtersActive": "{count, plural, =0{Filters} =1{Filters, 1 active} other{Filters, {count} active}}",
+  "contactTitle": "Contact",
+  "contactShow": "Show contact",
+  "contactSignIn": "Sign in to see the contact",
+  "contactCall": "Call",
+  "contactWhatsApp": "WhatsApp",
+  "contactWhy": "The number is shown to signed-in members, to protect professionals from bulk spam.",
+  "contactDemo": "Contact is not available with demo data.",
+  "contactRateLimited": "Too many numbers viewed in a short time. Try again in an hour.",
+  "contactNotFound": "This professional is no longer available.",
+  "contactFailed": "Couldn’t load the contact. Try again.",
+  "contactLaunchFailed": "Couldn’t open the app.",
+  "servicesTitle": "Services",
+  "areasTitle": "Areas served",
+  "areaWhole": "{place} (whole governorate)"
 }

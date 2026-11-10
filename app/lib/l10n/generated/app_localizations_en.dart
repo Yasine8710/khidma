@@ -586,4 +586,50 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get contactTitle => 'Contact';
+
+  @override
+  String get contactShow => 'Show contact';
+
+  @override
+  String get contactSignIn => 'Sign in to see the contact';
+
+  @override
+  String get contactCall => 'Call';
+
+  @override
+  String get contactWhatsApp => 'WhatsApp';
+
+  @override
+  String get contactWhy =>
+      'The number is shown to signed-in members, to protect professionals from bulk spam.';
+
+  @override
+  String get contactDemo => 'Contact is not available with demo data.';
+
+  @override
+  String get contactRateLimited =>
+      'Too many numbers viewed in a short time. Try again in an hour.';
+
+  @override
+  String get contactNotFound => 'This professional is no longer available.';
+
+  @override
+  String get contactFailed => 'Couldn’t load the contact. Try again.';
+
+  @override
+  String get contactLaunchFailed => 'Couldn’t open the app.';
+
+  @override
+  String get servicesTitle => 'Services';
+
+  @override
+  String get areasTitle => 'Areas served';
+
+  @override
+  String areaWhole(String place) {
+    return '$place (whole governorate)';
+  }
 }

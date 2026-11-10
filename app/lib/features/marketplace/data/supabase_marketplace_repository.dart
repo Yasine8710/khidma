@@ -11,6 +11,14 @@ MarketplaceFailure mapMarketplaceException(Object error) {
   if (error is TimeoutException) return MarketplaceFailure.network;
   if (error is sb.PostgrestException) {
     switch (error.code) {
+      case '28000': // not authenticated (reveal needs an account)
+        return MarketplaceFailure.notSignedIn;
+      case 'P0002': // reveal: no such published professional
+        return MarketplaceFailure.notFound;
+      case 'P0001':
+        return error.message.contains('rate_limited')
+            ? MarketplaceFailure.rateLimited
+            : MarketplaceFailure.unknown;
       case '42501': // permission denied: grants or policies are wrong
         return MarketplaceFailure.forbidden;
       case 'PGRST301': // JWT expired or invalid
@@ -138,6 +146,41 @@ class SupabaseMarketplaceRepository implements MarketplaceRepository {
         .eq('is_published', true)
         .maybeSingle();
     return row == null ? null : _summary(row);
+  });
+
+  @override
+  Future<ProfessionalDetails> details(String id) => _guard(() async {
+    final services = await _client
+        .from('professional_services')
+        .select('category_id')
+        .eq('professional_id', id);
+    final areas = await _client
+        .from('service_areas')
+        .select('governorate_id, city_id')
+        .eq('professional_id', id)
+        .order('id', ascending: true);
+    return ProfessionalDetails(
+      serviceCategoryIds: [for (final r in services) r['category_id'] as int],
+      areas: [
+        for (final r in areas)
+          ServiceArea(
+            governorateId: r['governorate_id'] as int,
+            cityId: r['city_id'] as int?,
+          ),
+      ],
+    );
+  });
+
+  @override
+  Future<String> revealContact(String id) => _guard(() async {
+    final phone = await _client.rpc(
+      'reveal_professional_contact',
+      params: {'p_professional': id},
+    );
+    if (phone is! String || phone.isEmpty) {
+      throw const MarketplaceError(MarketplaceFailure.notFound);
+    }
+    return phone;
   });
 
   ServiceCategory _category(Map<String, dynamic> r) => ServiceCategory(
