@@ -192,6 +192,11 @@ void main() {
       expect(find.text('4'), findsOneWidget);
       expect(find.text('19'), findsOneWidget);
       expect(find.text('7'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.textContaining('Chiffres anonymes'),
+        200,
+        scrollable: find.byType(Scrollable).last,
+      );
       expect(find.textContaining('Chiffres anonymes'), findsOneWidget);
     });
 

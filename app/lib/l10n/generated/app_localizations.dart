@@ -1695,6 +1695,114 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Impossible d’actualiser. Les chiffres affichés peuvent être anciens.'**
   String get dashRefreshFailed;
+
+  /// No description provided for @portfolioTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes réalisations'**
+  String get portfolioTitle;
+
+  /// No description provided for @portfolioSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réalisations'**
+  String get portfolioSection;
+
+  /// No description provided for @portfolioAdd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une photo'**
+  String get portfolioAdd;
+
+  /// No description provided for @portfolioCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} sur {max} photos'**
+  String portfolioCount(int count, int max);
+
+  /// No description provided for @portfolioHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photos de vos travaux. Elles sont réduites automatiquement et leurs informations (position, appareil) sont retirées.'**
+  String get portfolioHint;
+
+  /// No description provided for @portfolioEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune photo pour le moment.'**
+  String get portfolioEmpty;
+
+  /// No description provided for @portfolioRemove.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer la photo'**
+  String get portfolioRemove;
+
+  /// No description provided for @portfolioRemoveTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer cette photo ?'**
+  String get portfolioRemoveTitle;
+
+  /// No description provided for @portfolioRemoveBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Elle ne sera plus visible sur votre profil.'**
+  String get portfolioRemoveBody;
+
+  /// No description provided for @portfolioPhotoOf.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo {index} sur {total}'**
+  String portfolioPhotoOf(int index, int total);
+
+  /// No description provided for @portfolioFailTooLarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette photo est trop lourde, même réduite. Choisissez-en une autre.'**
+  String get portfolioFailTooLarge;
+
+  /// No description provided for @portfolioFailNotImage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).'**
+  String get portfolioFailNotImage;
+
+  /// No description provided for @portfolioFailLimit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez atteint la limite de 12 photos.'**
+  String get portfolioFailLimit;
+
+  /// No description provided for @portfolioFailNetwork.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion impossible. Réessayez.'**
+  String get portfolioFailNetwork;
+
+  /// No description provided for @portfolioFailGeneric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de modifier vos photos. Réessayez.'**
+  String get portfolioFailGeneric;
+
+  /// No description provided for @portfolioFailNotConfigured.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le service n’est pas disponible pour le moment.'**
+  String get portfolioFailNotConfigured;
+
+  /// No description provided for @portfolioPreparing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Préparation de la photo…'**
+  String get portfolioPreparing;
+
+  /// No description provided for @close.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermer'**
+  String get close;
 }
 
 class _AppLocalizationsDelegate

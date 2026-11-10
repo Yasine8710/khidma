@@ -901,4 +901,66 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dashRefreshFailed =>
       'Couldn’t refresh. What you see may be out of date.';
+
+  @override
+  String get portfolioTitle => 'My work photos';
+
+  @override
+  String get portfolioSection => 'Work photos';
+
+  @override
+  String get portfolioAdd => 'Add a photo';
+
+  @override
+  String portfolioCount(int count, int max) {
+    return '$count of $max photos';
+  }
+
+  @override
+  String get portfolioHint =>
+      'Photos of your work. They are shrunk automatically and their information (location, device) is removed.';
+
+  @override
+  String get portfolioEmpty => 'No photos yet.';
+
+  @override
+  String get portfolioRemove => 'Delete photo';
+
+  @override
+  String get portfolioRemoveTitle => 'Delete this photo?';
+
+  @override
+  String get portfolioRemoveBody => 'It will no longer show on your profile.';
+
+  @override
+  String portfolioPhotoOf(int index, int total) {
+    return 'Photo $index of $total';
+  }
+
+  @override
+  String get portfolioFailTooLarge =>
+      'This photo is too heavy, even shrunk. Choose another.';
+
+  @override
+  String get portfolioFailNotImage =>
+      'This file is not a readable photo (JPEG, PNG or WebP).';
+
+  @override
+  String get portfolioFailLimit => 'You have reached the limit of 12 photos.';
+
+  @override
+  String get portfolioFailNetwork => 'No connection. Try again.';
+
+  @override
+  String get portfolioFailGeneric => 'Couldn’t change your photos. Try again.';
+
+  @override
+  String get portfolioFailNotConfigured =>
+      'The service is not available right now.';
+
+  @override
+  String get portfolioPreparing => 'Preparing the photo…';
+
+  @override
+  String get close => 'Close';
 }

@@ -156,6 +156,13 @@ class _BodyState extends ConsumerState<_Body> {
             onPressed: () => context.push(AppRoutes.professionalPath(uid)),
           ),
         ],
+        const SizedBox(height: AppSpacing.sm),
+        AppButton(
+          label: l10n.portfolioTitle,
+          icon: Icons.photo_library_outlined,
+          variant: AppButtonVariant.secondary,
+          onPressed: () => context.push(AppRoutes.proPortfolio),
+        ),
         const SizedBox(height: AppSpacing.xl),
         Semantics(
           header: true,

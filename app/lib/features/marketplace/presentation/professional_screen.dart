@@ -13,6 +13,7 @@ import '../application/marketplace_providers.dart';
 import '../application/search_providers.dart';
 import '../domain/marketplace_domain.dart';
 import '../../favorites/presentation/favorite_button.dart';
+import '../../portfolio/presentation/portfolio_gallery.dart';
 import 'contact_section.dart';
 import 'marketplace_failure_view.dart';
 import 'professional_card.dart';
@@ -137,6 +138,7 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
                   Text(p.description, style: text.bodyLarge),
                 ],
                 ..._detailSections(context, ref, p, locale),
+                PortfolioGallery(professionalId: p.id),
                 const SizedBox(height: AppSpacing.xl),
                 ContactSection(professionalId: p.id),
               ],

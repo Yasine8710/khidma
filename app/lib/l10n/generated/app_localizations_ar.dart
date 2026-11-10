@@ -897,4 +897,65 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get dashRefreshFailed =>
       'تعذّر التحديث. قد تكون البيانات المعروضة قديمة.';
+
+  @override
+  String get portfolioTitle => 'صور أعمالي';
+
+  @override
+  String get portfolioSection => 'صور الأعمال';
+
+  @override
+  String get portfolioAdd => 'إضافة صورة';
+
+  @override
+  String portfolioCount(int count, int max) {
+    return '$count من $max صور';
+  }
+
+  @override
+  String get portfolioHint =>
+      'صور من أعمالك. يتم تصغيرها تلقائيًا وتُحذف منها معلوماتها (الموقع، الجهاز).';
+
+  @override
+  String get portfolioEmpty => 'لا توجد صور بعد.';
+
+  @override
+  String get portfolioRemove => 'حذف الصورة';
+
+  @override
+  String get portfolioRemoveTitle => 'حذف هذه الصورة؟';
+
+  @override
+  String get portfolioRemoveBody => 'لن تظهر بعد الآن في ملفك.';
+
+  @override
+  String portfolioPhotoOf(int index, int total) {
+    return 'الصورة $index من $total';
+  }
+
+  @override
+  String get portfolioFailTooLarge =>
+      'هذه الصورة ثقيلة جدًا حتى بعد التصغير. اختر غيرها.';
+
+  @override
+  String get portfolioFailNotImage =>
+      'هذا الملف ليس صورة قابلة للقراءة (JPEG أو PNG أو WebP).';
+
+  @override
+  String get portfolioFailLimit => 'وصلت إلى الحد الأقصى: 12 صورة.';
+
+  @override
+  String get portfolioFailNetwork => 'لا يوجد اتصال. حاول مجددًا.';
+
+  @override
+  String get portfolioFailGeneric => 'تعذّر تعديل صورك. حاول مجددًا.';
+
+  @override
+  String get portfolioFailNotConfigured => 'الخدمة غير متاحة حاليًا.';
+
+  @override
+  String get portfolioPreparing => 'جارٍ تجهيز الصورة…';
+
+  @override
+  String get close => 'إغلاق';
 }

@@ -393,5 +393,43 @@
   "dashActivityFailed": "Activité indisponible pour le moment.",
   "dashViewPublic": "Voir mon profil public",
   "dashSaveFailed": "Modification impossible. Réessayez.",
-  "dashRefreshFailed": "Impossible d’actualiser. Les chiffres affichés peuvent être anciens."
+  "dashRefreshFailed": "Impossible d’actualiser. Les chiffres affichés peuvent être anciens.",
+  "portfolioTitle": "Mes réalisations",
+  "portfolioSection": "Réalisations",
+  "portfolioAdd": "Ajouter une photo",
+  "portfolioCount": "{count} sur {max} photos",
+  "portfolioHint": "Photos de vos travaux. Elles sont réduites automatiquement et leurs informations (position, appareil) sont retirées.",
+  "portfolioEmpty": "Aucune photo pour le moment.",
+  "portfolioRemove": "Supprimer la photo",
+  "portfolioRemoveTitle": "Supprimer cette photo ?",
+  "portfolioRemoveBody": "Elle ne sera plus visible sur votre profil.",
+  "portfolioPhotoOf": "Photo {index} sur {total}",
+  "portfolioFailTooLarge": "Cette photo est trop lourde, même réduite. Choisissez-en une autre.",
+  "portfolioFailNotImage": "Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).",
+  "portfolioFailLimit": "Vous avez atteint la limite de 12 photos.",
+  "portfolioFailNetwork": "Connexion impossible. Réessayez.",
+  "portfolioFailGeneric": "Impossible de modifier vos photos. Réessayez.",
+  "portfolioFailNotConfigured": "Le service n’est pas disponible pour le moment.",
+  "portfolioPreparing": "Préparation de la photo…",
+  "close": "Fermer",
+  "@portfolioCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@portfolioPhotoOf": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
 }

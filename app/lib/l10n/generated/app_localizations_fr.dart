@@ -911,4 +911,68 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get dashRefreshFailed =>
       'Impossible d’actualiser. Les chiffres affichés peuvent être anciens.';
+
+  @override
+  String get portfolioTitle => 'Mes réalisations';
+
+  @override
+  String get portfolioSection => 'Réalisations';
+
+  @override
+  String get portfolioAdd => 'Ajouter une photo';
+
+  @override
+  String portfolioCount(int count, int max) {
+    return '$count sur $max photos';
+  }
+
+  @override
+  String get portfolioHint =>
+      'Photos de vos travaux. Elles sont réduites automatiquement et leurs informations (position, appareil) sont retirées.';
+
+  @override
+  String get portfolioEmpty => 'Aucune photo pour le moment.';
+
+  @override
+  String get portfolioRemove => 'Supprimer la photo';
+
+  @override
+  String get portfolioRemoveTitle => 'Supprimer cette photo ?';
+
+  @override
+  String get portfolioRemoveBody =>
+      'Elle ne sera plus visible sur votre profil.';
+
+  @override
+  String portfolioPhotoOf(int index, int total) {
+    return 'Photo $index sur $total';
+  }
+
+  @override
+  String get portfolioFailTooLarge =>
+      'Cette photo est trop lourde, même réduite. Choisissez-en une autre.';
+
+  @override
+  String get portfolioFailNotImage =>
+      'Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).';
+
+  @override
+  String get portfolioFailLimit => 'Vous avez atteint la limite de 12 photos.';
+
+  @override
+  String get portfolioFailNetwork => 'Connexion impossible. Réessayez.';
+
+  @override
+  String get portfolioFailGeneric =>
+      'Impossible de modifier vos photos. Réessayez.';
+
+  @override
+  String get portfolioFailNotConfigured =>
+      'Le service n’est pas disponible pour le moment.';
+
+  @override
+  String get portfolioPreparing => 'Préparation de la photo…';
+
+  @override
+  String get close => 'Fermer';
 }
