@@ -11,8 +11,9 @@ MarketplaceFailure mapMarketplaceException(Object error) {
   if (error is TimeoutException) return MarketplaceFailure.network;
   if (error is sb.PostgrestException) {
     switch (error.code) {
-      case '42501':
-      case 'PGRST301':
+      case '42501': // permission denied: grants or policies are wrong
+        return MarketplaceFailure.forbidden;
+      case 'PGRST301': // JWT expired or invalid
       case 'PGRST302':
         return MarketplaceFailure.notSignedIn;
     }

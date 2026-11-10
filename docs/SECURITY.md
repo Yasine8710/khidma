@@ -89,6 +89,11 @@ Functions (all `SECURITY DEFINER` ones pin `search_path = ''`; no function is ca
 
 Not yet verified against a real project: the end-to-end link flow on a device, token refresh failure behavior, and exactly which duplicate-signup responses the deployed settings produce.
 
+### Marketplace data (Phase 3.1)
+- Search and reference-data reads work for anonymous visitors and are protected by RLS and column grants, not by the app. A published profile needs a public name (profiles are private, so `business_name` is the only name shown).
+- **Demo data** (made-up businesses, ratings and verification badges) exists only in debug builds or with `--dart-define=DEMO_DATA=true`, never in a normal release, and the UI must show a visible "demo" notice whenever it is on (enforced in the Home slice, issue #13, with a test). `DEMO_DATA=true` in a release is for screenshots only and must not be distributed.
+- Permission failures from the database (`42501`) surface as "forbidden", not as "signed out", so broken grants are not mistaken for an expired session.
+
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.
 - The Supabase SDK's own debug logger is disabled; the app prints only error types, and only in debug builds.

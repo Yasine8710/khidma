@@ -69,7 +69,7 @@ describe('search_professionals', () => {
     assert.ok(!cols.includes('verified_at'));
     assert.deepEqual(cols.sort(), [
       'availability', 'business_name', 'city_id', 'description', 'distance_km', 'governorate_id', 'latitude',
-      'longitude', 'neighborhood_id', 'primary_category_id', 'rating_avg', 'review_count', 'updated_at', 'user_id',
+      'longitude', 'neighborhood_id', 'primary_category_id', 'rating_avg', 'review_count', 'user_id',
       'verification_status', 'years_experience',
     ].sort());
   });
@@ -201,14 +201,8 @@ describe('search_professionals', () => {
       assert.ok((await call(anon(db))).rows.every((x) => x.distance_km === null));
     });
 
-    test('recent: most recently updated first', async () => {
-      await db.query(`update public.professional_profiles set updated_at = now() + interval '1 day' where user_id = $1`, [ids.leila]);
-      const r = await call(anon(db), { sort: 'recent', limit: 1 });
-      assert.equal(r.rows[0].business_name, 'Leila Nettoyage');
-    });
-
-    test('unknown sort falls back to rating', async () => {
-      const a = names(await call(anon(db), { sort: 'bogus; drop table x', limit: 50 }));
+    test('an unknown or removed sort ("recent") falls back to rating', async () => {
+      const a = names(await call(anon(db), { sort: 'recent', limit: 50 }));
       const b = names(await call(anon(db), { sort: 'rating', limit: 50 }));
       assert.deepEqual(a, b);
     });

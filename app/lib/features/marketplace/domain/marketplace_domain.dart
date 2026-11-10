@@ -138,7 +138,9 @@ class ProfessionalSummary {
   bool get hasReviews => reviewCount > 0;
 }
 
-enum ProfessionalSort { rating, reviews, nearest, recent }
+/// 'Recently active' is deliberately absent until a real activity signal
+/// exists: profile edits are not one (they can be repeated to climb the list).
+enum ProfessionalSort { rating, reviews, nearest }
 
 /// A search request. All filters combine with AND.
 class SearchQuery {
@@ -212,7 +214,13 @@ class SearchQuery {
   );
 }
 
-enum MarketplaceFailure { network, notSignedIn, notConfigured, unknown }
+enum MarketplaceFailure {
+  network,
+  notSignedIn,
+  forbidden,
+  notConfigured,
+  unknown,
+}
 
 class MarketplaceError implements Exception {
   const MarketplaceError(this.failure);

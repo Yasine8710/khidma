@@ -29,7 +29,7 @@ class DemoMarketplaceRepository implements MarketplaceRepository {
 
   @override
   Future<List<ProfessionalSummary>> search(SearchQuery q) async {
-    final text = normalizeSearch(q.text).trim();
+    final text = prepareSearchText(q.text);
     final located = q.hasPosition;
 
     ProfessionalSummary withDistance(ProfessionalSummary p) {
@@ -86,8 +86,7 @@ class DemoMarketplaceRepository implements MarketplaceRepository {
         case ProfessionalSort.reviews:
           primary = b.reviewCount.compareTo(a.reviewCount);
         case ProfessionalSort.rating:
-        case ProfessionalSort.recent:
-          primary = 0; // no update timestamps in demo data: rating order
+          primary = 0;
       }
       if (primary != 0) return primary;
       final r = byRating(a, b);
@@ -95,7 +94,7 @@ class DemoMarketplaceRepository implements MarketplaceRepository {
     });
 
     final limit = q.limit.clamp(1, 50);
-    final offset = q.offset < 0 ? 0 : q.offset;
+    final offset = q.offset.clamp(0, 5000);
     return matches.skip(offset).take(limit).toList();
   }
 
@@ -105,35 +104,42 @@ class DemoMarketplaceRepository implements MarketplaceRepository {
     }
     if (q.minRating != null && p.rating < q.minRating!) return false;
     if (q.categoryId != null && p.categoryId != q.categoryId) return false;
-    if (q.governorateId != null && p.governorateId != q.governorateId) {
+    // A city given with a governorate must belong to it, else nothing matches.
+    if (q.cityId != null && q.governorateId != null) {
+      final c = demoCities.where((c) => c.id == q.cityId);
+      if (c.isEmpty || c.first.governorateId != q.governorateId) return false;
+    }
+    if (q.cityId != null) {
+      if (p.cityId != q.cityId) return false;
+    } else if (q.governorateId != null && p.governorateId != q.governorateId) {
       return false;
     }
-    if (q.cityId != null && p.cityId != q.cityId) return false;
     if (q.hasPosition && q.radiusKm != null) {
       final d = p.distanceKm;
       if (d == null || d > q.radiusKm!) return false;
     }
     if (text.isEmpty) return true;
-    return _haystack(p).contains(text);
+    return _textMatches(p, text);
   }
 
-  /// Everything a text search looks at: name, description, profession and
-  /// place names in all languages.
-  String _haystack(ProfessionalSummary p) {
+  /// Everything a text search looks at, one field at a time (a query never
+  /// matches across the boundary of two fields): name, description, profession
+  /// and place names in all languages. Secondary services, service areas and
+  /// neighborhoods do not exist in demo data.
+  bool _textMatches(ProfessionalSummary p, String text) {
     final cat = demoCategories.firstWhere((c) => c.id == p.categoryId);
     final gov = demoGovernorates.where((g) => g.id == p.governorateId);
     final city = demoCities.where((c) => c.id == p.cityId);
-    return normalizeSearch(
-      [
-        p.name,
-        p.description,
-        cat.nameFr,
-        cat.nameAr,
-        cat.nameEn,
-        cat.slug,
-        for (final g in gov) '${g.nameFr} ${g.nameAr} ${g.nameEn}',
-        for (final c in city) '${c.nameFr} ${c.nameAr} ${c.nameEn}',
-      ].join(' | '),
-    );
+    final fields = <String>[
+      p.name,
+      p.description,
+      cat.nameFr,
+      cat.nameAr,
+      cat.nameEn,
+      cat.slug,
+      for (final g in gov) ...[g.nameFr, g.nameAr, g.nameEn],
+      for (final c in city) ...[c.nameFr, c.nameAr, c.nameEn],
+    ];
+    return fields.any((f) => normalizeSearch(f).contains(text));
   }
 }
