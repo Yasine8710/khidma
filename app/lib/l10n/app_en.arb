@@ -152,5 +152,20 @@
   "searchStartTitle": "What are you looking for?",
   "searchStartBody": "Type a trade, a name or a city.",
   "aboutLabel": "About",
-  "inCategory": "Category"
+  "inCategory": "Category",
+  "filtersTitle": "Filters",
+  "filtersAction": "Filter",
+  "filterCategory": "Category",
+  "filterAllCategories": "All",
+  "filterMinRating": "Minimum rating",
+  "filterRatingAny": "Any",
+  "filterRatingAtLeast": "{value}+",
+  "filterAvailableOnly": "Available only",
+  "sortBy": "Sort by",
+  "sortRating": "Top rated",
+  "sortReviews": "Most reviewed",
+  "filtersApply": "Apply",
+  "filtersReset": "Reset",
+  "loadMore": "Show more",
+  "filtersActive": "{count, plural, =0{Filters} =1{Filters, 1 active} other{Filters, {count} active}}"
 }

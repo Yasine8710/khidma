@@ -530,4 +530,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get inCategory => 'Category';
+
+  @override
+  String get filtersTitle => 'Filters';
+
+  @override
+  String get filtersAction => 'Filter';
+
+  @override
+  String get filterCategory => 'Category';
+
+  @override
+  String get filterAllCategories => 'All';
+
+  @override
+  String get filterMinRating => 'Minimum rating';
+
+  @override
+  String get filterRatingAny => 'Any';
+
+  @override
+  String filterRatingAtLeast(String value) {
+    return '$value+';
+  }
+
+  @override
+  String get filterAvailableOnly => 'Available only';
+
+  @override
+  String get sortBy => 'Sort by';
+
+  @override
+  String get sortRating => 'Top rated';
+
+  @override
+  String get sortReviews => 'Most reviewed';
+
+  @override
+  String get filtersApply => 'Apply';
+
+  @override
+  String get filtersReset => 'Reset';
+
+  @override
+  String get loadMore => 'Show more';
+
+  @override
+  String filtersActive(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Filters, $count active',
+      one: 'Filters, 1 active',
+      zero: 'Filters',
+    );
+    return '$_temp0';
+  }
 }

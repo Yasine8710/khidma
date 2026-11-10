@@ -1,31 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/marketplace_domain.dart';
-import 'home_providers.dart';
 import 'marketplace_providers.dart';
 
-/// What the basic search screen asks for. Filters and sorting arrive in the
-/// next slice; the record keeps equality so identical asks share a result.
-typedef SearchRequest = ({String text, int? categoryId});
+/// Results per page. The server caps a page at 50 and the offset at 5000.
+const searchPageSize = 20;
 
-final searchResultsProvider = FutureProvider.autoDispose
-    .family<List<ProfessionalSummary>, SearchRequest>(retry: (n, e) => null, (
-      ref,
-      request,
-    ) {
-      final place = ref.watch(selectedPlaceProvider);
-      return ref
-          .watch(marketplaceRepositoryProvider)
-          .search(
-            SearchQuery(
-              text: request.text.trim().isEmpty ? null : request.text,
-              categoryId: request.categoryId,
-              governorateId: place?.governorateId,
-              cityId: place?.cityId,
-              limit: 30,
-            ),
-          );
-    });
+/// One page of results for [query] (its `offset` selects the page). Pages are
+/// separate providers so a failed page can be retried alone and the pages
+/// already shown stay put.
+final searchPageProvider = FutureProvider.autoDispose
+    .family<List<ProfessionalSummary>, SearchQuery>(
+      retry: (n, e) => null,
+      (ref, query) => ref.watch(marketplaceRepositoryProvider).search(query),
+    );
 
 /// One professional by id for the profile screen.
 final professionalProvider = FutureProvider.autoDispose

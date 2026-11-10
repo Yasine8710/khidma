@@ -228,5 +228,34 @@
         "type": "String"
       }
     }
+  },
+  "filtersTitle": "Filtres",
+  "filtersAction": "Filtrer",
+  "filterCategory": "Catégorie",
+  "filterAllCategories": "Toutes",
+  "filterMinRating": "Note minimale",
+  "filterRatingAny": "Toutes",
+  "filterRatingAtLeast": "{value}+",
+  "filterAvailableOnly": "Disponibles uniquement",
+  "sortBy": "Trier par",
+  "sortRating": "Mieux notés",
+  "sortReviews": "Plus d’avis",
+  "filtersApply": "Appliquer",
+  "filtersReset": "Réinitialiser",
+  "loadMore": "Voir plus",
+  "filtersActive": "{count, plural, =0{Filtres} =1{Filtres, 1 actif} other{Filtres, {count} actifs}}",
+  "@filterRatingAtLeast": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@filtersActive": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -152,5 +152,20 @@
   "searchStartTitle": "عمّ تبحث؟",
   "searchStartBody": "اكتب مهنة أو اسمًا أو مدينة.",
   "aboutLabel": "نبذة",
-  "inCategory": "الفئة"
+  "inCategory": "الفئة",
+  "filtersTitle": "التصفية",
+  "filtersAction": "تصفية",
+  "filterCategory": "الفئة",
+  "filterAllCategories": "الكل",
+  "filterMinRating": "الحد الأدنى للتقييم",
+  "filterRatingAny": "أي تقييم",
+  "filterRatingAtLeast": "{value}+",
+  "filterAvailableOnly": "المتاحون فقط",
+  "sortBy": "ترتيب حسب",
+  "sortRating": "الأعلى تقييمًا",
+  "sortReviews": "الأكثر تقييمات",
+  "filtersApply": "تطبيق",
+  "filtersReset": "إعادة ضبط",
+  "loadMore": "عرض المزيد",
+  "filtersActive": "{count, plural, =0{التصفية} =1{التصفية، فلتر واحد نشط} =2{التصفية، فلتران نشطان} few{التصفية، {count} فلاتر نشطة} other{التصفية، {count} فلترًا نشطًا}}"
 }

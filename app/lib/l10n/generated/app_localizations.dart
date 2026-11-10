@@ -1017,6 +1017,96 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Catégorie'**
   String get inCategory;
+
+  /// No description provided for @filtersTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Filtres'**
+  String get filtersTitle;
+
+  /// No description provided for @filtersAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Filtrer'**
+  String get filtersAction;
+
+  /// No description provided for @filterCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie'**
+  String get filterCategory;
+
+  /// No description provided for @filterAllCategories.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes'**
+  String get filterAllCategories;
+
+  /// No description provided for @filterMinRating.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note minimale'**
+  String get filterMinRating;
+
+  /// No description provided for @filterRatingAny.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes'**
+  String get filterRatingAny;
+
+  /// No description provided for @filterRatingAtLeast.
+  ///
+  /// In fr, this message translates to:
+  /// **'{value}+'**
+  String filterRatingAtLeast(String value);
+
+  /// No description provided for @filterAvailableOnly.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponibles uniquement'**
+  String get filterAvailableOnly;
+
+  /// No description provided for @sortBy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trier par'**
+  String get sortBy;
+
+  /// No description provided for @sortRating.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mieux notés'**
+  String get sortRating;
+
+  /// No description provided for @sortReviews.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus d’avis'**
+  String get sortReviews;
+
+  /// No description provided for @filtersApply.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquer'**
+  String get filtersApply;
+
+  /// No description provided for @filtersReset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réinitialiser'**
+  String get filtersReset;
+
+  /// No description provided for @loadMore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir plus'**
+  String get loadMore;
+
+  /// No description provided for @filtersActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Filtres} =1{Filtres, 1 actif} other{Filtres, {count} actifs}}'**
+  String filtersActive(int count);
 }
 
 class _AppLocalizationsDelegate

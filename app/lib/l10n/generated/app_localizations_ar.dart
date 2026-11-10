@@ -528,4 +528,62 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get inCategory => 'الفئة';
+
+  @override
+  String get filtersTitle => 'التصفية';
+
+  @override
+  String get filtersAction => 'تصفية';
+
+  @override
+  String get filterCategory => 'الفئة';
+
+  @override
+  String get filterAllCategories => 'الكل';
+
+  @override
+  String get filterMinRating => 'الحد الأدنى للتقييم';
+
+  @override
+  String get filterRatingAny => 'أي تقييم';
+
+  @override
+  String filterRatingAtLeast(String value) {
+    return '$value+';
+  }
+
+  @override
+  String get filterAvailableOnly => 'المتاحون فقط';
+
+  @override
+  String get sortBy => 'ترتيب حسب';
+
+  @override
+  String get sortRating => 'الأعلى تقييمًا';
+
+  @override
+  String get sortReviews => 'الأكثر تقييمات';
+
+  @override
+  String get filtersApply => 'تطبيق';
+
+  @override
+  String get filtersReset => 'إعادة ضبط';
+
+  @override
+  String get loadMore => 'عرض المزيد';
+
+  @override
+  String filtersActive(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'التصفية، $count فلترًا نشطًا',
+      few: 'التصفية، $count فلاتر نشطة',
+      two: 'التصفية، فلتران نشطان',
+      one: 'التصفية، فلتر واحد نشط',
+      zero: 'التصفية',
+    );
+    return '$_temp0';
+  }
 }

@@ -176,6 +176,38 @@ class SearchQuery {
 
   bool get hasPosition => latitude != null && longitude != null;
 
+  @override
+  bool operator ==(Object other) =>
+      other is SearchQuery &&
+      other.text == text &&
+      other.categoryId == categoryId &&
+      other.governorateId == governorateId &&
+      other.cityId == cityId &&
+      other.minRating == minRating &&
+      other.availableOnly == availableOnly &&
+      other.latitude == latitude &&
+      other.longitude == longitude &&
+      other.radiusKm == radiusKm &&
+      other.sort == sort &&
+      other.limit == limit &&
+      other.offset == offset;
+
+  @override
+  int get hashCode => Object.hash(
+    text,
+    categoryId,
+    governorateId,
+    cityId,
+    minRating,
+    availableOnly,
+    latitude,
+    longitude,
+    radiusKm,
+    sort,
+    limit,
+    offset,
+  );
+
   SearchQuery copyWith({
     String? text,
     int? categoryId,
