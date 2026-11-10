@@ -105,6 +105,8 @@ class _AppTextFieldState extends State<AppTextField> {
             onFieldSubmitted: widget.onSubmitted,
             decoration: InputDecoration(
               hintText: widget.hint,
+              // A forced-LTR field (phone, email) must not show its hint RTL.
+              hintTextDirection: widget.textDirection,
               helperText: widget.helper,
               helperMaxLines: 2,
               errorText: widget.errorText,

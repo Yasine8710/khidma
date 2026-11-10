@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/theme_mode_controller.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../gallery/gallery_config.dart';
 import '../../settings/presentation/language_selector.dart';
 import '../../../core/haptics.dart';
+import '../../../core/router/app_routes.dart';
 
 /// Settings only for now (language, appearance). Account features arrive in
 /// Phase 2.
@@ -50,6 +53,16 @@ class ProfileScreen extends ConsumerWidget {
               ref.read(themeModeProvider.notifier).setMode(s.first);
             },
           ),
+          if (kShowGallery) ...[
+            const SizedBox(height: AppSpacing.xl),
+            // Developer-only entry; not localized on purpose.
+            ListTile(
+              leading: const Icon(Icons.palette_outlined),
+              title: const Text('Design gallery'),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () => context.push(AppRoutes.gallery),
+            ),
+          ],
         ],
       ),
     );
