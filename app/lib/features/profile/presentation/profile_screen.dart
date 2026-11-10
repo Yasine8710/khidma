@@ -7,7 +7,10 @@ import '../../../core/theme/theme_mode_controller.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_badge.dart';
 import '../../auth/application/auth_providers.dart';
+import '../application/profile_providers.dart';
+import 'edit_profile_screen.dart';
 import '../../auth/presentation/auth_texts.dart';
 import '../../gallery/gallery_config.dart';
 import '../../settings/presentation/language_selector.dart';
@@ -83,6 +86,7 @@ class _AccountCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final user = ref.watch(currentUserProvider);
+    final myProfile = ref.watch(visibleProfileProvider);
     final busy = ref.watch(authActionsProvider);
     final text = Theme.of(context).textTheme;
     final muted = Theme.of(context).colorScheme.onSurfaceVariant;
@@ -117,13 +121,25 @@ class _AccountCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (user.fullName != null && user.fullName!.isNotEmpty)
-            Text(user.fullName!, style: text.titleMedium),
+          // The saved profile name wins over the sign-up metadata, so an edit
+          // shows up here right away.
+          if ((myProfile?.fullName ?? user.fullName)?.isNotEmpty ?? false)
+            Text(
+              (myProfile?.fullName ?? user.fullName)!,
+              style: text.titleMedium,
+            ),
           Text(
             l10n.signedInAs(user.email),
             style: text.bodyMedium?.copyWith(color: muted),
           ),
           const SizedBox(height: AppSpacing.lg),
+          AppButton(
+            label: l10n.editProfile,
+            variant: AppButtonVariant.secondary,
+            onPressed: () => context.push(AppRoutes.editProfile),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          const _ProfessionalSection(),
           AppButton(
             label: l10n.signOut,
             variant: AppButtonVariant.secondary,
@@ -133,6 +149,67 @@ class _AccountCard extends ConsumerWidget {
               if (!r.isOk && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(l10n.failureText(r.failure!))),
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Shows "Professional" when the account offers services, otherwise an
+/// invitation to start. Hidden while loading or when the profile cannot load
+/// (the account card above still works).
+class _ProfessionalSection extends ConsumerWidget {
+  const _ProfessionalSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final profile = ref.watch(visibleProfileProvider);
+    final busy = ref.watch(profileActionsProvider);
+    if (profile == null) return const SizedBox.shrink();
+    final text = Theme.of(context).textTheme;
+    if (profile.isProfessional) {
+      return Padding(
+        padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: AppBadge(
+            label: l10n.professionalBadge,
+            tone: BadgeTone.info,
+            icon: Icons.handyman_outlined,
+          ),
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: AppSpacing.sm),
+          Text(l10n.becomeProfessionalTitle, style: text.titleSmall),
+          Text(
+            l10n.becomeProfessionalBody,
+            style: text.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          AppButton(
+            label: l10n.becomeProfessionalCta,
+            variant: AppButtonVariant.secondary,
+            isLoading: busy,
+            onPressed: () async {
+              final r = await ref
+                  .read(profileActionsProvider.notifier)
+                  .becomeProfessional();
+              if (!r.isOk && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(profileFailureText(l10n, r.failure!))),
                 );
               }
             },

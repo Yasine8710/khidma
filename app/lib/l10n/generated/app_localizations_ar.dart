@@ -335,4 +335,53 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get linkExpiredBody =>
       'اطلب رابط إعادة تعيين جديدًا من شاشة تسجيل الدخول.';
+
+  @override
+  String get accountTypeTitle => 'أريد أن…';
+
+  @override
+  String get accountCustomerTitle => 'أجد حرفيًا';
+
+  @override
+  String get accountCustomerBody => 'أطلب عروض أسعار وأتواصل مع الحرفيين.';
+
+  @override
+  String get accountProfessionalTitle => 'أعرض خدماتي';
+
+  @override
+  String get accountProfessionalBody => 'أنشئ ملفًا مهنيًا وأستقبل الطلبات.';
+
+  @override
+  String get becomeProfessionalTitle => 'اعرض خدماتك';
+
+  @override
+  String get becomeProfessionalBody =>
+      'أنشئ ملفك المهني لتستقبل طلبات الزبائن.';
+
+  @override
+  String get becomeProfessionalCta => 'أصبح حرفيًا';
+
+  @override
+  String get professionalBadge => 'حرفي';
+
+  @override
+  String get editProfile => 'تعديل الملف';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get phoneLabel => 'الهاتف';
+
+  @override
+  String get phoneHelper => 'يظهر لك وحدك.';
+
+  @override
+  String get profileSaved => 'تم حفظ الملف.';
+
+  @override
+  String get failProfileLoad => 'تعذّر تحميل ملفك.';
+
+  @override
+  String get failProfileInvalid => 'بعض المعلومات غير صالحة.';
 }

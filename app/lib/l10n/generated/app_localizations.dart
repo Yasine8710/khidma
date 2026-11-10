@@ -669,6 +669,102 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Demandez un nouveau lien de réinitialisation depuis l\'écran de connexion.'**
   String get linkExpiredBody;
+
+  /// No description provided for @accountTypeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Je souhaite…'**
+  String get accountTypeTitle;
+
+  /// No description provided for @accountCustomerTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trouver un professionnel'**
+  String get accountCustomerTitle;
+
+  /// No description provided for @accountCustomerBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demander des devis et contacter des artisans.'**
+  String get accountCustomerBody;
+
+  /// No description provided for @accountProfessionalTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Proposer mes services'**
+  String get accountProfessionalTitle;
+
+  /// No description provided for @accountProfessionalBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer un profil professionnel et recevoir des demandes.'**
+  String get accountProfessionalBody;
+
+  /// No description provided for @becomeProfessionalTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Proposez vos services'**
+  String get becomeProfessionalTitle;
+
+  /// No description provided for @becomeProfessionalBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créez votre profil professionnel pour recevoir des demandes de clients.'**
+  String get becomeProfessionalBody;
+
+  /// No description provided for @becomeProfessionalCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devenir professionnel'**
+  String get becomeProfessionalCta;
+
+  /// No description provided for @professionalBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Professionnel'**
+  String get professionalBadge;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le profil'**
+  String get editProfile;
+
+  /// No description provided for @save.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer'**
+  String get save;
+
+  /// No description provided for @phoneLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone'**
+  String get phoneLabel;
+
+  /// No description provided for @phoneHelper.
+  ///
+  /// In fr, this message translates to:
+  /// **'Visible uniquement par vous.'**
+  String get phoneHelper;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil enregistré.'**
+  String get profileSaved;
+
+  /// No description provided for @failProfileLoad.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger votre profil.'**
+  String get failProfileLoad;
+
+  /// No description provided for @failProfileInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Certaines informations sont invalides.'**
+  String get failProfileInvalid;
 }
 
 class _AppLocalizationsDelegate

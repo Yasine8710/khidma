@@ -94,5 +94,21 @@
   "savePassword": "Save password",
   "passwordUpdated": "Password updated.",
   "linkExpiredTitle": "Link expired or invalid",
-  "linkExpiredBody": "Request a new reset link from the sign-in screen."
+  "linkExpiredBody": "Request a new reset link from the sign-in screen.",
+  "accountTypeTitle": "I want to…",
+  "accountCustomerTitle": "Find a professional",
+  "accountCustomerBody": "Request quotes and contact craftspeople.",
+  "accountProfessionalTitle": "Offer my services",
+  "accountProfessionalBody": "Create a professional profile and receive requests.",
+  "becomeProfessionalTitle": "Offer your services",
+  "becomeProfessionalBody": "Create your professional profile to receive customer requests.",
+  "becomeProfessionalCta": "Become a professional",
+  "professionalBadge": "Professional",
+  "editProfile": "Edit profile",
+  "save": "Save",
+  "phoneLabel": "Phone",
+  "phoneHelper": "Only visible to you.",
+  "profileSaved": "Profile saved.",
+  "failProfileLoad": "Couldn't load your profile.",
+  "failProfileInvalid": "Some details are invalid."
 }

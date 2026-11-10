@@ -8,7 +8,11 @@ import 'package:khidma/app.dart';
 import 'package:khidma/features/auth/application/auth_providers.dart';
 import 'package:khidma/features/auth/domain/auth_domain.dart';
 
+import 'package:khidma/features/profile/application/profile_providers.dart';
+import 'package:khidma/features/profile/domain/profile_domain.dart';
+
 import 'support/fake_auth_repository.dart';
+import 'support/fake_profile_repository.dart';
 
 import 'package:khidma/core/theme/app_theme.dart';
 import 'package:khidma/l10n/generated/app_localizations.dart';
@@ -19,6 +23,7 @@ Future<ProviderContainer> pumpApp(
   WidgetTester tester, {
   Map<String, Object> prefs = const {},
   AuthRepository? auth,
+  ProfileRepository? profiles,
 }) async {
   // Tests start past onboarding unless they say otherwise.
   SharedPreferences.setMockInitialValues({'onboardingSeen': true, ...prefs});
@@ -28,6 +33,9 @@ Future<ProviderContainer> pumpApp(
       keyValueStoreProvider.overrideWithValue(PrefsStore(sp)),
       // Accounts available but signed out, unless a test says otherwise.
       authRepositoryProvider.overrideWithValue(auth ?? FakeAuthRepository()),
+      profileRepositoryProvider.overrideWithValue(
+        profiles ?? FakeProfileRepository(),
+      ),
     ],
   );
   addTearDown(container.dispose);

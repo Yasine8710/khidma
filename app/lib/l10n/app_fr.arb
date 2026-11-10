@@ -142,5 +142,21 @@
   "savePassword": "Enregistrer le mot de passe",
   "passwordUpdated": "Mot de passe mis à jour.",
   "linkExpiredTitle": "Lien expiré ou invalide",
-  "linkExpiredBody": "Demandez un nouveau lien de réinitialisation depuis l'écran de connexion."
+  "linkExpiredBody": "Demandez un nouveau lien de réinitialisation depuis l'écran de connexion.",
+  "accountTypeTitle": "Je souhaite…",
+  "accountCustomerTitle": "Trouver un professionnel",
+  "accountCustomerBody": "Demander des devis et contacter des artisans.",
+  "accountProfessionalTitle": "Proposer mes services",
+  "accountProfessionalBody": "Créer un profil professionnel et recevoir des demandes.",
+  "becomeProfessionalTitle": "Proposez vos services",
+  "becomeProfessionalBody": "Créez votre profil professionnel pour recevoir des demandes de clients.",
+  "becomeProfessionalCta": "Devenir professionnel",
+  "professionalBadge": "Professionnel",
+  "editProfile": "Modifier le profil",
+  "save": "Enregistrer",
+  "phoneLabel": "Téléphone",
+  "phoneHelper": "Visible uniquement par vous.",
+  "profileSaved": "Profil enregistré.",
+  "failProfileLoad": "Impossible de charger votre profil.",
+  "failProfileInvalid": "Certaines informations sont invalides."
 }

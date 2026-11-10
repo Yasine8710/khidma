@@ -56,6 +56,14 @@ Functions (all `SECURITY DEFINER` ones pin `search_path = ''`; no function is ca
 - **Errors and logs:** error messages from the server are never shown or forwarded (mapped to localized categories); release builds log nothing, debug builds log only the error type.
 - **Autofill** offers to save credentials only after a successful sign-in.
 
+### Account type and roles (app side, Phase 2.5)
+- Sign-up offers two choices only: find a professional, or offer services. There is no admin option anywhere in the app; admins exist only as rows created by the platform owner.
+- "Offer services" is applied by calling `become_professional()` (the database ignores roles in sign-up metadata). With email confirmation there is no session at sign-up, so the choice is kept on the device as a *pending choice* and applied on the first session.
+- A pending choice is **bound to the sign-up email** (case-insensitive), expires after 7 days, and is applied only when that same account has a session. Another person signing in on the same device neither triggers nor erases it. Clearing happens only if it is still the same choice for the same signed-in user.
+- The Profile screen always offers the same action manually ("Become a professional"), so a lost or expired choice costs one tap.
+- The UI shows only the profile of the account signed in *now* (`visibleProfileProvider`): while a different account's profile loads or fails, nothing of the previous one is shown, and edit forms are keyed by account id.
+- Profile writes send exactly three fields (`full_name`, `phone`, `preferred_language`), filtered by the user's id; the transport tests assert this against the real Supabase client.
+
 ### Supabase dashboard settings the owner must set (cannot be done from code)
 1. Authentication > URL Configuration > **Additional Redirect URLs**: add exactly `tn.khidma.app://auth-callback` (no trailing slash). Set **Site URL** to the production web URL.
 2. Authentication > Providers > Email: **Confirm email ON** (hides whether an address is registered); minimum password length 8; enable leaked-password protection if the plan allows.

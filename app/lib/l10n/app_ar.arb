@@ -94,5 +94,21 @@
   "savePassword": "حفظ كلمة المرور",
   "passwordUpdated": "تم تحديث كلمة المرور.",
   "linkExpiredTitle": "الرابط منتهي أو غير صالح",
-  "linkExpiredBody": "اطلب رابط إعادة تعيين جديدًا من شاشة تسجيل الدخول."
+  "linkExpiredBody": "اطلب رابط إعادة تعيين جديدًا من شاشة تسجيل الدخول.",
+  "accountTypeTitle": "أريد أن…",
+  "accountCustomerTitle": "أجد حرفيًا",
+  "accountCustomerBody": "أطلب عروض أسعار وأتواصل مع الحرفيين.",
+  "accountProfessionalTitle": "أعرض خدماتي",
+  "accountProfessionalBody": "أنشئ ملفًا مهنيًا وأستقبل الطلبات.",
+  "becomeProfessionalTitle": "اعرض خدماتك",
+  "becomeProfessionalBody": "أنشئ ملفك المهني لتستقبل طلبات الزبائن.",
+  "becomeProfessionalCta": "أصبح حرفيًا",
+  "professionalBadge": "حرفي",
+  "editProfile": "تعديل الملف",
+  "save": "حفظ",
+  "phoneLabel": "الهاتف",
+  "phoneHelper": "يظهر لك وحدك.",
+  "profileSaved": "تم حفظ الملف.",
+  "failProfileLoad": "تعذّر تحميل ملفك.",
+  "failProfileInvalid": "بعض المعلومات غير صالحة."
 }

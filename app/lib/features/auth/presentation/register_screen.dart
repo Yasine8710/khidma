@@ -8,6 +8,9 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
+import '../../profile/application/profile_providers.dart';
+import '../../profile/domain/profile_domain.dart';
+import '../../profile/presentation/account_type_selector.dart';
 import '../application/auth_providers.dart';
 import '../domain/auth_domain.dart';
 import '../domain/auth_validators.dart';
@@ -29,6 +32,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _password = TextEditingController();
   AuthFailure? _failure;
   String? _confirmationSentTo;
+  AccountType _type = AccountType.customer;
 
   @override
   void dispose() {
@@ -38,16 +42,35 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     super.dispose();
   }
 
+  bool _submitting = false;
+
   Future<void> _submit() async {
-    if (!(_form.currentState?.validate() ?? false)) return;
+    // One submission at a time, from the first await to the last.
+    if (_submitting || !(_form.currentState?.validate() ?? false)) return;
+    _submitting = true;
+    try {
+      await _submitLocked();
+    } finally {
+      _submitting = false;
+    }
+  }
+
+  Future<void> _submitLocked() async {
     setState(() => _failure = null);
     final email = _email.text.trim();
+    // Remember the choice before signing up: with no email confirmation the
+    // session (and the account setup that reads this) starts immediately.
+    await ref
+        .read(pendingAccountChoiceProvider.notifier)
+        .remember(_type, email);
     final result = await ref
         .read(authActionsProvider.notifier)
         .signUp(email: email, password: _password.text, fullName: _name.text);
     if (!mounted) return;
     TextInput.finishAutofillContext(shouldSave: result.isOk);
     if (!result.isOk) {
+      await ref.read(pendingAccountChoiceProvider.notifier).forget();
+      if (!mounted) return;
       setState(() => _failure = result.failure);
     } else if (result.outcome == SignUpOutcome.signedIn) {
       leaveAuth(context);
@@ -124,6 +147,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   onSubmitted: (_) => _submit(),
                   validator: (v) =>
                       l10n.passwordProblemText(validateNewPassword(v)),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                AccountTypeSelector(
+                  value: _type,
+                  enabled: !busy,
+                  onChanged: (v) => setState(() => _type = v),
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 if (_failure != null) ...[
