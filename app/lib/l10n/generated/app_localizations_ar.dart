@@ -1368,4 +1368,73 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get bookingWaitingForYou =>
       'يقول الحرفي إنه أنهى العمل. هل أُنجز كما يجب؟';
+
+  @override
+  String get chatTitleClient => 'الزبون';
+
+  @override
+  String get chatInputHint => 'اكتب رسالة…';
+
+  @override
+  String get chatSend => 'إرسال';
+
+  @override
+  String get chatAddImage => 'إرفاق صورة';
+
+  @override
+  String get chatEmpty => 'لا توجد رسائل. ابدأ بالتحية!';
+
+  @override
+  String get chatReadOnly =>
+      'انتهت هذه المحادثة: يمكنك قراءتها لكن لا يمكنك الكتابة.';
+
+  @override
+  String get chatImageSent => 'تم إرسال صورة';
+
+  @override
+  String get chatYouSent => 'أنت';
+
+  @override
+  String get chatThem => 'الطرف الآخر';
+
+  @override
+  String chatUnread(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count رسالة غير مقروءة',
+      few: '$count رسائل غير مقروءة',
+      two: 'رسالتان غير مقروءتين',
+      one: 'رسالة غير مقروءة',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSendFailed => 'لم تُرسل الرسالة. حاول مجددًا.';
+
+  @override
+  String get chatRateLimited => 'تكتب بسرعة كبيرة. انتظر لحظة.';
+
+  @override
+  String get chatClosed => 'انتهت هذه المحادثة.';
+
+  @override
+  String get chatOpenFailed => 'تعذّر فتح المحادثة. حاول مجددًا.';
+
+  @override
+  String get chatLiveFailed => 'توقف التحديث المباشر. اسحب للتحديث.';
+
+  @override
+  String get chatPhotoFailed => 'لم تُرسل الصورة. حاول مجددًا.';
+
+  @override
+  String get chatAskPro => 'اطرح سؤالًا';
+
+  @override
+  String get chatWriteCustomer => 'راسل الزبون';
+
+  @override
+  String get chatPhoto => 'صورة';
 }

@@ -15,6 +15,8 @@ import 'features/favorites/application/favorites_providers.dart';
 import 'features/favorites/data/supabase_favorites_repository.dart';
 import 'features/marketplace/application/marketplace_providers.dart';
 import 'features/marketplace/data/supabase_marketplace_repository.dart';
+import 'features/messages/application/messages_providers.dart';
+import 'features/messages/data/supabase_messages_repository.dart';
 import 'features/offers/application/offers_providers.dart';
 import 'features/offers/data/supabase_offers_repository.dart';
 import 'features/portfolio/application/portfolio_providers.dart';
@@ -49,6 +51,10 @@ Future<void> main() async {
         if (auth.isAvailable)
           customerOffersRepositoryProvider.overrideWithValue(
             SupabaseCustomerOffersRepository(Supabase.instance.client),
+          ),
+        if (auth.isAvailable)
+          messagesRepositoryProvider.overrideWithValue(
+            SupabaseMessagesRepository(Supabase.instance.client),
           ),
         if (auth.isAvailable)
           requestsRepositoryProvider.overrideWithValue(

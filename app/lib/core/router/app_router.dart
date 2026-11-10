@@ -12,6 +12,7 @@ import '../../features/gallery/gallery_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/marketplace/presentation/professional_screen.dart';
 import '../../features/marketplace/presentation/search_screen.dart';
+import '../../features/messages/presentation/chat_screen.dart';
 import '../../features/messages/presentation/messages_screen.dart';
 import '../../features/offers/presentation/my_offers_screen.dart';
 import '../../features/offers/presentation/pro_inbox_screen.dart';
@@ -119,6 +120,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.proJobs,
         builder: (context, state) => const JobsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.chat,
+        builder: (context, state) =>
+            ChatScreen(conversationId: state.pathParameters['id'] ?? ''),
       ),
       GoRoute(
         path: AppRoutes.proPortfolio,

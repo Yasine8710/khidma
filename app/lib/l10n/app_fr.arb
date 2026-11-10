@@ -644,5 +644,31 @@
         "type": "String"
       }
     }
+  },
+  "chatTitleClient": "Client",
+  "chatInputHint": "Écrivez un message…",
+  "chatSend": "Envoyer",
+  "chatAddImage": "Joindre une photo",
+  "chatEmpty": "Aucun message. Dites bonjour !",
+  "chatReadOnly": "Cette conversation est terminée : vous pouvez la relire, mais plus y écrire.",
+  "chatImageSent": "Photo envoyée",
+  "chatYouSent": "Vous",
+  "chatThem": "Interlocuteur",
+  "chatUnread": "{count, plural, =0{} =1{1 message non lu} other{{count} messages non lus}}",
+  "chatSendFailed": "Message non envoyé. Réessayez.",
+  "chatRateLimited": "Vous écrivez trop vite. Patientez un instant.",
+  "chatClosed": "Cette conversation est terminée.",
+  "chatOpenFailed": "Impossible d’ouvrir la conversation. Réessayez.",
+  "chatLiveFailed": "Mise à jour en direct interrompue. Tirez pour actualiser.",
+  "chatPhotoFailed": "Photo non envoyée. Réessayez.",
+  "chatAskPro": "Poser une question",
+  "chatWriteCustomer": "Écrire au client",
+  "chatPhoto": "Photo",
+  "@chatUnread": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

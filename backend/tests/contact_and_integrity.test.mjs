@@ -224,12 +224,14 @@ describe('sequence and function exposure', () => {
     assert.deepEqual(anonCan, ['is_admin', 'search_normalize', 'search_professionals']);
     assert.deepEqual(authCan, [
       'accept_offer', 'admin_set_verification', 'become_professional', 'can_view_request_photos', 'cancel_booking',
-      'cancel_quote_request', 'confirm_booking_completed', 'create_quote_request', 'decline_offer',
-      'delete_my_account', 'get_my_activity', 'get_my_professional_contact', 'get_my_quote_request', 'get_open_request',
-      'has_offered_on', 'is_admin', 'is_request_owner', 'list_open_requests', 'mark_booking_done',
-      'my_portfolio_file_count', 'my_quote_requests', 'my_request_file_count', 'owns_open_request',
-      'request_photo_is_locked', 'reveal_professional_contact', 'search_normalize',
-      'search_professionals', 'start_booking', 'submit_offer', 'withdraw_offer',
+      'cancel_quote_request', 'chat_file_unsent', 'chat_folder_member', 'chat_folder_writable', 'chat_image_count', 'confirm_booking_completed',
+      'create_quote_request', 'decline_offer', 'delete_my_account', 'get_my_activity',
+      'get_my_professional_contact', 'get_my_quote_request', 'get_open_request', 'has_offered_on', 'is_admin',
+      'is_conversation_member', 'is_request_owner', 'list_open_requests', 'mark_booking_done',
+      'mark_conversation_read', 'my_conversations', 'my_portfolio_file_count', 'my_quote_requests',
+      'my_request_file_count', 'owns_open_request', 'request_photo_is_locked', 'reveal_professional_contact',
+      'search_normalize', 'search_professionals', 'send_message', 'start_booking', 'start_conversation',
+      'submit_offer', 'withdraw_offer',
     ]);
   });
 

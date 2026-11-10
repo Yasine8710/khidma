@@ -114,6 +114,12 @@ Not yet verified against a real project: the end-to-end link flow on a device, t
 - The `request-photos` bucket is private (signed links, one hour). Readers: the owner; published professionals while the request is open; a professional while their own offer is pending or accepted. Photos of a closed request cannot be deleted. Account deletion removes the object rows.
 - Upload quotas (60 files per customer here, 16 per professional for the portfolio) are counted from a snapshot, so a burst of parallel uploads can overshoot slightly; the server-side sweep planned in #32 should also delete files no row points to.
 
+### Messaging (Phase 6.1)
+- A conversation hangs on one offer; either side opens it, nobody else can. Customers are anonymous to professionals: no user id is selectable on `conversations` or `messages` (messages carry only a role flag, so realtime payloads leak nothing), and the inbox function shows a professional's public name but never the customer's.
+- Clients only read (RLS by membership); `send_message` checks membership, that the offer is pending/accepted and the request open (not expired) or awarded, and rate limits to 30 per minute. Closed conversations are read-only, including image uploads.
+- Images: private `chat-images` bucket (2 MB, jpeg/png/webp), members only, 100 per conversation; an upload no message points to can be removed. Read markers are message ids set only up to what was shown.
+- Deleting an account removes its conversations and the matching object rows (bytes: server-side cleanup, #32).
+
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.
 - The Supabase SDK's own debug logger is disabled; the app prints only error types, and only in debug builds.

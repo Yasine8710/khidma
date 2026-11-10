@@ -2523,6 +2523,120 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Le professionnel indique avoir terminé. Le travail est-il bien fait ?'**
   String get bookingWaitingForYou;
+
+  /// No description provided for @chatTitleClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get chatTitleClient;
+
+  /// No description provided for @chatInputHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écrivez un message…'**
+  String get chatInputHint;
+
+  /// No description provided for @chatSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer'**
+  String get chatSend;
+
+  /// No description provided for @chatAddImage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Joindre une photo'**
+  String get chatAddImage;
+
+  /// No description provided for @chatEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun message. Dites bonjour !'**
+  String get chatEmpty;
+
+  /// No description provided for @chatReadOnly.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette conversation est terminée : vous pouvez la relire, mais plus y écrire.'**
+  String get chatReadOnly;
+
+  /// No description provided for @chatImageSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo envoyée'**
+  String get chatImageSent;
+
+  /// No description provided for @chatYouSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous'**
+  String get chatYouSent;
+
+  /// No description provided for @chatThem.
+  ///
+  /// In fr, this message translates to:
+  /// **'Interlocuteur'**
+  String get chatThem;
+
+  /// No description provided for @chatUnread.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{} =1{1 message non lu} other{{count} messages non lus}}'**
+  String chatUnread(int count);
+
+  /// No description provided for @chatSendFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message non envoyé. Réessayez.'**
+  String get chatSendFailed;
+
+  /// No description provided for @chatRateLimited.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous écrivez trop vite. Patientez un instant.'**
+  String get chatRateLimited;
+
+  /// No description provided for @chatClosed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette conversation est terminée.'**
+  String get chatClosed;
+
+  /// No description provided for @chatOpenFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d’ouvrir la conversation. Réessayez.'**
+  String get chatOpenFailed;
+
+  /// No description provided for @chatLiveFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mise à jour en direct interrompue. Tirez pour actualiser.'**
+  String get chatLiveFailed;
+
+  /// No description provided for @chatPhotoFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo non envoyée. Réessayez.'**
+  String get chatPhotoFailed;
+
+  /// No description provided for @chatAskPro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Poser une question'**
+  String get chatAskPro;
+
+  /// No description provided for @chatWriteCustomer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écrire au client'**
+  String get chatWriteCustomer;
+
+  /// No description provided for @chatPhoto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo'**
+  String get chatPhoto;
 }
 
 class _AppLocalizationsDelegate

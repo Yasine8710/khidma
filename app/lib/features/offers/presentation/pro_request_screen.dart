@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/format/dates.dart';
 import '../../../core/format/digits.dart';
 import '../../../core/format/money.dart';
+import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_badge.dart';
@@ -17,6 +19,7 @@ import '../../marketplace/application/marketplace_providers.dart';
 import '../../portfolio/presentation/portfolio_image.dart';
 import '../../requests/application/requests_providers.dart';
 import '../../requests/domain/requests_domain.dart';
+import '../../messages/application/messages_providers.dart';
 import '../application/offers_providers.dart';
 import '../domain/offers_domain.dart';
 import 'offers_texts.dart';
@@ -247,6 +250,30 @@ class _OfferSectionState extends ConsumerState<_OfferSection> {
     }
   }
 
+  Future<void> _openChat(MyOffer offer) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final router = GoRouter.of(context);
+    final (id, failure) = await ref
+        .read(messageActionsProvider.notifier)
+        .open(offer.id);
+    if (id != null) {
+      router.push(AppRoutes.chatPath(id));
+      return;
+    }
+    messenger
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            failure == RequestsFailure.notOpen
+                ? l10n.chatClosed
+                : l10n.chatOpenFailed,
+          ),
+        ),
+      );
+  }
+
   Future<void> _withdraw(MyOffer offer) async {
     final l10n = AppLocalizations.of(context);
     final failure = await ref
@@ -370,6 +397,17 @@ class _OfferSectionState extends ConsumerState<_OfferSection> {
             isLoading: busy,
             onPressed: _submit,
           ),
+          if (mine != null &&
+              (status == OfferStatus.pending ||
+                  status == OfferStatus.accepted)) ...[
+            const SizedBox(height: AppSpacing.sm),
+            AppButton(
+              label: l10n.chatWriteCustomer,
+              icon: Icons.chat_bubble_outline_rounded,
+              variant: AppButtonVariant.secondary,
+              onPressed: () => _openChat(mine),
+            ),
+          ],
           if (status == OfferStatus.pending && mine != null) ...[
             const SizedBox(height: AppSpacing.sm),
             AppButton(

@@ -16,6 +16,7 @@ import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
 import '../../offers/domain/offers_domain.dart';
 import '../../offers/presentation/offers_texts.dart';
+import '../../messages/application/messages_providers.dart';
 import '../application/customer_offers_providers.dart';
 import '../domain/customer_offers_domain.dart';
 import '../domain/requests_domain.dart';
@@ -124,6 +125,30 @@ class _ReceivedOffersSectionState extends ConsumerState<ReceivedOffersSection> {
       );
   }
 
+  Future<void> _message(ReceivedOffer offer) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final router = GoRouter.of(context);
+    final (id, failure) = await ref
+        .read(messageActionsProvider.notifier)
+        .open(offer.id);
+    if (id != null) {
+      router.push(AppRoutes.chatPath(id));
+      return;
+    }
+    messenger
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            failure == RequestsFailure.notOpen
+                ? l10n.chatClosed
+                : l10n.chatOpenFailed,
+          ),
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -205,6 +230,7 @@ class _ReceivedOffersSectionState extends ConsumerState<ReceivedOffersSection> {
                   _decide(accept: true, offer: o, proName: name),
               onDecline: (name) =>
                   _decide(accept: false, offer: o, proName: name),
+              onMessage: () => _message(o),
             ),
             const SizedBox(height: AppSpacing.md),
           ],
@@ -238,6 +264,7 @@ class _OfferCard extends StatelessWidget {
     required this.canAccept,
     required this.onAccept,
     required this.onDecline,
+    required this.onMessage,
   });
 
   final ReceivedOffer offer;
@@ -247,6 +274,7 @@ class _OfferCard extends StatelessWidget {
   final bool canAccept;
   final void Function(String name) onAccept;
   final void Function(String name) onDecline;
+  final VoidCallback onMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -335,6 +363,19 @@ class _OfferCard extends StatelessWidget {
             if (offer.message != null && offer.message!.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.sm),
               Text(offer.message!, style: text.bodyMedium),
+            ],
+            if (live) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: AppButton(
+                  label: l10n.chatAskPro,
+                  icon: Icons.chat_bubble_outline_rounded,
+                  variant: AppButtonVariant.text,
+                  expand: false,
+                  onPressed: onMessage,
+                ),
+              ),
             ],
             if (canAct) ...[
               const SizedBox(height: AppSpacing.md),

@@ -1392,4 +1392,73 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get bookingWaitingForYou =>
       'Le professionnel indique avoir terminé. Le travail est-il bien fait ?';
+
+  @override
+  String get chatTitleClient => 'Client';
+
+  @override
+  String get chatInputHint => 'Écrivez un message…';
+
+  @override
+  String get chatSend => 'Envoyer';
+
+  @override
+  String get chatAddImage => 'Joindre une photo';
+
+  @override
+  String get chatEmpty => 'Aucun message. Dites bonjour !';
+
+  @override
+  String get chatReadOnly =>
+      'Cette conversation est terminée : vous pouvez la relire, mais plus y écrire.';
+
+  @override
+  String get chatImageSent => 'Photo envoyée';
+
+  @override
+  String get chatYouSent => 'Vous';
+
+  @override
+  String get chatThem => 'Interlocuteur';
+
+  @override
+  String chatUnread(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count messages non lus',
+      one: '1 message non lu',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSendFailed => 'Message non envoyé. Réessayez.';
+
+  @override
+  String get chatRateLimited => 'Vous écrivez trop vite. Patientez un instant.';
+
+  @override
+  String get chatClosed => 'Cette conversation est terminée.';
+
+  @override
+  String get chatOpenFailed =>
+      'Impossible d’ouvrir la conversation. Réessayez.';
+
+  @override
+  String get chatLiveFailed =>
+      'Mise à jour en direct interrompue. Tirez pour actualiser.';
+
+  @override
+  String get chatPhotoFailed => 'Photo non envoyée. Réessayez.';
+
+  @override
+  String get chatAskPro => 'Poser une question';
+
+  @override
+  String get chatWriteCustomer => 'Écrire au client';
+
+  @override
+  String get chatPhoto => 'Photo';
 }

@@ -1376,4 +1376,71 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get bookingWaitingForYou =>
       'The professional says the work is done. Is it done properly?';
+
+  @override
+  String get chatTitleClient => 'Customer';
+
+  @override
+  String get chatInputHint => 'Write a message…';
+
+  @override
+  String get chatSend => 'Send';
+
+  @override
+  String get chatAddImage => 'Attach a photo';
+
+  @override
+  String get chatEmpty => 'No messages yet. Say hello!';
+
+  @override
+  String get chatReadOnly =>
+      'This conversation has ended: you can read it, but not write.';
+
+  @override
+  String get chatImageSent => 'Photo sent';
+
+  @override
+  String get chatYouSent => 'You';
+
+  @override
+  String get chatThem => 'Other person';
+
+  @override
+  String chatUnread(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unread messages',
+      one: '1 unread message',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSendFailed => 'Message not sent. Try again.';
+
+  @override
+  String get chatRateLimited => 'You are writing too fast. Wait a moment.';
+
+  @override
+  String get chatClosed => 'This conversation has ended.';
+
+  @override
+  String get chatOpenFailed => 'Couldn’t open the conversation. Try again.';
+
+  @override
+  String get chatLiveFailed => 'Live updates stopped. Pull to refresh.';
+
+  @override
+  String get chatPhotoFailed => 'Photo not sent. Try again.';
+
+  @override
+  String get chatAskPro => 'Ask a question';
+
+  @override
+  String get chatWriteCustomer => 'Message the customer';
+
+  @override
+  String get chatPhoto => 'Photo';
 }
