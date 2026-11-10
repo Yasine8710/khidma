@@ -1,0 +1,17 @@
+{
+  "@@locale": "fr",
+  "appName": "Khidma",
+  "tagline": "Des professionnels de confiance, près de chez vous.",
+  "chooseLanguage": "Choisir la langue",
+  "languageFrench": "Français",
+  "languageArabic": "العربية",
+  "languageEnglish": "English",
+  "priceOnQuote": "Sur devis",
+  "professionalsCount": "{count, plural, =0{Aucun professionnel} =1{1 professionnel} other{{count} professionnels}}",
+  "@professionalsCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "phoneInvalid": "Numéro tunisien invalide. Exemple : +216 20 123 456"
+}

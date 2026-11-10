@@ -1,0 +1,12 @@
+{
+  "@@locale": "en",
+  "appName": "Khidma",
+  "tagline": "Trusted professionals, close to you.",
+  "chooseLanguage": "Choose language",
+  "languageFrench": "Français",
+  "languageArabic": "العربية",
+  "languageEnglish": "English",
+  "priceOnQuote": "On quote",
+  "professionalsCount": "{count, plural, =0{No professionals} =1{1 professional} other{{count} professionals}}",
+  "phoneInvalid": "Invalid Tunisian number. Example: +216 20 123 456"
+}
