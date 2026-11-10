@@ -12,6 +12,7 @@ class FakeProfileRepository implements ProfileRepository {
 
   int fetchCalls = 0;
   int becomeProfessionalCalls = 0;
+  int deleteCalls = 0;
   final updates = <({String fullName, String? phone, String language})>[];
 
   Future<void> _pre() async {
@@ -60,5 +61,12 @@ class FakeProfileRepository implements ProfileRepository {
     becomeProfessionalCalls++;
     await _pre();
     profile = profile?.copyWith(isProfessional: true);
+  }
+
+  @override
+  Future<void> deleteMyAccount() async {
+    deleteCalls++;
+    await _pre();
+    profile = null;
   }
 }

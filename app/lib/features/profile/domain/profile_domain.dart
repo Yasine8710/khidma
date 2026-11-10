@@ -65,6 +65,9 @@ abstract interface class ProfileRepository {
 
   /// Opt in to offering services. Idempotent; does not touch customer access.
   Future<void> becomeProfessional();
+
+  /// Permanently deletes the signed-in person's account and all their data.
+  Future<void> deleteMyAccount();
 }
 
 class NotConfiguredProfileRepository implements ProfileRepository {
@@ -80,4 +83,6 @@ class NotConfiguredProfileRepository implements ProfileRepository {
   }) async => _fail();
   @override
   Future<void> becomeProfessional() async => _fail();
+  @override
+  Future<void> deleteMyAccount() async => _fail();
 }

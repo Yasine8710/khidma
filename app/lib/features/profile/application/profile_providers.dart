@@ -121,6 +121,20 @@ class ProfileActions extends Notifier<bool> {
 
   Future<ProfileResult> becomeProfessional() =>
       _run((r) => r.becomeProfessional());
+
+  /// Deletes the account on the server, then signs out locally and forgets
+  /// anything remembered about this person on the device. If the server call
+  /// fails, nothing is changed and the person stays signed in.
+  Future<ProfileResult> deleteAccount() async {
+    final result = await _run((r) => r.deleteMyAccount());
+    if (!result.isOk) return result;
+    await ref.read(pendingAccountChoiceProvider.notifier).forget();
+    try {
+      // The account is already gone; this clears the local session.
+      await ref.read(authRepositoryProvider).signOut();
+    } catch (_) {}
+    return result;
+  }
 }
 
 const _pendingKey = 'pendingAccountChoice';

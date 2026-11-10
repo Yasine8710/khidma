@@ -112,5 +112,12 @@
   "failProfileLoad": "Couldn't load your profile.",
   "failProfileInvalid": "Some details are invalid.",
   "continueWithApple": "Continue with Apple",
-  "orSeparator": "or"
+  "orSeparator": "or",
+  "deleteAccount": "Delete my account",
+  "deleteAccountTitle": "Delete your account?",
+  "deleteAccountBody": "Your profile, your details and the data linked to them will be permanently deleted. This cannot be undone.",
+  "deleteConfirmWord": "DELETE",
+  "deleteTypeToConfirm": "Type {word} to confirm",
+  "cancel": "Cancel",
+  "accountDeleted": "Your account has been deleted."
 }

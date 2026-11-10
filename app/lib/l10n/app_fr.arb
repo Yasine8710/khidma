@@ -160,5 +160,19 @@
   "failProfileLoad": "Impossible de charger votre profil.",
   "failProfileInvalid": "Certaines informations sont invalides.",
   "continueWithApple": "Continuer avec Apple",
-  "orSeparator": "ou"
+  "orSeparator": "ou",
+  "deleteAccount": "Supprimer mon compte",
+  "deleteAccountTitle": "Supprimer votre compte ?",
+  "deleteAccountBody": "Votre profil, vos informations et vos données associées seront supprimés définitivement. Cette action est irréversible.",
+  "deleteConfirmWord": "SUPPRIMER",
+  "deleteTypeToConfirm": "Saisissez {word} pour confirmer",
+  "cancel": "Annuler",
+  "accountDeleted": "Votre compte a été supprimé.",
+  "@deleteTypeToConfirm": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  }
 }

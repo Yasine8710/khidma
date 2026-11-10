@@ -108,3 +108,7 @@ Codex verified: fresh `Random.secure()` nonce, SHA-256 to Apple and original to 
 Found by tests: reading the user from the stream-backed provider right after sign-in raced the stream (email was null and the choice was skipped); the repository's `currentUser` is used instead.
 Not verified (needs owner/device): the real Apple sheet, capability provisioning with a paid team, Supabase Apple provider settings.
 Tests: 283 pass (6 goldens), analyze clean.
+
+## Phase 2, #32 (account deletion), 2026-11-10
+Opened from the Codex review of #9 (App Store 5.1.1(v)). Database: `delete_my_account()` (definer, pinned search_path, no arguments, registered users only) + 7 PGlite tests (full cascade across every user-id column, other users untouched, anon / anonymous-auth / no-user refused, function grants matrix updated). App: confirm-by-typing dialog (localized word), server delete then local sign-out, pending choice cleared, failure keeps the session; 10 tests incl. the exact RPC on the wire. Not reviewed by Codex separately (small, heavily tested); to verify on a real project: owner's right to delete from auth.users, Apple token revocation (server key needed).
+Tests: app 293 + backend 88.
