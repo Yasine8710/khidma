@@ -37,7 +37,12 @@ flutter test --tags golden        # pixel tests (baselines are Windows-made)
 flutter test --update-goldens --tags golden   # refresh baselines
 flutter run --dart-define=GALLERY=true        # gallery in a profile/release build
 ```
-There is no environment configuration yet. When Supabase is connected (issue #6) the public URL and anon key will be passed with `--dart-define`; `.env.example` lists the names. Never commit secrets or a service-role key.
+Backend settings are passed at build time, not read from a file at runtime:
+```bash
+cp app/config/dev.example.json app/config/dev.json   # git-ignored; fill in URL + anon key
+flutter run --dart-define-from-file=config/dev.json
+```
+Without them the app still runs; features that need a backend show a "not connected" state. A service-role key is rejected at startup (it must never ship in an app). See `lib/core/config/app_config.dart`.
 
 Brand assets are generated: see the header of `scripts/make_brand_assets.py` for the exact order (it also lists two fixes to re-check after the icon generators run, which tests guard).
 

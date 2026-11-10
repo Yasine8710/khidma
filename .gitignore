@@ -10,6 +10,9 @@ key.properties
 service-account*.json
 GoogleService-Info.plist
 google-services.json
+# Local app config (public client settings still stay out of git)
+app/config/*.json
+!app/config/*.example.json
 # Flutter / Dart
 .dart_tool/
 .packages
