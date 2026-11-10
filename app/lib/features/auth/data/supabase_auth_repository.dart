@@ -115,7 +115,7 @@ class SupabaseAuthRepository implements AuthRepository {
   Future<void> signOut() => _guard(() => _auth.signOut());
 
   @override
-  Future<void> signInWithApple() => _guard(() async {
+  Future<String?> signInWithApple() => _guard(() async {
     // Apple gets the hash; Supabase gets the original and verifies the pair.
     final rawNonce = generateNonce();
     final credential = await _appleCredential(hashedNonce: sha256Hex(rawNonce));
@@ -138,6 +138,7 @@ class SupabaseAuthRepository implements AuthRepository {
         // The name is a convenience; signing in already succeeded.
       }
     }
+    return name;
   });
 
   @override

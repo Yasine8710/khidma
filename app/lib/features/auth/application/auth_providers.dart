@@ -33,10 +33,15 @@ final currentUserProvider = Provider<AuthUser?>(
 
 /// Result of an auth action for the UI: either done or a [failure].
 class AuthActionResult {
-  const AuthActionResult.ok([this.outcome]) : failure = null;
-  const AuthActionResult.failed(this.failure) : outcome = null;
+  const AuthActionResult.ok([this.outcome, this.sharedName]) : failure = null;
+  const AuthActionResult.failed(this.failure)
+    : outcome = null,
+      sharedName = null;
   final AuthFailure? failure;
   final SignUpOutcome? outcome;
+
+  /// A display name the identity provider shared (Apple, first sign-in only).
+  final String? sharedName;
   bool get isOk => failure == null;
 }
 
@@ -51,13 +56,14 @@ class AuthActions extends Notifier<bool> {
   bool build() => false;
 
   Future<AuthActionResult> _run(
-    Future<SignUpOutcome?> Function(AuthRepository repo) action,
-  ) async {
+    Future<SignUpOutcome?> Function(AuthRepository repo) action, {
+    String? Function()? sharedName,
+  }) async {
     if (state) return const AuthActionResult.failed(AuthFailure.unknown);
     state = true;
     try {
       final outcome = await action(ref.read(authRepositoryProvider));
-      return AuthActionResult.ok(outcome);
+      return AuthActionResult.ok(outcome, sharedName?.call());
     } on AuthError catch (e) {
       return AuthActionResult.failed(e.failure);
     } catch (_) {
@@ -86,10 +92,13 @@ class AuthActions extends Notifier<bool> {
     ),
   );
 
-  Future<AuthActionResult> signInWithApple() => _run((r) async {
-    await r.signInWithApple();
-    return null;
-  });
+  Future<AuthActionResult> signInWithApple() {
+    String? name;
+    return _run((r) async {
+      name = await r.signInWithApple();
+      return null;
+    }, sharedName: () => name);
+  }
 
   Future<AuthActionResult> sendPasswordReset(String email) => _run((r) async {
     await r.sendPasswordReset(email);

@@ -39,6 +39,9 @@ class FakeAuthRepository implements AuthRepository {
   int signOutCalls = 0;
   int appleCalls = 0;
 
+  /// The name Apple shares on a first sign-in (null otherwise).
+  String? appleSharedName;
+
   /// The user a successful Apple sign-in produces.
   AuthUser appleUser = const AuthUser(
     id: 'apple-user',
@@ -105,10 +108,11 @@ class FakeAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<void> signInWithApple() async {
+  Future<String?> signInWithApple() async {
     appleCalls++;
     await _pre();
     emit(appleUser);
+    return appleSharedName;
   }
 
   @override

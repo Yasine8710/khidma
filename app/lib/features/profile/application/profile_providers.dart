@@ -94,6 +94,31 @@ class ProfileActions extends Notifier<bool> {
     return result;
   }
 
+  /// Stores a name an identity provider shared (Apple), but only when the
+  /// profile has none: it is a suggestion, never an overwrite of something the
+  /// person typed. Best effort; failure is not shown.
+  Future<void> adoptSharedName(String name) async {
+    final clean = name.trim();
+    if (clean.isEmpty || clean.length > 120 || state) return;
+    state = true;
+    try {
+      final repo = ref.read(profileRepositoryProvider);
+      final mine = await repo.fetchMine();
+      if ((mine.fullName ?? '').trim().isEmpty) {
+        await repo.updateMine(
+          fullName: clean,
+          phone: mine.phone,
+          preferredLanguage: mine.preferredLanguage,
+        );
+        ref.invalidate(myProfileProvider);
+      }
+    } catch (_) {
+      // A convenience only.
+    } finally {
+      state = false;
+    }
+  }
+
   Future<ProfileResult> becomeProfessional() =>
       _run((r) => r.becomeProfessional());
 }

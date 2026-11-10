@@ -64,9 +64,10 @@ abstract interface class AuthRepository {
   Future<void> signIn({required String email, required String password});
   Future<void> signOut();
 
-  /// Sign in (or up) with an Apple ID. Throws [AuthFailure.cancelled] if the
-  /// person closes Apple's sheet.
-  Future<void> signInWithApple();
+  /// Sign in (or up) with an Apple ID. Returns the name Apple shared, which
+  /// it does only on a person's very first sign-in (else null). Throws
+  /// [AuthFailure.cancelled] if the person closes Apple's sheet.
+  Future<String?> signInWithApple();
   Future<void> sendPasswordReset(String email);
 
   /// Fires when the user opens a password-reset link and the app has a
@@ -106,7 +107,7 @@ class NotConfiguredAuthRepository implements AuthRepository {
   @override
   Future<void> signOut() async {}
   @override
-  Future<void> signInWithApple() async => _fail();
+  Future<String?> signInWithApple() async => _fail();
   @override
   Future<void> sendPasswordReset(String email) async => _fail();
   @override

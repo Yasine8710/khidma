@@ -90,9 +90,20 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           .signInWithApple();
       if (!mounted) return;
       if (result.isOk) {
-        // Apple gives a session immediately, so the account type applies now.
-        if (_type == AccountType.professional) {
-          await ref.read(profileActionsProvider.notifier).becomeProfessional();
+        // One coordinator applies the account type: record the choice for this
+        // account's email and let the app-wide account setup apply it (with
+        // the Profile card as manual fallback), instead of racing it here.
+        // The repository knows the signed-in user right away; the stream-backed
+        // provider may not have caught up yet.
+        final email = ref.read(authRepositoryProvider).currentUser?.email;
+        if (email != null) {
+          await ref
+              .read(pendingAccountChoiceProvider.notifier)
+              .remember(_type, email);
+        }
+        final name = result.sharedName;
+        if (name != null) {
+          await ref.read(profileActionsProvider.notifier).adoptSharedName(name);
         }
         if (!mounted) return;
         leaveAuth(context);
