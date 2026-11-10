@@ -123,6 +123,23 @@ class SupabaseMarketplaceRepository implements MarketplaceRepository {
     ];
   });
 
+  /// The same public columns the search returns; Row Level Security hides
+  /// anything unpublished, so "no row" covers unknown, deleted and draft alike.
+  @override
+  Future<ProfessionalSummary?> professional(String id) => _guard(() async {
+    final row = await _client
+        .from('professional_profiles')
+        .select(
+          'user_id, business_name, primary_category_id, description, years_experience, '
+          'governorate_id, city_id, neighborhood_id, latitude, longitude, availability, '
+          'verification_status, rating_avg, review_count',
+        )
+        .eq('user_id', id)
+        .eq('is_published', true)
+        .maybeSingle();
+    return row == null ? null : _summary(row);
+  });
+
   ServiceCategory _category(Map<String, dynamic> r) => ServiceCategory(
     id: r['id'] as int,
     slug: r['slug'] as String,

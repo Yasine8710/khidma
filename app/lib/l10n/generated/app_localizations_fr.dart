@@ -59,13 +59,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navProfile => 'Profil';
 
   @override
-  String get homeEmptyTitle => 'Les professionnels arrivent bientôt';
-
-  @override
-  String get homeEmptyBody =>
-      'La recherche et les catégories de services seront disponibles ici.';
-
-  @override
   String get requestsEmptyTitle => 'Aucune demande pour l\'instant';
 
   @override
@@ -418,4 +411,128 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get accountDeleted => 'Votre compte a été supprimé.';
+
+  @override
+  String get homeGreeting => 'Bonjour';
+
+  @override
+  String homeGreetingNamed(String name) {
+    return 'Bonjour, $name';
+  }
+
+  @override
+  String get homeSubtitle => 'De quel service avez-vous besoin ?';
+
+  @override
+  String get searchHint => 'Rechercher un métier, un nom, une ville…';
+
+  @override
+  String get placeAll => 'Toute la Tunisie';
+
+  @override
+  String get placeChoose => 'Choisir une zone';
+
+  @override
+  String get placeGovernorate => 'Gouvernorat';
+
+  @override
+  String get placeWholeGovernorate => 'Tout le gouvernorat';
+
+  @override
+  String get sectionCategories => 'Catégories';
+
+  @override
+  String get sectionTopRated => 'Les mieux notés';
+
+  @override
+  String get sectionInYourArea => 'Dans votre zone';
+
+  @override
+  String get sectionInYourAreaPrompt =>
+      'Choisissez une zone pour voir les professionnels autour de vous.';
+
+  @override
+  String get sectionRecent => 'Consultés récemment';
+
+  @override
+  String get seeAll => 'Voir tout';
+
+  @override
+  String get noProfessionalsTitle => 'Aucun professionnel pour le moment';
+
+  @override
+  String get noProfessionalsBody =>
+      'Ils apparaîtront ici dès qu\'ils auront rejoint Khidma.';
+
+  @override
+  String get noProfessionalsInArea =>
+      'Aucun professionnel dans cette zone pour le moment.';
+
+  @override
+  String get demoBannerTitle => 'Données de démonstration';
+
+  @override
+  String get demoBannerBody =>
+      'Les professionnels, notes et badges affichés sont fictifs.';
+
+  @override
+  String get availabilityAvailable => 'Disponible';
+
+  @override
+  String get availabilityBusy => 'Occupé';
+
+  @override
+  String get availabilityOffline => 'Hors ligne';
+
+  @override
+  String yearsExperience(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ans d\'expérience',
+      one: '1 an d\'expérience',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String distanceKm(String km) {
+    return '$km km';
+  }
+
+  @override
+  String get failLoadProfessionals =>
+      'Impossible de charger les professionnels.';
+
+  @override
+  String get failForbidden =>
+      'L\'accès aux données est refusé. Réessayez plus tard.';
+
+  @override
+  String get professionalNotFoundTitle => 'Profil introuvable';
+
+  @override
+  String get professionalNotFoundBody =>
+      'Ce professionnel n\'est plus disponible.';
+
+  @override
+  String get searchTitle => 'Recherche';
+
+  @override
+  String get searchNoResultsTitle => 'Aucun résultat';
+
+  @override
+  String get searchNoResultsBody => 'Essayez un autre mot ou une autre zone.';
+
+  @override
+  String get searchStartTitle => 'Que cherchez-vous ?';
+
+  @override
+  String get searchStartBody => 'Tapez un métier, un nom ou une ville.';
+
+  @override
+  String get aboutLabel => 'À propos';
+
+  @override
+  String get inCategory => 'Catégorie';
 }

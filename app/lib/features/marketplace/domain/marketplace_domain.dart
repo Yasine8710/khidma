@@ -237,6 +237,10 @@ abstract interface class MarketplaceRepository {
   Future<List<Governorate>> governorates();
   Future<List<City>> cities({int? governorateId});
   Future<List<ProfessionalSummary>> search(SearchQuery query);
+
+  /// One published professional by id, or null if there is none (unpublished,
+  /// deleted or unknown ids look the same on purpose).
+  Future<ProfessionalSummary?> professional(String id);
 }
 
 /// Used when there is no backend and demo data is not enabled: honestly empty.
@@ -252,4 +256,6 @@ class EmptyMarketplaceRepository implements MarketplaceRepository {
   Future<List<City>> cities({int? governorateId}) async => const [];
   @override
   Future<List<ProfessionalSummary>> search(SearchQuery query) async => const [];
+  @override
+  Future<ProfessionalSummary?> professional(String id) async => null;
 }

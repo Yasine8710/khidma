@@ -476,6 +476,41 @@ void main() {
       expect(body.containsKey('p_lat'), isFalse);
     });
 
+    test(
+      'professional(id) reads public columns of one published row',
+      () async {
+        final row = {
+          'user_id': 'u1',
+          'business_name': 'Karim',
+          'primary_category_id': 1,
+          'description': 'd',
+          'years_experience': 5,
+          'governorate_id': 11,
+          'city_id': 2,
+          'neighborhood_id': null,
+          'latitude': null,
+          'longitude': null,
+          'availability': 'available',
+          'verification_status': 'unverified',
+          'rating_avg': 0,
+          'review_count': 0,
+        };
+        final repo = build(row);
+        final p = await repo.professional('u1');
+        expect(p?.name, 'Karim');
+        final q = requests.single.url.queryParameters;
+        expect(requests.single.url.path, '/rest/v1/professional_profiles');
+        expect(q['user_id'], 'eq.u1');
+        expect(q['is_published'], 'eq.true');
+        expect(q['select'], isNot(contains('contact_phone')));
+      },
+    );
+
+    test('professional(id): none found is null', () async {
+      final repo = build(<Object>[]);
+      expect(await repo.professional('nope'), isNull);
+    });
+
     test('rows become summaries (numbers as ints or doubles, unknown enums handled)', () async {
       final repo = build([
         {

@@ -8,6 +8,10 @@ class FakeProfileRepository implements ProfileRepository {
 
   AppProfile? profile;
   ProfileFailure? failNext;
+
+  /// Fails only the next becomeProfessional call (other calls, such as Home
+  /// reading the profile, are unaffected).
+  ProfileFailure? failBecomeNext;
   Completer<void>? gate;
 
   int fetchCalls = 0;
@@ -59,6 +63,11 @@ class FakeProfileRepository implements ProfileRepository {
   @override
   Future<void> becomeProfessional() async {
     becomeProfessionalCalls++;
+    final b = failBecomeNext;
+    if (b != null) {
+      failBecomeNext = null;
+      throw ProfileError(b);
+    }
     await _pre();
     profile = profile?.copyWith(isProfessional: true);
   }

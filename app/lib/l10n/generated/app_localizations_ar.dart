@@ -61,12 +61,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navProfile => 'حسابي';
 
   @override
-  String get homeEmptyTitle => 'الحرفيون قادمون قريبًا';
-
-  @override
-  String get homeEmptyBody => 'سيتوفر البحث وفئات الخدمات هنا.';
-
-  @override
   String get requestsEmptyTitle => 'لا توجد طلبات حتى الآن';
 
   @override
@@ -414,4 +408,124 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accountDeleted => 'تم حذف حسابك.';
+
+  @override
+  String get homeGreeting => 'مرحبًا';
+
+  @override
+  String homeGreetingNamed(String name) {
+    return 'مرحبًا، $name';
+  }
+
+  @override
+  String get homeSubtitle => 'ما الخدمة التي تحتاجها؟';
+
+  @override
+  String get searchHint => 'ابحث عن مهنة أو اسم أو مدينة…';
+
+  @override
+  String get placeAll => 'كل تونس';
+
+  @override
+  String get placeChoose => 'اختر منطقة';
+
+  @override
+  String get placeGovernorate => 'الولاية';
+
+  @override
+  String get placeWholeGovernorate => 'كل الولاية';
+
+  @override
+  String get sectionCategories => 'الفئات';
+
+  @override
+  String get sectionTopRated => 'الأعلى تقييمًا';
+
+  @override
+  String get sectionInYourArea => 'في منطقتك';
+
+  @override
+  String get sectionInYourAreaPrompt => 'اختر منطقة لرؤية الحرفيين من حولك.';
+
+  @override
+  String get sectionRecent => 'شوهدت مؤخرًا';
+
+  @override
+  String get seeAll => 'عرض الكل';
+
+  @override
+  String get noProfessionalsTitle => 'لا يوجد حرفيون حتى الآن';
+
+  @override
+  String get noProfessionalsBody => 'سيظهرون هنا بمجرد انضمامهم إلى خدمة.';
+
+  @override
+  String get noProfessionalsInArea => 'لا يوجد حرفيون في هذه المنطقة حتى الآن.';
+
+  @override
+  String get demoBannerTitle => 'بيانات تجريبية';
+
+  @override
+  String get demoBannerBody => 'الحرفيون والتقييمات والشارات المعروضة وهمية.';
+
+  @override
+  String get availabilityAvailable => 'متاح';
+
+  @override
+  String get availabilityBusy => 'مشغول';
+
+  @override
+  String get availabilityOffline => 'غير متصل';
+
+  @override
+  String yearsExperience(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'خبرة $count سنة',
+      many: 'خبرة $count سنة',
+      few: 'خبرة $count سنوات',
+      two: 'خبرة سنتين',
+      one: 'خبرة سنة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String distanceKm(String km) {
+    return '$km كم';
+  }
+
+  @override
+  String get failLoadProfessionals => 'تعذّر تحميل الحرفيين.';
+
+  @override
+  String get failForbidden => 'تم رفض الوصول إلى البيانات. حاول لاحقًا.';
+
+  @override
+  String get professionalNotFoundTitle => 'الملف غير موجود';
+
+  @override
+  String get professionalNotFoundBody => 'هذا الحرفي لم يعد متاحًا.';
+
+  @override
+  String get searchTitle => 'بحث';
+
+  @override
+  String get searchNoResultsTitle => 'لا توجد نتائج';
+
+  @override
+  String get searchNoResultsBody => 'جرّب كلمة أو منطقة أخرى.';
+
+  @override
+  String get searchStartTitle => 'عمّ تبحث؟';
+
+  @override
+  String get searchStartBody => 'اكتب مهنة أو اسمًا أو مدينة.';
+
+  @override
+  String get aboutLabel => 'نبذة';
+
+  @override
+  String get inCategory => 'الفئة';
 }

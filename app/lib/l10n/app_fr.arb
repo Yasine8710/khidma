@@ -20,8 +20,6 @@
   "navRequests": "Demandes",
   "navMessages": "Messages",
   "navProfile": "Profil",
-  "homeEmptyTitle": "Les professionnels arrivent bientôt",
-  "homeEmptyBody": "La recherche et les catégories de services seront disponibles ici.",
   "requestsEmptyTitle": "Aucune demande pour l'instant",
   "requestsEmptyBody": "Vos demandes de devis apparaîtront ici.",
   "messagesEmptyTitle": "Aucun message",
@@ -171,6 +169,62 @@
   "@deleteTypeToConfirm": {
     "placeholders": {
       "word": {
+        "type": "String"
+      }
+    }
+  },
+  "homeGreeting": "Bonjour",
+  "homeGreetingNamed": "Bonjour, {name}",
+  "homeSubtitle": "De quel service avez-vous besoin ?",
+  "searchHint": "Rechercher un métier, un nom, une ville…",
+  "placeAll": "Toute la Tunisie",
+  "placeChoose": "Choisir une zone",
+  "placeGovernorate": "Gouvernorat",
+  "placeWholeGovernorate": "Tout le gouvernorat",
+  "sectionCategories": "Catégories",
+  "sectionTopRated": "Les mieux notés",
+  "sectionInYourArea": "Dans votre zone",
+  "sectionInYourAreaPrompt": "Choisissez une zone pour voir les professionnels autour de vous.",
+  "sectionRecent": "Consultés récemment",
+  "seeAll": "Voir tout",
+  "noProfessionalsTitle": "Aucun professionnel pour le moment",
+  "noProfessionalsBody": "Ils apparaîtront ici dès qu'ils auront rejoint Khidma.",
+  "noProfessionalsInArea": "Aucun professionnel dans cette zone pour le moment.",
+  "demoBannerTitle": "Données de démonstration",
+  "demoBannerBody": "Les professionnels, notes et badges affichés sont fictifs.",
+  "availabilityAvailable": "Disponible",
+  "availabilityBusy": "Occupé",
+  "availabilityOffline": "Hors ligne",
+  "yearsExperience": "{count, plural, =1{1 an d'expérience} other{{count} ans d'expérience}}",
+  "distanceKm": "{km} km",
+  "failLoadProfessionals": "Impossible de charger les professionnels.",
+  "failForbidden": "L'accès aux données est refusé. Réessayez plus tard.",
+  "professionalNotFoundTitle": "Profil introuvable",
+  "professionalNotFoundBody": "Ce professionnel n'est plus disponible.",
+  "searchTitle": "Recherche",
+  "searchNoResultsTitle": "Aucun résultat",
+  "searchNoResultsBody": "Essayez un autre mot ou une autre zone.",
+  "searchStartTitle": "Que cherchez-vous ?",
+  "searchStartBody": "Tapez un métier, un nom ou une ville.",
+  "aboutLabel": "À propos",
+  "inCategory": "Catégorie",
+  "@homeGreetingNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@yearsExperience": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@distanceKm": {
+    "placeholders": {
+      "km": {
         "type": "String"
       }
     }

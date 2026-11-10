@@ -178,18 +178,6 @@ abstract class AppLocalizations {
   /// **'Profil'**
   String get navProfile;
 
-  /// No description provided for @homeEmptyTitle.
-  ///
-  /// In fr, this message translates to:
-  /// **'Les professionnels arrivent bientôt'**
-  String get homeEmptyTitle;
-
-  /// No description provided for @homeEmptyBody.
-  ///
-  /// In fr, this message translates to:
-  /// **'La recherche et les catégories de services seront disponibles ici.'**
-  String get homeEmptyBody;
-
   /// No description provided for @requestsEmptyTitle.
   ///
   /// In fr, this message translates to:
@@ -819,6 +807,216 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Votre compte a été supprimé.'**
   String get accountDeleted;
+
+  /// No description provided for @homeGreeting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bonjour'**
+  String get homeGreeting;
+
+  /// No description provided for @homeGreetingNamed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bonjour, {name}'**
+  String homeGreetingNamed(String name);
+
+  /// No description provided for @homeSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'De quel service avez-vous besoin ?'**
+  String get homeSubtitle;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un métier, un nom, une ville…'**
+  String get searchHint;
+
+  /// No description provided for @placeAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toute la Tunisie'**
+  String get placeAll;
+
+  /// No description provided for @placeChoose.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une zone'**
+  String get placeChoose;
+
+  /// No description provided for @placeGovernorate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gouvernorat'**
+  String get placeGovernorate;
+
+  /// No description provided for @placeWholeGovernorate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout le gouvernorat'**
+  String get placeWholeGovernorate;
+
+  /// No description provided for @sectionCategories.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégories'**
+  String get sectionCategories;
+
+  /// No description provided for @sectionTopRated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les mieux notés'**
+  String get sectionTopRated;
+
+  /// No description provided for @sectionInYourArea.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dans votre zone'**
+  String get sectionInYourArea;
+
+  /// No description provided for @sectionInYourAreaPrompt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez une zone pour voir les professionnels autour de vous.'**
+  String get sectionInYourAreaPrompt;
+
+  /// No description provided for @sectionRecent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Consultés récemment'**
+  String get sectionRecent;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir tout'**
+  String get seeAll;
+
+  /// No description provided for @noProfessionalsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun professionnel pour le moment'**
+  String get noProfessionalsTitle;
+
+  /// No description provided for @noProfessionalsBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ils apparaîtront ici dès qu\'ils auront rejoint Khidma.'**
+  String get noProfessionalsBody;
+
+  /// No description provided for @noProfessionalsInArea.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun professionnel dans cette zone pour le moment.'**
+  String get noProfessionalsInArea;
+
+  /// No description provided for @demoBannerTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Données de démonstration'**
+  String get demoBannerTitle;
+
+  /// No description provided for @demoBannerBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les professionnels, notes et badges affichés sont fictifs.'**
+  String get demoBannerBody;
+
+  /// No description provided for @availabilityAvailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponible'**
+  String get availabilityAvailable;
+
+  /// No description provided for @availabilityBusy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Occupé'**
+  String get availabilityBusy;
+
+  /// No description provided for @availabilityOffline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hors ligne'**
+  String get availabilityOffline;
+
+  /// No description provided for @yearsExperience.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 an d\'expérience} other{{count} ans d\'expérience}}'**
+  String yearsExperience(int count);
+
+  /// No description provided for @distanceKm.
+  ///
+  /// In fr, this message translates to:
+  /// **'{km} km'**
+  String distanceKm(String km);
+
+  /// No description provided for @failLoadProfessionals.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger les professionnels.'**
+  String get failLoadProfessionals;
+
+  /// No description provided for @failForbidden.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'accès aux données est refusé. Réessayez plus tard.'**
+  String get failForbidden;
+
+  /// No description provided for @professionalNotFoundTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil introuvable'**
+  String get professionalNotFoundTitle;
+
+  /// No description provided for @professionalNotFoundBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce professionnel n\'est plus disponible.'**
+  String get professionalNotFoundBody;
+
+  /// No description provided for @searchTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recherche'**
+  String get searchTitle;
+
+  /// No description provided for @searchNoResultsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun résultat'**
+  String get searchNoResultsTitle;
+
+  /// No description provided for @searchNoResultsBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essayez un autre mot ou une autre zone.'**
+  String get searchNoResultsBody;
+
+  /// No description provided for @searchStartTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Que cherchez-vous ?'**
+  String get searchStartTitle;
+
+  /// No description provided for @searchStartBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tapez un métier, un nom ou une ville.'**
+  String get searchStartBody;
+
+  /// No description provided for @aboutLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'À propos'**
+  String get aboutLabel;
+
+  /// No description provided for @inCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie'**
+  String get inCategory;
 }
 
 class _AppLocalizationsDelegate

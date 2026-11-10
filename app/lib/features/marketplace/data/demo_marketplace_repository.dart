@@ -98,6 +98,14 @@ class DemoMarketplaceRepository implements MarketplaceRepository {
     return matches.skip(offset).take(limit).toList();
   }
 
+  @override
+  Future<ProfessionalSummary?> professional(String id) async {
+    for (final p in _pros) {
+      if (p.id == id) return p;
+    }
+    return null;
+  }
+
   bool _matches(ProfessionalSummary p, SearchQuery q, String text) {
     if (q.availableOnly && p.availability != Availability.available) {
       return false;
