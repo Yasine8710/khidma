@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:khidma/core/storage/preferences_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:khidma/core/l10n/locale_controller.dart';
 import 'package:khidma/core/router/app_router.dart';
@@ -18,6 +19,8 @@ GoRouter _router(ProviderContainer c) => c.read(routerProvider);
 String _location(GoRouter r) => r.routerDelegate.currentConfiguration.uri.path;
 
 void main() {
+  setUpAll(loadAppFonts);
+
   testWidgets('starts on Home with four tabs', (tester) async {
     final c = await pumpApp(tester);
     expect(_location(_router(c)), AppRoutes.home);
@@ -89,7 +92,7 @@ void main() {
     await tester.tap(find.text('Sombre'));
     await tester.pumpAndSettle();
     expect(c.read(themeModeProvider), ThemeMode.dark);
-    expect(c.read(sharedPreferencesProvider).getString('themeMode'), 'dark');
+    expect(c.read(keyValueStoreProvider).getString('themeMode'), 'dark');
     final brightness = Theme.of(tester.element(find.byType(Scaffold).first))
         .brightness;
     expect(brightness, Brightness.dark);
@@ -136,9 +139,7 @@ void main() {
     for (final mode in ThemeMode.values) {
       final first = await pumpApp(tester);
       await first.read(themeModeProvider.notifier).setMode(mode);
-      final saved = first
-          .read(sharedPreferencesProvider)
-          .getString('themeMode');
+      final saved = first.read(keyValueStoreProvider).getString('themeMode');
       await tester.pumpWidget(const SizedBox());
       final second = await pumpApp(tester, prefs: {'themeMode': saved!});
       expect(second.read(themeModeProvider), mode);

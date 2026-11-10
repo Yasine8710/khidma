@@ -18,6 +18,8 @@ import 'package:khidma/shared/widgets/rating_stars.dart';
 import 'package:khidma/shared/widgets/section_header.dart';
 import 'package:khidma/shared/widgets/skeleton.dart';
 
+import '../test_helpers.dart';
+
 Widget host(
   Widget child, {
   String lang = 'fr',
@@ -55,6 +57,8 @@ double _ratio(Color a, Color b) {
 }
 
 void main() {
+  setUpAll(loadAppFonts);
+
   group('AppButton', () {
     testWidgets('fires onPressed once per tap', (tester) async {
       var n = 0;

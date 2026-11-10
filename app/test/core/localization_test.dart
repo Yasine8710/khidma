@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:khidma/core/storage/preferences_provider.dart';
 import 'package:khidma/core/l10n/locale_controller.dart';
 import 'package:khidma/l10n/generated/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../test_helpers.dart';
 
-class _FailingPrefs implements SharedPreferences {
-  _FailingPrefs(this._inner);
-  final SharedPreferences _inner;
-
+class _FailingStore implements KeyValueStore {
+  @override
+  String? getString(String key) => null;
+  @override
+  bool? getBool(String key) => null;
   @override
   Future<bool> setString(String key, String value) async =>
       throw Exception('disk full');
-
   @override
-  dynamic noSuchMethod(Invocation invocation) =>
-      Function.apply((_inner as dynamic).noSuchMethod, [invocation]);
+  Future<bool> setBool(String key, bool value) async =>
+      throw Exception('disk full');
 }
 
 Future<void> _openProfile(WidgetTester tester, String label) async {
@@ -26,6 +27,8 @@ Future<void> _openProfile(WidgetTester tester, String label) async {
 }
 
 void main() {
+  setUpAll(loadAppFonts);
+
   testWidgets('defaults to French LTR', (tester) async {
     final c = await pumpApp(tester);
     expect(c.read(localeProvider), const Locale('fr'));
@@ -43,7 +46,7 @@ void main() {
     expect(find.text('اختر اللغة'), findsOneWidget);
     expect(find.text('الرئيسية'), findsOneWidget);
     expect(c.read(localeProvider), const Locale('ar'));
-    expect(c.read(sharedPreferencesProvider).getString('locale'), 'ar');
+    expect(c.read(keyValueStoreProvider).getString('locale'), 'ar');
   });
 
   testWidgets('restores saved locale on start', (tester) async {
@@ -91,9 +94,9 @@ void main() {
 
   testWidgets('keeps new language when saving fails', (tester) async {
     SharedPreferences.setMockInitialValues({});
-    final failing = _FailingPrefs(await SharedPreferences.getInstance());
+    final failing = _FailingStore();
     final container = ProviderContainer(
-      overrides: [sharedPreferencesProvider.overrideWithValue(failing)],
+      overrides: [keyValueStoreProvider.overrideWithValue(failing)],
     );
     addTearDown(container.dispose);
     final saved = await container

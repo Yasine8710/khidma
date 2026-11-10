@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:khidma/core/storage/preferences_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:khidma/core/l10n/locale_controller.dart';
 import 'package:khidma/core/router/app_router.dart';
@@ -11,23 +12,25 @@ import '../test_helpers.dart';
 
 const _fresh = {'onboardingSeen': false};
 
-class _FailingPrefs implements SharedPreferences {
-  _FailingPrefs(this._inner);
-  final SharedPreferences _inner;
-
+class _FailingStore implements KeyValueStore {
+  @override
+  String? getString(String key) => null;
+  @override
+  bool? getBool(String key) => null;
+  @override
+  Future<bool> setString(String key, String value) async =>
+      throw Exception('disk full');
   @override
   Future<bool> setBool(String key, bool value) async =>
       throw Exception('disk full');
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) =>
-      Function.apply((_inner as dynamic).noSuchMethod, [invocation]);
 }
 
 String _path(ProviderContainer c) =>
     c.read(routerProvider).routerDelegate.currentConfiguration.uri.path;
 
 void main() {
+  setUpAll(loadAppFonts);
+
   testWidgets('first launch shows onboarding, language page first', (
     tester,
   ) async {
@@ -67,7 +70,7 @@ void main() {
     expect(_path(c), AppRoutes.home);
     expect(find.text('Accueil'), findsOneWidget);
     expect(c.read(onboardingSeenProvider), isTrue);
-    expect(c.read(sharedPreferencesProvider).getBool('onboardingSeen'), isTrue);
+    expect(c.read(keyValueStoreProvider).getBool('onboardingSeen'), isTrue);
   });
 
   testWidgets('Skip completes onboarding', (tester) async {
@@ -272,9 +275,9 @@ void main() {
     'storage failure: user still proceeds, onboarding returns later',
     (tester) async {
       SharedPreferences.setMockInitialValues({'onboardingSeen': false});
-      final failing = _FailingPrefs(await SharedPreferences.getInstance());
+      final failing = _FailingStore();
       final c = ProviderContainer(
-        overrides: [sharedPreferencesProvider.overrideWithValue(failing)],
+        overrides: [keyValueStoreProvider.overrideWithValue(failing)],
       );
       addTearDown(c.dispose);
       final saved = await c.read(onboardingSeenProvider.notifier).complete();
@@ -283,8 +286,8 @@ void main() {
       // A new session reads the (unchanged) store: onboarding shows again.
       final fresh = ProviderContainer(
         overrides: [
-          sharedPreferencesProvider.overrideWithValue(
-            await SharedPreferences.getInstance(),
+          keyValueStoreProvider.overrideWithValue(
+            PrefsStore(await SharedPreferences.getInstance()),
           ),
         ],
       );

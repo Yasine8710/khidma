@@ -5,7 +5,7 @@ A trusted local services marketplace built for Tunisia. Discover professionals, 
 > **Proprietary — All Rights Reserved.** This repository is public for visibility and portfolio purposes only. It is **not** open-source. No permission is granted to copy, modify, redistribute or commercially use the code, the Khidma name, or its branding. See [LICENSE](LICENSE). Third-party assets keep their own licenses ([THIRD_PARTY.md](THIRD_PARTY.md)).
 
 ## Status
-**Phase 1 (design system and foundations) is complete.** The app is a localized, themed, navigable shell with no backend yet. Nothing here is production-ready. Roadmap and open work: [GitHub issues](https://github.com/Yasine8710/khidma/issues) and [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md).
+**Phase 1 (design system and foundations): implementation complete, acceptance pending** (the automated CI gate cannot run until the GitHub billing lock is cleared; all checks pass locally). The app is a localized, themed, navigable shell with no backend yet. Nothing here is production-ready. Roadmap and open work: [GitHub issues](https://github.com/Yasine8710/khidma/issues) and [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md).
 
 What works today:
 - French (default), Arabic (real RTL) and English; Western digits everywhere; TND, Tunisian phone and date formatting.
@@ -37,7 +37,7 @@ flutter test --tags golden        # pixel tests (baselines are Windows-made)
 flutter test --update-goldens --tags golden   # refresh baselines
 flutter run --dart-define=GALLERY=true        # gallery in a profile/release build
 ```
-Copy `.env.example` to `.env` when backend work starts. Never commit secrets or a service-role key.
+There is no environment configuration yet. When Supabase is connected (issue #6) the public URL and anon key will be passed with `--dart-define`; `.env.example` lists the names. Never commit secrets or a service-role key.
 
 Brand assets are generated: see the header of `scripts/make_brand_assets.py` for the exact order (it also lists two fixes to re-check after the icon generators run, which tests guard).
 

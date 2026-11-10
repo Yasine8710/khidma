@@ -93,6 +93,9 @@ class _AppTextFieldState extends State<AppTextField> {
             focusNode: widget.focusNode,
             enabled: widget.enabled,
             obscureText: _hidden,
+            // Passwords are never autocorrected or suggested, even while shown.
+            autocorrect: !widget.obscureText,
+            enableSuggestions: !widget.obscureText,
             maxLines: widget.obscureText ? 1 : widget.maxLines,
             maxLength: widget.maxLength,
             keyboardType: widget.keyboardType,
