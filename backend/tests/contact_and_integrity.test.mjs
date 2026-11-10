@@ -221,10 +221,11 @@ describe('sequence and function exposure', () => {
     assert.deepEqual(r.rows.filter((x) => x.public_x || x.default_acl).map((x) => x.proname), [], 'PUBLIC / default ACL');
     const anonCan = r.rows.filter((x) => x.anon_x).map((x) => x.proname).sort();
     const authCan = r.rows.filter((x) => x.auth_x).map((x) => x.proname).sort();
-    assert.deepEqual(anonCan, ['is_admin']);
+    assert.deepEqual(anonCan, ['is_admin', 'search_normalize', 'search_professionals']);
     assert.deepEqual(authCan, [
       'admin_set_verification', 'become_professional', 'delete_my_account',
       'get_my_professional_contact', 'is_admin', 'reveal_professional_contact',
+      'search_normalize', 'search_professionals',
     ]);
   });
 

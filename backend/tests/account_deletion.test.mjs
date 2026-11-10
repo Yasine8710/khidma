@@ -12,7 +12,7 @@ async function becomePro(db, id) {
 async function publish(db, id) {
   await user(db, id).query(
     `update public.professional_profiles
-        set primary_category_id = 1, description = 'Plombier avec dix ans d expérience.',
+        set business_name = 'Pro ' || left($1::text, 4), primary_category_id = 1, description = 'Plombier avec dix ans d expérience.',
             governorate_id = 11, contact_phone = $2, is_published = true
       where user_id = $1`, [id, phone]);
 }

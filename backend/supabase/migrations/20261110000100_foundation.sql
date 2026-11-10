@@ -174,10 +174,12 @@ create table public.professional_profiles (
   check ((latitude is null) = (longitude is null)),
   check (city_id is null or governorate_id is not null),
   check (neighborhood_id is null or city_id is not null),
-  -- A profile cannot go public half-empty.
+  -- A profile cannot go public half-empty (and a public profile needs a name).
   constraint published_profile_complete check (
     not is_published or (
-      primary_category_id is not null
+      -- The public name: profiles are private, so this is the only name shown.
+      business_name is not null and char_length(btrim(business_name)) >= 2
+      and primary_category_id is not null
       and description is not null and char_length(description) >= 20
       and governorate_id is not null
       and contact_phone is not null
@@ -523,7 +525,8 @@ create policy customer_profiles_update_own on public.customer_profiles
 grant select (
   user_id, business_name, primary_category_id, description, years_experience,
   governorate_id, city_id, neighborhood_id, latitude, longitude, availability,
-  is_published, verification_status, rating_avg, review_count, created_at
+  is_published, verification_status, rating_avg, review_count, created_at,
+  updated_at
 ) on public.professional_profiles to anon, authenticated;
 grant update (
   business_name, primary_category_id, description, years_experience,
