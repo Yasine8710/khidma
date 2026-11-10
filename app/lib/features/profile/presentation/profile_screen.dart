@@ -222,11 +222,9 @@ class _ProfessionalSection extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             AppButton(
-              label: draft != null && draft.isPublished
-                  ? l10n.proEditCta
-                  : l10n.proCompleteCta,
+              label: l10n.dashTitle,
               variant: AppButtonVariant.secondary,
-              onPressed: () => context.push(AppRoutes.proRegistration),
+              onPressed: () => context.push(AppRoutes.proDashboard),
             ),
           ],
         ),

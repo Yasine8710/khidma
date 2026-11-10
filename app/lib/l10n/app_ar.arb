@@ -254,5 +254,16 @@
   "proCompleteCta": "أكمل ملفي",
   "proEditCta": "تعديل ملفي المهني",
   "proStatusDraft": "الملف غير منشور",
-  "proStatusPublished": "الملف منشور"
+  "proStatusPublished": "الملف منشور",
+  "dashTitle": "فضائي المهني",
+  "dashAvailability": "التوفر",
+  "dashActivity": "النشاط",
+  "dashActivityNote": "أرقام مجهولة بتأخير ساعة: لا ترى من اطّلع على ملفك أو حفظه.",
+  "dashViews30d": "أرقام التواصل المعروضة (30 يومًا)",
+  "dashViewsTotal": "أرقام التواصل المعروضة (المجموع)",
+  "dashFavorites": "محفوظ في المفضلة",
+  "dashActivityFailed": "النشاط غير متاح حاليًا.",
+  "dashViewPublic": "عرض ملفي العام",
+  "dashSaveFailed": "تعذّر التغيير. حاول مجددًا.",
+  "dashRefreshFailed": "تعذّر التحديث. قد تكون البيانات المعروضة قديمة."
 }

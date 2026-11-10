@@ -866,4 +866,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get proStatusPublished => 'Profile published';
+
+  @override
+  String get dashTitle => 'My pro space';
+
+  @override
+  String get dashAvailability => 'Availability';
+
+  @override
+  String get dashActivity => 'Activity';
+
+  @override
+  String get dashActivityNote =>
+      'Anonymous counts, one hour behind: you cannot see who viewed or saved your profile.';
+
+  @override
+  String get dashViews30d => 'Contacts viewed (30 days)';
+
+  @override
+  String get dashViewsTotal => 'Contacts viewed (total)';
+
+  @override
+  String get dashFavorites => 'Saved as favorite';
+
+  @override
+  String get dashActivityFailed => 'Activity is unavailable right now.';
+
+  @override
+  String get dashViewPublic => 'View my public profile';
+
+  @override
+  String get dashSaveFailed => 'Couldn’t change that. Try again.';
+
+  @override
+  String get dashRefreshFailed =>
+      'Couldn’t refresh. What you see may be out of date.';
 }

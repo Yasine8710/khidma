@@ -1629,6 +1629,72 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Profil publié'**
   String get proStatusPublished;
+
+  /// No description provided for @dashTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mon espace pro'**
+  String get dashTitle;
+
+  /// No description provided for @dashAvailability.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponibilité'**
+  String get dashAvailability;
+
+  /// No description provided for @dashActivity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activité'**
+  String get dashActivity;
+
+  /// No description provided for @dashActivityNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chiffres anonymes, avec une heure de décalage : vous ne voyez pas qui a consulté ou enregistré votre profil.'**
+  String get dashActivityNote;
+
+  /// No description provided for @dashViews30d.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contacts consultés (30 jours)'**
+  String get dashViews30d;
+
+  /// No description provided for @dashViewsTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contacts consultés (total)'**
+  String get dashViewsTotal;
+
+  /// No description provided for @dashFavorites.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrés en favoris'**
+  String get dashFavorites;
+
+  /// No description provided for @dashActivityFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activité indisponible pour le moment.'**
+  String get dashActivityFailed;
+
+  /// No description provided for @dashViewPublic.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir mon profil public'**
+  String get dashViewPublic;
+
+  /// No description provided for @dashSaveFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modification impossible. Réessayez.'**
+  String get dashSaveFailed;
+
+  /// No description provided for @dashRefreshFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d’actualiser. Les chiffres affichés peuvent être anciens.'**
+  String get dashRefreshFailed;
 }
 
 class _AppLocalizationsDelegate

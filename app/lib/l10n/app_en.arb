@@ -254,5 +254,16 @@
   "proCompleteCta": "Complete my profile",
   "proEditCta": "Edit my professional profile",
   "proStatusDraft": "Profile not published",
-  "proStatusPublished": "Profile published"
+  "proStatusPublished": "Profile published",
+  "dashTitle": "My pro space",
+  "dashAvailability": "Availability",
+  "dashActivity": "Activity",
+  "dashActivityNote": "Anonymous counts, one hour behind: you cannot see who viewed or saved your profile.",
+  "dashViews30d": "Contacts viewed (30 days)",
+  "dashViewsTotal": "Contacts viewed (total)",
+  "dashFavorites": "Saved as favorite",
+  "dashActivityFailed": "Activity is unavailable right now.",
+  "dashViewPublic": "View my public profile",
+  "dashSaveFailed": "Couldn’t change that. Try again.",
+  "dashRefreshFailed": "Couldn’t refresh. What you see may be out of date."
 }

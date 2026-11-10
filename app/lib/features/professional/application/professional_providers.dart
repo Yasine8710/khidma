@@ -21,6 +21,16 @@ final myProfessionalProvider = FutureProvider.autoDispose<ProfessionalDraft?>(
   },
 );
 
+/// Dashboard numbers for the signed-in professional.
+final myActivityProvider = FutureProvider.autoDispose<ProfessionalActivity?>(
+  retry: (n, e) => null,
+  (ref) async {
+    final user = ref.watch(currentUserProvider.select((u) => u?.id));
+    if (user == null) return null;
+    return ref.watch(professionalRepositoryProvider).fetchActivity();
+  },
+);
+
 /// Saves one step of the profile. [busy] is true while a save runs, so a double
 /// tap cannot send two.
 final professionalActionsProvider = NotifierProvider<ProfessionalActions, bool>(
@@ -67,4 +77,7 @@ class ProfessionalActions extends Notifier<bool> {
 
   Future<ProfessionalFailure?> setPublished(bool published) =>
       _run((r) => r.setPublished(published));
+
+  Future<ProfessionalFailure?> setAvailability(Availability a) =>
+      _run((r) => r.setAvailability(a));
 }

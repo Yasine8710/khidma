@@ -22,6 +22,12 @@ class FakeProfessionalRepository implements ProfessionalRepository {
   final servicesSaved = <Set<int>>[];
   final areasSaved = <List<ServiceArea>>[];
   final publishCalls = <bool>[];
+  final availabilityCalls = <Availability>[];
+  ProfessionalActivity activity = const ProfessionalActivity();
+  bool failActivity = false;
+
+  /// Makes every profile load after this fail (the save itself succeeds).
+  bool reloadFails = false;
 
   Future<void> _pre() async {
     final g = gate;
@@ -37,6 +43,9 @@ class FakeProfessionalRepository implements ProfessionalRepository {
   Future<ProfessionalDraft> fetchMine() async {
     fetchCalls++;
     await _pre();
+    if (reloadFails && fetchCalls > 1) {
+      throw const ProfessionalError(ProfessionalFailure.network);
+    }
     return draft;
   }
 
@@ -97,6 +106,36 @@ class FakeProfessionalRepository implements ProfessionalRepository {
     areasSaved.add([...areas]);
     await _pre();
     draft = _with(areas: [...areas]);
+  }
+
+  @override
+  Future<void> setAvailability(Availability availability) async {
+    availabilityCalls.add(availability);
+    await _pre();
+    draft = ProfessionalDraft(
+      businessName: draft.businessName,
+      categoryId: draft.categoryId,
+      description: draft.description,
+      yearsExperience: draft.yearsExperience,
+      governorateId: draft.governorateId,
+      cityId: draft.cityId,
+      neighborhoodId: draft.neighborhoodId,
+      phone: draft.phone,
+      serviceCategoryIds: draft.serviceCategoryIds,
+      areas: draft.areas,
+      availability: availability,
+      isPublished: draft.isPublished,
+      verification: draft.verification,
+    );
+  }
+
+  @override
+  Future<ProfessionalActivity> fetchActivity() async {
+    await _pre();
+    if (failActivity) {
+      throw const ProfessionalError(ProfessionalFailure.network);
+    }
+    return activity;
   }
 
   @override

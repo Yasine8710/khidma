@@ -223,7 +223,7 @@ describe('sequence and function exposure', () => {
     const authCan = r.rows.filter((x) => x.auth_x).map((x) => x.proname).sort();
     assert.deepEqual(anonCan, ['is_admin', 'search_normalize', 'search_professionals']);
     assert.deepEqual(authCan, [
-      'admin_set_verification', 'become_professional', 'delete_my_account',
+      'admin_set_verification', 'become_professional', 'delete_my_account', 'get_my_activity',
       'get_my_professional_contact', 'is_admin', 'reveal_professional_contact',
       'search_normalize', 'search_professionals',
     ]);

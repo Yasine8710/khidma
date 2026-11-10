@@ -196,6 +196,8 @@ describe('structural security guards', () => {
     assert.equal(await can('authenticated', 'public.set_updated_at()'), false);
     assert.equal(await can('anon', 'public.is_admin()'), true);
     assert.equal(await can('authenticated', 'public.enforce_favorites_limit()'), false);
+    assert.equal(await can('anon', 'public.get_my_activity()'), false);
+    assert.equal(await can('authenticated', 'public.get_my_activity()'), true);
   });
 
   test('the new-user trigger is installed on auth.users', async () => {

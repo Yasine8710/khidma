@@ -876,4 +876,39 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get proStatusPublished => 'Profil publié';
+
+  @override
+  String get dashTitle => 'Mon espace pro';
+
+  @override
+  String get dashAvailability => 'Disponibilité';
+
+  @override
+  String get dashActivity => 'Activité';
+
+  @override
+  String get dashActivityNote =>
+      'Chiffres anonymes, avec une heure de décalage : vous ne voyez pas qui a consulté ou enregistré votre profil.';
+
+  @override
+  String get dashViews30d => 'Contacts consultés (30 jours)';
+
+  @override
+  String get dashViewsTotal => 'Contacts consultés (total)';
+
+  @override
+  String get dashFavorites => 'Enregistrés en favoris';
+
+  @override
+  String get dashActivityFailed => 'Activité indisponible pour le moment.';
+
+  @override
+  String get dashViewPublic => 'Voir mon profil public';
+
+  @override
+  String get dashSaveFailed => 'Modification impossible. Réessayez.';
+
+  @override
+  String get dashRefreshFailed =>
+      'Impossible d’actualiser. Les chiffres affichés peuvent être anciens.';
 }

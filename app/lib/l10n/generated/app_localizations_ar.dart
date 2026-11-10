@@ -862,4 +862,39 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get proStatusPublished => 'الملف منشور';
+
+  @override
+  String get dashTitle => 'فضائي المهني';
+
+  @override
+  String get dashAvailability => 'التوفر';
+
+  @override
+  String get dashActivity => 'النشاط';
+
+  @override
+  String get dashActivityNote =>
+      'أرقام مجهولة بتأخير ساعة: لا ترى من اطّلع على ملفك أو حفظه.';
+
+  @override
+  String get dashViews30d => 'أرقام التواصل المعروضة (30 يومًا)';
+
+  @override
+  String get dashViewsTotal => 'أرقام التواصل المعروضة (المجموع)';
+
+  @override
+  String get dashFavorites => 'محفوظ في المفضلة';
+
+  @override
+  String get dashActivityFailed => 'النشاط غير متاح حاليًا.';
+
+  @override
+  String get dashViewPublic => 'عرض ملفي العام';
+
+  @override
+  String get dashSaveFailed => 'تعذّر التغيير. حاول مجددًا.';
+
+  @override
+  String get dashRefreshFailed =>
+      'تعذّر التحديث. قد تكون البيانات المعروضة قديمة.';
 }

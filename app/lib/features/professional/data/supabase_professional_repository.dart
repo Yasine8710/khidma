@@ -223,6 +223,30 @@ class SupabaseProfessionalRepository implements ProfessionalRepository {
         .eq('user_id', _uid());
   });
 
+  @override
+  Future<void> setAvailability(Availability availability) => _guard(() async {
+    await _client
+        .from('professional_profiles')
+        .update({'availability': availability.name})
+        .eq('user_id', _uid());
+  });
+
+  @override
+  Future<ProfessionalActivity> fetchActivity() => _guard(() async {
+    final rows = await _client.rpc('get_my_activity');
+    final row = rows is List && rows.isNotEmpty
+        ? rows.first as Map<String, dynamic>
+        : rows is Map<String, dynamic>
+        ? rows
+        : null;
+    if (row == null) return const ProfessionalActivity();
+    return ProfessionalActivity(
+      contactViews30d: (row['reveals_30d'] as num?)?.toInt() ?? 0,
+      contactViewsTotal: (row['reveals_total'] as num?)?.toInt() ?? 0,
+      favorites: (row['favorites_count'] as num?)?.toInt() ?? 0,
+    );
+  });
+
   static String? _blankToNull(String? v) {
     final t = v?.trim();
     return t == null || t.isEmpty ? null : t;

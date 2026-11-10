@@ -382,5 +382,16 @@
         "type": "String"
       }
     }
-  }
+  },
+  "dashTitle": "Mon espace pro",
+  "dashAvailability": "Disponibilité",
+  "dashActivity": "Activité",
+  "dashActivityNote": "Chiffres anonymes, avec une heure de décalage : vous ne voyez pas qui a consulté ou enregistré votre profil.",
+  "dashViews30d": "Contacts consultés (30 jours)",
+  "dashViewsTotal": "Contacts consultés (total)",
+  "dashFavorites": "Enregistrés en favoris",
+  "dashActivityFailed": "Activité indisponible pour le moment.",
+  "dashViewPublic": "Voir mon profil public",
+  "dashSaveFailed": "Modification impossible. Réessayez.",
+  "dashRefreshFailed": "Impossible d’actualiser. Les chiffres affichés peuvent être anciens."
 }

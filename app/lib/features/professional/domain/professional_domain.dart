@@ -95,6 +95,18 @@ class ProfessionalDraft {
   bool get isComplete => gaps.isEmpty;
 }
 
+/// Counts shown on the dashboard. Numbers only: nobody learns who looked.
+class ProfessionalActivity {
+  const ProfessionalActivity({
+    this.contactViews30d = 0,
+    this.contactViewsTotal = 0,
+    this.favorites = 0,
+  });
+  final int contactViews30d;
+  final int contactViewsTotal;
+  final int favorites;
+}
+
 enum ProfileGap { name, category, description, location, phone }
 
 enum ProfessionalFailure {
@@ -130,6 +142,10 @@ abstract interface class ProfessionalRepository {
   Future<void> setAreas(List<ServiceArea> areas);
 
   Future<void> setPublished(bool published);
+
+  Future<void> setAvailability(Availability availability);
+
+  Future<ProfessionalActivity> fetchActivity();
 }
 
 class NotConfiguredProfessionalRepository implements ProfessionalRepository {
@@ -147,4 +163,8 @@ class NotConfiguredProfessionalRepository implements ProfessionalRepository {
   Future<void> setAreas(List<ServiceArea> areas) async => _fail();
   @override
   Future<void> setPublished(bool published) async => _fail();
+  @override
+  Future<void> setAvailability(Availability availability) async => _fail();
+  @override
+  Future<ProfessionalActivity> fetchActivity() async => _fail();
 }
