@@ -143,6 +143,11 @@ describe('structural security guards', () => {
       'authenticated:portfolio_items:SELECT',
       'authenticated:portfolio_items:INSERT',
       'authenticated:portfolio_items:DELETE',
+      'authenticated:quote_offers:SELECT',
+      'authenticated:bookings:SELECT',
+      'authenticated:request_photos:SELECT',
+      'authenticated:request_photos:INSERT',
+      'authenticated:request_photos:DELETE',
     ];
     assert.deepEqual([...got].sort(), [...expected].sort());
   });
@@ -205,6 +210,7 @@ describe('structural security guards', () => {
     assert.equal(await can('anon', 'public.is_admin()'), true);
     assert.equal(await can('authenticated', 'public.enforce_favorites_limit()'), false);
     assert.equal(await can('authenticated', 'public.enforce_portfolio_limit()'), false);
+    assert.equal(await can('authenticated', 'public.enforce_request_photo_limit()'), false);
     assert.equal(await can('anon', 'public.get_my_activity()'), false);
     assert.equal(await can('authenticated', 'public.get_my_activity()'), true);
   });

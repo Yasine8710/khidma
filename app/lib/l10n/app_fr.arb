@@ -431,5 +431,218 @@
         "type": "int"
       }
     }
+  },
+  "reqNew": "Nouvelle demande",
+  "reqMineTitle": "Mes demandes",
+  "reqEmptyCta": "Demander un devis",
+  "reqStatusOpen": "Ouverte",
+  "reqStatusAwarded": "Attribuée",
+  "reqStatusCancelled": "Annulée",
+  "reqStatusExpired": "Expirée",
+  "reqOffers": "{count, plural, =0{Aucune offre} =1{1 offre} other{{count} offres}}",
+  "reqFormTitle": "Titre",
+  "reqFormTitleHint": "Ex. Fuite sous l’évier",
+  "reqFormDescription": "Décrivez le problème",
+  "reqFormDescriptionHelper": "Au moins 10 caractères.",
+  "reqFormCategory": "Type de service",
+  "reqFormBudget": "Budget indicatif en TND (facultatif)",
+  "reqFormNeededBy": "Pour quand ? (facultatif)",
+  "reqFormNeededByNone": "Pas de date",
+  "reqFormPickDate": "Choisir une date",
+  "reqFormPhotos": "Photos (facultatif)",
+  "reqFormAddPhoto": "Ajouter une photo",
+  "reqFormPhotosCount": "{count} sur {max} photos",
+  "reqFormRemovePhoto": "Retirer la photo {index}",
+  "reqFormSubmit": "Envoyer la demande",
+  "reqFormPrivacy": "Les professionnels verront votre demande et vos photos, jamais votre nom ni votre numéro.",
+  "reqErrTitle": "Entre 3 et 120 caractères.",
+  "reqErrDescription": "Entre 10 et 2000 caractères.",
+  "reqErrCategory": "Choisissez un type de service.",
+  "reqErrGovernorate": "Choisissez un gouvernorat.",
+  "reqErrBudget": "Montant invalide (0 à 1 000 000).",
+  "reqSent": "Demande envoyée.",
+  "reqSentPhotosFailed": "Demande envoyée, mais certaines photos n’ont pas pu être ajoutées.",
+  "reqFailNetwork": "Connexion impossible. Votre saisie est conservée, réessayez.",
+  "reqFailRateLimited": "Trop de demandes en peu de temps. Réessayez dans une heure.",
+  "reqFailLimit": "Vous avez déjà 10 demandes ouvertes. Annulez-en une avant d’en créer une autre.",
+  "reqFailInvalid": "Certaines informations sont refusées. Vérifiez-les.",
+  "reqFailNotOpen": "Cette demande n’est plus ouverte.",
+  "reqFailGeneric": "Impossible d’envoyer la demande. Réessayez.",
+  "reqFailNotConfigured": "Le service n’est pas disponible pour le moment.",
+  "reqDetailTitle": "Demande",
+  "reqNotFound": "Demande introuvable.",
+  "reqExpiresOn": "Expire le {date}",
+  "reqNeededBy": "Souhaité pour le {date}",
+  "reqBudget": "Budget indicatif : {amount}",
+  "reqCancel": "Annuler la demande",
+  "reqCancelTitle": "Annuler cette demande ?",
+  "reqCancelBody": "Les offres reçues seront refusées. Cette action est définitive.",
+  "reqCancelKeep": "Garder la demande",
+  "reqCancelled": "Demande annulée.",
+  "reqPhotoLabel": "Photo {index} sur {total}",
+  "@reqOffers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@reqFormPhotosCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@reqFormRemovePhoto": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "@reqExpiresOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@reqNeededBy": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@reqBudget": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@reqPhotoLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reqPhotosFailed": "Impossible de charger les photos.",
+  "proInboxTitle": "Demandes ouvertes",
+  "proInboxMyArea": "Dans mon gouvernorat",
+  "proInboxAllCategories": "Tous les métiers",
+  "proInboxEmptyTitle": "Aucune demande pour le moment",
+  "proInboxEmptyBody": "Les nouvelles demandes de clients apparaîtront ici.",
+  "proInboxNeedsPublished": "Publiez votre profil pour voir les demandes et envoyer des offres.",
+  "offerStatusPending": "En attente",
+  "offerStatusAccepted": "Acceptée",
+  "offerStatusDeclined": "Refusée",
+  "offerStatusWithdrawn": "Retirée",
+  "offerYours": "Votre offre : {status}",
+  "offersTitle": "Mes offres",
+  "offersEmpty": "Vous n’avez pas encore envoyé d’offre.",
+  "jobsTitle": "Mes chantiers",
+  "jobsEmpty": "Aucun chantier pour le moment. Un chantier naît quand un client accepte votre offre.",
+  "jobScheduled": "Planifié",
+  "jobInProgress": "En cours",
+  "jobPendingConfirmation": "En attente de confirmation du client",
+  "jobCompleted": "Terminé",
+  "jobCancelled": "Annulé",
+  "jobStart": "Démarrer",
+  "jobDone": "Marquer comme terminé",
+  "jobCancel": "Annuler le chantier",
+  "jobCancelTitle": "Annuler ce chantier ?",
+  "jobCancelBody": "Le client sera informé. Cette action est définitive.",
+  "jobKeep": "Garder le chantier",
+  "jobAgreedPrice": "Prix convenu : {amount}",
+  "offerTitle": "Votre offre",
+  "offerPrice": "Prix en TND",
+  "offerMessage": "Message au client (facultatif)",
+  "offerDays": "Délai estimé en jours (facultatif)",
+  "offerSend": "Envoyer l’offre",
+  "offerUpdate": "Mettre à jour l’offre",
+  "offerWithdraw": "Retirer mon offre",
+  "offerSent": "Offre envoyée.",
+  "offerWithdrawn": "Offre retirée.",
+  "offerErrPrice": "Entre 1 et 1 000 000 TND.",
+  "offerErrMessage": "1000 caractères au maximum.",
+  "offerErrDays": "Entre 1 et 365 jours.",
+  "offerDeclinedNote": "Le client n’a pas retenu votre offre.",
+  "offerAcceptedNote": "Votre offre est acceptée : suivez le chantier dans Mes chantiers.",
+  "offerOthers": "{count, plural, =0{Aucune autre offre pour l’instant} =1{1 offre déjà reçue} other{{count} offres déjà reçues}}",
+  "reqFailOwn": "Vous ne pouvez pas répondre à votre propre demande.",
+  "reqFailOfferClosed": "Cette offre ne peut plus être modifiée.",
+  "reqFailTransition": "Cette étape n’est plus possible.",
+  "reqFailForbidden": "Publiez d’abord votre profil professionnel.",
+  "@offerYours": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "@jobAgreedPrice": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@offerOthers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "offerFailLimit": "Vous avez 50 offres en attente. Retirez-en une avant d’en envoyer une autre.",
+  "offersReceived": "Offres reçues",
+  "offersNoneYet": "Pas encore d’offre. Les professionnels ont jusqu’à l’expiration de la demande pour répondre.",
+  "sortOffersBy": "Trier les offres",
+  "sortOffersPrice": "Prix",
+  "sortOffersRating": "Note",
+  "sortOffersDelay": "Délai",
+  "offerLowest": "Prix le plus bas",
+  "offerDelay": "Délai : {count} j",
+  "offerAccept": "Accepter",
+  "offerDecline": "Refuser",
+  "offerAcceptTitle": "Accepter cette offre ?",
+  "offerAcceptBody": "{name} réalisera le travail pour {price}. Les autres offres seront refusées et la demande sera attribuée.",
+  "offerDeclineTitle": "Refuser cette offre ?",
+  "offerDeclineBody": "Le professionnel ne pourra pas la proposer à nouveau.",
+  "offerAcceptedMsg": "Offre acceptée.",
+  "offerDeclinedMsg": "Offre refusée.",
+  "offerProUnknown": "Professionnel",
+  "bookingTitle": "Chantier",
+  "bookingConfirm": "Confirmer que le travail est terminé",
+  "bookingConfirmed": "Merci, chantier terminé.",
+  "bookingCancelled": "Chantier annulé.",
+  "bookingCancelTitle": "Annuler ce chantier ?",
+  "bookingCancelBody": "Le professionnel sera informé. Cette action est définitive.",
+  "bookingWaitingForYou": "Le professionnel indique avoir terminé. Le travail est-il bien fait ?",
+  "@offerDelay": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@offerAcceptBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
   }
 }

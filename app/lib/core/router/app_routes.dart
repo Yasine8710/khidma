@@ -11,6 +11,16 @@ abstract final class AppRoutes {
   static const resetPassword = '/reset-password';
   static const editProfile = '/edit-profile';
   static const favorites = '/favorites';
+  static const newRequest = '/requests/new';
+  static const request = '/requests/:id';
+  static String requestPath(String id) =>
+      '/requests/${Uri.encodeComponent(id)}';
+  static const proInbox = '/pro/requests';
+  static const proRequest = '/pro/requests/:id';
+  static String proRequestPath(String id) =>
+      '/pro/requests/${Uri.encodeComponent(id)}';
+  static const proOffers = '/pro/offers';
+  static const proJobs = '/pro/jobs';
   static const proRegistration = '/pro/profile';
   static const proDashboard = '/pro';
   static const proPortfolio = '/pro/portfolio';

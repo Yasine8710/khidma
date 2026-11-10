@@ -958,4 +958,414 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get close => 'إغلاق';
+
+  @override
+  String get reqNew => 'طلب جديد';
+
+  @override
+  String get reqMineTitle => 'طلباتي';
+
+  @override
+  String get reqEmptyCta => 'اطلب عرض سعر';
+
+  @override
+  String get reqStatusOpen => 'مفتوح';
+
+  @override
+  String get reqStatusAwarded => 'تمّ إسناده';
+
+  @override
+  String get reqStatusCancelled => 'ملغى';
+
+  @override
+  String get reqStatusExpired => 'منتهي';
+
+  @override
+  String reqOffers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عرض',
+      many: '$count عرضًا',
+      few: '$count عروض',
+      two: 'عرضان',
+      one: 'عرض واحد',
+      zero: 'لا توجد عروض',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reqFormTitle => 'العنوان';
+
+  @override
+  String get reqFormTitleHint => 'مثال: تسرب تحت المغسلة';
+
+  @override
+  String get reqFormDescription => 'صف المشكلة';
+
+  @override
+  String get reqFormDescriptionHelper => '10 أحرف على الأقل.';
+
+  @override
+  String get reqFormCategory => 'نوع الخدمة';
+
+  @override
+  String get reqFormBudget => 'ميزانية تقريبية بالدينار (اختياري)';
+
+  @override
+  String get reqFormNeededBy => 'لأي موعد؟ (اختياري)';
+
+  @override
+  String get reqFormNeededByNone => 'بدون موعد';
+
+  @override
+  String get reqFormPickDate => 'اختر تاريخًا';
+
+  @override
+  String get reqFormPhotos => 'صور (اختياري)';
+
+  @override
+  String get reqFormAddPhoto => 'إضافة صورة';
+
+  @override
+  String reqFormPhotosCount(int count, int max) {
+    return '$count من $max صور';
+  }
+
+  @override
+  String reqFormRemovePhoto(int index) {
+    return 'إزالة الصورة $index';
+  }
+
+  @override
+  String get reqFormSubmit => 'إرسال الطلب';
+
+  @override
+  String get reqFormPrivacy =>
+      'سيرى الحرفيون طلبك وصورك، ولن يروا اسمك ولا رقمك أبدًا.';
+
+  @override
+  String get reqErrTitle => 'بين 3 و120 حرفًا.';
+
+  @override
+  String get reqErrDescription => 'بين 10 و2000 حرف.';
+
+  @override
+  String get reqErrCategory => 'اختر نوع الخدمة.';
+
+  @override
+  String get reqErrGovernorate => 'اختر ولاية.';
+
+  @override
+  String get reqErrBudget => 'مبلغ غير صالح (من 0 إلى 1,000,000).';
+
+  @override
+  String get reqSent => 'تم إرسال الطلب.';
+
+  @override
+  String get reqSentPhotosFailed =>
+      'تم إرسال الطلب، لكن تعذّر إضافة بعض الصور.';
+
+  @override
+  String get reqFailNetwork => 'لا يوجد اتصال. بياناتك محفوظة، أعد المحاولة.';
+
+  @override
+  String get reqFailRateLimited => 'طلبات كثيرة في وقت قصير. حاول بعد ساعة.';
+
+  @override
+  String get reqFailLimit =>
+      'لديك 10 طلبات مفتوحة بالفعل. ألغِ طلبًا قبل إنشاء آخر.';
+
+  @override
+  String get reqFailInvalid => 'تم رفض بعض البيانات. تحقق منها.';
+
+  @override
+  String get reqFailNotOpen => 'هذا الطلب لم يعد مفتوحًا.';
+
+  @override
+  String get reqFailGeneric => 'تعذّر إرسال الطلب. حاول مجددًا.';
+
+  @override
+  String get reqFailNotConfigured => 'الخدمة غير متاحة حاليًا.';
+
+  @override
+  String get reqDetailTitle => 'الطلب';
+
+  @override
+  String get reqNotFound => 'الطلب غير موجود.';
+
+  @override
+  String reqExpiresOn(String date) {
+    return 'ينتهي في $date';
+  }
+
+  @override
+  String reqNeededBy(String date) {
+    return 'مطلوب قبل $date';
+  }
+
+  @override
+  String reqBudget(String amount) {
+    return 'ميزانية تقريبية: $amount';
+  }
+
+  @override
+  String get reqCancel => 'إلغاء الطلب';
+
+  @override
+  String get reqCancelTitle => 'إلغاء هذا الطلب؟';
+
+  @override
+  String get reqCancelBody => 'سيتم رفض العروض المستلمة. لا يمكن التراجع.';
+
+  @override
+  String get reqCancelKeep => 'الإبقاء على الطلب';
+
+  @override
+  String get reqCancelled => 'تم إلغاء الطلب.';
+
+  @override
+  String reqPhotoLabel(int index, int total) {
+    return 'الصورة $index من $total';
+  }
+
+  @override
+  String get reqPhotosFailed => 'تعذّر تحميل الصور.';
+
+  @override
+  String get proInboxTitle => 'الطلبات المفتوحة';
+
+  @override
+  String get proInboxMyArea => 'في ولايتي';
+
+  @override
+  String get proInboxAllCategories => 'كل المهن';
+
+  @override
+  String get proInboxEmptyTitle => 'لا توجد طلبات حاليًا';
+
+  @override
+  String get proInboxEmptyBody => 'ستظهر هنا طلبات الزبائن الجديدة.';
+
+  @override
+  String get proInboxNeedsPublished => 'انشر ملفك لرؤية الطلبات وإرسال العروض.';
+
+  @override
+  String get offerStatusPending => 'قيد الانتظار';
+
+  @override
+  String get offerStatusAccepted => 'مقبول';
+
+  @override
+  String get offerStatusDeclined => 'مرفوض';
+
+  @override
+  String get offerStatusWithdrawn => 'مسحوب';
+
+  @override
+  String offerYours(String status) {
+    return 'عرضك: $status';
+  }
+
+  @override
+  String get offersTitle => 'عروضي';
+
+  @override
+  String get offersEmpty => 'لم ترسل أي عرض بعد.';
+
+  @override
+  String get jobsTitle => 'أعمالي';
+
+  @override
+  String get jobsEmpty => 'لا توجد أعمال بعد. يبدأ العمل عندما يقبل زبون عرضك.';
+
+  @override
+  String get jobScheduled => 'مجدول';
+
+  @override
+  String get jobInProgress => 'قيد التنفيذ';
+
+  @override
+  String get jobPendingConfirmation => 'بانتظار تأكيد الزبون';
+
+  @override
+  String get jobCompleted => 'مكتمل';
+
+  @override
+  String get jobCancelled => 'ملغى';
+
+  @override
+  String get jobStart => 'ابدأ';
+
+  @override
+  String get jobDone => 'تحديد كمنجز';
+
+  @override
+  String get jobCancel => 'إلغاء العمل';
+
+  @override
+  String get jobCancelTitle => 'إلغاء هذا العمل؟';
+
+  @override
+  String get jobCancelBody => 'سيتم إعلام الزبون. لا يمكن التراجع.';
+
+  @override
+  String get jobKeep => 'الإبقاء على العمل';
+
+  @override
+  String jobAgreedPrice(String amount) {
+    return 'السعر المتفق عليه: $amount';
+  }
+
+  @override
+  String get offerTitle => 'عرضك';
+
+  @override
+  String get offerPrice => 'السعر بالدينار';
+
+  @override
+  String get offerMessage => 'رسالة للزبون (اختياري)';
+
+  @override
+  String get offerDays => 'المدة المقدّرة بالأيام (اختياري)';
+
+  @override
+  String get offerSend => 'إرسال العرض';
+
+  @override
+  String get offerUpdate => 'تحديث العرض';
+
+  @override
+  String get offerWithdraw => 'سحب عرضي';
+
+  @override
+  String get offerSent => 'تم إرسال العرض.';
+
+  @override
+  String get offerWithdrawn => 'تم سحب العرض.';
+
+  @override
+  String get offerErrPrice => 'بين 1 و1,000,000 دينار.';
+
+  @override
+  String get offerErrMessage => '1000 حرف كحد أقصى.';
+
+  @override
+  String get offerErrDays => 'بين 1 و365 يومًا.';
+
+  @override
+  String get offerDeclinedNote => 'لم يختر الزبون عرضك.';
+
+  @override
+  String get offerAcceptedNote => 'تم قبول عرضك: تابع العمل في «أعمالي».';
+
+  @override
+  String offerOthers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عرض مستلم',
+      many: '$count عرضًا مستلمًا',
+      few: '$count عروض مستلمة',
+      two: 'عرضان مستلمان',
+      one: 'عرض واحد مستلم',
+      zero: 'لا توجد عروض أخرى حاليًا',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reqFailOwn => 'لا يمكنك الرد على طلبك الخاص.';
+
+  @override
+  String get reqFailOfferClosed => 'لم يعد بالإمكان تعديل هذا العرض.';
+
+  @override
+  String get reqFailTransition => 'هذه الخطوة لم تعد ممكنة.';
+
+  @override
+  String get reqFailForbidden => 'انشر ملفك المهني أولًا.';
+
+  @override
+  String get offerFailLimit =>
+      'لديك 50 عرضًا قيد الانتظار. اسحب عرضًا قبل إرسال آخر.';
+
+  @override
+  String get offersReceived => 'العروض المستلمة';
+
+  @override
+  String get offersNoneYet =>
+      'لا توجد عروض بعد. يمكن للحرفيين الرد إلى أن ينتهي الطلب.';
+
+  @override
+  String get sortOffersBy => 'ترتيب العروض';
+
+  @override
+  String get sortOffersPrice => 'السعر';
+
+  @override
+  String get sortOffersRating => 'التقييم';
+
+  @override
+  String get sortOffersDelay => 'المدة';
+
+  @override
+  String get offerLowest => 'أقل سعر';
+
+  @override
+  String offerDelay(int count) {
+    return 'المدة: $count يوم';
+  }
+
+  @override
+  String get offerAccept => 'قبول';
+
+  @override
+  String get offerDecline => 'رفض';
+
+  @override
+  String get offerAcceptTitle => 'قبول هذا العرض؟';
+
+  @override
+  String offerAcceptBody(String name, String price) {
+    return 'سينجز $name العمل مقابل $price. سيتم رفض العروض الأخرى وإسناد الطلب.';
+  }
+
+  @override
+  String get offerDeclineTitle => 'رفض هذا العرض؟';
+
+  @override
+  String get offerDeclineBody => 'لن يتمكن الحرفي من تقديمه مجددًا.';
+
+  @override
+  String get offerAcceptedMsg => 'تم قبول العرض.';
+
+  @override
+  String get offerDeclinedMsg => 'تم رفض العرض.';
+
+  @override
+  String get offerProUnknown => 'حرفي';
+
+  @override
+  String get bookingTitle => 'العمل';
+
+  @override
+  String get bookingConfirm => 'تأكيد أن العمل انتهى';
+
+  @override
+  String get bookingConfirmed => 'شكرًا، اكتمل العمل.';
+
+  @override
+  String get bookingCancelled => 'تم إلغاء العمل.';
+
+  @override
+  String get bookingCancelTitle => 'إلغاء هذا العمل؟';
+
+  @override
+  String get bookingCancelBody => 'سيتم إعلام الحرفي. لا يمكن التراجع.';
+
+  @override
+  String get bookingWaitingForYou =>
+      'يقول الحرفي إنه أنهى العمل. هل أُنجز كما يجب؟';
 }

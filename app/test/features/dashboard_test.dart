@@ -214,8 +214,22 @@ void main() {
         scrollable: find.byType(Scrollable).last,
       );
       repo.failActivity = false;
+      await tester.ensureVisible(find.text('Réessayer'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Réessayer'));
       await tester.pumpAndSettle();
+      // The error row was shorter than the three counters: look both ways.
+      if (find.text('5').evaluate().isEmpty) {
+        await tester.drag(find.byType(Scrollable).last, const Offset(0, 300));
+        await tester.pumpAndSettle();
+      }
+      if (find.text('5').evaluate().isEmpty) {
+        await tester.scrollUntilVisible(
+          find.text('5'),
+          200,
+          scrollable: find.byType(Scrollable).last,
+        );
+      }
       expect(find.text('5'), findsOneWidget);
     });
 

@@ -975,4 +975,421 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get close => 'Fermer';
+
+  @override
+  String get reqNew => 'Nouvelle demande';
+
+  @override
+  String get reqMineTitle => 'Mes demandes';
+
+  @override
+  String get reqEmptyCta => 'Demander un devis';
+
+  @override
+  String get reqStatusOpen => 'Ouverte';
+
+  @override
+  String get reqStatusAwarded => 'Attribuée';
+
+  @override
+  String get reqStatusCancelled => 'Annulée';
+
+  @override
+  String get reqStatusExpired => 'Expirée';
+
+  @override
+  String reqOffers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count offres',
+      one: '1 offre',
+      zero: 'Aucune offre',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reqFormTitle => 'Titre';
+
+  @override
+  String get reqFormTitleHint => 'Ex. Fuite sous l’évier';
+
+  @override
+  String get reqFormDescription => 'Décrivez le problème';
+
+  @override
+  String get reqFormDescriptionHelper => 'Au moins 10 caractères.';
+
+  @override
+  String get reqFormCategory => 'Type de service';
+
+  @override
+  String get reqFormBudget => 'Budget indicatif en TND (facultatif)';
+
+  @override
+  String get reqFormNeededBy => 'Pour quand ? (facultatif)';
+
+  @override
+  String get reqFormNeededByNone => 'Pas de date';
+
+  @override
+  String get reqFormPickDate => 'Choisir une date';
+
+  @override
+  String get reqFormPhotos => 'Photos (facultatif)';
+
+  @override
+  String get reqFormAddPhoto => 'Ajouter une photo';
+
+  @override
+  String reqFormPhotosCount(int count, int max) {
+    return '$count sur $max photos';
+  }
+
+  @override
+  String reqFormRemovePhoto(int index) {
+    return 'Retirer la photo $index';
+  }
+
+  @override
+  String get reqFormSubmit => 'Envoyer la demande';
+
+  @override
+  String get reqFormPrivacy =>
+      'Les professionnels verront votre demande et vos photos, jamais votre nom ni votre numéro.';
+
+  @override
+  String get reqErrTitle => 'Entre 3 et 120 caractères.';
+
+  @override
+  String get reqErrDescription => 'Entre 10 et 2000 caractères.';
+
+  @override
+  String get reqErrCategory => 'Choisissez un type de service.';
+
+  @override
+  String get reqErrGovernorate => 'Choisissez un gouvernorat.';
+
+  @override
+  String get reqErrBudget => 'Montant invalide (0 à 1 000 000).';
+
+  @override
+  String get reqSent => 'Demande envoyée.';
+
+  @override
+  String get reqSentPhotosFailed =>
+      'Demande envoyée, mais certaines photos n’ont pas pu être ajoutées.';
+
+  @override
+  String get reqFailNetwork =>
+      'Connexion impossible. Votre saisie est conservée, réessayez.';
+
+  @override
+  String get reqFailRateLimited =>
+      'Trop de demandes en peu de temps. Réessayez dans une heure.';
+
+  @override
+  String get reqFailLimit =>
+      'Vous avez déjà 10 demandes ouvertes. Annulez-en une avant d’en créer une autre.';
+
+  @override
+  String get reqFailInvalid =>
+      'Certaines informations sont refusées. Vérifiez-les.';
+
+  @override
+  String get reqFailNotOpen => 'Cette demande n’est plus ouverte.';
+
+  @override
+  String get reqFailGeneric => 'Impossible d’envoyer la demande. Réessayez.';
+
+  @override
+  String get reqFailNotConfigured =>
+      'Le service n’est pas disponible pour le moment.';
+
+  @override
+  String get reqDetailTitle => 'Demande';
+
+  @override
+  String get reqNotFound => 'Demande introuvable.';
+
+  @override
+  String reqExpiresOn(String date) {
+    return 'Expire le $date';
+  }
+
+  @override
+  String reqNeededBy(String date) {
+    return 'Souhaité pour le $date';
+  }
+
+  @override
+  String reqBudget(String amount) {
+    return 'Budget indicatif : $amount';
+  }
+
+  @override
+  String get reqCancel => 'Annuler la demande';
+
+  @override
+  String get reqCancelTitle => 'Annuler cette demande ?';
+
+  @override
+  String get reqCancelBody =>
+      'Les offres reçues seront refusées. Cette action est définitive.';
+
+  @override
+  String get reqCancelKeep => 'Garder la demande';
+
+  @override
+  String get reqCancelled => 'Demande annulée.';
+
+  @override
+  String reqPhotoLabel(int index, int total) {
+    return 'Photo $index sur $total';
+  }
+
+  @override
+  String get reqPhotosFailed => 'Impossible de charger les photos.';
+
+  @override
+  String get proInboxTitle => 'Demandes ouvertes';
+
+  @override
+  String get proInboxMyArea => 'Dans mon gouvernorat';
+
+  @override
+  String get proInboxAllCategories => 'Tous les métiers';
+
+  @override
+  String get proInboxEmptyTitle => 'Aucune demande pour le moment';
+
+  @override
+  String get proInboxEmptyBody =>
+      'Les nouvelles demandes de clients apparaîtront ici.';
+
+  @override
+  String get proInboxNeedsPublished =>
+      'Publiez votre profil pour voir les demandes et envoyer des offres.';
+
+  @override
+  String get offerStatusPending => 'En attente';
+
+  @override
+  String get offerStatusAccepted => 'Acceptée';
+
+  @override
+  String get offerStatusDeclined => 'Refusée';
+
+  @override
+  String get offerStatusWithdrawn => 'Retirée';
+
+  @override
+  String offerYours(String status) {
+    return 'Votre offre : $status';
+  }
+
+  @override
+  String get offersTitle => 'Mes offres';
+
+  @override
+  String get offersEmpty => 'Vous n’avez pas encore envoyé d’offre.';
+
+  @override
+  String get jobsTitle => 'Mes chantiers';
+
+  @override
+  String get jobsEmpty =>
+      'Aucun chantier pour le moment. Un chantier naît quand un client accepte votre offre.';
+
+  @override
+  String get jobScheduled => 'Planifié';
+
+  @override
+  String get jobInProgress => 'En cours';
+
+  @override
+  String get jobPendingConfirmation => 'En attente de confirmation du client';
+
+  @override
+  String get jobCompleted => 'Terminé';
+
+  @override
+  String get jobCancelled => 'Annulé';
+
+  @override
+  String get jobStart => 'Démarrer';
+
+  @override
+  String get jobDone => 'Marquer comme terminé';
+
+  @override
+  String get jobCancel => 'Annuler le chantier';
+
+  @override
+  String get jobCancelTitle => 'Annuler ce chantier ?';
+
+  @override
+  String get jobCancelBody =>
+      'Le client sera informé. Cette action est définitive.';
+
+  @override
+  String get jobKeep => 'Garder le chantier';
+
+  @override
+  String jobAgreedPrice(String amount) {
+    return 'Prix convenu : $amount';
+  }
+
+  @override
+  String get offerTitle => 'Votre offre';
+
+  @override
+  String get offerPrice => 'Prix en TND';
+
+  @override
+  String get offerMessage => 'Message au client (facultatif)';
+
+  @override
+  String get offerDays => 'Délai estimé en jours (facultatif)';
+
+  @override
+  String get offerSend => 'Envoyer l’offre';
+
+  @override
+  String get offerUpdate => 'Mettre à jour l’offre';
+
+  @override
+  String get offerWithdraw => 'Retirer mon offre';
+
+  @override
+  String get offerSent => 'Offre envoyée.';
+
+  @override
+  String get offerWithdrawn => 'Offre retirée.';
+
+  @override
+  String get offerErrPrice => 'Entre 1 et 1 000 000 TND.';
+
+  @override
+  String get offerErrMessage => '1000 caractères au maximum.';
+
+  @override
+  String get offerErrDays => 'Entre 1 et 365 jours.';
+
+  @override
+  String get offerDeclinedNote => 'Le client n’a pas retenu votre offre.';
+
+  @override
+  String get offerAcceptedNote =>
+      'Votre offre est acceptée : suivez le chantier dans Mes chantiers.';
+
+  @override
+  String offerOthers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count offres déjà reçues',
+      one: '1 offre déjà reçue',
+      zero: 'Aucune autre offre pour l’instant',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reqFailOwn =>
+      'Vous ne pouvez pas répondre à votre propre demande.';
+
+  @override
+  String get reqFailOfferClosed => 'Cette offre ne peut plus être modifiée.';
+
+  @override
+  String get reqFailTransition => 'Cette étape n’est plus possible.';
+
+  @override
+  String get reqFailForbidden => 'Publiez d’abord votre profil professionnel.';
+
+  @override
+  String get offerFailLimit =>
+      'Vous avez 50 offres en attente. Retirez-en une avant d’en envoyer une autre.';
+
+  @override
+  String get offersReceived => 'Offres reçues';
+
+  @override
+  String get offersNoneYet =>
+      'Pas encore d’offre. Les professionnels ont jusqu’à l’expiration de la demande pour répondre.';
+
+  @override
+  String get sortOffersBy => 'Trier les offres';
+
+  @override
+  String get sortOffersPrice => 'Prix';
+
+  @override
+  String get sortOffersRating => 'Note';
+
+  @override
+  String get sortOffersDelay => 'Délai';
+
+  @override
+  String get offerLowest => 'Prix le plus bas';
+
+  @override
+  String offerDelay(int count) {
+    return 'Délai : $count j';
+  }
+
+  @override
+  String get offerAccept => 'Accepter';
+
+  @override
+  String get offerDecline => 'Refuser';
+
+  @override
+  String get offerAcceptTitle => 'Accepter cette offre ?';
+
+  @override
+  String offerAcceptBody(String name, String price) {
+    return '$name réalisera le travail pour $price. Les autres offres seront refusées et la demande sera attribuée.';
+  }
+
+  @override
+  String get offerDeclineTitle => 'Refuser cette offre ?';
+
+  @override
+  String get offerDeclineBody =>
+      'Le professionnel ne pourra pas la proposer à nouveau.';
+
+  @override
+  String get offerAcceptedMsg => 'Offre acceptée.';
+
+  @override
+  String get offerDeclinedMsg => 'Offre refusée.';
+
+  @override
+  String get offerProUnknown => 'Professionnel';
+
+  @override
+  String get bookingTitle => 'Chantier';
+
+  @override
+  String get bookingConfirm => 'Confirmer que le travail est terminé';
+
+  @override
+  String get bookingConfirmed => 'Merci, chantier terminé.';
+
+  @override
+  String get bookingCancelled => 'Chantier annulé.';
+
+  @override
+  String get bookingCancelTitle => 'Annuler ce chantier ?';
+
+  @override
+  String get bookingCancelBody =>
+      'Le professionnel sera informé. Cette action est définitive.';
+
+  @override
+  String get bookingWaitingForYou =>
+      'Le professionnel indique avoir terminé. Le travail est-il bien fait ?';
 }
