@@ -21,6 +21,7 @@ abstract final class AppRoutes {
       '/pro/requests/${Uri.encodeComponent(id)}';
   static const proOffers = '/pro/offers';
   static const proJobs = '/pro/jobs';
+  static const notificationSettings = '/settings/notifications';
   static const chat = '/messages/:id';
   static String chatPath(String id) => '/messages/${Uri.encodeComponent(id)}';
   static const proRegistration = '/pro/profile';

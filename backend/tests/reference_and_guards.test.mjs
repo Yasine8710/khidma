@@ -148,6 +148,7 @@ describe('structural security guards', () => {
       'authenticated:request_photos:SELECT',
       'authenticated:request_photos:INSERT',
       'authenticated:request_photos:DELETE',
+      'authenticated:notification_preferences:SELECT',
     ];
     assert.deepEqual([...got].sort(), [...expected].sort());
   });

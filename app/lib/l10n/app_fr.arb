@@ -670,5 +670,12 @@
         "type": "int"
       }
     }
-  }
+  },
+  "notifTitle": "Notifications",
+  "notifIntro": "Choisissez ce pour quoi vous voulez être prévenu. Les notifications ne contiennent jamais le texte de vos messages.",
+  "notifOffers": "Offres reçues et acceptées",
+  "notifMessages": "Nouveaux messages",
+  "notifJobs": "Avancement des chantiers",
+  "notifNoPush": "Les notifications push ne sont pas encore disponibles sur cet appareil. Vos choix sont enregistrés pour plus tard.",
+  "notifSaveFailed": "Impossible d’enregistrer ce choix. Réessayez."
 }

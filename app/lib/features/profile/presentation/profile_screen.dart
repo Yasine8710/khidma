@@ -72,6 +72,14 @@ class ProfileScreen extends ConsumerWidget {
               ref.read(themeModeProvider.notifier).setMode(s.first);
             },
           ),
+          const SizedBox(height: AppSpacing.md),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.notifications_none_rounded),
+            title: Text(l10n.notifTitle),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => context.push(AppRoutes.notificationSettings),
+          ),
           if (kShowGallery) ...[
             const SizedBox(height: AppSpacing.xl),
             // Developer-only entry; not localized on purpose.

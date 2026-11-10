@@ -49,6 +49,13 @@ final authActionsProvider = NotifierProvider<AuthActions, bool>(
   AuthActions.new,
 );
 
+/// Things to do while the person is still signed in, just before signing out
+/// (for example stopping push notifications on this device). Failures are
+/// ignored: signing out always goes ahead.
+final beforeSignOutProvider = Provider<List<Future<void> Function()>>(
+  (ref) => const [],
+);
+
 /// Runs auth actions and exposes whether one is in flight (state = loading),
 /// so buttons can show a spinner and ignore double taps.
 class AuthActions extends Notifier<bool> {
@@ -112,6 +119,11 @@ class AuthActions extends Notifier<bool> {
       });
 
   Future<AuthActionResult> signOut() => _run((r) async {
+    for (final hook in ref.read(beforeSignOutProvider)) {
+      try {
+        await hook();
+      } catch (_) {}
+    }
     await r.signOut();
     return null;
   });

@@ -1437,4 +1437,27 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get chatPhoto => 'صورة';
+
+  @override
+  String get notifTitle => 'الإشعارات';
+
+  @override
+  String get notifIntro =>
+      'اختر ما تريد أن يتم إشعارك به. لا تحتوي الإشعارات أبدًا على نص رسائلك.';
+
+  @override
+  String get notifOffers => 'العروض المستلمة والمقبولة';
+
+  @override
+  String get notifMessages => 'الرسائل الجديدة';
+
+  @override
+  String get notifJobs => 'تقدّم الأعمال';
+
+  @override
+  String get notifNoPush =>
+      'الإشعارات غير متاحة على هذا الجهاز بعد. اختياراتك محفوظة لوقت لاحق.';
+
+  @override
+  String get notifSaveFailed => 'تعذّر حفظ هذا الاختيار. حاول مجددًا.';
 }

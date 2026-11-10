@@ -120,6 +120,12 @@ Not yet verified against a real project: the end-to-end link flow on a device, t
 - Images: private `chat-images` bucket (2 MB, jpeg/png/webp), members only, 100 per conversation; an upload no message points to can be removed. Read markers are message ids set only up to what was shown.
 - Deleting an account removes its conversations and the matching object rows (bytes: server-side cleanup, #32).
 
+### Notifications (Phase 6.2)
+- Events write to `notification_outbox` in the same transaction (triggers on offers, messages, bookings); a row holds a kind and ids only, never text, names or message content. Push texts are built from the kind in the recipient's language. Preferences (offers/messages/jobs) are honoured when enqueueing; messages notify once per unread burst.
+- The delivery worker is an Edge Function using the service role (`claim_notifications`, `complete_notification` fenced by attempt number, retries with backoff, given up after 5 attempts). Clients cannot read the outbox or the tokens.
+- A device token belongs to one account at a time: signing out unregisters it first; if that fails it moves on the next sign-in, and is dropped after 60 days unseen. Residual risk: a signed-out phone that could not unregister may still show generic pushes (no content) until then.
+- **Owner step (#26):** create a Firebase project, add APNs auth key, put the service-account JSON in the Edge Function secrets, add `firebase_messaging` and the platform files, implement `PushService`, schedule the function. The Edge Function has not been run.
+
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.
 - The Supabase SDK's own debug logger is disabled; the app prints only error types, and only in debug builds.

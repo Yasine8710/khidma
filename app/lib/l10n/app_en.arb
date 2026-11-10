@@ -422,5 +422,12 @@
   "chatPhotoFailed": "Photo not sent. Try again.",
   "chatAskPro": "Ask a question",
   "chatWriteCustomer": "Message the customer",
-  "chatPhoto": "Photo"
+  "chatPhoto": "Photo",
+  "notifTitle": "Notifications",
+  "notifIntro": "Choose what you want to be told about. Notifications never contain the text of your messages.",
+  "notifOffers": "Offers received and accepted",
+  "notifMessages": "New messages",
+  "notifJobs": "Job progress",
+  "notifNoPush": "Push notifications are not available on this device yet. Your choices are saved for later.",
+  "notifSaveFailed": "Couldn’t save that choice. Try again."
 }

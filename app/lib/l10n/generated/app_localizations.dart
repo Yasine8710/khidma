@@ -2637,6 +2637,48 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Photo'**
   String get chatPhoto;
+
+  /// No description provided for @notifTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications'**
+  String get notifTitle;
+
+  /// No description provided for @notifIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez ce pour quoi vous voulez être prévenu. Les notifications ne contiennent jamais le texte de vos messages.'**
+  String get notifIntro;
+
+  /// No description provided for @notifOffers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Offres reçues et acceptées'**
+  String get notifOffers;
+
+  /// No description provided for @notifMessages.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveaux messages'**
+  String get notifMessages;
+
+  /// No description provided for @notifJobs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avancement des chantiers'**
+  String get notifJobs;
+
+  /// No description provided for @notifNoPush.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les notifications push ne sont pas encore disponibles sur cet appareil. Vos choix sont enregistrés pour plus tard.'**
+  String get notifNoPush;
+
+  /// No description provided for @notifSaveFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d’enregistrer ce choix. Réessayez.'**
+  String get notifSaveFailed;
 }
 
 class _AppLocalizationsDelegate

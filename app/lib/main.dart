@@ -17,6 +17,8 @@ import 'features/marketplace/application/marketplace_providers.dart';
 import 'features/marketplace/data/supabase_marketplace_repository.dart';
 import 'features/messages/application/messages_providers.dart';
 import 'features/messages/data/supabase_messages_repository.dart';
+import 'features/notifications/application/notifications_providers.dart';
+import 'features/notifications/data/supabase_notifications_repository.dart';
 import 'features/offers/application/offers_providers.dart';
 import 'features/offers/data/supabase_offers_repository.dart';
 import 'features/portfolio/application/portfolio_providers.dart';
@@ -56,6 +58,14 @@ Future<void> main() async {
           messagesRepositoryProvider.overrideWithValue(
             SupabaseMessagesRepository(Supabase.instance.client),
           ),
+        if (auth.isAvailable)
+          notificationsRepositoryProvider.overrideWithValue(
+            SupabaseNotificationsRepository(Supabase.instance.client),
+          ),
+        // Stop pushes for this account on this device before signing out.
+        beforeSignOutProvider.overrideWith(
+          (ref) => [() => ref.read(pushLifecycleProvider).unregister()],
+        ),
         if (auth.isAvailable)
           requestsRepositoryProvider.overrideWithValue(
             SupabaseRequestsRepository(Supabase.instance.client),

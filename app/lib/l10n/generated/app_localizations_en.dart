@@ -1443,4 +1443,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chatPhoto => 'Photo';
+
+  @override
+  String get notifTitle => 'Notifications';
+
+  @override
+  String get notifIntro =>
+      'Choose what you want to be told about. Notifications never contain the text of your messages.';
+
+  @override
+  String get notifOffers => 'Offers received and accepted';
+
+  @override
+  String get notifMessages => 'New messages';
+
+  @override
+  String get notifJobs => 'Job progress';
+
+  @override
+  String get notifNoPush =>
+      'Push notifications are not available on this device yet. Your choices are saved for later.';
+
+  @override
+  String get notifSaveFailed => 'Couldn’t save that choice. Try again.';
 }

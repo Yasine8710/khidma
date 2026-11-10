@@ -1461,4 +1461,27 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get chatPhoto => 'Photo';
+
+  @override
+  String get notifTitle => 'Notifications';
+
+  @override
+  String get notifIntro =>
+      'Choisissez ce pour quoi vous voulez être prévenu. Les notifications ne contiennent jamais le texte de vos messages.';
+
+  @override
+  String get notifOffers => 'Offres reçues et acceptées';
+
+  @override
+  String get notifMessages => 'Nouveaux messages';
+
+  @override
+  String get notifJobs => 'Avancement des chantiers';
+
+  @override
+  String get notifNoPush =>
+      'Les notifications push ne sont pas encore disponibles sur cet appareil. Vos choix sont enregistrés pour plus tard.';
+
+  @override
+  String get notifSaveFailed => 'Impossible d’enregistrer ce choix. Réessayez.';
 }

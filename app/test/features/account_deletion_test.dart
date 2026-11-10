@@ -130,6 +130,8 @@ void main() {
         await tester.tap(find.widgetWithText(FilledButton, label));
         await tester.pumpAndSettle();
         expect(profiles.deleteCalls, 1, reason: lang);
+        await tester.drag(find.byType(ListView).first, const Offset(0, 2000));
+        await tester.pumpAndSettle();
         expect(find.text(signedOutText), findsOneWidget, reason: lang);
       }
     });
@@ -155,6 +157,8 @@ void main() {
         expect(profiles.deleteCalls, 1);
         expect(auth.signOutCalls, 1);
         expect(find.text('Votre compte a été supprimé.'), findsOneWidget);
+        await tester.drag(find.byType(ListView).first, const Offset(0, 2000));
+        await tester.pumpAndSettle();
         expect(find.text('Connectez-vous ou créez un compte'), findsOneWidget);
         expect(c.read(pendingAccountChoiceProvider), isNull);
       },
