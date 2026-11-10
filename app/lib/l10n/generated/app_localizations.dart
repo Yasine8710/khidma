@@ -2679,6 +2679,138 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Impossible d’enregistrer ce choix. Réessayez.'**
   String get notifSaveFailed;
+
+  /// No description provided for @reviewsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avis'**
+  String get reviewsTitle;
+
+  /// No description provided for @reviewsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore d’avis.'**
+  String get reviewsEmpty;
+
+  /// No description provided for @reviewsMore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir plus d’avis'**
+  String get reviewsMore;
+
+  /// No description provided for @reviewsLoadFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger les avis.'**
+  String get reviewsLoadFailed;
+
+  /// No description provided for @reviewCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Laisser un avis'**
+  String get reviewCta;
+
+  /// No description provided for @reviewCtaPro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Noter le client'**
+  String get reviewCtaPro;
+
+  /// No description provided for @reviewSheetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre avis'**
+  String get reviewSheetTitle;
+
+  /// No description provided for @reviewSheetTitlePro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre avis sur le client'**
+  String get reviewSheetTitlePro;
+
+  /// No description provided for @reviewRatingHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Touchez une étoile'**
+  String get reviewRatingHint;
+
+  /// No description provided for @reviewStar.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 étoile} other{{count} étoiles}}'**
+  String reviewStar(int count);
+
+  /// No description provided for @reviewComment.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commentaire (facultatif)'**
+  String get reviewComment;
+
+  /// No description provided for @reviewSubmit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publier mon avis'**
+  String get reviewSubmit;
+
+  /// No description provided for @reviewPublicNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre avis sera public, sans votre nom.'**
+  String get reviewPublicNote;
+
+  /// No description provided for @reviewPrivateNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cet avis n’est visible que par l’équipe Khidma.'**
+  String get reviewPrivateNote;
+
+  /// No description provided for @reviewErrRating.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez une note de 1 à 5.'**
+  String get reviewErrRating;
+
+  /// No description provided for @reviewThanks.
+  ///
+  /// In fr, this message translates to:
+  /// **'Merci pour votre avis.'**
+  String get reviewThanks;
+
+  /// No description provided for @reviewDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avis donné'**
+  String get reviewDone;
+
+  /// No description provided for @reviewFailAlready.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez déjà donné votre avis sur ce chantier.'**
+  String get reviewFailAlready;
+
+  /// No description provided for @reviewFailNotCompleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le chantier doit être terminé pour laisser un avis.'**
+  String get reviewFailNotCompleted;
+
+  /// No description provided for @reviewFailGeneric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d’envoyer l’avis. Réessayez.'**
+  String get reviewFailGeneric;
+
+  /// No description provided for @reviewAuthorAnon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get reviewAuthorAnon;
+
+  /// No description provided for @reviewFailLimit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez déjà donné trop d’avis sur ce professionnel.'**
+  String get reviewFailLimit;
 }
 
 class _AppLocalizationsDelegate

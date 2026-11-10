@@ -1484,4 +1484,82 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get notifSaveFailed => 'Impossible d’enregistrer ce choix. Réessayez.';
+
+  @override
+  String get reviewsTitle => 'Avis';
+
+  @override
+  String get reviewsEmpty => 'Pas encore d’avis.';
+
+  @override
+  String get reviewsMore => 'Voir plus d’avis';
+
+  @override
+  String get reviewsLoadFailed => 'Impossible de charger les avis.';
+
+  @override
+  String get reviewCta => 'Laisser un avis';
+
+  @override
+  String get reviewCtaPro => 'Noter le client';
+
+  @override
+  String get reviewSheetTitle => 'Votre avis';
+
+  @override
+  String get reviewSheetTitlePro => 'Votre avis sur le client';
+
+  @override
+  String get reviewRatingHint => 'Touchez une étoile';
+
+  @override
+  String reviewStar(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count étoiles',
+      one: '1 étoile',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewComment => 'Commentaire (facultatif)';
+
+  @override
+  String get reviewSubmit => 'Publier mon avis';
+
+  @override
+  String get reviewPublicNote => 'Votre avis sera public, sans votre nom.';
+
+  @override
+  String get reviewPrivateNote =>
+      'Cet avis n’est visible que par l’équipe Khidma.';
+
+  @override
+  String get reviewErrRating => 'Choisissez une note de 1 à 5.';
+
+  @override
+  String get reviewThanks => 'Merci pour votre avis.';
+
+  @override
+  String get reviewDone => 'Avis donné';
+
+  @override
+  String get reviewFailAlready =>
+      'Vous avez déjà donné votre avis sur ce chantier.';
+
+  @override
+  String get reviewFailNotCompleted =>
+      'Le chantier doit être terminé pour laisser un avis.';
+
+  @override
+  String get reviewFailGeneric => 'Impossible d’envoyer l’avis. Réessayez.';
+
+  @override
+  String get reviewAuthorAnon => 'Client';
+
+  @override
+  String get reviewFailLimit =>
+      'Vous avez déjà donné trop d’avis sur ce professionnel.';
 }

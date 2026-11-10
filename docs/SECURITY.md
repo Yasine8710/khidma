@@ -126,6 +126,10 @@ Not yet verified against a real project: the end-to-end link flow on a device, t
 - A device token belongs to one account at a time: signing out unregisters it first; if that fails it moves on the next sign-in, and is dropped after 60 days unseen. Residual risk: a signed-out phone that could not unregister may still show generic pushes (no content) until then.
 - **Owner step (#26):** create a Firebase project, add APNs auth key, put the service-account JSON in the Edge Function secrets, add `firebase_messaging` and the platform files, implement `PushService`, schedule the function. The Edge Function has not been run.
 
+### Reviews (Phase 6.3)
+- One review per person per completed job, written through `submit_review` (checks the job is completed and the caller took part); at most 3 per author about one subject (anti-farming). Only reviews a customer wrote about the job's professional are public and count towards the rating; the other direction stays private (not selectable by anyone but moderators).
+- Public columns: rating, comment, month and an ordering counter; never author, job or exact time. Ratings are recomputed by a trigger serialized per professional; clients cannot write them. Admins hide reviews through `admin_set_review_status` (hidden ones leave the list and the average).
+
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.
 - The Supabase SDK's own debug logger is disabled; the app prints only error types, and only in debug builds.

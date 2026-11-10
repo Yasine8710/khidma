@@ -1460,4 +1460,81 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notifSaveFailed => 'تعذّر حفظ هذا الاختيار. حاول مجددًا.';
+
+  @override
+  String get reviewsTitle => 'التقييمات';
+
+  @override
+  String get reviewsEmpty => 'لا توجد تقييمات بعد.';
+
+  @override
+  String get reviewsMore => 'عرض المزيد من التقييمات';
+
+  @override
+  String get reviewsLoadFailed => 'تعذّر تحميل التقييمات.';
+
+  @override
+  String get reviewCta => 'اترك تقييمًا';
+
+  @override
+  String get reviewCtaPro => 'قيّم الزبون';
+
+  @override
+  String get reviewSheetTitle => 'تقييمك';
+
+  @override
+  String get reviewSheetTitlePro => 'تقييمك للزبون';
+
+  @override
+  String get reviewRatingHint => 'المس نجمة';
+
+  @override
+  String reviewStar(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count نجمة',
+      few: '$count نجوم',
+      two: 'نجمتان',
+      one: 'نجمة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewComment => 'تعليق (اختياري)';
+
+  @override
+  String get reviewSubmit => 'نشر تقييمي';
+
+  @override
+  String get reviewPublicNote => 'سيكون تقييمك علنيًا دون اسمك.';
+
+  @override
+  String get reviewPrivateNote => 'هذا التقييم لا يراه إلا فريق خدمة.';
+
+  @override
+  String get reviewErrRating => 'اختر تقييمًا من 1 إلى 5.';
+
+  @override
+  String get reviewThanks => 'شكرًا على تقييمك.';
+
+  @override
+  String get reviewDone => 'تم التقييم';
+
+  @override
+  String get reviewFailAlready => 'لقد قيّمت هذا العمل من قبل.';
+
+  @override
+  String get reviewFailNotCompleted => 'يجب أن يكتمل العمل لترك تقييم.';
+
+  @override
+  String get reviewFailGeneric => 'تعذّر إرسال التقييم. حاول مجددًا.';
+
+  @override
+  String get reviewAuthorAnon => 'زبون';
+
+  @override
+  String get reviewFailLimit =>
+      'لقد قدّمت عددًا كبيرًا من التقييمات لهذا الحرفي.';
 }

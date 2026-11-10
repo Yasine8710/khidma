@@ -23,6 +23,8 @@ import 'features/offers/application/offers_providers.dart';
 import 'features/offers/data/supabase_offers_repository.dart';
 import 'features/portfolio/application/portfolio_providers.dart';
 import 'features/requests/application/customer_offers_providers.dart';
+import 'features/reviews/application/reviews_providers.dart';
+import 'features/reviews/data/supabase_reviews_repository.dart';
 import 'features/requests/application/requests_providers.dart';
 import 'features/requests/data/supabase_customer_offers_repository.dart';
 import 'features/requests/data/supabase_requests_repository.dart';
@@ -66,6 +68,10 @@ Future<void> main() async {
         beforeSignOutProvider.overrideWith(
           (ref) => [() => ref.read(pushLifecycleProvider).unregister()],
         ),
+        if (auth.isAvailable)
+          reviewsRepositoryProvider.overrideWithValue(
+            SupabaseReviewsRepository(Supabase.instance.client),
+          ),
         if (auth.isAvailable)
           requestsRepositoryProvider.overrideWithValue(
             SupabaseRequestsRepository(Supabase.instance.client),

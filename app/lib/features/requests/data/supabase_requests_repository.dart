@@ -32,7 +32,9 @@ RequestsFailure mapRequestsException(Object error) {
       case 'P0001':
         final m = error.message;
         if (m.contains('rate_limited')) return RequestsFailure.rateLimited;
-        if (m.contains('limit_reached') || m.contains('photo_limit')) {
+        if (m.contains('limit_reached') ||
+            m.contains('photo_limit') ||
+            m.contains('review_limit')) {
           return RequestsFailure.limitReached;
         }
         if (m.contains('not_open') || m.contains('expired')) {
@@ -40,6 +42,10 @@ RequestsFailure mapRequestsException(Object error) {
         }
         if (m.contains('invalid_input')) return RequestsFailure.invalidInput;
         if (m.contains('own_request')) return RequestsFailure.ownRequest;
+        if (m.contains('not_completed')) return RequestsFailure.notCompleted;
+        if (m.contains('already_reviewed')) {
+          return RequestsFailure.alreadyReviewed;
+        }
         if (m.contains('offer_closed')) return RequestsFailure.offerClosed;
         if (m.contains('invalid_transition')) {
           return RequestsFailure.invalidTransition;

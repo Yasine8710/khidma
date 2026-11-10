@@ -677,5 +677,34 @@
   "notifMessages": "Nouveaux messages",
   "notifJobs": "Avancement des chantiers",
   "notifNoPush": "Les notifications push ne sont pas encore disponibles sur cet appareil. Vos choix sont enregistrés pour plus tard.",
-  "notifSaveFailed": "Impossible d’enregistrer ce choix. Réessayez."
+  "notifSaveFailed": "Impossible d’enregistrer ce choix. Réessayez.",
+  "reviewsTitle": "Avis",
+  "reviewsEmpty": "Pas encore d’avis.",
+  "reviewsMore": "Voir plus d’avis",
+  "reviewsLoadFailed": "Impossible de charger les avis.",
+  "reviewCta": "Laisser un avis",
+  "reviewCtaPro": "Noter le client",
+  "reviewSheetTitle": "Votre avis",
+  "reviewSheetTitlePro": "Votre avis sur le client",
+  "reviewRatingHint": "Touchez une étoile",
+  "reviewStar": "{count, plural, =1{1 étoile} other{{count} étoiles}}",
+  "reviewComment": "Commentaire (facultatif)",
+  "reviewSubmit": "Publier mon avis",
+  "reviewPublicNote": "Votre avis sera public, sans votre nom.",
+  "reviewPrivateNote": "Cet avis n’est visible que par l’équipe Khidma.",
+  "reviewErrRating": "Choisissez une note de 1 à 5.",
+  "reviewThanks": "Merci pour votre avis.",
+  "reviewDone": "Avis donné",
+  "reviewFailAlready": "Vous avez déjà donné votre avis sur ce chantier.",
+  "reviewFailNotCompleted": "Le chantier doit être terminé pour laisser un avis.",
+  "reviewFailGeneric": "Impossible d’envoyer l’avis. Réessayez.",
+  "reviewAuthorAnon": "Client",
+  "@reviewStar": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewFailLimit": "Vous avez déjà donné trop d’avis sur ce professionnel."
 }

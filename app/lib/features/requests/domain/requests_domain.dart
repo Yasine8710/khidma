@@ -116,6 +116,12 @@ enum RequestsFailure {
 
   /// That step is not possible from the current status.
   invalidTransition,
+
+  /// A review needs a completed job.
+  notCompleted,
+
+  /// You already reviewed this job.
+  alreadyReviewed,
   notFound,
   notConfigured,
   unknown,

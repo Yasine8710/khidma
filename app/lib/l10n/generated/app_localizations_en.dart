@@ -1466,4 +1466,82 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifSaveFailed => 'Couldn’t save that choice. Try again.';
+
+  @override
+  String get reviewsTitle => 'Reviews';
+
+  @override
+  String get reviewsEmpty => 'No reviews yet.';
+
+  @override
+  String get reviewsMore => 'Show more reviews';
+
+  @override
+  String get reviewsLoadFailed => 'Couldn’t load the reviews.';
+
+  @override
+  String get reviewCta => 'Leave a review';
+
+  @override
+  String get reviewCtaPro => 'Rate the customer';
+
+  @override
+  String get reviewSheetTitle => 'Your review';
+
+  @override
+  String get reviewSheetTitlePro => 'Your review of the customer';
+
+  @override
+  String get reviewRatingHint => 'Tap a star';
+
+  @override
+  String reviewStar(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count stars',
+      one: '1 star',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewComment => 'Comment (optional)';
+
+  @override
+  String get reviewSubmit => 'Publish my review';
+
+  @override
+  String get reviewPublicNote =>
+      'Your review will be public, without your name.';
+
+  @override
+  String get reviewPrivateNote =>
+      'This review is only visible to the Khidma team.';
+
+  @override
+  String get reviewErrRating => 'Choose a rating from 1 to 5.';
+
+  @override
+  String get reviewThanks => 'Thank you for your review.';
+
+  @override
+  String get reviewDone => 'Review given';
+
+  @override
+  String get reviewFailAlready => 'You already reviewed this job.';
+
+  @override
+  String get reviewFailNotCompleted =>
+      'The job must be completed to leave a review.';
+
+  @override
+  String get reviewFailGeneric => 'Couldn’t send the review. Try again.';
+
+  @override
+  String get reviewAuthorAnon => 'Customer';
+
+  @override
+  String get reviewFailLimit =>
+      'You have already given this professional too many reviews.';
 }

@@ -10,3 +10,7 @@ String formatDate(DateTime date, Locale locale) =>
 /// Localized time `HH:mm`, always with Western digits.
 String formatTime(DateTime date, Locale locale) =>
     toWesternDigits(DateFormat.Hm(locale.languageCode).format(date));
+
+/// "novembre 2026" / "November 2026": month and year, always Western digits.
+String formatMonthYear(DateTime date, Locale locale) =>
+    toWesternDigits(DateFormat.yMMMM(locale.languageCode).format(date));
