@@ -1,0 +1,12 @@
+{
+  "name": "khidma-backend-tests",
+  "private": true,
+  "type": "module",
+  "description": "Migration and Row Level Security tests, run against real Postgres compiled to WebAssembly (PGlite). No server or Docker needed.",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.3.14"
+  }
+}

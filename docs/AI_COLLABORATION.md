@@ -85,3 +85,7 @@ Codex reviewed the whole phase (static). Fixed:
 - Main widget suites now load real fonts (all still pass); README no longer claims `.env` configures anything; "complete" reworded to "implementation complete, acceptance pending"; web page description and duplicate viewport fixed; unused `cupertino_icons` removed.
 Deferred (noted): gallery samples use French for English; gallery and two test files exceed ~300 lines; Linux golden baselines.
 Tests: 151 pass (6 goldens), analyze clean.
+
+## Phase 2, #7 (database foundation): Codex security audit, 2026-11-10
+Codex (read-only, with its own in-memory probes) found no admin/rating escalation; RETURNING, UPSERT, NULL-subject RPC, draft joins and composite-FK probes were blocked. Accepted and fixed: category-id exhaustion by rejected inserts (direct INSERT grant removed), verification surviving identity edits (trigger), bulk phone scraping (phone no longer selectable; rate-limited reveal function with log), coordinate precision (2 decimals), anonymous-auth users acting as registered users (`is_anonymous` guard), inactive categories assignable/publishable (triggers), permissive sequence privileges (revoked), and weak structural guards (now enumerate every function's EXECUTE rights, PUBLIC/default ACLs, exact search_path).
+Tests: 81 on PGlite; two mutation rounds (19 mutations) all caught. Not done / needs a real Supabase project: GoTrue + PostgREST behavior (embeds, RETURNING over HTTP), forced signup-trigger failure rollback, Storage policies, realtime publications, exposed schemas.
