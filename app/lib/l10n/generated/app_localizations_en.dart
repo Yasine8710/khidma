@@ -963,4 +963,181 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get close => 'Close';
+
+  @override
+  String get reqNew => 'New request';
+
+  @override
+  String get reqMineTitle => 'My requests';
+
+  @override
+  String get reqEmptyCta => 'Ask for a quote';
+
+  @override
+  String get reqStatusOpen => 'Open';
+
+  @override
+  String get reqStatusAwarded => 'Awarded';
+
+  @override
+  String get reqStatusCancelled => 'Cancelled';
+
+  @override
+  String get reqStatusExpired => 'Expired';
+
+  @override
+  String reqOffers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count offers',
+      one: '1 offer',
+      zero: 'No offers',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reqFormTitle => 'Title';
+
+  @override
+  String get reqFormTitleHint => 'E.g. Leak under the sink';
+
+  @override
+  String get reqFormDescription => 'Describe the problem';
+
+  @override
+  String get reqFormDescriptionHelper => 'At least 10 characters.';
+
+  @override
+  String get reqFormCategory => 'Type of service';
+
+  @override
+  String get reqFormBudget => 'Rough budget in TND (optional)';
+
+  @override
+  String get reqFormNeededBy => 'By when? (optional)';
+
+  @override
+  String get reqFormNeededByNone => 'No date';
+
+  @override
+  String get reqFormPickDate => 'Pick a date';
+
+  @override
+  String get reqFormPhotos => 'Photos (optional)';
+
+  @override
+  String get reqFormAddPhoto => 'Add a photo';
+
+  @override
+  String reqFormPhotosCount(int count, int max) {
+    return '$count of $max photos';
+  }
+
+  @override
+  String reqFormRemovePhoto(int index) {
+    return 'Remove photo $index';
+  }
+
+  @override
+  String get reqFormSubmit => 'Send request';
+
+  @override
+  String get reqFormPrivacy =>
+      'Professionals will see your request and photos, never your name or number.';
+
+  @override
+  String get reqErrTitle => 'Between 3 and 120 characters.';
+
+  @override
+  String get reqErrDescription => 'Between 10 and 2000 characters.';
+
+  @override
+  String get reqErrCategory => 'Choose a type of service.';
+
+  @override
+  String get reqErrGovernorate => 'Choose a governorate.';
+
+  @override
+  String get reqErrBudget => 'Invalid amount (0 to 1,000,000).';
+
+  @override
+  String get reqSent => 'Request sent.';
+
+  @override
+  String get reqSentPhotosFailed =>
+      'Request sent, but some photos could not be added.';
+
+  @override
+  String get reqFailNetwork =>
+      'No connection. Your answers are kept, try again.';
+
+  @override
+  String get reqFailRateLimited =>
+      'Too many requests in a short time. Try again in an hour.';
+
+  @override
+  String get reqFailLimit =>
+      'You already have 10 open requests. Cancel one before creating another.';
+
+  @override
+  String get reqFailInvalid => 'Some details were refused. Please check them.';
+
+  @override
+  String get reqFailNotOpen => 'This request is no longer open.';
+
+  @override
+  String get reqFailGeneric => 'Couldn’t send the request. Try again.';
+
+  @override
+  String get reqFailNotConfigured => 'The service is not available right now.';
+
+  @override
+  String get reqDetailTitle => 'Request';
+
+  @override
+  String get reqNotFound => 'Request not found.';
+
+  @override
+  String reqExpiresOn(String date) {
+    return 'Expires on $date';
+  }
+
+  @override
+  String reqNeededBy(String date) {
+    return 'Wanted by $date';
+  }
+
+  @override
+  String reqBudget(String amount) {
+    return 'Rough budget: $amount';
+  }
+
+  @override
+  String get reqCancel => 'Cancel request';
+
+  @override
+  String get reqCancelTitle => 'Cancel this request?';
+
+  @override
+  String get reqCancelBody =>
+      'Offers received will be declined. This cannot be undone.';
+
+  @override
+  String get reqCancelKeep => 'Keep request';
+
+  @override
+  String get reqCancelled => 'Request cancelled.';
+
+  @override
+  String get reqOffersSoon => 'Comparing offers is coming soon.';
+
+  @override
+  String reqPhotoLabel(int index, int total) {
+    return 'Photo $index of $total';
+  }
+
+  @override
+  String get reqPhotosFailed => 'Couldn’t load the photos.';
 }

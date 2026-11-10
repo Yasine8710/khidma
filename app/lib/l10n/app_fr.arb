@@ -431,5 +431,110 @@
         "type": "int"
       }
     }
-  }
+  },
+  "reqNew": "Nouvelle demande",
+  "reqMineTitle": "Mes demandes",
+  "reqEmptyCta": "Demander un devis",
+  "reqStatusOpen": "Ouverte",
+  "reqStatusAwarded": "Attribuée",
+  "reqStatusCancelled": "Annulée",
+  "reqStatusExpired": "Expirée",
+  "reqOffers": "{count, plural, =0{Aucune offre} =1{1 offre} other{{count} offres}}",
+  "reqFormTitle": "Titre",
+  "reqFormTitleHint": "Ex. Fuite sous l’évier",
+  "reqFormDescription": "Décrivez le problème",
+  "reqFormDescriptionHelper": "Au moins 10 caractères.",
+  "reqFormCategory": "Type de service",
+  "reqFormBudget": "Budget indicatif en TND (facultatif)",
+  "reqFormNeededBy": "Pour quand ? (facultatif)",
+  "reqFormNeededByNone": "Pas de date",
+  "reqFormPickDate": "Choisir une date",
+  "reqFormPhotos": "Photos (facultatif)",
+  "reqFormAddPhoto": "Ajouter une photo",
+  "reqFormPhotosCount": "{count} sur {max} photos",
+  "reqFormRemovePhoto": "Retirer la photo {index}",
+  "reqFormSubmit": "Envoyer la demande",
+  "reqFormPrivacy": "Les professionnels verront votre demande et vos photos, jamais votre nom ni votre numéro.",
+  "reqErrTitle": "Entre 3 et 120 caractères.",
+  "reqErrDescription": "Entre 10 et 2000 caractères.",
+  "reqErrCategory": "Choisissez un type de service.",
+  "reqErrGovernorate": "Choisissez un gouvernorat.",
+  "reqErrBudget": "Montant invalide (0 à 1 000 000).",
+  "reqSent": "Demande envoyée.",
+  "reqSentPhotosFailed": "Demande envoyée, mais certaines photos n’ont pas pu être ajoutées.",
+  "reqFailNetwork": "Connexion impossible. Votre saisie est conservée, réessayez.",
+  "reqFailRateLimited": "Trop de demandes en peu de temps. Réessayez dans une heure.",
+  "reqFailLimit": "Vous avez déjà 10 demandes ouvertes. Annulez-en une avant d’en créer une autre.",
+  "reqFailInvalid": "Certaines informations sont refusées. Vérifiez-les.",
+  "reqFailNotOpen": "Cette demande n’est plus ouverte.",
+  "reqFailGeneric": "Impossible d’envoyer la demande. Réessayez.",
+  "reqFailNotConfigured": "Le service n’est pas disponible pour le moment.",
+  "reqDetailTitle": "Demande",
+  "reqNotFound": "Demande introuvable.",
+  "reqExpiresOn": "Expire le {date}",
+  "reqNeededBy": "Souhaité pour le {date}",
+  "reqBudget": "Budget indicatif : {amount}",
+  "reqCancel": "Annuler la demande",
+  "reqCancelTitle": "Annuler cette demande ?",
+  "reqCancelBody": "Les offres reçues seront refusées. Cette action est définitive.",
+  "reqCancelKeep": "Garder la demande",
+  "reqCancelled": "Demande annulée.",
+  "reqOffersSoon": "La comparaison des offres arrive bientôt.",
+  "reqPhotoLabel": "Photo {index} sur {total}",
+  "@reqOffers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@reqFormPhotosCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@reqFormRemovePhoto": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "@reqExpiresOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@reqNeededBy": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@reqBudget": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@reqPhotoLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reqPhotosFailed": "Impossible de charger les photos."
 }

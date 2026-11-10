@@ -975,4 +975,183 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get close => 'Fermer';
+
+  @override
+  String get reqNew => 'Nouvelle demande';
+
+  @override
+  String get reqMineTitle => 'Mes demandes';
+
+  @override
+  String get reqEmptyCta => 'Demander un devis';
+
+  @override
+  String get reqStatusOpen => 'Ouverte';
+
+  @override
+  String get reqStatusAwarded => 'Attribuée';
+
+  @override
+  String get reqStatusCancelled => 'Annulée';
+
+  @override
+  String get reqStatusExpired => 'Expirée';
+
+  @override
+  String reqOffers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count offres',
+      one: '1 offre',
+      zero: 'Aucune offre',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reqFormTitle => 'Titre';
+
+  @override
+  String get reqFormTitleHint => 'Ex. Fuite sous l’évier';
+
+  @override
+  String get reqFormDescription => 'Décrivez le problème';
+
+  @override
+  String get reqFormDescriptionHelper => 'Au moins 10 caractères.';
+
+  @override
+  String get reqFormCategory => 'Type de service';
+
+  @override
+  String get reqFormBudget => 'Budget indicatif en TND (facultatif)';
+
+  @override
+  String get reqFormNeededBy => 'Pour quand ? (facultatif)';
+
+  @override
+  String get reqFormNeededByNone => 'Pas de date';
+
+  @override
+  String get reqFormPickDate => 'Choisir une date';
+
+  @override
+  String get reqFormPhotos => 'Photos (facultatif)';
+
+  @override
+  String get reqFormAddPhoto => 'Ajouter une photo';
+
+  @override
+  String reqFormPhotosCount(int count, int max) {
+    return '$count sur $max photos';
+  }
+
+  @override
+  String reqFormRemovePhoto(int index) {
+    return 'Retirer la photo $index';
+  }
+
+  @override
+  String get reqFormSubmit => 'Envoyer la demande';
+
+  @override
+  String get reqFormPrivacy =>
+      'Les professionnels verront votre demande et vos photos, jamais votre nom ni votre numéro.';
+
+  @override
+  String get reqErrTitle => 'Entre 3 et 120 caractères.';
+
+  @override
+  String get reqErrDescription => 'Entre 10 et 2000 caractères.';
+
+  @override
+  String get reqErrCategory => 'Choisissez un type de service.';
+
+  @override
+  String get reqErrGovernorate => 'Choisissez un gouvernorat.';
+
+  @override
+  String get reqErrBudget => 'Montant invalide (0 à 1 000 000).';
+
+  @override
+  String get reqSent => 'Demande envoyée.';
+
+  @override
+  String get reqSentPhotosFailed =>
+      'Demande envoyée, mais certaines photos n’ont pas pu être ajoutées.';
+
+  @override
+  String get reqFailNetwork =>
+      'Connexion impossible. Votre saisie est conservée, réessayez.';
+
+  @override
+  String get reqFailRateLimited =>
+      'Trop de demandes en peu de temps. Réessayez dans une heure.';
+
+  @override
+  String get reqFailLimit =>
+      'Vous avez déjà 10 demandes ouvertes. Annulez-en une avant d’en créer une autre.';
+
+  @override
+  String get reqFailInvalid =>
+      'Certaines informations sont refusées. Vérifiez-les.';
+
+  @override
+  String get reqFailNotOpen => 'Cette demande n’est plus ouverte.';
+
+  @override
+  String get reqFailGeneric => 'Impossible d’envoyer la demande. Réessayez.';
+
+  @override
+  String get reqFailNotConfigured =>
+      'Le service n’est pas disponible pour le moment.';
+
+  @override
+  String get reqDetailTitle => 'Demande';
+
+  @override
+  String get reqNotFound => 'Demande introuvable.';
+
+  @override
+  String reqExpiresOn(String date) {
+    return 'Expire le $date';
+  }
+
+  @override
+  String reqNeededBy(String date) {
+    return 'Souhaité pour le $date';
+  }
+
+  @override
+  String reqBudget(String amount) {
+    return 'Budget indicatif : $amount';
+  }
+
+  @override
+  String get reqCancel => 'Annuler la demande';
+
+  @override
+  String get reqCancelTitle => 'Annuler cette demande ?';
+
+  @override
+  String get reqCancelBody =>
+      'Les offres reçues seront refusées. Cette action est définitive.';
+
+  @override
+  String get reqCancelKeep => 'Garder la demande';
+
+  @override
+  String get reqCancelled => 'Demande annulée.';
+
+  @override
+  String get reqOffersSoon => 'La comparaison des offres arrive bientôt.';
+
+  @override
+  String reqPhotoLabel(int index, int total) {
+    return 'Photo $index sur $total';
+  }
+
+  @override
+  String get reqPhotosFailed => 'Impossible de charger les photos.';
 }

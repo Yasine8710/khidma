@@ -958,4 +958,181 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get close => 'إغلاق';
+
+  @override
+  String get reqNew => 'طلب جديد';
+
+  @override
+  String get reqMineTitle => 'طلباتي';
+
+  @override
+  String get reqEmptyCta => 'اطلب عرض سعر';
+
+  @override
+  String get reqStatusOpen => 'مفتوح';
+
+  @override
+  String get reqStatusAwarded => 'تمّ إسناده';
+
+  @override
+  String get reqStatusCancelled => 'ملغى';
+
+  @override
+  String get reqStatusExpired => 'منتهي';
+
+  @override
+  String reqOffers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عرض',
+      many: '$count عرضًا',
+      few: '$count عروض',
+      two: 'عرضان',
+      one: 'عرض واحد',
+      zero: 'لا توجد عروض',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reqFormTitle => 'العنوان';
+
+  @override
+  String get reqFormTitleHint => 'مثال: تسرب تحت المغسلة';
+
+  @override
+  String get reqFormDescription => 'صف المشكلة';
+
+  @override
+  String get reqFormDescriptionHelper => '10 أحرف على الأقل.';
+
+  @override
+  String get reqFormCategory => 'نوع الخدمة';
+
+  @override
+  String get reqFormBudget => 'ميزانية تقريبية بالدينار (اختياري)';
+
+  @override
+  String get reqFormNeededBy => 'لأي موعد؟ (اختياري)';
+
+  @override
+  String get reqFormNeededByNone => 'بدون موعد';
+
+  @override
+  String get reqFormPickDate => 'اختر تاريخًا';
+
+  @override
+  String get reqFormPhotos => 'صور (اختياري)';
+
+  @override
+  String get reqFormAddPhoto => 'إضافة صورة';
+
+  @override
+  String reqFormPhotosCount(int count, int max) {
+    return '$count من $max صور';
+  }
+
+  @override
+  String reqFormRemovePhoto(int index) {
+    return 'إزالة الصورة $index';
+  }
+
+  @override
+  String get reqFormSubmit => 'إرسال الطلب';
+
+  @override
+  String get reqFormPrivacy =>
+      'سيرى الحرفيون طلبك وصورك، ولن يروا اسمك ولا رقمك أبدًا.';
+
+  @override
+  String get reqErrTitle => 'بين 3 و120 حرفًا.';
+
+  @override
+  String get reqErrDescription => 'بين 10 و2000 حرف.';
+
+  @override
+  String get reqErrCategory => 'اختر نوع الخدمة.';
+
+  @override
+  String get reqErrGovernorate => 'اختر ولاية.';
+
+  @override
+  String get reqErrBudget => 'مبلغ غير صالح (من 0 إلى 1,000,000).';
+
+  @override
+  String get reqSent => 'تم إرسال الطلب.';
+
+  @override
+  String get reqSentPhotosFailed =>
+      'تم إرسال الطلب، لكن تعذّر إضافة بعض الصور.';
+
+  @override
+  String get reqFailNetwork => 'لا يوجد اتصال. بياناتك محفوظة، أعد المحاولة.';
+
+  @override
+  String get reqFailRateLimited => 'طلبات كثيرة في وقت قصير. حاول بعد ساعة.';
+
+  @override
+  String get reqFailLimit =>
+      'لديك 10 طلبات مفتوحة بالفعل. ألغِ طلبًا قبل إنشاء آخر.';
+
+  @override
+  String get reqFailInvalid => 'تم رفض بعض البيانات. تحقق منها.';
+
+  @override
+  String get reqFailNotOpen => 'هذا الطلب لم يعد مفتوحًا.';
+
+  @override
+  String get reqFailGeneric => 'تعذّر إرسال الطلب. حاول مجددًا.';
+
+  @override
+  String get reqFailNotConfigured => 'الخدمة غير متاحة حاليًا.';
+
+  @override
+  String get reqDetailTitle => 'الطلب';
+
+  @override
+  String get reqNotFound => 'الطلب غير موجود.';
+
+  @override
+  String reqExpiresOn(String date) {
+    return 'ينتهي في $date';
+  }
+
+  @override
+  String reqNeededBy(String date) {
+    return 'مطلوب قبل $date';
+  }
+
+  @override
+  String reqBudget(String amount) {
+    return 'ميزانية تقريبية: $amount';
+  }
+
+  @override
+  String get reqCancel => 'إلغاء الطلب';
+
+  @override
+  String get reqCancelTitle => 'إلغاء هذا الطلب؟';
+
+  @override
+  String get reqCancelBody => 'سيتم رفض العروض المستلمة. لا يمكن التراجع.';
+
+  @override
+  String get reqCancelKeep => 'الإبقاء على الطلب';
+
+  @override
+  String get reqCancelled => 'تم إلغاء الطلب.';
+
+  @override
+  String get reqOffersSoon => 'مقارنة العروض قادمة قريبًا.';
+
+  @override
+  String reqPhotoLabel(int index, int total) {
+    return 'الصورة $index من $total';
+  }
+
+  @override
+  String get reqPhotosFailed => 'تعذّر تحميل الصور.';
 }

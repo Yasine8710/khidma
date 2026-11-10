@@ -110,6 +110,10 @@ Not yet verified against a real project: the end-to-end link flow on a device, t
 - `quote_requests.customer_id` is not selectable by any client: a professional who offered cannot learn who asked until a booking exists (bookings name both parties).
 - Deleting an account deletes its requests, offers and bookings (cascade), including those the other party was involved in; requests a leaving professional had won become `cancelled` rather than staying `awarded` without a booking.
 
+### Request photos (Phase 5.2)
+- The `request-photos` bucket is private (signed links, one hour). Readers: the owner; published professionals while the request is open; a professional while their own offer is pending or accepted. Photos of a closed request cannot be deleted. Account deletion removes the object rows.
+- Upload quotas (60 files per customer here, 16 per professional for the portfolio) are counted from a snapshot, so a burst of parallel uploads can overshoot slightly; the server-side sweep planned in #32 should also delete files no row points to.
+
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.
 - The Supabase SDK's own debug logger is disabled; the app prints only error types, and only in debug builds.

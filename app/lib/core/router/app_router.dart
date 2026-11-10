@@ -14,6 +14,8 @@ import '../../features/marketplace/presentation/professional_screen.dart';
 import '../../features/marketplace/presentation/search_screen.dart';
 import '../../features/messages/presentation/messages_screen.dart';
 import '../../features/portfolio/presentation/portfolio_screen.dart';
+import '../../features/requests/presentation/new_request_screen.dart';
+import '../../features/requests/presentation/request_detail_screen.dart';
 import '../../features/professional/presentation/dashboard_screen.dart';
 import '../../features/professional/presentation/registration_screen.dart';
 import '../../features/onboarding/application/onboarding_controller.dart';
@@ -86,6 +88,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.forgotPassword,
         builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.newRequest,
+        builder: (context, state) => NewRequestScreen(
+          categoryId: int.tryParse(state.uri.queryParameters['category'] ?? ''),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.request,
+        builder: (context, state) =>
+            RequestDetailScreen(id: state.pathParameters['id'] ?? ''),
       ),
       GoRoute(
         path: AppRoutes.proPortfolio,

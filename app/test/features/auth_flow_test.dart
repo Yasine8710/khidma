@@ -9,6 +9,10 @@ import 'package:khidma/features/auth/application/auth_providers.dart';
 import 'package:khidma/features/auth/domain/auth_domain.dart';
 
 import '../support/fake_auth_repository.dart';
+
+import 'package:khidma/features/requests/application/requests_providers.dart';
+
+import '../support/fake_requests.dart';
 import '../test_helpers.dart';
 
 const _ali = AuthUser(
@@ -76,7 +80,15 @@ void main() {
     testWidgets('a restored session shows signed-in content immediately', (
       tester,
     ) async {
-      await pumpApp(tester, auth: FakeAuthRepository(signedIn: _ali));
+      await pumpApp(
+        tester,
+        auth: FakeAuthRepository(signedIn: _ali),
+        overrides: [
+          requestsRepositoryProvider.overrideWithValue(
+            FakeRequestsRepository(),
+          ),
+        ],
+      );
       await tester.tap(find.text('Demandes'));
       await tester.pumpAndSettle();
       expect(find.text("Aucune demande pour l'instant"), findsOneWidget);

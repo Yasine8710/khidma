@@ -1803,6 +1803,306 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Fermer'**
   String get close;
+
+  /// No description provided for @reqNew.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle demande'**
+  String get reqNew;
+
+  /// No description provided for @reqMineTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes demandes'**
+  String get reqMineTitle;
+
+  /// No description provided for @reqEmptyCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demander un devis'**
+  String get reqEmptyCta;
+
+  /// No description provided for @reqStatusOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouverte'**
+  String get reqStatusOpen;
+
+  /// No description provided for @reqStatusAwarded.
+  ///
+  /// In fr, this message translates to:
+  /// **'Attribuée'**
+  String get reqStatusAwarded;
+
+  /// No description provided for @reqStatusCancelled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulée'**
+  String get reqStatusCancelled;
+
+  /// No description provided for @reqStatusExpired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expirée'**
+  String get reqStatusExpired;
+
+  /// No description provided for @reqOffers.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Aucune offre} =1{1 offre} other{{count} offres}}'**
+  String reqOffers(int count);
+
+  /// No description provided for @reqFormTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre'**
+  String get reqFormTitle;
+
+  /// No description provided for @reqFormTitleHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. Fuite sous l’évier'**
+  String get reqFormTitleHint;
+
+  /// No description provided for @reqFormDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Décrivez le problème'**
+  String get reqFormDescription;
+
+  /// No description provided for @reqFormDescriptionHelper.
+  ///
+  /// In fr, this message translates to:
+  /// **'Au moins 10 caractères.'**
+  String get reqFormDescriptionHelper;
+
+  /// No description provided for @reqFormCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de service'**
+  String get reqFormCategory;
+
+  /// No description provided for @reqFormBudget.
+  ///
+  /// In fr, this message translates to:
+  /// **'Budget indicatif en TND (facultatif)'**
+  String get reqFormBudget;
+
+  /// No description provided for @reqFormNeededBy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour quand ? (facultatif)'**
+  String get reqFormNeededBy;
+
+  /// No description provided for @reqFormNeededByNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas de date'**
+  String get reqFormNeededByNone;
+
+  /// No description provided for @reqFormPickDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une date'**
+  String get reqFormPickDate;
+
+  /// No description provided for @reqFormPhotos.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photos (facultatif)'**
+  String get reqFormPhotos;
+
+  /// No description provided for @reqFormAddPhoto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une photo'**
+  String get reqFormAddPhoto;
+
+  /// No description provided for @reqFormPhotosCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} sur {max} photos'**
+  String reqFormPhotosCount(int count, int max);
+
+  /// No description provided for @reqFormRemovePhoto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer la photo {index}'**
+  String reqFormRemovePhoto(int index);
+
+  /// No description provided for @reqFormSubmit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer la demande'**
+  String get reqFormSubmit;
+
+  /// No description provided for @reqFormPrivacy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les professionnels verront votre demande et vos photos, jamais votre nom ni votre numéro.'**
+  String get reqFormPrivacy;
+
+  /// No description provided for @reqErrTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entre 3 et 120 caractères.'**
+  String get reqErrTitle;
+
+  /// No description provided for @reqErrDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entre 10 et 2000 caractères.'**
+  String get reqErrDescription;
+
+  /// No description provided for @reqErrCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez un type de service.'**
+  String get reqErrCategory;
+
+  /// No description provided for @reqErrGovernorate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez un gouvernorat.'**
+  String get reqErrGovernorate;
+
+  /// No description provided for @reqErrBudget.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant invalide (0 à 1 000 000).'**
+  String get reqErrBudget;
+
+  /// No description provided for @reqSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande envoyée.'**
+  String get reqSent;
+
+  /// No description provided for @reqSentPhotosFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande envoyée, mais certaines photos n’ont pas pu être ajoutées.'**
+  String get reqSentPhotosFailed;
+
+  /// No description provided for @reqFailNetwork.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion impossible. Votre saisie est conservée, réessayez.'**
+  String get reqFailNetwork;
+
+  /// No description provided for @reqFailRateLimited.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop de demandes en peu de temps. Réessayez dans une heure.'**
+  String get reqFailRateLimited;
+
+  /// No description provided for @reqFailLimit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez déjà 10 demandes ouvertes. Annulez-en une avant d’en créer une autre.'**
+  String get reqFailLimit;
+
+  /// No description provided for @reqFailInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Certaines informations sont refusées. Vérifiez-les.'**
+  String get reqFailInvalid;
+
+  /// No description provided for @reqFailNotOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette demande n’est plus ouverte.'**
+  String get reqFailNotOpen;
+
+  /// No description provided for @reqFailGeneric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d’envoyer la demande. Réessayez.'**
+  String get reqFailGeneric;
+
+  /// No description provided for @reqFailNotConfigured.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le service n’est pas disponible pour le moment.'**
+  String get reqFailNotConfigured;
+
+  /// No description provided for @reqDetailTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande'**
+  String get reqDetailTitle;
+
+  /// No description provided for @reqNotFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande introuvable.'**
+  String get reqNotFound;
+
+  /// No description provided for @reqExpiresOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expire le {date}'**
+  String reqExpiresOn(String date);
+
+  /// No description provided for @reqNeededBy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Souhaité pour le {date}'**
+  String reqNeededBy(String date);
+
+  /// No description provided for @reqBudget.
+  ///
+  /// In fr, this message translates to:
+  /// **'Budget indicatif : {amount}'**
+  String reqBudget(String amount);
+
+  /// No description provided for @reqCancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler la demande'**
+  String get reqCancel;
+
+  /// No description provided for @reqCancelTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler cette demande ?'**
+  String get reqCancelTitle;
+
+  /// No description provided for @reqCancelBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les offres reçues seront refusées. Cette action est définitive.'**
+  String get reqCancelBody;
+
+  /// No description provided for @reqCancelKeep.
+  ///
+  /// In fr, this message translates to:
+  /// **'Garder la demande'**
+  String get reqCancelKeep;
+
+  /// No description provided for @reqCancelled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande annulée.'**
+  String get reqCancelled;
+
+  /// No description provided for @reqOffersSoon.
+  ///
+  /// In fr, this message translates to:
+  /// **'La comparaison des offres arrive bientôt.'**
+  String get reqOffersSoon;
+
+  /// No description provided for @reqPhotoLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo {index} sur {total}'**
+  String reqPhotoLabel(int index, int total);
+
+  /// No description provided for @reqPhotosFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger les photos.'**
+  String get reqPhotosFailed;
 }
 
 class _AppLocalizationsDelegate

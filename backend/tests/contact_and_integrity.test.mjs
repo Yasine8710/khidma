@@ -223,11 +223,12 @@ describe('sequence and function exposure', () => {
     const authCan = r.rows.filter((x) => x.auth_x).map((x) => x.proname).sort();
     assert.deepEqual(anonCan, ['is_admin', 'search_normalize', 'search_professionals']);
     assert.deepEqual(authCan, [
-      'accept_offer', 'admin_set_verification', 'become_professional', 'cancel_booking',
+      'accept_offer', 'admin_set_verification', 'become_professional', 'can_view_request_photos', 'cancel_booking',
       'cancel_quote_request', 'confirm_booking_completed', 'create_quote_request', 'decline_offer',
-      'delete_my_account', 'get_my_activity', 'get_my_professional_contact', 'get_open_request',
+      'delete_my_account', 'get_my_activity', 'get_my_professional_contact', 'get_my_quote_request', 'get_open_request',
       'has_offered_on', 'is_admin', 'is_request_owner', 'list_open_requests', 'mark_booking_done',
-      'my_portfolio_file_count', 'reveal_professional_contact', 'search_normalize',
+      'my_portfolio_file_count', 'my_quote_requests', 'my_request_file_count', 'owns_open_request',
+      'request_photo_is_locked', 'reveal_professional_contact', 'search_normalize',
       'search_professionals', 'start_booking', 'submit_offer', 'withdraw_offer',
     ]);
   });
