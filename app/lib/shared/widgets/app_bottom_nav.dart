@@ -28,27 +28,35 @@ class AppBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    // The border sits outside the Material so ink, hover and focus effects
+    // of the buttons stay visible on top of the surface.
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: scheme.surface,
         border: Border(top: BorderSide(color: scheme.outline)),
       ),
-      child: SafeArea(
-        top: false,
-        child: Row(
-          children: [
-            for (var i = 0; i < items.length; i++)
-              Expanded(
-                child: _NavButton(
-                  item: items[i],
-                  selected: i == currentIndex,
-                  onTap: () {
-                    HapticFeedback.selectionClick();
-                    onSelected(i);
-                  },
-                ),
-              ),
-          ],
+      child: Material(
+        color: scheme.surface,
+        child: SafeArea(
+          top: false,
+          // Labels stay readable but do not grow with huge accessibility sizes.
+          child: MediaQuery.withClampedTextScaling(
+            maxScaleFactor: 1.3,
+            child: Row(
+              children: [
+                for (var i = 0; i < items.length; i++)
+                  Expanded(
+                    child: _NavButton(
+                      item: items[i],
+                      selected: i == currentIndex,
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        onSelected(i);
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -70,14 +78,13 @@ class _NavButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final color = selected ? scheme.primary : scheme.onSurfaceVariant;
-    return Semantics(
-      button: true,
-      selected: selected,
-      label: item.label,
-      excludeSemantics: true,
+    return InkWell(
       onTap: onTap,
-      child: InkWell(
-        onTap: onTap,
+      child: Semantics(
+        button: true,
+        selected: selected,
+        label: item.label,
+        excludeSemantics: true,
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 56),
           child: Padding(

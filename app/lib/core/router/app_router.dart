@@ -15,7 +15,18 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: AppRoutes.home,
     // Phase 2 hooks auth/role redirects here. Redirects are UX only; real
     // access control is enforced by Supabase RLS, never by the router.
-    redirect: (context, state) => null,
+    redirect: (context, state) {
+      // Bare root (also with ?utm_source=... on web) lands on Home.
+      if (state.uri.path == '/') {
+        return Uri(
+          path: AppRoutes.home,
+          queryParameters: state.uri.queryParameters.isEmpty
+              ? null
+              : state.uri.queryParameters,
+        ).toString();
+      }
+      return null;
+    },
     errorBuilder: (context, state) => const NotFoundScreen(),
     routes: [
       StatefulShellRoute.indexedStack(

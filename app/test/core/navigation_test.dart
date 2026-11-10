@@ -95,6 +95,91 @@ void main() {
     expect(brightness, Brightness.dark);
   });
 
+  testWidgets('root path redirects to Home, keeping the query', (tester) async {
+    final c = await pumpApp(tester);
+    _router(c).go('/?utm_source=ad');
+    await tester.pumpAndSettle();
+    final uri = _router(c).routerDelegate.currentConfiguration.uri;
+    expect(uri.path, AppRoutes.home);
+    expect(uri.queryParameters, {'utm_source': 'ad'});
+    expect(find.text('Page introuvable'), findsNothing);
+  });
+
+  for (final path in [
+    AppRoutes.home,
+    AppRoutes.requests,
+    AppRoutes.messages,
+    AppRoutes.profile,
+  ]) {
+    testWidgets('cold start deep link opens $path', (tester) async {
+      tester.platformDispatcher.defaultRouteNameTestValue = path;
+      addTearDown(tester.platformDispatcher.clearDefaultRouteNameTestValue);
+      final c = await pumpApp(tester);
+      expect(_location(_router(c)), path);
+      expect(find.text('Page introuvable'), findsNothing);
+    });
+  }
+
+  testWidgets('router instance is stable across locale and theme changes', (
+    tester,
+  ) async {
+    final c = await pumpApp(tester);
+    final before = _router(c);
+    await c.read(localeProvider.notifier).setLocale(const Locale('en'));
+    await c.read(themeModeProvider.notifier).setMode(ThemeMode.dark);
+    await tester.pumpAndSettle();
+    expect(identical(_router(c), before), isTrue);
+    expect(_location(_router(c)), AppRoutes.home);
+  });
+
+  testWidgets('theme mode survives an app restart', (tester) async {
+    for (final mode in ThemeMode.values) {
+      final first = await pumpApp(tester);
+      await first.read(themeModeProvider.notifier).setMode(mode);
+      final saved = first
+          .read(sharedPreferencesProvider)
+          .getString('themeMode');
+      await tester.pumpWidget(const SizedBox());
+      final second = await pumpApp(tester, prefs: {'themeMode': saved!});
+      expect(second.read(themeModeProvider), mode);
+    }
+  });
+
+  testWidgets('invalid saved theme mode falls back to system', (tester) async {
+    final c = await pumpApp(tester, prefs: {'themeMode': 'neon'});
+    expect(c.read(themeModeProvider), ThemeMode.system);
+  });
+
+  testWidgets('nav labels never scale past 1.3x, page text still does', (
+    tester,
+  ) async {
+    tester.platformDispatcher.textScaleFactorTestValue = 2.0;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await pumpApp(tester);
+    double scaled(Finder f) =>
+        MediaQuery.of(tester.element(f)).textScaler.scale(10);
+    expect(scaled(find.text('Accueil')), lessThanOrEqualTo(13.0001));
+    expect(scaled(find.text('Les professionnels arrivent bientôt')), 20);
+  });
+
+  testWidgets('tabs are focusable for keyboard and screen readers', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    await pumpApp(tester);
+    final node = tester.getSemantics(find.bySemanticsLabel('Demandes'));
+    expect(
+      node,
+      isSemantics(
+        label: 'Demandes',
+        isButton: true,
+        hasTapAction: true,
+        hasFocusAction: true,
+      ),
+    );
+    handle.dispose();
+  });
+
   testWidgets('tabs keep their state while hidden', (tester) async {
     var builds = 0;
     final router = GoRouter(
