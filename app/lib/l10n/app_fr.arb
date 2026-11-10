@@ -72,5 +72,6 @@
         "type": "int"
       }
     }
-  }
+  },
+  "back": "Précédent"
 }

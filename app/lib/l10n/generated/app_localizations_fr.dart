@@ -172,4 +172,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String pageOf(int current, int total) {
     return 'Page $current sur $total';
   }
+
+  @override
+  String get back => 'Précédent';
 }

@@ -174,4 +174,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String pageOf(int current, int total) {
     return 'الصفحة $current من $total';
   }
+
+  @override
+  String get back => 'السابق';
 }

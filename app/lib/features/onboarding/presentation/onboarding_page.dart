@@ -11,6 +11,7 @@ class OnboardingPage extends StatelessWidget {
     required this.title,
     required this.body,
     this.extra,
+    this.hideIconWhenCompact = false,
   });
 
   final IconData icon;
@@ -18,10 +19,17 @@ class OnboardingPage extends StatelessWidget {
   final String body;
   final Widget? extra;
 
+  /// On short screens or large text, drop the decoration so the content
+  /// (e.g. the language list) is reachable without scrolling.
+  final bool hideIconWhenCompact;
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
+    final media = MediaQuery.of(context);
+    final compact = media.size.height < 700 || media.textScaler.scale(10) > 13;
+    final iconBox = compact ? 64.0 : 96.0;
     return SingleChildScrollView(
       padding: const EdgeInsetsDirectional.symmetric(
         horizontal: AppSpacing.gutter,
@@ -29,22 +37,24 @@ class OnboardingPage extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Container(
-            width: 96,
-            height: 96,
-            decoration: BoxDecoration(
-              color: scheme.primaryContainer,
-              shape: BoxShape.circle,
+          if (!(compact && hideIconWhenCompact)) ...[
+            Container(
+              width: iconBox,
+              height: iconBox,
+              decoration: BoxDecoration(
+                color: scheme.primaryContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                size: iconBox * 0.46,
+                color: scheme.brightness == Brightness.light
+                    ? scheme.primary
+                    : scheme.onPrimaryContainer,
+              ),
             ),
-            child: Icon(
-              icon,
-              size: 44,
-              color: scheme.brightness == Brightness.light
-                  ? scheme.primary
-                  : scheme.onPrimaryContainer,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xl),
+            SizedBox(height: compact ? AppSpacing.lg : AppSpacing.xl),
+          ],
           Semantics(
             header: true,
             child: Text(

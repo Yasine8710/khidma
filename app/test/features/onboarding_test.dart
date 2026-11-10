@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:khidma/core/l10n/locale_controller.dart';
 import 'package:khidma/core/router/app_router.dart';
 import 'package:khidma/core/router/app_routes.dart';
@@ -9,6 +10,19 @@ import 'package:khidma/features/onboarding/application/onboarding_controller.dar
 import '../test_helpers.dart';
 
 const _fresh = {'onboardingSeen': false};
+
+class _FailingPrefs implements SharedPreferences {
+  _FailingPrefs(this._inner);
+  final SharedPreferences _inner;
+
+  @override
+  Future<bool> setBool(String key, bool value) async =>
+      throw Exception('disk full');
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) =>
+      Function.apply((_inner as dynamic).noSuchMethod, [invocation]);
+}
 
 String _path(ProviderContainer c) =>
     c.read(routerProvider).routerDelegate.currentConfiguration.uri.path;
@@ -111,10 +125,13 @@ void main() {
   testWidgets('screen readers get "page x of y"', (tester) async {
     final handle = tester.ensureSemantics();
     await pumpApp(tester, prefs: _fresh);
-    expect(find.bySemanticsLabel('Page 1 sur 4'), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp('Page 1 sur 4')), findsOneWidget);
     await tester.tap(find.text('Suivant'));
     await tester.pumpAndSettle();
-    expect(find.bySemanticsLabel('Page 2 sur 4'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel(RegExp('Page 2 sur 4, Trouvez')),
+      findsOneWidget,
+    );
     handle.dispose();
   });
 
@@ -124,6 +141,157 @@ void main() {
     expect(find.textContaining('localisation'), findsNothing);
     expect(find.textContaining('location'), findsNothing);
   });
+
+  testWidgets('keeps the deep link through onboarding and restores it', (
+    tester,
+  ) async {
+    final c = await pumpApp(tester, prefs: _fresh);
+    c.read(routerProvider).go('${AppRoutes.messages}?ref=push');
+    await tester.pumpAndSettle();
+    final uri = c.read(routerProvider).routerDelegate.currentConfiguration.uri;
+    expect(uri.path, AppRoutes.onboarding);
+    expect(uri.queryParameters['from'], '${AppRoutes.messages}?ref=push');
+
+    await c.read(onboardingSeenProvider.notifier).complete();
+    await tester.pumpAndSettle();
+    final after = c
+        .read(routerProvider)
+        .routerDelegate
+        .currentConfiguration
+        .uri;
+    expect(after.path, AppRoutes.messages);
+    expect(after.queryParameters, {'ref': 'push'});
+  });
+
+  testWidgets('crafted ?from= values cannot redirect off-app', (tester) async {
+    for (final evil in ['//evil.com', 'https://evil.com', '/onboarding?x=1']) {
+      final c = await pumpApp(tester, prefs: _fresh);
+      c
+          .read(routerProvider)
+          .go(
+            Uri(
+              path: AppRoutes.onboarding,
+              queryParameters: {'from': evil},
+            ).toString(),
+          );
+      await tester.pumpAndSettle();
+      await c.read(onboardingSeenProvider.notifier).complete();
+      await tester.pumpAndSettle();
+      expect(_path(c), AppRoutes.home, reason: evil);
+      await tester.pumpWidget(const SizedBox());
+    }
+  });
+
+  testWidgets('cold start at a deep link before onboarding goes through it', (
+    tester,
+  ) async {
+    tester.platformDispatcher.defaultRouteNameTestValue = '/profile';
+    addTearDown(tester.platformDispatcher.clearDefaultRouteNameTestValue);
+    final c = await pumpApp(tester, prefs: _fresh);
+    expect(_path(c), AppRoutes.onboarding);
+    await c.read(onboardingSeenProvider.notifier).complete();
+    await tester.pumpAndSettle();
+    expect(_path(c), AppRoutes.profile);
+  });
+
+  testWidgets('Back button returns to the previous page', (tester) async {
+    await pumpApp(tester, prefs: _fresh);
+    expect(find.byTooltip('Précédent'), findsNothing);
+    await tester.tap(find.text('Suivant'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Précédent'));
+    await tester.pumpAndSettle();
+    expect(find.text('Choisir la langue'), findsOneWidget);
+    expect(find.byTooltip('Précédent'), findsNothing);
+  });
+
+  testWidgets('Arabic: Next goes forward, Back returns, all pages reachable', (
+    tester,
+  ) async {
+    await pumpApp(tester, prefs: {..._fresh, 'locale': 'ar'});
+    for (final title in [
+      'اعثر على حرفيين موثوقين',
+      'قارن واطلب عرض سعر',
+      'تواصل معهم مباشرة',
+    ]) {
+      await tester.tap(find.byType(FilledButton));
+      await tester.pumpAndSettle();
+      expect(find.text(title), findsOneWidget);
+    }
+    expect(find.text('ابدأ'), findsOneWidget);
+    await tester.tap(find.byTooltip('السابق'));
+    await tester.pumpAndSettle();
+    expect(find.text('قارن واطلب عرض سعر'), findsOneWidget);
+    // Reverse swipe (left to right in RTL is forward; right to left is back).
+    await tester.fling(find.byType(PageView), const Offset(-400, 0), 1000);
+    await tester.pumpAndSettle();
+    expect(find.text('اعثر على حرفيين موثوقين'), findsOneWidget);
+  });
+
+  testWidgets('reduced motion: page changes apply without animation', (
+    tester,
+  ) async {
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    await pumpApp(tester, prefs: _fresh);
+    await tester.tap(find.text('Suivant'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Trouvez des professionnels de confiance'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('every language is reachable on a small phone at 2x text', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320 * 3, 568 * 3);
+    tester.view.devicePixelRatio = 3;
+    tester.platformDispatcher.textScaleFactorTestValue = 2.0;
+    addTearDown(() {
+      tester.view.reset();
+      tester.platformDispatcher.clearTextScaleFactorTestValue();
+    });
+    final c = await pumpApp(tester, prefs: _fresh);
+    for (final entry in {
+      'العربية': const Locale('ar'),
+      'English': const Locale('en'),
+      'Français': const Locale('fr'),
+    }.entries) {
+      await tester.ensureVisible(find.text(entry.key));
+      await tester.tap(find.text(entry.key));
+      await tester.pumpAndSettle();
+      expect(c.read(localeProvider), entry.value, reason: entry.key);
+    }
+    // Decoration is dropped on compact screens to leave room for the list.
+    expect(find.byIcon(Icons.translate_rounded), findsNothing);
+  });
+
+  testWidgets(
+    'storage failure: user still proceeds, onboarding returns later',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({'onboardingSeen': false});
+      final failing = _FailingPrefs(await SharedPreferences.getInstance());
+      final c = ProviderContainer(
+        overrides: [sharedPreferencesProvider.overrideWithValue(failing)],
+      );
+      addTearDown(c.dispose);
+      final saved = await c.read(onboardingSeenProvider.notifier).complete();
+      expect(saved, isFalse);
+      expect(c.read(onboardingSeenProvider), isTrue, reason: 'proceeds now');
+      // A new session reads the (unchanged) store: onboarding shows again.
+      final fresh = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(
+            await SharedPreferences.getInstance(),
+          ),
+        ],
+      );
+      addTearDown(fresh.dispose);
+      expect(fresh.read(onboardingSeenProvider), isFalse);
+    },
+  );
 
   for (final lang in ['fr', 'ar', 'en']) {
     testWidgets('no overflow on a 320x568 phone at 1.5x text ($lang)', (

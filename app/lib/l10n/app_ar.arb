@@ -45,5 +45,6 @@
   "next": "التالي",
   "start": "ابدأ",
   "skip": "تخطَّ",
-  "pageOf": "الصفحة {current} من {total}"
+  "pageOf": "الصفحة {current} من {total}",
+  "back": "السابق"
 }

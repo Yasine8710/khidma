@@ -31,16 +31,26 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   bool get _isLast => _index == _pageCount - 1;
 
+  /// Moves to [page]; jumps instead of animating when the system asks to
+  /// reduce motion (animateToPage rejects a zero duration).
+  void _goTo(int page) {
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _controller.jumpToPage(page);
+    } else {
+      _controller.animateToPage(
+        page,
+        duration: const Duration(milliseconds: 280),
+        curve: Curves.easeOutCubic,
+      );
+    }
+  }
+
   void _next() {
     if (_isLast) {
       ref.read(onboardingSeenProvider.notifier).complete();
       return;
     }
-    final reduce = MediaQuery.disableAnimationsOf(context);
-    _controller.nextPage(
-      duration: reduce ? Duration.zero : const Duration(milliseconds: 280),
-      curve: Curves.easeOutCubic,
-    );
+    _goTo(_index + 1);
   }
 
   @override
@@ -49,12 +59,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final text = Theme.of(context).textTheme;
     final muted = Theme.of(context).colorScheme.onSurfaceVariant;
 
+    final titles = [
+      l10n.chooseLanguage,
+      l10n.onbTitle1,
+      l10n.onbTitle2,
+      l10n.onbTitle3,
+    ];
+    final reduce = MediaQuery.disableAnimationsOf(context);
     final pages = <Widget>[
       OnboardingPage(
         icon: Icons.translate_rounded,
         title: l10n.chooseLanguage,
         body: l10n.languageStepBody,
         extra: const LanguageSelector(),
+        hideIconWhenCompact: true,
       ),
       OnboardingPage(
         icon: Icons.verified_user_outlined,
@@ -80,36 +98,48 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             // Reserved height keeps the layout still when Skip disappears.
             SizedBox(
               height: 56,
-              child: Align(
-                alignment: AlignmentDirectional.centerEnd,
-                child: _index > 0 && !_isLast
-                    ? AppButton(
-                        label: l10n.skip,
-                        variant: AppButtonVariant.text,
-                        expand: false,
-                        onPressed: () => ref
-                            .read(onboardingSeenProvider.notifier)
-                            .complete(),
-                      )
-                    : null,
+              child: Row(
+                children: [
+                  if (_index > 0)
+                    IconButton(
+                      tooltip: l10n.back,
+                      icon: const Icon(Icons.arrow_back_rounded),
+                      onPressed: () => _goTo(_index - 1),
+                    ),
+                  const Spacer(),
+                  if (_index > 0 && !_isLast)
+                    AppButton(
+                      label: l10n.skip,
+                      variant: AppButtonVariant.text,
+                      expand: false,
+                      onPressed: () =>
+                          ref.read(onboardingSeenProvider.notifier).complete(),
+                    ),
+                ],
               ),
             ),
             Expanded(
               child: PageView(
                 controller: _controller,
+                allowImplicitScrolling: true,
                 onPageChanged: (i) => setState(() => _index = i),
                 children: pages,
               ),
             ),
             Semantics(
-              label: l10n.pageOf(_index + 1, _pageCount),
+              // Live region: screen readers announce the new page and title.
+              label:
+                  '${l10n.pageOf(_index + 1, _pageCount)}, ${titles[_index]}',
+              liveRegion: true,
               excludeSemantics: true,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   for (var i = 0; i < _pageCount; i++)
                     AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
+                      duration: reduce
+                          ? Duration.zero
+                          : const Duration(milliseconds: 200),
                       margin: const EdgeInsetsDirectional.symmetric(
                         horizontal: AppSpacing.xs,
                       ),

@@ -45,5 +45,6 @@
   "next": "Next",
   "start": "Get started",
   "skip": "Skip",
-  "pageOf": "Page {current} of {total}"
+  "pageOf": "Page {current} of {total}",
+  "back": "Previous"
 }

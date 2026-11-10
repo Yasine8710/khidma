@@ -375,6 +375,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Page {current} sur {total}'**
   String pageOf(int current, int total);
+
+  /// No description provided for @back.
+  ///
+  /// In fr, this message translates to:
+  /// **'Précédent'**
+  String get back;
 }
 
 class _AppLocalizationsDelegate

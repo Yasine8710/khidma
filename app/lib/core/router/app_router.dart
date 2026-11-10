@@ -31,10 +31,19 @@ final routerProvider = Provider<GoRouter>((ref) {
           : state.uri.queryParameters;
 
       if (!seen) {
-        return path == AppRoutes.onboarding ? null : AppRoutes.onboarding;
+        if (path == AppRoutes.onboarding) return null;
+        // Remember where the user was going; restored after onboarding.
+        final from = path == '/' ? null : state.uri.toString();
+        return Uri(
+          path: AppRoutes.onboarding,
+          queryParameters: from == null ? null : {'from': from},
+        ).toString();
+      }
+      if (path == AppRoutes.onboarding) {
+        return _safeDestination(state.uri.queryParameters['from']);
       }
       // Bare root (also with ?utm_source=... on web) lands on Home.
-      if (path == '/' || path == AppRoutes.onboarding) {
+      if (path == '/') {
         return Uri(path: AppRoutes.home, queryParameters: query).toString();
       }
       return null;
@@ -69,3 +78,15 @@ StatefulShellBranch _branch(String path, WidgetBuilder builder) =>
         GoRoute(path: path, builder: (context, state) => builder(context)),
       ],
     );
+
+/// Only internal, non-onboarding paths are accepted from `?from=`, so a
+/// crafted link cannot redirect elsewhere.
+String _safeDestination(String? from) {
+  if (from == null ||
+      !from.startsWith('/') ||
+      from.startsWith('//') ||
+      from.startsWith(AppRoutes.onboarding)) {
+    return AppRoutes.home;
+  }
+  return from;
+}

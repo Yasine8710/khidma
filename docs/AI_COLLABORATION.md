@@ -5,7 +5,7 @@
 Claude plans → delegates to Codex (review or isolated-branch implementation) → Claude reviews/integrates → tests → docs. No two agents edit the same files; use branches/worktrees.
 
 ## Status
-- Phase: 1 (design system). Slices 1.0 tokens, 1.1 l10n, 1.2 navigation, 1.3 components merged to develop; next 1.4 onboarding.
+- Phase: 1 (design system). Slices 1.0-1.4 merged to develop; next 1.5 brand assets (#2), 1.6 gallery (#3), 1.7 gate (#4).
 - Claude: repo, license, docs, Flutter bootstrap
 - Codex: architecture review DONE (raw output: docs/reviews-codex-phase0.md)
 - Accepted from Codex: manual Riverpod, lifecycle state machine, atomic accept, permission matrix, multi-role flags, outbox notifications, privacy split, early signed-iOS proof, Google Maps pending benchmark.
@@ -52,3 +52,9 @@ Codex (read-only, static) raised 7 P1, 17 P2. Fixed:
 Deferred (stated): count text on primary-container backgrounds is 4.12:1 dark (no such use yet; fix when a card uses it); keyboard-focus ring and shimmer-unmount tests; controlled image-stream avatar tests; 2x text scale with real fonts (test env uses substitute font widths).
 Visual review of all components is part of slice 1.6 (gallery); they have not been seen on screen yet.
 Tests: 83 pass, analyze clean.
+
+## Phase 1, slice 1.4 (onboarding): Codex review, 2026-11-10
+No redirect loops or disposal problems found. Fixed: first-run redirect now keeps the original destination (`?from=`, validated to internal paths only) and restores it after onboarding; keyboard/screen-reader Back button; page indicator is a live region naming the page; implicit scrolling on; reduced motion honored; decoration dropped on short screens or large text so the language list stays reachable.
+Bug found by our own new test (not by Codex): `animateToPage` asserts on `Duration.zero`, so Next/Back would have thrown with reduce-motion on; now uses `jumpToPage` in that case.
+Deferred: direction-aware arrow-key shortcuts (Back button covers keyboard use).
+Tests: 103 pass, analyze clean.
