@@ -50,7 +50,7 @@ Functions (all `SECURITY DEFINER` ones pin `search_path = ''`; no function is ca
 
 ## Authentication (app side, Phase 2.3)
 - **Tokens live in secure storage.** The Supabase session and the PKCE code verifier are kept in Keychain / encrypted storage (`flutter_secure_storage`), not in `shared_preferences` (the SDK default, plain text in the app sandbox). Tests prove nothing reaches preferences.
-- **Password reset is completable in the app.** The email link opens the app through the `tn.khidma.app://auth-callback` scheme (registered on Android and iOS; Flutter's own deep-link handling is switched off so the link is not also pushed into the router), the SDK creates a recovery session (PKCE), and the new-password screen calls `updateUser`. Without a recovery session the screen says the link expired.
+- **Password reset is completable in the app.** The email link opens the app through the `tn.khidma.app://auth-callback` scheme (registered on Android and iOS; Flutter's own deep-link handling is switched off so the link is not also pushed into the router), the SDK creates a recovery session (PKCE), and the new-password screen calls `updateUser`. Without any session the screen says the link expired. (With a session of any kind the form works as an ordinary "change password" screen; the server's own rules, e.g. requiring a recent login for password changes, apply.)
 - **No account enumeration from the UI.** Reset shows the same message whether or not the address exists; invalid credentials never say which part was wrong; sign-up copy does not reveal existing addresses.
 - **Password rules match the server:** at least 8 Unicode characters, at most 72 UTF-8 bytes (Arabic letters count 2 bytes).
 - **Errors and logs:** error messages from the server are never shown or forwarded (mapped to localized categories); release builds log nothing, debug builds log only the error type.
@@ -88,6 +88,11 @@ Functions (all `SECURITY DEFINER` ones pin `search_path = ''`; no function is ca
 5. Provide the project URL and publishable key in `app/config/dev.json` (issue #6). Never the secret / service-role key.
 
 Not yet verified against a real project: the end-to-end link flow on a device, token refresh failure behavior, and exactly which duplicate-signup responses the deployed settings produce.
+
+### Operational notes
+- The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.
+- The Supabase SDK's own debug logger is disabled; the app prints only error types, and only in debug builds.
+- CI compiles the web, Android (debug) and, allowed to fail until seen green, iOS builds, and runs backend tests; it cannot validate deployed Supabase behavior (function ownership, Auth callbacks, PostgREST). A real-project integration gate is a follow-up once issue #6 is done.
 
 ## How it is tested
 `backend/tests` runs the real migrations on PGlite (Postgres compiled to WebAssembly) with a Supabase stub (roles, `auth.uid()`, the permissive default grants). Tests act as `anon` and as `authenticated` users with different JWT subjects. Structural guards fail the build if a new table lacks RLS, if the table or column privilege matrix drifts, if a definer function lacks a pinned `search_path`, or if function EXECUTE rights change. The suite was mutation-tested: removing a revoke, disabling RLS, widening a column grant, trusting metadata roles, un-pinning a search_path, exposing `contact_phone` and relaxing the publish check were each caught.

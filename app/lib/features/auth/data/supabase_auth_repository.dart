@@ -96,6 +96,8 @@ class SupabaseAuthRepository implements AuthRepository {
     final r = await _auth.signUp(
       email: email.trim(),
       password: password,
+      // The confirmation link must come back to the app, like the reset link.
+      emailRedirectTo: kIsWeb ? null : authRedirectUrl,
       // Display name and UI language only; roles are never sent (the database
       // ignores sign-up metadata for anything that matters).
       data: {'full_name': fullName.trim(), 'preferred_language': language},

@@ -68,6 +68,14 @@ describe('contact phone reveal (anti-scraping)', () => {
     assert.equal(after, before);
   });
 
+  test('the rate limit serializes per caller (advisory lock before counting)', async () => {
+    // PGlite is single-connection, so true concurrency cannot be exercised here;
+    // this guards that the lock stays in the function and sits before the count.
+    const src = (await db.query(`select pg_get_functiondef(p.oid) as d from pg_proc p where p.proname = 'reveal_professional_contact'`)).rows[0].d;
+    assert.match(src, /pg_advisory_xact_lock/);
+    assert.ok(src.indexOf('pg_advisory_xact_lock') < src.indexOf('count(*)'), 'lock first, then count');
+  });
+
   test('the owner reads their own phone; others get nothing for it', async () => {
     const mine = await user(db, pro).query('select public.get_my_professional_contact() as p');
     assert.equal(mine.rows[0].p, phone);

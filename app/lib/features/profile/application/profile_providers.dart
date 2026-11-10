@@ -100,10 +100,16 @@ class ProfileActions extends Notifier<bool> {
   Future<void> adoptSharedName(String name) async {
     final clean = name.trim();
     if (clean.isEmpty || clean.length > 120 || state) return;
+    // Bind the whole operation to the account that signed in: if the account
+    // changes while we work, nothing is written.
+    final uid = ref.read(authRepositoryProvider).currentUser?.id;
+    if (uid == null) return;
+    String? current() => ref.read(authRepositoryProvider).currentUser?.id;
     state = true;
     try {
       final repo = ref.read(profileRepositoryProvider);
       final mine = await repo.fetchMine();
+      if (mine.id != uid || current() != uid) return;
       if ((mine.fullName ?? '').trim().isEmpty) {
         await repo.updateMine(
           fullName: clean,
