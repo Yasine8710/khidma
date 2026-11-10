@@ -29,6 +29,7 @@ Reporting vulnerabilities: see the root [SECURITY.md](../SECURITY.md).
 | professional_profiles | R published, **never** `contact_phone` / `verified_at` | same as anon | R own (draft too); U profile fields, `is_published`; own phone via `get_my_professional_contact()` | R all rows; verification via RPC |
 | professional_services, service_areas | R when profile published | R when profile published | R, C, D own | R as above |
 | contact_reveals (rate-limit log) | - | - | - | - |
+| favorites | - | - | R, C, D own only (registered accounts, published professionals, max 200, one insert at a time per user) | no access |
 
 Functions (all `SECURITY DEFINER` ones pin `search_path = ''`; no function is callable by PUBLIC; a test enumerates exactly who can execute what):
 - `become_professional()`, `get_my_professional_contact()`, `reveal_professional_contact(uuid)`: `authenticated` only, and they refuse Supabase anonymous-auth users (JWT `is_anonymous`).
@@ -88,6 +89,15 @@ Functions (all `SECURITY DEFINER` ones pin `search_path = ''`; no function is ca
 5. Provide the project URL and publishable key in `app/config/dev.json` (issue #6). Never the secret / service-role key.
 
 Not yet verified against a real project: the end-to-end link flow on a device, token refresh failure behavior, and exactly which duplicate-signup responses the deployed settings produce.
+
+### Marketplace data (Phase 3.1)
+- Search and reference-data reads work for anonymous visitors and are protected by RLS and column grants, not by the app. A published profile needs a public name (profiles are private, so `business_name` is the only name shown).
+- **Demo data** (made-up businesses, ratings and verification badges) exists only in debug builds or with `--dart-define=DEMO_DATA=true`, never in a normal release, and the UI must show a visible "demo" notice whenever it is on (enforced in the Home slice, issue #13, with a test). `DEMO_DATA=true` in a release is for screenshots only and must not be distributed.
+- Permission failures from the database (`42501`) surface as "forbidden", not as "signed out", so broken grants are not mistaken for an expired session.
+
+### Location (Phase 3.6)
+- Only an approximate position (rounded to ~1 km) is used, in memory only, for 10 minutes; it is sent only as search parameters. Android requests coarse location only; iOS asks when-in-use with reduced accuracy by default.
+- **Before an App Store upload (needs a Mac):** confirm the release binary does not reference `requestAlwaysAuthorization` (geolocator's `BYPASS_PERMISSION_LOCATION_ALWAYS=1`, set in CI, may not be honoured under Swift Package Manager; known upstream issue). If Apple reports ITMS-90683, add an honest `NSLocationAlwaysAndWhenInUseUsageDescription` ("not used") as the fallback.
 
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.

@@ -61,12 +61,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navProfile => 'حسابي';
 
   @override
-  String get homeEmptyTitle => 'الحرفيون قادمون قريبًا';
-
-  @override
-  String get homeEmptyBody => 'سيتوفر البحث وفئات الخدمات هنا.';
-
-  @override
   String get requestsEmptyTitle => 'لا توجد طلبات حتى الآن';
 
   @override
@@ -414,4 +408,305 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accountDeleted => 'تم حذف حسابك.';
+
+  @override
+  String get homeGreeting => 'مرحبًا';
+
+  @override
+  String homeGreetingNamed(String name) {
+    return 'مرحبًا، $name';
+  }
+
+  @override
+  String get homeSubtitle => 'ما الخدمة التي تحتاجها؟';
+
+  @override
+  String get searchHint => 'ابحث عن مهنة أو اسم أو مدينة…';
+
+  @override
+  String get placeAll => 'كل تونس';
+
+  @override
+  String get placeChoose => 'اختر منطقة';
+
+  @override
+  String get placeGovernorate => 'الولاية';
+
+  @override
+  String get placeWholeGovernorate => 'كل الولاية';
+
+  @override
+  String get sectionCategories => 'الفئات';
+
+  @override
+  String get sectionTopRated => 'الأعلى تقييمًا';
+
+  @override
+  String get sectionInYourArea => 'في منطقتك';
+
+  @override
+  String get sectionInYourAreaPrompt => 'اختر منطقة لرؤية الحرفيين من حولك.';
+
+  @override
+  String get sectionRecent => 'شوهدت مؤخرًا';
+
+  @override
+  String get seeAll => 'عرض الكل';
+
+  @override
+  String get noProfessionalsTitle => 'لا يوجد حرفيون حتى الآن';
+
+  @override
+  String get noProfessionalsBody => 'سيظهرون هنا بمجرد انضمامهم إلى خدمة.';
+
+  @override
+  String get noProfessionalsInArea => 'لا يوجد حرفيون في هذه المنطقة حتى الآن.';
+
+  @override
+  String get demoBannerTitle => 'بيانات تجريبية';
+
+  @override
+  String get demoBannerBody => 'الحرفيون والتقييمات والشارات المعروضة وهمية.';
+
+  @override
+  String get availabilityAvailable => 'متاح';
+
+  @override
+  String get availabilityBusy => 'مشغول';
+
+  @override
+  String get availabilityOffline => 'غير متصل';
+
+  @override
+  String yearsExperience(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'خبرة $count سنة',
+      many: 'خبرة $count سنة',
+      few: 'خبرة $count سنوات',
+      two: 'خبرة سنتين',
+      one: 'خبرة سنة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String distanceKm(String km) {
+    return '$km كم';
+  }
+
+  @override
+  String get failLoadProfessionals => 'تعذّر تحميل الحرفيين.';
+
+  @override
+  String get failForbidden => 'تم رفض الوصول إلى البيانات. حاول لاحقًا.';
+
+  @override
+  String get professionalNotFoundTitle => 'الملف غير موجود';
+
+  @override
+  String get professionalNotFoundBody => 'هذا الحرفي لم يعد متاحًا.';
+
+  @override
+  String get searchTitle => 'بحث';
+
+  @override
+  String get searchNoResultsTitle => 'لا توجد نتائج';
+
+  @override
+  String get searchNoResultsBody => 'جرّب كلمة أو منطقة أخرى.';
+
+  @override
+  String get searchStartTitle => 'عمّ تبحث؟';
+
+  @override
+  String get searchStartBody => 'اكتب مهنة أو اسمًا أو مدينة.';
+
+  @override
+  String get aboutLabel => 'نبذة';
+
+  @override
+  String get inCategory => 'الفئة';
+
+  @override
+  String get filtersTitle => 'التصفية';
+
+  @override
+  String get filtersAction => 'تصفية';
+
+  @override
+  String get filterCategory => 'الفئة';
+
+  @override
+  String get filterAllCategories => 'الكل';
+
+  @override
+  String get filterMinRating => 'الحد الأدنى للتقييم';
+
+  @override
+  String get filterRatingAny => 'أي تقييم';
+
+  @override
+  String filterRatingAtLeast(String value) {
+    return '$value+';
+  }
+
+  @override
+  String get filterAvailableOnly => 'المتاحون فقط';
+
+  @override
+  String get sortBy => 'ترتيب حسب';
+
+  @override
+  String get sortRating => 'الأعلى تقييمًا';
+
+  @override
+  String get sortReviews => 'الأكثر تقييمات';
+
+  @override
+  String get filtersApply => 'تطبيق';
+
+  @override
+  String get filtersReset => 'إعادة ضبط';
+
+  @override
+  String get loadMore => 'عرض المزيد';
+
+  @override
+  String filtersActive(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'التصفية، $count فلترًا نشطًا',
+      few: 'التصفية، $count فلاتر نشطة',
+      two: 'التصفية، فلتران نشطان',
+      one: 'التصفية، فلتر واحد نشط',
+      zero: 'التصفية',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactTitle => 'التواصل';
+
+  @override
+  String get contactShow => 'إظهار رقم التواصل';
+
+  @override
+  String get contactSignIn => 'سجّل الدخول لعرض رقم التواصل';
+
+  @override
+  String get contactCall => 'اتصال';
+
+  @override
+  String get contactWhatsApp => 'واتساب';
+
+  @override
+  String get contactWhy =>
+      'يظهر الرقم للأعضاء المسجلين فقط، لحماية الحرفيين من الإزعاج.';
+
+  @override
+  String get contactDemo => 'رقم التواصل غير متاح مع البيانات التجريبية.';
+
+  @override
+  String get contactRateLimited =>
+      'عدد كبير من الأرقام في وقت قصير. حاول بعد ساعة.';
+
+  @override
+  String get contactNotFound => 'هذا الحرفي لم يعد متاحًا.';
+
+  @override
+  String get contactFailed => 'تعذّر تحميل رقم التواصل. حاول مجددًا.';
+
+  @override
+  String get contactLaunchFailed => 'تعذّر فتح التطبيق.';
+
+  @override
+  String get servicesTitle => 'الخدمات';
+
+  @override
+  String get areasTitle => 'مناطق التدخل';
+
+  @override
+  String areaWhole(String place) {
+    return '$place (كل الولاية)';
+  }
+
+  @override
+  String get favoritesTitle => 'مفضلتي';
+
+  @override
+  String get favoriteAdd => 'إضافة إلى المفضلة';
+
+  @override
+  String get favoriteRemove => 'إزالة من المفضلة';
+
+  @override
+  String get favoritesEmptyTitle => 'لا توجد مفضلات';
+
+  @override
+  String get favoritesEmptyBody => 'المس القلب في أي ملف لتجده هنا.';
+
+  @override
+  String get favoritesSignInTitle => 'احتفظ بمفضلتك';
+
+  @override
+  String get favoritesSignInBody =>
+      'سجّل الدخول لحفظ الحرفيين وإيجادهم على كل أجهزتك.';
+
+  @override
+  String get favoriteLimit => 'وصلت إلى الحد الأقصى: 200 مفضلة.';
+
+  @override
+  String get favoriteFailed => 'تعذّر تحديث المفضلة. حاول مجددًا.';
+
+  @override
+  String favoriteAddNamed(String name) {
+    return 'إضافة $name إلى المفضلة';
+  }
+
+  @override
+  String favoriteRemoveNamed(String name) {
+    return 'إزالة $name من المفضلة';
+  }
+
+  @override
+  String get nearMe => 'بالقرب مني';
+
+  @override
+  String get sortNearest => 'الأقرب';
+
+  @override
+  String get filterRadius => 'أقصى مسافة';
+
+  @override
+  String get filterRadiusAny => 'أي مسافة';
+
+  @override
+  String get locationDenied => 'اسمح بالموقع لرؤية الحرفيين القريبين منك.';
+
+  @override
+  String get locationDeniedForever => 'الموقع محظور. اسمح به من الإعدادات.';
+
+  @override
+  String get locationServiceOff => 'خدمة الموقع متوقفة على هذا الجهاز.';
+
+  @override
+  String get locationUnavailable => 'تعذّر تحديد موقعك. حاول مجددًا.';
+
+  @override
+  String get openSettings => 'الإعدادات';
+
+  @override
+  String get showMap => 'عرض الخريطة';
+
+  @override
+  String get showList => 'عرض القائمة';
+
+  @override
+  String get mapNothingTitle => 'لا شيء لعرضه على الخريطة';
+
+  @override
+  String get mapNothingBody => 'لا يملك أيٌّ من هؤلاء الحرفيين موقعًا معروفًا.';
 }

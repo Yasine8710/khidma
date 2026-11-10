@@ -27,7 +27,7 @@ void main() {
     for (final label in ['Accueil', 'Demandes', 'Messages', 'Profil']) {
       expect(find.text(label), findsOneWidget);
     }
-    expect(find.text('Les professionnels arrivent bientôt'), findsOneWidget);
+    expect(find.text('De quel service avez-vous besoin ?'), findsOneWidget);
   });
 
   testWidgets('each tab opens its screen', (tester) async {
@@ -36,7 +36,7 @@ void main() {
       'Demandes': ('Connectez-vous pour voir vos demandes', AppRoutes.requests),
       'Messages': ('Connectez-vous pour discuter', AppRoutes.messages),
       'Profil': ('Choisir la langue', AppRoutes.profile),
-      'Accueil': ('Les professionnels arrivent bientôt', AppRoutes.home),
+      'Accueil': ('De quel service avez-vous besoin ?', AppRoutes.home),
     };
     for (final e in expected.entries) {
       await tester.tap(find.text(e.key));
@@ -161,7 +161,7 @@ void main() {
     double scaled(Finder f) =>
         MediaQuery.of(tester.element(f)).textScaler.scale(10);
     expect(scaled(find.text('Accueil')), lessThanOrEqualTo(13.0001));
-    expect(scaled(find.text('Les professionnels arrivent bientôt')), 20);
+    expect(scaled(find.text('De quel service avez-vous besoin ?')), 20);
   });
 
   testWidgets('tabs are focusable for keyboard and screen readers', (

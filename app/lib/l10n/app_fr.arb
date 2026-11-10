@@ -20,8 +20,6 @@
   "navRequests": "Demandes",
   "navMessages": "Messages",
   "navProfile": "Profil",
-  "homeEmptyTitle": "Les professionnels arrivent bientôt",
-  "homeEmptyBody": "La recherche et les catégories de services seront disponibles ici.",
   "requestsEmptyTitle": "Aucune demande pour l'instant",
   "requestsEmptyBody": "Vos demandes de devis apparaîtront ici.",
   "messagesEmptyTitle": "Aucun message",
@@ -174,5 +172,149 @@
         "type": "String"
       }
     }
-  }
+  },
+  "homeGreeting": "Bonjour",
+  "homeGreetingNamed": "Bonjour, {name}",
+  "homeSubtitle": "De quel service avez-vous besoin ?",
+  "searchHint": "Rechercher un métier, un nom, une ville…",
+  "placeAll": "Toute la Tunisie",
+  "placeChoose": "Choisir une zone",
+  "placeGovernorate": "Gouvernorat",
+  "placeWholeGovernorate": "Tout le gouvernorat",
+  "sectionCategories": "Catégories",
+  "sectionTopRated": "Les mieux notés",
+  "sectionInYourArea": "Dans votre zone",
+  "sectionInYourAreaPrompt": "Choisissez une zone pour voir les professionnels autour de vous.",
+  "sectionRecent": "Consultés récemment",
+  "seeAll": "Voir tout",
+  "noProfessionalsTitle": "Aucun professionnel pour le moment",
+  "noProfessionalsBody": "Ils apparaîtront ici dès qu'ils auront rejoint Khidma.",
+  "noProfessionalsInArea": "Aucun professionnel dans cette zone pour le moment.",
+  "demoBannerTitle": "Données de démonstration",
+  "demoBannerBody": "Les professionnels, notes et badges affichés sont fictifs.",
+  "availabilityAvailable": "Disponible",
+  "availabilityBusy": "Occupé",
+  "availabilityOffline": "Hors ligne",
+  "yearsExperience": "{count, plural, =1{1 an d'expérience} other{{count} ans d'expérience}}",
+  "distanceKm": "{km} km",
+  "failLoadProfessionals": "Impossible de charger les professionnels.",
+  "failForbidden": "L'accès aux données est refusé. Réessayez plus tard.",
+  "professionalNotFoundTitle": "Profil introuvable",
+  "professionalNotFoundBody": "Ce professionnel n'est plus disponible.",
+  "searchTitle": "Recherche",
+  "searchNoResultsTitle": "Aucun résultat",
+  "searchNoResultsBody": "Essayez un autre mot ou une autre zone.",
+  "searchStartTitle": "Que cherchez-vous ?",
+  "searchStartBody": "Tapez un métier, un nom ou une ville.",
+  "aboutLabel": "À propos",
+  "inCategory": "Catégorie",
+  "@homeGreetingNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@yearsExperience": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@distanceKm": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "filtersTitle": "Filtres",
+  "filtersAction": "Filtrer",
+  "filterCategory": "Catégorie",
+  "filterAllCategories": "Toutes",
+  "filterMinRating": "Note minimale",
+  "filterRatingAny": "Toutes",
+  "filterRatingAtLeast": "{value}+",
+  "filterAvailableOnly": "Disponibles uniquement",
+  "sortBy": "Trier par",
+  "sortRating": "Mieux notés",
+  "sortReviews": "Plus d’avis",
+  "filtersApply": "Appliquer",
+  "filtersReset": "Réinitialiser",
+  "loadMore": "Voir plus",
+  "filtersActive": "{count, plural, =0{Filtres} =1{Filtres, 1 actif} other{Filtres, {count} actifs}}",
+  "@filterRatingAtLeast": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@filtersActive": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactTitle": "Contact",
+  "contactShow": "Afficher le contact",
+  "contactSignIn": "Connectez-vous pour voir le contact",
+  "contactCall": "Appeler",
+  "contactWhatsApp": "WhatsApp",
+  "contactWhy": "Le numéro est affiché aux membres connectés, pour protéger les professionnels du démarchage abusif.",
+  "contactDemo": "Le contact n’est pas disponible avec les données de démonstration.",
+  "contactRateLimited": "Trop de numéros consultés en peu de temps. Réessayez dans une heure.",
+  "contactNotFound": "Ce professionnel n’est plus disponible.",
+  "contactFailed": "Impossible de charger le contact. Réessayez.",
+  "contactLaunchFailed": "Impossible d’ouvrir l’application.",
+  "servicesTitle": "Services",
+  "areasTitle": "Zones d’intervention",
+  "areaWhole": "{place} (tout le gouvernorat)",
+  "@areaWhole": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesTitle": "Mes favoris",
+  "favoriteAdd": "Ajouter aux favoris",
+  "favoriteRemove": "Retirer des favoris",
+  "favoritesEmptyTitle": "Aucun favori",
+  "favoritesEmptyBody": "Touchez le cœur sur un profil pour le retrouver ici.",
+  "favoritesSignInTitle": "Retrouvez vos favoris",
+  "favoritesSignInBody": "Connectez-vous pour enregistrer des professionnels et les retrouver sur tous vos appareils.",
+  "favoriteLimit": "Vous avez atteint la limite de 200 favoris.",
+  "favoriteFailed": "Impossible de modifier vos favoris. Réessayez.",
+  "favoriteAddNamed": "Ajouter {name} aux favoris",
+  "favoriteRemoveNamed": "Retirer {name} des favoris",
+  "@favoriteAddNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@favoriteRemoveNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nearMe": "Près de moi",
+  "sortNearest": "Plus proches",
+  "filterRadius": "Distance maximale",
+  "filterRadiusAny": "Peu importe",
+  "locationDenied": "Autorisez la localisation pour voir les professionnels près de vous.",
+  "locationDeniedForever": "La localisation est bloquée. Autorisez-la dans les réglages.",
+  "locationServiceOff": "La localisation est désactivée sur cet appareil.",
+  "locationUnavailable": "Position introuvable. Réessayez.",
+  "openSettings": "Réglages",
+  "showMap": "Afficher la carte",
+  "showList": "Afficher la liste",
+  "mapNothingTitle": "Rien à placer sur la carte",
+  "mapNothingBody": "Aucun de ces professionnels n’a de position connue."
 }

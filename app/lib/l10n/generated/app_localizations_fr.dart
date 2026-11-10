@@ -59,13 +59,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navProfile => 'Profil';
 
   @override
-  String get homeEmptyTitle => 'Les professionnels arrivent bientôt';
-
-  @override
-  String get homeEmptyBody =>
-      'La recherche et les catégories de services seront disponibles ici.';
-
-  @override
   String get requestsEmptyTitle => 'Aucune demande pour l\'instant';
 
   @override
@@ -418,4 +411,313 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get accountDeleted => 'Votre compte a été supprimé.';
+
+  @override
+  String get homeGreeting => 'Bonjour';
+
+  @override
+  String homeGreetingNamed(String name) {
+    return 'Bonjour, $name';
+  }
+
+  @override
+  String get homeSubtitle => 'De quel service avez-vous besoin ?';
+
+  @override
+  String get searchHint => 'Rechercher un métier, un nom, une ville…';
+
+  @override
+  String get placeAll => 'Toute la Tunisie';
+
+  @override
+  String get placeChoose => 'Choisir une zone';
+
+  @override
+  String get placeGovernorate => 'Gouvernorat';
+
+  @override
+  String get placeWholeGovernorate => 'Tout le gouvernorat';
+
+  @override
+  String get sectionCategories => 'Catégories';
+
+  @override
+  String get sectionTopRated => 'Les mieux notés';
+
+  @override
+  String get sectionInYourArea => 'Dans votre zone';
+
+  @override
+  String get sectionInYourAreaPrompt =>
+      'Choisissez une zone pour voir les professionnels autour de vous.';
+
+  @override
+  String get sectionRecent => 'Consultés récemment';
+
+  @override
+  String get seeAll => 'Voir tout';
+
+  @override
+  String get noProfessionalsTitle => 'Aucun professionnel pour le moment';
+
+  @override
+  String get noProfessionalsBody =>
+      'Ils apparaîtront ici dès qu\'ils auront rejoint Khidma.';
+
+  @override
+  String get noProfessionalsInArea =>
+      'Aucun professionnel dans cette zone pour le moment.';
+
+  @override
+  String get demoBannerTitle => 'Données de démonstration';
+
+  @override
+  String get demoBannerBody =>
+      'Les professionnels, notes et badges affichés sont fictifs.';
+
+  @override
+  String get availabilityAvailable => 'Disponible';
+
+  @override
+  String get availabilityBusy => 'Occupé';
+
+  @override
+  String get availabilityOffline => 'Hors ligne';
+
+  @override
+  String yearsExperience(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ans d\'expérience',
+      one: '1 an d\'expérience',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String distanceKm(String km) {
+    return '$km km';
+  }
+
+  @override
+  String get failLoadProfessionals =>
+      'Impossible de charger les professionnels.';
+
+  @override
+  String get failForbidden =>
+      'L\'accès aux données est refusé. Réessayez plus tard.';
+
+  @override
+  String get professionalNotFoundTitle => 'Profil introuvable';
+
+  @override
+  String get professionalNotFoundBody =>
+      'Ce professionnel n\'est plus disponible.';
+
+  @override
+  String get searchTitle => 'Recherche';
+
+  @override
+  String get searchNoResultsTitle => 'Aucun résultat';
+
+  @override
+  String get searchNoResultsBody => 'Essayez un autre mot ou une autre zone.';
+
+  @override
+  String get searchStartTitle => 'Que cherchez-vous ?';
+
+  @override
+  String get searchStartBody => 'Tapez un métier, un nom ou une ville.';
+
+  @override
+  String get aboutLabel => 'À propos';
+
+  @override
+  String get inCategory => 'Catégorie';
+
+  @override
+  String get filtersTitle => 'Filtres';
+
+  @override
+  String get filtersAction => 'Filtrer';
+
+  @override
+  String get filterCategory => 'Catégorie';
+
+  @override
+  String get filterAllCategories => 'Toutes';
+
+  @override
+  String get filterMinRating => 'Note minimale';
+
+  @override
+  String get filterRatingAny => 'Toutes';
+
+  @override
+  String filterRatingAtLeast(String value) {
+    return '$value+';
+  }
+
+  @override
+  String get filterAvailableOnly => 'Disponibles uniquement';
+
+  @override
+  String get sortBy => 'Trier par';
+
+  @override
+  String get sortRating => 'Mieux notés';
+
+  @override
+  String get sortReviews => 'Plus d’avis';
+
+  @override
+  String get filtersApply => 'Appliquer';
+
+  @override
+  String get filtersReset => 'Réinitialiser';
+
+  @override
+  String get loadMore => 'Voir plus';
+
+  @override
+  String filtersActive(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Filtres, $count actifs',
+      one: 'Filtres, 1 actif',
+      zero: 'Filtres',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactTitle => 'Contact';
+
+  @override
+  String get contactShow => 'Afficher le contact';
+
+  @override
+  String get contactSignIn => 'Connectez-vous pour voir le contact';
+
+  @override
+  String get contactCall => 'Appeler';
+
+  @override
+  String get contactWhatsApp => 'WhatsApp';
+
+  @override
+  String get contactWhy =>
+      'Le numéro est affiché aux membres connectés, pour protéger les professionnels du démarchage abusif.';
+
+  @override
+  String get contactDemo =>
+      'Le contact n’est pas disponible avec les données de démonstration.';
+
+  @override
+  String get contactRateLimited =>
+      'Trop de numéros consultés en peu de temps. Réessayez dans une heure.';
+
+  @override
+  String get contactNotFound => 'Ce professionnel n’est plus disponible.';
+
+  @override
+  String get contactFailed => 'Impossible de charger le contact. Réessayez.';
+
+  @override
+  String get contactLaunchFailed => 'Impossible d’ouvrir l’application.';
+
+  @override
+  String get servicesTitle => 'Services';
+
+  @override
+  String get areasTitle => 'Zones d’intervention';
+
+  @override
+  String areaWhole(String place) {
+    return '$place (tout le gouvernorat)';
+  }
+
+  @override
+  String get favoritesTitle => 'Mes favoris';
+
+  @override
+  String get favoriteAdd => 'Ajouter aux favoris';
+
+  @override
+  String get favoriteRemove => 'Retirer des favoris';
+
+  @override
+  String get favoritesEmptyTitle => 'Aucun favori';
+
+  @override
+  String get favoritesEmptyBody =>
+      'Touchez le cœur sur un profil pour le retrouver ici.';
+
+  @override
+  String get favoritesSignInTitle => 'Retrouvez vos favoris';
+
+  @override
+  String get favoritesSignInBody =>
+      'Connectez-vous pour enregistrer des professionnels et les retrouver sur tous vos appareils.';
+
+  @override
+  String get favoriteLimit => 'Vous avez atteint la limite de 200 favoris.';
+
+  @override
+  String get favoriteFailed => 'Impossible de modifier vos favoris. Réessayez.';
+
+  @override
+  String favoriteAddNamed(String name) {
+    return 'Ajouter $name aux favoris';
+  }
+
+  @override
+  String favoriteRemoveNamed(String name) {
+    return 'Retirer $name des favoris';
+  }
+
+  @override
+  String get nearMe => 'Près de moi';
+
+  @override
+  String get sortNearest => 'Plus proches';
+
+  @override
+  String get filterRadius => 'Distance maximale';
+
+  @override
+  String get filterRadiusAny => 'Peu importe';
+
+  @override
+  String get locationDenied =>
+      'Autorisez la localisation pour voir les professionnels près de vous.';
+
+  @override
+  String get locationDeniedForever =>
+      'La localisation est bloquée. Autorisez-la dans les réglages.';
+
+  @override
+  String get locationServiceOff =>
+      'La localisation est désactivée sur cet appareil.';
+
+  @override
+  String get locationUnavailable => 'Position introuvable. Réessayez.';
+
+  @override
+  String get openSettings => 'Réglages';
+
+  @override
+  String get showMap => 'Afficher la carte';
+
+  @override
+  String get showList => 'Afficher la liste';
+
+  @override
+  String get mapNothingTitle => 'Rien à placer sur la carte';
+
+  @override
+  String get mapNothingBody =>
+      'Aucun de ces professionnels n’a de position connue.';
 }

@@ -10,6 +10,7 @@ auth.users (Supabase)
   ├─ customer_profiles 1:1   default_governorate_id, default_city_id
   ├─ admin_users 0..1        membership row; no client access
   ├─ contact_reveals N       rate-limit/audit log of phone reveals; no client access
+  ├─ favorites N             saved professionals (user_id, professional_id), private, max 200
   └─ professional_profiles 0..1
        business_name, primary_category_id, description, years_experience,
        governorate_id / city_id / neighborhood_id, latitude/longitude (rounded to ~1.1 km),
@@ -29,6 +30,17 @@ Design notes:
 - **Constraints do real work:** phone format (`+216` + 8 digits, first digit 2-5, 7 or 9), value limits, "no half-empty public profile", "verified implies a verification time".
 - **Indexes:** foreign keys, a partial index for published profiles by governorate/category, and a unique index for service areas.
 - `updated_at` is maintained by a trigger.
+
+## Marketplace search (Phase 3.1)
+`public.search_professionals(...)` is the only way the app lists professionals. One function filters, matches text, measures distance and sorts, so there is one tested definition instead of one per client.
+- **Visibility:** `SECURITY INVOKER`, so Row Level Security and column grants apply; also explicitly `is_published`, so an owner never sees their own draft in public results. Returns only public columns (never `contact_phone`).
+- **Text** (query capped at 100 characters, whitespace collapsed): matched field by field (never across two fields) against name, description, profession (3 languages + slug) and governorate / city / neighborhood names (3 languages), accent- and Arabic-variant-insensitive via `search_normalize` (French accents; alef forms, alef maqsura, taa marbuta, Persian ya/kaf, hamza on waw/ya; diacritics and tatweel dropped). The Dart mirror is tested on the same vector file.
+- **Filters** (AND): category (primary or secondary service), governorate, city, minimum rating, available only, radius. Place semantics: a city request is met by being based in the city, serving it, or serving its whole governorate (a service area with no city); a governorate request by being based there or serving it; a city given with a governorate must belong to it, otherwise nothing matches.
+- **Sorts:** `rating` (default), `reviews`, `nearest` (unknown positions last). Ties break on id. `recent` was removed: profile edits are not an activity signal (they can be repeated to climb the list); it returns when a real signal exists (Phase 5 responses).
+- **Paging:** limit clamped to 1-50, offset capped at 5000. Offset paging can show a gap or duplicate if profiles change between requests; switch to cursor paging if that matters.
+- **Distance** is computed from the already-rounded coordinates (~1.1 km), so it reveals nothing finer than the stored location.
+- **Performance (not done):** the text match normalizes per row and cannot use an index. Fine for hundreds of professionals; before thousands, add a generated normalized search column with a trigram index and benchmark on realistic data.
+- Not yet filterable: price range (no price field yet; Phase 4 adds a starting-price field).
 
 ## Planned
 | Phase | Tables |

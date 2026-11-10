@@ -287,7 +287,7 @@ void main() {
       (tester) async {
         final auth = FakeAuthRepository();
         final profiles = FakeProfileRepository(profile: _aliProfile)
-          ..failNext = ProfileFailure.network;
+          ..failBecomeNext = ProfileFailure.network;
         final c = await pumpApp(
           tester,
           auth: auth,

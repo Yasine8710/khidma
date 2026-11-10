@@ -134,7 +134,7 @@ void main() {
       expect(find.text('Mot de passe mis à jour.'), findsOneWidget);
       await tester.tap(find.widgetWithText(FilledButton, 'Accueil'));
       await tester.pumpAndSettle();
-      expect(find.text('Les professionnels arrivent bientôt'), findsOneWidget);
+      expect(find.text('De quel service avez-vous besoin ?'), findsOneWidget);
     });
 
     testWidgets(
