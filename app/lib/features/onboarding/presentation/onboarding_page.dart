@@ -7,14 +7,18 @@ import '../../../core/theme/app_spacing.dart';
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({
     super.key,
-    required this.icon,
+    this.icon,
+    this.leading,
     required this.title,
     required this.body,
     this.extra,
     this.hideIconWhenCompact = false,
   });
 
-  final IconData icon;
+  final IconData? icon;
+
+  /// Replaces the icon badge (e.g. the brand logo on the first page).
+  final Widget? leading;
   final String title;
   final String body;
   final Widget? extra;
@@ -29,6 +33,9 @@ class OnboardingPage extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     final media = MediaQuery.of(context);
     final compact = media.size.height < 700 || media.textScaler.scale(10) > 13;
+    // Only drop decoration when space is really tight (very short screen or
+    // large text); the brand logo should survive on ordinary small screens.
+    final tight = media.size.height < 560 || media.textScaler.scale(10) > 13;
     final iconBox = compact ? 64.0 : 96.0;
     return SingleChildScrollView(
       padding: const EdgeInsetsDirectional.symmetric(
@@ -37,22 +44,25 @@ class OnboardingPage extends StatelessWidget {
       ),
       child: Column(
         children: [
-          if (!(compact && hideIconWhenCompact)) ...[
-            Container(
-              width: iconBox,
-              height: iconBox,
-              decoration: BoxDecoration(
-                color: scheme.primaryContainer,
-                shape: BoxShape.circle,
+          if (!(tight && hideIconWhenCompact)) ...[
+            if (leading != null)
+              leading!
+            else
+              Container(
+                width: iconBox,
+                height: iconBox,
+                decoration: BoxDecoration(
+                  color: scheme.primaryContainer,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  icon,
+                  size: iconBox * 0.46,
+                  color: scheme.brightness == Brightness.light
+                      ? scheme.primary
+                      : scheme.onPrimaryContainer,
+                ),
               ),
-              child: Icon(
-                icon,
-                size: iconBox * 0.46,
-                color: scheme.brightness == Brightness.light
-                    ? scheme.primary
-                    : scheme.onPrimaryContainer,
-              ),
-            ),
             SizedBox(height: compact ? AppSpacing.lg : AppSpacing.xl),
           ],
           Semantics(

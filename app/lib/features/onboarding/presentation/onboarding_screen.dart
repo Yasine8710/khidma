@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/khidma_logo.dart';
 import '../../settings/presentation/language_selector.dart';
 import '../application/onboarding_controller.dart';
 import 'onboarding_page.dart';
@@ -68,7 +69,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final pages = <Widget>[
       OnboardingPage(
-        icon: Icons.translate_rounded,
+        leading: const KhidmaLogo(markSize: 56),
         title: l10n.chooseLanguage,
         body: l10n.languageStepBody,
         extra: const LanguageSelector(),
@@ -93,91 +94,99 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            // Reserved height keeps the layout still when Skip disappears.
-            SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  if (_index > 0)
-                    IconButton(
-                      tooltip: l10n.back,
-                      icon: const Icon(Icons.arrow_back_rounded),
-                      onPressed: () => _goTo(_index - 1),
-                    ),
-                  const Spacer(),
-                  if (_index > 0 && !_isLast)
-                    AppButton(
-                      label: l10n.skip,
-                      variant: AppButtonVariant.text,
-                      expand: false,
-                      onPressed: () =>
-                          ref.read(onboardingSeenProvider.notifier).complete(),
-                    ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: PageView(
-                controller: _controller,
-                allowImplicitScrolling: true,
-                onPageChanged: (i) => setState(() => _index = i),
-                children: pages,
-              ),
-            ),
-            Semantics(
-              // Live region: screen readers announce the new page and title.
-              label:
-                  '${l10n.pageOf(_index + 1, _pageCount)}, ${titles[_index]}',
-              liveRegion: true,
-              excludeSemantics: true,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (var i = 0; i < _pageCount; i++)
-                    AnimatedContainer(
-                      duration: reduce
-                          ? Duration.zero
-                          : const Duration(milliseconds: 200),
-                      margin: const EdgeInsetsDirectional.symmetric(
-                        horizontal: AppSpacing.xs,
-                      ),
-                      width: i == _index ? 24 : 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: i == _index
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.outline,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(
-                AppSpacing.gutter,
-                AppSpacing.xl,
-                AppSpacing.gutter,
-                AppSpacing.xl,
-              ),
-              child: AppButton(
-                label: _isLast ? l10n.start : l10n.next,
-                onPressed: _next,
-              ),
-            ),
-            if (_index == 0)
-              Padding(
-                padding: const EdgeInsetsDirectional.only(
-                  bottom: AppSpacing.lg,
+        // Keep the flow phone-width on tablets and desktop web.
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: Column(
+              children: [
+                // Reserved height keeps the layout still when Skip disappears.
+                SizedBox(
+                  height: 56,
+                  child: Row(
+                    children: [
+                      if (_index > 0)
+                        IconButton(
+                          tooltip: l10n.back,
+                          icon: const Icon(Icons.arrow_back_rounded),
+                          onPressed: () => _goTo(_index - 1),
+                        ),
+                      const Spacer(),
+                      if (_index > 0 && !_isLast)
+                        AppButton(
+                          label: l10n.skip,
+                          variant: AppButtonVariant.text,
+                          expand: false,
+                          onPressed: () => ref
+                              .read(onboardingSeenProvider.notifier)
+                              .complete(),
+                        ),
+                    ],
+                  ),
                 ),
-                child: Text(
-                  l10n.tagline,
-                  style: text.bodySmall?.copyWith(color: muted),
+                Expanded(
+                  child: PageView(
+                    controller: _controller,
+                    allowImplicitScrolling: true,
+                    onPageChanged: (i) => setState(() => _index = i),
+                    children: pages,
+                  ),
                 ),
-              ),
-          ],
+                Semantics(
+                  // Live region: screen readers announce the new page and title.
+                  label:
+                      '${l10n.pageOf(_index + 1, _pageCount)}, ${titles[_index]}',
+                  liveRegion: true,
+                  excludeSemantics: true,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (var i = 0; i < _pageCount; i++)
+                        AnimatedContainer(
+                          duration: reduce
+                              ? Duration.zero
+                              : const Duration(milliseconds: 200),
+                          margin: const EdgeInsetsDirectional.symmetric(
+                            horizontal: AppSpacing.xs,
+                          ),
+                          width: i == _index ? 24 : 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: i == _index
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.outline,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(
+                    AppSpacing.gutter,
+                    AppSpacing.xl,
+                    AppSpacing.gutter,
+                    AppSpacing.xl,
+                  ),
+                  child: AppButton(
+                    label: _isLast ? l10n.start : l10n.next,
+                    onPressed: _next,
+                  ),
+                ),
+                if (_index == 0)
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(
+                      bottom: AppSpacing.lg,
+                    ),
+                    child: Text(
+                      l10n.tagline,
+                      style: text.bodySmall?.copyWith(color: muted),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );

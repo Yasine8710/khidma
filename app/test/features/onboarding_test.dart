@@ -293,6 +293,25 @@ void main() {
     },
   );
 
+  testWidgets('content stays phone-width on a wide screen', (tester) async {
+    tester.view.physicalSize = const Size(1400, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await pumpApp(tester, prefs: _fresh);
+    expect(
+      tester.getSize(find.byType(FilledButton)).width,
+      lessThanOrEqualTo(520),
+    );
+  });
+
+  testWidgets('brand logo shows on an ordinary small phone', (tester) async {
+    tester.view.physicalSize = const Size(320 * 3, 568 * 3);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    await pumpApp(tester, prefs: _fresh);
+    expect(find.text('Khidma'), findsOneWidget);
+  });
+
   for (final lang in ['fr', 'ar', 'en']) {
     testWidgets('no overflow on a 320x568 phone at 1.5x text ($lang)', (
       tester,
