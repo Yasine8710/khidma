@@ -5,6 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:khidma/core/storage/preferences_provider.dart';
 import 'package:khidma/app.dart';
+import 'package:khidma/features/auth/application/auth_providers.dart';
+import 'package:khidma/features/auth/domain/auth_domain.dart';
+
+import 'support/fake_auth_repository.dart';
+
 import 'package:khidma/core/theme/app_theme.dart';
 import 'package:khidma/l10n/generated/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,12 +18,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<ProviderContainer> pumpApp(
   WidgetTester tester, {
   Map<String, Object> prefs = const {},
+  AuthRepository? auth,
 }) async {
   // Tests start past onboarding unless they say otherwise.
   SharedPreferences.setMockInitialValues({'onboardingSeen': true, ...prefs});
   final sp = await SharedPreferences.getInstance();
   final container = ProviderContainer(
-    overrides: [keyValueStoreProvider.overrideWithValue(PrefsStore(sp))],
+    overrides: [
+      keyValueStoreProvider.overrideWithValue(PrefsStore(sp)),
+      // Accounts available but signed out, unless a test says otherwise.
+      authRepositoryProvider.overrideWithValue(auth ?? FakeAuthRepository()),
+    ],
   );
   addTearDown(container.dispose);
   await tester.pumpWidget(
@@ -79,3 +89,16 @@ Future<void> loadAppFonts() async {
     'IBMPlexSansArabic-Bold.ttf',
   ]);
 }
+
+/// Scrolls the Profile list (lazy) until [target] is built and visible.
+Future<void> scrollProfileTo(WidgetTester tester, Finder target) =>
+    tester.scrollUntilVisible(
+      target,
+      300,
+      scrollable: find
+          .descendant(
+            of: find.byType(ListView),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );

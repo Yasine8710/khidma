@@ -174,4 +174,165 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get back => 'Previous';
+
+  @override
+  String get signIn => 'Sign in';
+
+  @override
+  String get createAccount => 'Create account';
+
+  @override
+  String get signOut => 'Sign out';
+
+  @override
+  String get emailLabel => 'Email address';
+
+  @override
+  String get passwordLabel => 'Password';
+
+  @override
+  String get fullNameLabel => 'Full name';
+
+  @override
+  String get forgotPassword => 'Forgot password?';
+
+  @override
+  String get sendResetLink => 'Send reset link';
+
+  @override
+  String get noAccountYet => 'No account yet?';
+
+  @override
+  String get haveAccount => 'Already have an account?';
+
+  @override
+  String get signInTitle => 'Welcome back';
+
+  @override
+  String get signInSubtitle =>
+      'Sign in to request quotes and follow your requests.';
+
+  @override
+  String get registerTitle => 'Create your account';
+
+  @override
+  String get registerSubtitle => 'It only takes a few seconds.';
+
+  @override
+  String get forgotTitle => 'Reset your password';
+
+  @override
+  String get forgotSubtitle =>
+      'Enter your email and we\'ll send you a link to choose a new password.';
+
+  @override
+  String get resetSentTitle => 'Check your email';
+
+  @override
+  String resetSentBody(String email) {
+    return 'If an account exists for $email, we have just sent a reset link.';
+  }
+
+  @override
+  String get confirmEmailTitle => 'Confirm your email address';
+
+  @override
+  String confirmEmailBody(String email) {
+    return 'We sent a confirmation link to $email. Open it to activate your account.';
+  }
+
+  @override
+  String get backToSignIn => 'Back to sign in';
+
+  @override
+  String get errEmailRequired => 'Enter your email address.';
+
+  @override
+  String get errEmailInvalid => 'Invalid email address.';
+
+  @override
+  String get errPasswordRequired => 'Enter your password.';
+
+  @override
+  String get errPasswordShort => 'At least 8 characters.';
+
+  @override
+  String get errPasswordLong => 'Password too long.';
+
+  @override
+  String get errNameRequired => 'Enter your name.';
+
+  @override
+  String get failInvalidCredentials => 'Incorrect email or password.';
+
+  @override
+  String get failEmailNotConfirmed =>
+      'Please confirm your email address first (check your inbox).';
+
+  @override
+  String get failWeakPassword =>
+      'Password too weak. Choose a longer, less common one.';
+
+  @override
+  String get failSignUpDisabled => 'Sign-ups are closed at the moment.';
+
+  @override
+  String get failRateLimited =>
+      'Too many attempts. Try again in a few minutes.';
+
+  @override
+  String get failNetwork => 'Can\'t connect. Check your network.';
+
+  @override
+  String get failNotConfigured =>
+      'Accounts are not available in this version of the app.';
+
+  @override
+  String get failUnknown => 'Something went wrong. Please try again.';
+
+  @override
+  String get signedOutProfileTitle => 'Sign in or create an account';
+
+  @override
+  String get signedOutProfileBody =>
+      'To request quotes and contact professionals.';
+
+  @override
+  String get requestsSignedOutTitle => 'Sign in to see your requests';
+
+  @override
+  String get requestsSignedOutBody =>
+      'Your quote requests and the offers you receive will appear here.';
+
+  @override
+  String get messagesSignedOutTitle => 'Sign in to chat';
+
+  @override
+  String get messagesSignedOutBody =>
+      'Your conversations with professionals will appear here.';
+
+  @override
+  String signedInAs(String email) {
+    return 'Signed in as $email';
+  }
+
+  @override
+  String get newPasswordTitle => 'New password';
+
+  @override
+  String get newPasswordSubtitle =>
+      'Choose a password you do not use anywhere else.';
+
+  @override
+  String get savePassword => 'Save password';
+
+  @override
+  String get passwordUpdated => 'Password updated.';
+
+  @override
+  String get linkExpiredTitle => 'Link expired or invalid';
+
+  @override
+  String get linkExpiredBody =>
+      'Request a new reset link from the sign-in screen.';
 }
