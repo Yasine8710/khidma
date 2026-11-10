@@ -17,7 +17,7 @@ Repo, license, docs, Flutter scaffold, CI file, Codex architecture review.
 |---|--------|------|-------|
 | 1.0 | `feat/design-tokens` | Tokens, theme, fonts (done) | contrast, font selection |
 | 1.1 | `feat/l10n` | `gen-l10n` ARB files fr (default) / ar / en; locale controller persisted via `shared_preferences`; Directionality from locale; formatters: TND (`1 200 DT`), Tunisian phone (`+216 XX XXX XXX`) with validation, dates | locale switch, RTL direction, formatters, phone validation |
-| 1.2 | `feat/navigation` | GoRouter, app shell, custom bottom nav (Home, Search, Requests, Messages, Profile; placeholder screens, no dead buttons — tabs show a real empty state), route guards stubbed for Phase 2 | nav tests, state kept per tab |
+| 1.2 | `feat/navigation` | GoRouter, app shell, custom bottom nav (Home, Requests, Messages, Profile; search lives in Home; placeholder screens, no dead buttons — tabs show a real empty state), route guards stubbed for Phase 2 | nav tests, state kept per tab |
 | 1.3 | `feat/components` | Buttons, text field, chips, card, section header, rating stars (saffron fill + ink outline), avatar, badge, skeleton shimmer, empty state, error state, haptics helper; dark/light | widget tests per component, RTL widget tests |
 | 1.4 | `feat/onboarding` | 3 short pages (discover, compare/quote, contact) + language picker first; seen-flag persisted; location permission NOT requested here | onboarding flow test, persistence |
 | 1.5 | `feat/brand-assets` | Logo (wordmark + Arabic خدمة lockup), app icon, splash; 2–3 logo options for you to choose from | visual check on real screens |
@@ -50,8 +50,8 @@ Order: 1.0 → 1.1 → 1.2 → 1.3 → 1.4 → 1.5 → 1.6. 1.1 first because RT
 - CI iOS job has not yet run on GitHub; first push of `develop` will show whether it passes.
 - Logo/icon quality cannot be judged until it appears in the shell (slice 1.5 after 1.2/1.3).
 
-### Decisions needed from you
-1. **Digits in Arabic:** Western (0–9, recommended for phone/prices in Tunisia) or Eastern Arabic-Indic (٠–٩)?
-2. **Tab set:** Home · Search · Requests · Messages · Profile — OK, or change?
-3. **Dark mode:** follow system with a manual override in Profile (recommended)?
-4. **Merge policy:** squash-merge each slice into `develop`, and `main` only at phase end?
+### Decisions (confirmed 2026-11-10)
+1. Digits: Western 0-9 in all languages.
+2. Tabs: 4 (Home incl. search, Requests, Messages, Profile).
+3. Dark mode: follows system, manual override in Profile.
+4. Merge: squash each slice into `develop`; `main` only at phase end.
