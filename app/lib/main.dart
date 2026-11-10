@@ -60,6 +60,9 @@ Future<AuthRepository> _openAuth() async {
           url: config.url.toString(),
           // Accepts the new publishable key or a legacy anon key.
           publishableKey: config.anonKey,
+          // The SDK's own logger prints raw error messages; our `_log` is the
+          // only sanctioned diagnostic output.
+          debug: false,
           authOptions: FlutterAuthClientOptions(
             localStorage: SecureSessionStorage(),
             pkceAsyncStorage: SecurePkceStorage(),

@@ -392,6 +392,9 @@ declare
   uid uuid := public.require_registered_user();
   phone text;
 begin
+  -- Serialize this caller's reveals so concurrent requests cannot all pass the
+  -- count below (released automatically at the end of the transaction).
+  perform pg_advisory_xact_lock(hashtextextended('reveal:' || uid::text, 0));
   if (select count(*) from public.contact_reveals
        where user_id = uid and created_at > now() - interval '1 hour') >= 40 then
     raise exception 'rate_limited' using errcode = 'P0001';

@@ -16,7 +16,7 @@ jobs:
           channel: stable
           flutter-version: 3.47.9
           cache: true
-      - run: flutter pub get
+      - run: flutter pub get --enforce-lockfile
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       # Goldens are OS-specific; run them locally (see gallery_golden_test.dart).
@@ -52,5 +52,24 @@ jobs:
           channel: stable
           flutter-version: 3.47.9
           cache: true
-      - run: flutter pub get
+      - run: flutter pub get --enforce-lockfile
       - run: flutter build ios --release --no-codesign
+  android-build:
+    # Compile check only (release signing is configured before distribution).
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.9
+          cache: true
+      - run: flutter pub get --enforce-lockfile
+      - run: flutter build apk --debug
