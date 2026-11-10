@@ -22,6 +22,21 @@ jobs:
       # Goldens are OS-specific; run them locally (see gallery_golden_test.dart).
       - run: flutter test --exclude-tags golden
       - run: flutter build web --release
+  backend:
+    # Migrations and Row Level Security tests on real Postgres (PGlite/WASM).
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm test
   ios-build:
     # Unsigned compile check only (no signing identity yet). Allowed to fail
     # until it has been seen green once on a real runner.
