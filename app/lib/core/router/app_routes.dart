@@ -4,4 +4,5 @@ abstract final class AppRoutes {
   static const requests = '/requests';
   static const messages = '/messages';
   static const profile = '/profile';
+  static const onboarding = '/onboarding';
 }

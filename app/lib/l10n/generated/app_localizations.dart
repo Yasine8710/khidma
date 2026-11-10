@@ -309,6 +309,72 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Masquer le mot de passe'**
   String get hidePassword;
+
+  /// No description provided for @onbTitle1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trouvez des professionnels de confiance'**
+  String get onbTitle1;
+
+  /// No description provided for @onbBody1.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plombiers, électriciens, mécaniciens… découvrez des artisans près de chez vous, avec leurs réalisations et leurs avis.'**
+  String get onbBody1;
+
+  /// No description provided for @onbTitle2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comparez et demandez un devis'**
+  String get onbTitle2;
+
+  /// No description provided for @onbBody2.
+  ///
+  /// In fr, this message translates to:
+  /// **'Décrivez votre besoin une fois, recevez des offres de plusieurs professionnels et choisissez la meilleure.'**
+  String get onbBody2;
+
+  /// No description provided for @onbTitle3.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contactez-les directement'**
+  String get onbTitle3;
+
+  /// No description provided for @onbBody3.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appelez, écrivez sur WhatsApp ou discutez dans l\'application. Le paiement se règle directement avec le professionnel.'**
+  String get onbBody3;
+
+  /// No description provided for @languageStepBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous pourrez la changer à tout moment dans Profil.'**
+  String get languageStepBody;
+
+  /// No description provided for @next.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivant'**
+  String get next;
+
+  /// No description provided for @start.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commencer'**
+  String get start;
+
+  /// No description provided for @skip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Passer'**
+  String get skip;
+
+  /// No description provided for @pageOf.
+  ///
+  /// In fr, this message translates to:
+  /// **'Page {current} sur {total}'**
+  String pageOf(int current, int total);
 }
 
 class _AppLocalizationsDelegate

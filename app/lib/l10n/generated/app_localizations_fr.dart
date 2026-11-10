@@ -133,4 +133,43 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get hidePassword => 'Masquer le mot de passe';
+
+  @override
+  String get onbTitle1 => 'Trouvez des professionnels de confiance';
+
+  @override
+  String get onbBody1 =>
+      'Plombiers, électriciens, mécaniciens… découvrez des artisans près de chez vous, avec leurs réalisations et leurs avis.';
+
+  @override
+  String get onbTitle2 => 'Comparez et demandez un devis';
+
+  @override
+  String get onbBody2 =>
+      'Décrivez votre besoin une fois, recevez des offres de plusieurs professionnels et choisissez la meilleure.';
+
+  @override
+  String get onbTitle3 => 'Contactez-les directement';
+
+  @override
+  String get onbBody3 =>
+      'Appelez, écrivez sur WhatsApp ou discutez dans l\'application. Le paiement se règle directement avec le professionnel.';
+
+  @override
+  String get languageStepBody =>
+      'Vous pourrez la changer à tout moment dans Profil.';
+
+  @override
+  String get next => 'Suivant';
+
+  @override
+  String get start => 'Commencer';
+
+  @override
+  String get skip => 'Passer';
+
+  @override
+  String pageOf(int current, int total) {
+    return 'Page $current sur $total';
+  }
 }

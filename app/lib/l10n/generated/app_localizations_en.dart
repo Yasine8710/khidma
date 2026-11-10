@@ -133,4 +133,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hidePassword => 'Hide password';
+
+  @override
+  String get onbTitle1 => 'Find trusted professionals';
+
+  @override
+  String get onbBody1 =>
+      'Plumbers, electricians, mechanics and more: discover craftspeople near you, with their work and reviews.';
+
+  @override
+  String get onbTitle2 => 'Compare and request quotes';
+
+  @override
+  String get onbBody2 =>
+      'Describe your need once, receive offers from several professionals and pick the best one.';
+
+  @override
+  String get onbTitle3 => 'Contact them directly';
+
+  @override
+  String get onbBody3 =>
+      'Call, message on WhatsApp or chat in the app. Payment is arranged directly with the professional.';
+
+  @override
+  String get languageStepBody => 'You can change it any time in Profile.';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get start => 'Get started';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String pageOf(int current, int total) {
+    return 'Page $current of $total';
+  }
 }
