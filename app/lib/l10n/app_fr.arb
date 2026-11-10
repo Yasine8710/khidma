@@ -73,5 +73,68 @@
       }
     }
   },
-  "back": "Précédent"
+  "back": "Précédent",
+  "signIn": "Se connecter",
+  "createAccount": "Créer un compte",
+  "signOut": "Se déconnecter",
+  "emailLabel": "Adresse e-mail",
+  "passwordLabel": "Mot de passe",
+  "fullNameLabel": "Nom complet",
+  "forgotPassword": "Mot de passe oublié ?",
+  "sendResetLink": "Envoyer le lien",
+  "noAccountYet": "Pas encore de compte ?",
+  "haveAccount": "Déjà un compte ?",
+  "signInTitle": "Bon retour",
+  "signInSubtitle": "Connectez-vous pour demander des devis et suivre vos demandes.",
+  "registerTitle": "Créez votre compte",
+  "registerSubtitle": "Quelques secondes suffisent.",
+  "forgotTitle": "Réinitialiser le mot de passe",
+  "forgotSubtitle": "Entrez votre e-mail : nous vous envoyons un lien pour choisir un nouveau mot de passe.",
+  "resetSentTitle": "Vérifiez vos e-mails",
+  "resetSentBody": "Si un compte existe pour {email}, un lien de réinitialisation vient d'être envoyé.",
+  "confirmEmailTitle": "Confirmez votre adresse e-mail",
+  "confirmEmailBody": "Nous avons envoyé un lien de confirmation à {email}. Ouvrez-le pour activer votre compte.",
+  "backToSignIn": "Retour à la connexion",
+  "errEmailRequired": "Saisissez votre adresse e-mail.",
+  "errEmailInvalid": "Adresse e-mail invalide.",
+  "errPasswordRequired": "Saisissez votre mot de passe.",
+  "errPasswordShort": "8 caractères minimum.",
+  "errPasswordLong": "72 caractères maximum.",
+  "errNameRequired": "Saisissez votre nom.",
+  "failInvalidCredentials": "E-mail ou mot de passe incorrect.",
+  "failEmailNotConfirmed": "Confirmez d'abord votre adresse e-mail (lien reçu par e-mail).",
+  "failWeakPassword": "Mot de passe trop faible. Choisissez-en un plus long et moins courant.",
+  "failSignUpDisabled": "Les inscriptions sont fermées pour le moment.",
+  "failRateLimited": "Trop de tentatives. Réessayez dans quelques minutes.",
+  "failNetwork": "Connexion impossible. Vérifiez votre réseau.",
+  "failNotConfigured": "Les comptes ne sont pas disponibles dans cette version de l'application.",
+  "failUnknown": "Une erreur est survenue. Réessayez.",
+  "signedOutProfileTitle": "Connectez-vous ou créez un compte",
+  "signedOutProfileBody": "Pour demander un devis et contacter des professionnels.",
+  "requestsSignedOutTitle": "Connectez-vous pour voir vos demandes",
+  "requestsSignedOutBody": "Vos demandes de devis et les offres reçues apparaîtront ici.",
+  "messagesSignedOutTitle": "Connectez-vous pour discuter",
+  "messagesSignedOutBody": "Vos conversations avec les professionnels apparaîtront ici.",
+  "signedInAs": "Connecté en tant que {email}",
+  "@resetSentBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "@confirmEmailBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "@signedInAs": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  }
 }

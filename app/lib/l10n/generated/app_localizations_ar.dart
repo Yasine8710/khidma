@@ -177,4 +177,142 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get back => 'السابق';
+
+  @override
+  String get signIn => 'تسجيل الدخول';
+
+  @override
+  String get createAccount => 'إنشاء حساب';
+
+  @override
+  String get signOut => 'تسجيل الخروج';
+
+  @override
+  String get emailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get passwordLabel => 'كلمة المرور';
+
+  @override
+  String get fullNameLabel => 'الاسم الكامل';
+
+  @override
+  String get forgotPassword => 'نسيت كلمة المرور؟';
+
+  @override
+  String get sendResetLink => 'إرسال الرابط';
+
+  @override
+  String get noAccountYet => 'ليس لديك حساب؟';
+
+  @override
+  String get haveAccount => 'لديك حساب بالفعل؟';
+
+  @override
+  String get signInTitle => 'مرحبًا بعودتك';
+
+  @override
+  String get signInSubtitle => 'سجّل الدخول لطلب عروض الأسعار ومتابعة طلباتك.';
+
+  @override
+  String get registerTitle => 'أنشئ حسابك';
+
+  @override
+  String get registerSubtitle => 'يستغرق الأمر بضع ثوانٍ فقط.';
+
+  @override
+  String get forgotTitle => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get forgotSubtitle =>
+      'أدخل بريدك الإلكتروني وسنرسل لك رابطًا لاختيار كلمة مرور جديدة.';
+
+  @override
+  String get resetSentTitle => 'تحقق من بريدك الإلكتروني';
+
+  @override
+  String resetSentBody(String email) {
+    return 'إذا كان هناك حساب مرتبط بـ $email، فقد أرسلنا رابط إعادة التعيين.';
+  }
+
+  @override
+  String get confirmEmailTitle => 'أكّد بريدك الإلكتروني';
+
+  @override
+  String confirmEmailBody(String email) {
+    return 'أرسلنا رابط التأكيد إلى $email. افتحه لتفعيل حسابك.';
+  }
+
+  @override
+  String get backToSignIn => 'العودة إلى تسجيل الدخول';
+
+  @override
+  String get errEmailRequired => 'أدخل بريدك الإلكتروني.';
+
+  @override
+  String get errEmailInvalid => 'بريد إلكتروني غير صالح.';
+
+  @override
+  String get errPasswordRequired => 'أدخل كلمة المرور.';
+
+  @override
+  String get errPasswordShort => '8 أحرف على الأقل.';
+
+  @override
+  String get errPasswordLong => '72 حرفًا على الأكثر.';
+
+  @override
+  String get errNameRequired => 'أدخل اسمك.';
+
+  @override
+  String get failInvalidCredentials =>
+      'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+
+  @override
+  String get failEmailNotConfirmed =>
+      'أكّد بريدك الإلكتروني أولًا (الرابط في صندوق الوارد).';
+
+  @override
+  String get failWeakPassword =>
+      'كلمة المرور ضعيفة. اختر كلمة أطول وأقل شيوعًا.';
+
+  @override
+  String get failSignUpDisabled => 'التسجيل مغلق حاليًا.';
+
+  @override
+  String get failRateLimited => 'محاولات كثيرة. أعد المحاولة بعد بضع دقائق.';
+
+  @override
+  String get failNetwork => 'تعذّر الاتصال. تحقق من الشبكة.';
+
+  @override
+  String get failNotConfigured =>
+      'الحسابات غير متاحة في هذا الإصدار من التطبيق.';
+
+  @override
+  String get failUnknown => 'حدث خطأ ما. حاول مرة أخرى.';
+
+  @override
+  String get signedOutProfileTitle => 'سجّل الدخول أو أنشئ حسابًا';
+
+  @override
+  String get signedOutProfileBody => 'لطلب عروض الأسعار والتواصل مع الحرفيين.';
+
+  @override
+  String get requestsSignedOutTitle => 'سجّل الدخول لعرض طلباتك';
+
+  @override
+  String get requestsSignedOutBody =>
+      'ستظهر هنا طلبات عروض الأسعار والعروض التي تصلك.';
+
+  @override
+  String get messagesSignedOutTitle => 'سجّل الدخول للمحادثة';
+
+  @override
+  String get messagesSignedOutBody => 'ستظهر هنا محادثاتك مع الحرفيين.';
+
+  @override
+  String signedInAs(String email) {
+    return 'تم تسجيل الدخول بحساب $email';
+  }
 }

@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/theme_mode_controller.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
+import '../../auth/application/auth_providers.dart';
 import '../../gallery/gallery_config.dart';
 import '../../settings/presentation/language_selector.dart';
 import '../../../core/haptics.dart';
@@ -27,6 +30,8 @@ class ProfileScreen extends ConsumerWidget {
         children: [
           const SizedBox(height: AppSpacing.lg),
           Text(l10n.navProfile, style: text.headlineMedium),
+          const SizedBox(height: AppSpacing.lg),
+          const _AccountCard(),
           const SizedBox(height: AppSpacing.xl),
           Text(l10n.chooseLanguage, style: text.titleMedium),
           const SizedBox(height: AppSpacing.md),
@@ -63,6 +68,67 @@ class ProfileScreen extends ConsumerWidget {
               onTap: () => context.push(AppRoutes.gallery),
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Who is signed in (with a sign-out button), or an invitation to sign in.
+class _AccountCard extends ConsumerWidget {
+  const _AccountCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final user = ref.watch(currentUserProvider);
+    final busy = ref.watch(authActionsProvider);
+    final text = Theme.of(context).textTheme;
+    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+
+    if (user == null) {
+      return AppCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(l10n.signedOutProfileTitle, style: text.titleMedium),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              l10n.signedOutProfileBody,
+              style: text.bodyMedium?.copyWith(color: muted),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            AppButton(
+              label: l10n.signIn,
+              onPressed: () => context.push(AppRoutes.login),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            AppButton(
+              label: l10n.createAccount,
+              variant: AppButtonVariant.secondary,
+              onPressed: () => context.push(AppRoutes.register),
+            ),
+          ],
+        ),
+      );
+    }
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (user.fullName != null && user.fullName!.isNotEmpty)
+            Text(user.fullName!, style: text.titleMedium),
+          Text(
+            l10n.signedInAs(user.email),
+            style: text.bodyMedium?.copyWith(color: muted),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          AppButton(
+            label: l10n.signOut,
+            variant: AppButtonVariant.secondary,
+            isLoading: busy,
+            onPressed: () => ref.read(authActionsProvider.notifier).signOut(),
+          ),
         ],
       ),
     );

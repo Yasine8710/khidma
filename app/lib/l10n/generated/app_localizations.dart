@@ -381,6 +381,258 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Précédent'**
   String get back;
+
+  /// No description provided for @signIn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Se connecter'**
+  String get signIn;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer un compte'**
+  String get createAccount;
+
+  /// No description provided for @signOut.
+  ///
+  /// In fr, this message translates to:
+  /// **'Se déconnecter'**
+  String get signOut;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse e-mail'**
+  String get emailLabel;
+
+  /// No description provided for @passwordLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe'**
+  String get passwordLabel;
+
+  /// No description provided for @fullNameLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom complet'**
+  String get fullNameLabel;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe oublié ?'**
+  String get forgotPassword;
+
+  /// No description provided for @sendResetLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer le lien'**
+  String get sendResetLink;
+
+  /// No description provided for @noAccountYet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore de compte ?'**
+  String get noAccountYet;
+
+  /// No description provided for @haveAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà un compte ?'**
+  String get haveAccount;
+
+  /// No description provided for @signInTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bon retour'**
+  String get signInTitle;
+
+  /// No description provided for @signInSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connectez-vous pour demander des devis et suivre vos demandes.'**
+  String get signInSubtitle;
+
+  /// No description provided for @registerTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créez votre compte'**
+  String get registerTitle;
+
+  /// No description provided for @registerSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quelques secondes suffisent.'**
+  String get registerSubtitle;
+
+  /// No description provided for @forgotTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réinitialiser le mot de passe'**
+  String get forgotTitle;
+
+  /// No description provided for @forgotSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrez votre e-mail : nous vous envoyons un lien pour choisir un nouveau mot de passe.'**
+  String get forgotSubtitle;
+
+  /// No description provided for @resetSentTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifiez vos e-mails'**
+  String get resetSentTitle;
+
+  /// No description provided for @resetSentBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Si un compte existe pour {email}, un lien de réinitialisation vient d\'être envoyé.'**
+  String resetSentBody(String email);
+
+  /// No description provided for @confirmEmailTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmez votre adresse e-mail'**
+  String get confirmEmailTitle;
+
+  /// No description provided for @confirmEmailBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nous avons envoyé un lien de confirmation à {email}. Ouvrez-le pour activer votre compte.'**
+  String confirmEmailBody(String email);
+
+  /// No description provided for @backToSignIn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour à la connexion'**
+  String get backToSignIn;
+
+  /// No description provided for @errEmailRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisissez votre adresse e-mail.'**
+  String get errEmailRequired;
+
+  /// No description provided for @errEmailInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse e-mail invalide.'**
+  String get errEmailInvalid;
+
+  /// No description provided for @errPasswordRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisissez votre mot de passe.'**
+  String get errPasswordRequired;
+
+  /// No description provided for @errPasswordShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'8 caractères minimum.'**
+  String get errPasswordShort;
+
+  /// No description provided for @errPasswordLong.
+  ///
+  /// In fr, this message translates to:
+  /// **'72 caractères maximum.'**
+  String get errPasswordLong;
+
+  /// No description provided for @errNameRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisissez votre nom.'**
+  String get errNameRequired;
+
+  /// No description provided for @failInvalidCredentials.
+  ///
+  /// In fr, this message translates to:
+  /// **'E-mail ou mot de passe incorrect.'**
+  String get failInvalidCredentials;
+
+  /// No description provided for @failEmailNotConfirmed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmez d\'abord votre adresse e-mail (lien reçu par e-mail).'**
+  String get failEmailNotConfirmed;
+
+  /// No description provided for @failWeakPassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe trop faible. Choisissez-en un plus long et moins courant.'**
+  String get failWeakPassword;
+
+  /// No description provided for @failSignUpDisabled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les inscriptions sont fermées pour le moment.'**
+  String get failSignUpDisabled;
+
+  /// No description provided for @failRateLimited.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop de tentatives. Réessayez dans quelques minutes.'**
+  String get failRateLimited;
+
+  /// No description provided for @failNetwork.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion impossible. Vérifiez votre réseau.'**
+  String get failNetwork;
+
+  /// No description provided for @failNotConfigured.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les comptes ne sont pas disponibles dans cette version de l\'application.'**
+  String get failNotConfigured;
+
+  /// No description provided for @failUnknown.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une erreur est survenue. Réessayez.'**
+  String get failUnknown;
+
+  /// No description provided for @signedOutProfileTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connectez-vous ou créez un compte'**
+  String get signedOutProfileTitle;
+
+  /// No description provided for @signedOutProfileBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour demander un devis et contacter des professionnels.'**
+  String get signedOutProfileBody;
+
+  /// No description provided for @requestsSignedOutTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connectez-vous pour voir vos demandes'**
+  String get requestsSignedOutTitle;
+
+  /// No description provided for @requestsSignedOutBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos demandes de devis et les offres reçues apparaîtront ici.'**
+  String get requestsSignedOutBody;
+
+  /// No description provided for @messagesSignedOutTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connectez-vous pour discuter'**
+  String get messagesSignedOutTitle;
+
+  /// No description provided for @messagesSignedOutBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos conversations avec les professionnels apparaîtront ici.'**
+  String get messagesSignedOutBody;
+
+  /// No description provided for @signedInAs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connecté en tant que {email}'**
+  String signedInAs(String email);
 }
 
 class _AppLocalizationsDelegate

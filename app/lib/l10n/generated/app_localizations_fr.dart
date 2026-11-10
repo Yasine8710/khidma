@@ -175,4 +175,146 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get back => 'Précédent';
+
+  @override
+  String get signIn => 'Se connecter';
+
+  @override
+  String get createAccount => 'Créer un compte';
+
+  @override
+  String get signOut => 'Se déconnecter';
+
+  @override
+  String get emailLabel => 'Adresse e-mail';
+
+  @override
+  String get passwordLabel => 'Mot de passe';
+
+  @override
+  String get fullNameLabel => 'Nom complet';
+
+  @override
+  String get forgotPassword => 'Mot de passe oublié ?';
+
+  @override
+  String get sendResetLink => 'Envoyer le lien';
+
+  @override
+  String get noAccountYet => 'Pas encore de compte ?';
+
+  @override
+  String get haveAccount => 'Déjà un compte ?';
+
+  @override
+  String get signInTitle => 'Bon retour';
+
+  @override
+  String get signInSubtitle =>
+      'Connectez-vous pour demander des devis et suivre vos demandes.';
+
+  @override
+  String get registerTitle => 'Créez votre compte';
+
+  @override
+  String get registerSubtitle => 'Quelques secondes suffisent.';
+
+  @override
+  String get forgotTitle => 'Réinitialiser le mot de passe';
+
+  @override
+  String get forgotSubtitle =>
+      'Entrez votre e-mail : nous vous envoyons un lien pour choisir un nouveau mot de passe.';
+
+  @override
+  String get resetSentTitle => 'Vérifiez vos e-mails';
+
+  @override
+  String resetSentBody(String email) {
+    return 'Si un compte existe pour $email, un lien de réinitialisation vient d\'être envoyé.';
+  }
+
+  @override
+  String get confirmEmailTitle => 'Confirmez votre adresse e-mail';
+
+  @override
+  String confirmEmailBody(String email) {
+    return 'Nous avons envoyé un lien de confirmation à $email. Ouvrez-le pour activer votre compte.';
+  }
+
+  @override
+  String get backToSignIn => 'Retour à la connexion';
+
+  @override
+  String get errEmailRequired => 'Saisissez votre adresse e-mail.';
+
+  @override
+  String get errEmailInvalid => 'Adresse e-mail invalide.';
+
+  @override
+  String get errPasswordRequired => 'Saisissez votre mot de passe.';
+
+  @override
+  String get errPasswordShort => '8 caractères minimum.';
+
+  @override
+  String get errPasswordLong => '72 caractères maximum.';
+
+  @override
+  String get errNameRequired => 'Saisissez votre nom.';
+
+  @override
+  String get failInvalidCredentials => 'E-mail ou mot de passe incorrect.';
+
+  @override
+  String get failEmailNotConfirmed =>
+      'Confirmez d\'abord votre adresse e-mail (lien reçu par e-mail).';
+
+  @override
+  String get failWeakPassword =>
+      'Mot de passe trop faible. Choisissez-en un plus long et moins courant.';
+
+  @override
+  String get failSignUpDisabled =>
+      'Les inscriptions sont fermées pour le moment.';
+
+  @override
+  String get failRateLimited =>
+      'Trop de tentatives. Réessayez dans quelques minutes.';
+
+  @override
+  String get failNetwork => 'Connexion impossible. Vérifiez votre réseau.';
+
+  @override
+  String get failNotConfigured =>
+      'Les comptes ne sont pas disponibles dans cette version de l\'application.';
+
+  @override
+  String get failUnknown => 'Une erreur est survenue. Réessayez.';
+
+  @override
+  String get signedOutProfileTitle => 'Connectez-vous ou créez un compte';
+
+  @override
+  String get signedOutProfileBody =>
+      'Pour demander un devis et contacter des professionnels.';
+
+  @override
+  String get requestsSignedOutTitle => 'Connectez-vous pour voir vos demandes';
+
+  @override
+  String get requestsSignedOutBody =>
+      'Vos demandes de devis et les offres reçues apparaîtront ici.';
+
+  @override
+  String get messagesSignedOutTitle => 'Connectez-vous pour discuter';
+
+  @override
+  String get messagesSignedOutBody =>
+      'Vos conversations avec les professionnels apparaîtront ici.';
+
+  @override
+  String signedInAs(String email) {
+    return 'Connecté en tant que $email';
+  }
 }

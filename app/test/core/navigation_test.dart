@@ -33,8 +33,8 @@ void main() {
   testWidgets('each tab opens its screen', (tester) async {
     final c = await pumpApp(tester);
     final expected = {
-      'Demandes': ('Aucune demande pour l\'instant', AppRoutes.requests),
-      'Messages': ('Aucun message', AppRoutes.messages),
+      'Demandes': ('Connectez-vous pour voir vos demandes', AppRoutes.requests),
+      'Messages': ('Connectez-vous pour discuter', AppRoutes.messages),
       'Profil': ('Choisir la langue', AppRoutes.profile),
       'Accueil': ('Les professionnels arrivent bientôt', AppRoutes.home),
     };
@@ -89,6 +89,7 @@ void main() {
     final c = await pumpApp(tester);
     await tester.tap(find.text('Profil'));
     await tester.pumpAndSettle();
+    await scrollProfileTo(tester, find.text('Sombre'));
     await tester.tap(find.text('Sombre'));
     await tester.pumpAndSettle();
     expect(c.read(themeModeProvider), ThemeMode.dark);
