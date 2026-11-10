@@ -143,6 +143,8 @@ describe('structural security guards', () => {
       'authenticated:portfolio_items:SELECT',
       'authenticated:portfolio_items:INSERT',
       'authenticated:portfolio_items:DELETE',
+      'authenticated:quote_offers:SELECT',
+      'authenticated:bookings:SELECT',
     ];
     assert.deepEqual([...got].sort(), [...expected].sort());
   });

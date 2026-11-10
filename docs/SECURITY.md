@@ -29,6 +29,9 @@ Reporting vulnerabilities: see the root [SECURITY.md](../SECURITY.md).
 | professional_profiles | R published, **never** `contact_phone` / `verified_at` | same as anon | R own (draft too); U profile fields, `is_published`; own phone via `get_my_professional_contact()` | R all rows; verification via RPC |
 | professional_services, service_areas | R when profile published | R when profile published | R, C, D own | R as above |
 | contact_reveals (rate-limit log) | - | - | - | - |
+| quote_requests | - | - | R own, and those they offered on; no direct writes | R all |
+| quote_offers | - | - | R own offers, and offers on own requests (never a rival's); no direct writes | R all |
+| bookings | - | - | R as customer or professional; no direct writes | R all |
 | favorites | - | - | R, C, D own only (registered accounts, published professionals, max 200, one insert at a time per user) | no access |
 
 Functions (all `SECURITY DEFINER` ones pin `search_path = ''`; no function is callable by PUBLIC; a test enumerates exactly who can execute what):
@@ -98,6 +101,14 @@ Not yet verified against a real project: the end-to-end link flow on a device, t
 ### Location (Phase 3.6)
 - Only an approximate position (rounded to ~1 km) is used, in memory only, for 10 minutes; it is sent only as search parameters. Android requests coarse location only; iOS asks when-in-use with reduced accuracy by default.
 - **Before an App Store upload (needs a Mac):** confirm the release binary does not reference `requestAlwaysAuthorization` (geolocator's `BYPASS_PERMISSION_LOCATION_ALWAYS=1`, set in CI, may not be honoured under Swift Package Manager; known upstream issue). If Apple reports ITMS-90683, add an honest `NSLocationAlwaysAndWhenInUseUsageDescription` ("not used") as the fallback.
+
+### Requests, offers, bookings (Phase 5.1)
+- Clients only read these tables (RLS); every change goes through a `SECURITY DEFINER` function that checks the caller and the allowed transition (request: open -> awarded/cancelled/expired; offer: pending -> accepted/declined/withdrawn; booking: scheduled -> in_progress -> pending_confirmation -> completed, or cancelled while scheduled/in progress).
+- `accept_offer` locks the request row first, so two accepts, or an accept and a cancel, cannot both win. The customer, not the professional, confirms completion (reviews will be tied to completed bookings).
+- Professionals discover open requests with `list_open_requests()`, which never returns who asked. Rate limits: 5 requests per hour and 10 open per customer; 50 pending offers per professional.
+- `expire_stale_requests()` is for a scheduled job running as the service role (not callable by clients): to be scheduled when the project exists.
+- `quote_requests.customer_id` is not selectable by any client: a professional who offered cannot learn who asked until a booking exists (bookings name both parties).
+- Deleting an account deletes its requests, offers and bookings (cascade), including those the other party was involved in; requests a leaving professional had won become `cancelled` rather than staying `awarded` without a booking.
 
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.

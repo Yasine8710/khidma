@@ -10,6 +10,9 @@ auth.users (Supabase)
   ├─ customer_profiles 1:1   default_governorate_id, default_city_id
   ├─ admin_users 0..1        membership row; no client access
   ├─ contact_reveals N       rate-limit/audit log of phone reveals; no client access
+  ├─ quote_requests N        customer requests (open/awarded/cancelled/expired), 14-day expiry
+  │    └─ quote_offers N     one per professional per request; price in TND (3 decimals)
+  │         └─ bookings 1    created by accept_offer; explicit lifecycle
   ├─ favorites N             saved professionals (user_id, professional_id), private, max 200
   └─ professional_profiles 0..1
        business_name, primary_category_id, description, years_experience,
