@@ -40,6 +40,8 @@ dependencies:
   flutter_animate: ^4.5.2
   supabase_flutter: ^2.18.3
   flutter_secure_storage: ^11.2.0
+  sign_in_with_apple: ^8.2.0
+  crypto: ^3.0.8
 
 dev_dependencies:
   flutter_test:

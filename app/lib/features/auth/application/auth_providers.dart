@@ -86,6 +86,11 @@ class AuthActions extends Notifier<bool> {
     ),
   );
 
+  Future<AuthActionResult> signInWithApple() => _run((r) async {
+    await r.signInWithApple();
+    return null;
+  });
+
   Future<AuthActionResult> sendPasswordReset(String email) => _run((r) async {
     await r.sendPasswordReset(email);
     return null;

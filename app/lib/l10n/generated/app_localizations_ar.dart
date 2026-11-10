@@ -384,4 +384,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get failProfileInvalid => 'بعض المعلومات غير صالحة.';
+
+  @override
+  String get continueWithApple => 'المتابعة عبر Apple';
+
+  @override
+  String get orSeparator => 'أو';
 }

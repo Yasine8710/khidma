@@ -110,5 +110,7 @@
   "phoneHelper": "يظهر لك وحدك.",
   "profileSaved": "تم حفظ الملف.",
   "failProfileLoad": "تعذّر تحميل ملفك.",
-  "failProfileInvalid": "بعض المعلومات غير صالحة."
+  "failProfileInvalid": "بعض المعلومات غير صالحة.",
+  "continueWithApple": "المتابعة عبر Apple",
+  "orSeparator": "أو"
 }

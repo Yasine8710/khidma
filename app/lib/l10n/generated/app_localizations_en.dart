@@ -385,4 +385,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get failProfileInvalid => 'Some details are invalid.';
+
+  @override
+  String get continueWithApple => 'Continue with Apple';
+
+  @override
+  String get orSeparator => 'or';
 }

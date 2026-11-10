@@ -110,5 +110,7 @@
   "phoneHelper": "Only visible to you.",
   "profileSaved": "Profile saved.",
   "failProfileLoad": "Couldn't load your profile.",
-  "failProfileInvalid": "Some details are invalid."
+  "failProfileInvalid": "Some details are invalid.",
+  "continueWithApple": "Continue with Apple",
+  "orSeparator": "or"
 }

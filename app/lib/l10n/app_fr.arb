@@ -158,5 +158,7 @@
   "phoneHelper": "Visible uniquement par vous.",
   "profileSaved": "Profil enregistré.",
   "failProfileLoad": "Impossible de charger votre profil.",
-  "failProfileInvalid": "Certaines informations sont invalides."
+  "failProfileInvalid": "Certaines informations sont invalides.",
+  "continueWithApple": "Continuer avec Apple",
+  "orSeparator": "ou"
 }

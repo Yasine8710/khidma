@@ -9,6 +9,8 @@ extension AuthTexts on AppLocalizations {
     AuthFailure.weakPassword => failWeakPassword,
     AuthFailure.signUpDisabled => failSignUpDisabled,
     AuthFailure.rateLimited => failRateLimited,
+    // Closing Apple's sheet is a choice, not an error; callers show nothing.
+    AuthFailure.cancelled => '',
     AuthFailure.network => failNetwork,
     AuthFailure.notConfigured => failNotConfigured,
     AuthFailure.unknown => failUnknown,

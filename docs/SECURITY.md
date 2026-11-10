@@ -56,6 +56,13 @@ Functions (all `SECURITY DEFINER` ones pin `search_path = ''`; no function is ca
 - **Errors and logs:** error messages from the server are never shown or forwarded (mapped to localized categories); release builds log nothing, debug builds log only the error type.
 - **Autofill** offers to save credentials only after a successful sign-in.
 
+### Sign in with Apple (app side, Phase 2.4)
+- iOS only. Flow: a fresh random nonce per attempt; Apple receives its SHA-256, Supabase receives the original and checks that they match (replay protection); the Apple identity token is exchanged with `signInWithIdToken`. Tests assert hash vs original on the wire, that a missing token sends nothing, and that closing Apple's sheet is a silent cancel, not an error.
+- Apple shares the person's name only on the first sign-in; the app stores it in the auth metadata when given. Apple users start with no profile name until they edit it.
+- The button follows Apple's style (black in light mode, white in dark) and is hidden when no backend is configured or off iOS.
+- `ios/Runner/Runner.entitlements` declares the Sign in with Apple capability and the Runner target points at it.
+- **Owner steps (needs an Apple Developer account and a Mac):** enable the *Sign in with Apple* capability for the app id `tn.khidma.khidma`; in Supabase > Authentication > Providers > Apple add the iOS bundle id as an authorized client id; build and test on a device. None of this has been verified on a device.
+
 ### Account type and roles (app side, Phase 2.5)
 - Sign-up offers two choices only: find a professional, or offer services. There is no admin option anywhere in the app; admins exist only as rows created by the platform owner.
 - "Offer services" is applied by calling `become_professional()` (the database ignores roles in sign-up metadata). With email confirmation there is no session at sign-up, so the choice is kept on the device as a *pending choice* and applied on the first session.
