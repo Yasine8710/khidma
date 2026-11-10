@@ -139,6 +139,10 @@ describe('structural security guards', () => {
       'authenticated:favorites:SELECT',
       'authenticated:favorites:INSERT',
       'authenticated:favorites:DELETE',
+      'anon:portfolio_items:SELECT',
+      'authenticated:portfolio_items:SELECT',
+      'authenticated:portfolio_items:INSERT',
+      'authenticated:portfolio_items:DELETE',
     ];
     assert.deepEqual([...got].sort(), [...expected].sort());
   });
@@ -147,7 +151,7 @@ describe('structural security guards', () => {
     const r = await db.query(
       `select grantee, table_name, column_name, privilege_type from information_schema.column_privileges
         where table_schema = 'public' and grantee in ('anon', 'authenticated')
-          and table_name in ('profiles', 'customer_profiles', 'professional_profiles')
+          and table_name in ('profiles', 'customer_profiles', 'professional_profiles', 'portfolio_items')
           and privilege_type in ('UPDATE', 'INSERT')
         order by 1, 2, 3`);
     const updates = (grantee, table) =>
@@ -158,6 +162,10 @@ describe('structural security guards', () => {
       'availability', 'business_name', 'city_id', 'contact_phone', 'description', 'governorate_id',
       'is_published', 'latitude', 'longitude', 'neighborhood_id', 'primary_category_id', 'years_experience',
     ]);
+    assert.deepEqual(
+      r.rows.filter((x) => x.grantee === 'authenticated' && x.table_name === 'portfolio_items' && x.privilege_type === 'UPDATE').map((x) => x.column_name),
+      ['caption'],
+    );
     assert.deepEqual(r.rows.filter((x) => x.grantee === 'anon'), [], 'anon may not write any column');
     // What anonymous visitors may read on professional_profiles (never contact_phone).
     const anonRead = await db.query(
@@ -196,6 +204,9 @@ describe('structural security guards', () => {
     assert.equal(await can('authenticated', 'public.set_updated_at()'), false);
     assert.equal(await can('anon', 'public.is_admin()'), true);
     assert.equal(await can('authenticated', 'public.enforce_favorites_limit()'), false);
+    assert.equal(await can('authenticated', 'public.enforce_portfolio_limit()'), false);
+    assert.equal(await can('anon', 'public.get_my_activity()'), false);
+    assert.equal(await can('authenticated', 'public.get_my_activity()'), true);
   });
 
   test('the new-user trigger is installed on auth.users', async () => {

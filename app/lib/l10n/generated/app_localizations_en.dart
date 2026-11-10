@@ -712,4 +712,255 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get mapNothingBody =>
       'None of these professionals has a known position.';
+
+  @override
+  String get regTitle => 'Professional profile';
+
+  @override
+  String regStepOf(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
+  String get regNext => 'Continue';
+
+  @override
+  String get regBack => 'Back';
+
+  @override
+  String get regStepBusiness => 'Your business';
+
+  @override
+  String get regStepLocation => 'Where do you work?';
+
+  @override
+  String get regStepAreas => 'Areas you serve';
+
+  @override
+  String get regStepServices => 'Other services';
+
+  @override
+  String get regStepContact => 'Contact';
+
+  @override
+  String get regStepReview => 'Review and publish';
+
+  @override
+  String get regBusinessName => 'Display name (business or person)';
+
+  @override
+  String get regYears => 'Years of experience (optional)';
+
+  @override
+  String get regCategory => 'Main trade';
+
+  @override
+  String get regDescription => 'Describe your services';
+
+  @override
+  String get regDescriptionHelper => 'At least 20 characters.';
+
+  @override
+  String get regGovernorate => 'Governorate';
+
+  @override
+  String get regCity => 'City (optional)';
+
+  @override
+  String get regAreasBody =>
+      'Choose the governorates you travel to, besides your own.';
+
+  @override
+  String get regServicesBody => 'Add other services you offer.';
+
+  @override
+  String get regPhone => 'Contact phone';
+
+  @override
+  String get regPhoneHelper =>
+      'Only signed-in members see it, and only when they ask.';
+
+  @override
+  String get regPhotoLater => 'Profile photos are coming soon.';
+
+  @override
+  String get regErrName => 'Between 2 and 120 characters.';
+
+  @override
+  String get regErrDescription => 'Between 20 and 2000 characters.';
+
+  @override
+  String get regErrCategory => 'Choose a trade.';
+
+  @override
+  String get regErrGovernorate => 'Choose a governorate.';
+
+  @override
+  String get regErrYears => 'Between 0 and 60.';
+
+  @override
+  String get regErrPhone => 'Invalid Tunisian number (8 digits).';
+
+  @override
+  String get regReviewBody => 'This is what customers will see.';
+
+  @override
+  String get regPublish => 'Publish my profile';
+
+  @override
+  String get regUnpublish => 'Remove from listings';
+
+  @override
+  String get regSaveDraft => 'Save and leave';
+
+  @override
+  String get regPublished => 'Your profile is published.';
+
+  @override
+  String get regDraft => 'Draft: not visible to customers.';
+
+  @override
+  String regMissing(String items) {
+    return 'To publish, you still need: $items.';
+  }
+
+  @override
+  String get gapName => 'the name';
+
+  @override
+  String get gapCategory => 'the trade';
+
+  @override
+  String get gapDescription => 'the description';
+
+  @override
+  String get gapLocation => 'the governorate';
+
+  @override
+  String get gapPhone => 'the phone';
+
+  @override
+  String get regFailNetwork =>
+      'No connection. Your answers are kept, try again.';
+
+  @override
+  String get regFailInvalid => 'Some details were refused. Please check them.';
+
+  @override
+  String get regFailForbidden => 'This account is not allowed to do that.';
+
+  @override
+  String get regFailGeneric => 'Couldn’t save. Try again.';
+
+  @override
+  String get regFailNotConfigured => 'The service is not available right now.';
+
+  @override
+  String get proCompleteCta => 'Complete my profile';
+
+  @override
+  String get proEditCta => 'Edit my professional profile';
+
+  @override
+  String get proStatusDraft => 'Profile not published';
+
+  @override
+  String get proStatusPublished => 'Profile published';
+
+  @override
+  String get dashTitle => 'My pro space';
+
+  @override
+  String get dashAvailability => 'Availability';
+
+  @override
+  String get dashActivity => 'Activity';
+
+  @override
+  String get dashActivityNote =>
+      'Anonymous counts, one hour behind: you cannot see who viewed or saved your profile.';
+
+  @override
+  String get dashViews30d => 'Contacts viewed (30 days)';
+
+  @override
+  String get dashViewsTotal => 'Contacts viewed (total)';
+
+  @override
+  String get dashFavorites => 'Saved as favorite';
+
+  @override
+  String get dashActivityFailed => 'Activity is unavailable right now.';
+
+  @override
+  String get dashViewPublic => 'View my public profile';
+
+  @override
+  String get dashSaveFailed => 'Couldn’t change that. Try again.';
+
+  @override
+  String get dashRefreshFailed =>
+      'Couldn’t refresh. What you see may be out of date.';
+
+  @override
+  String get portfolioTitle => 'My work photos';
+
+  @override
+  String get portfolioSection => 'Work photos';
+
+  @override
+  String get portfolioAdd => 'Add a photo';
+
+  @override
+  String portfolioCount(int count, int max) {
+    return '$count of $max photos';
+  }
+
+  @override
+  String get portfolioHint =>
+      'Photos of your work. They are shrunk automatically and their information (location, device) is removed.';
+
+  @override
+  String get portfolioEmpty => 'No photos yet.';
+
+  @override
+  String get portfolioRemove => 'Delete photo';
+
+  @override
+  String get portfolioRemoveTitle => 'Delete this photo?';
+
+  @override
+  String get portfolioRemoveBody => 'It will no longer show on your profile.';
+
+  @override
+  String portfolioPhotoOf(int index, int total) {
+    return 'Photo $index of $total';
+  }
+
+  @override
+  String get portfolioFailTooLarge =>
+      'This photo is too heavy, even shrunk. Choose another.';
+
+  @override
+  String get portfolioFailNotImage =>
+      'This file is not a readable photo (JPEG, PNG or WebP).';
+
+  @override
+  String get portfolioFailLimit => 'You have reached the limit of 12 photos.';
+
+  @override
+  String get portfolioFailNetwork => 'No connection. Try again.';
+
+  @override
+  String get portfolioFailGeneric => 'Couldn’t change your photos. Try again.';
+
+  @override
+  String get portfolioFailNotConfigured =>
+      'The service is not available right now.';
+
+  @override
+  String get portfolioPreparing => 'Preparing the photo…';
+
+  @override
+  String get close => 'Close';
 }

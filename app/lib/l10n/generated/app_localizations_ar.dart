@@ -709,4 +709,253 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get mapNothingBody => 'لا يملك أيٌّ من هؤلاء الحرفيين موقعًا معروفًا.';
+
+  @override
+  String get regTitle => 'الملف المهني';
+
+  @override
+  String regStepOf(int current, int total) {
+    return 'الخطوة $current من $total';
+  }
+
+  @override
+  String get regNext => 'متابعة';
+
+  @override
+  String get regBack => 'رجوع';
+
+  @override
+  String get regStepBusiness => 'نشاطك';
+
+  @override
+  String get regStepLocation => 'أين تعمل؟';
+
+  @override
+  String get regStepAreas => 'مناطق التدخل';
+
+  @override
+  String get regStepServices => 'خدمات أخرى';
+
+  @override
+  String get regStepContact => 'التواصل';
+
+  @override
+  String get regStepReview => 'المراجعة والنشر';
+
+  @override
+  String get regBusinessName => 'الاسم المعروض (مؤسسة أو شخص)';
+
+  @override
+  String get regYears => 'سنوات الخبرة (اختياري)';
+
+  @override
+  String get regCategory => 'المهنة الرئيسية';
+
+  @override
+  String get regDescription => 'صف خدماتك';
+
+  @override
+  String get regDescriptionHelper => '20 حرفًا على الأقل.';
+
+  @override
+  String get regGovernorate => 'الولاية';
+
+  @override
+  String get regCity => 'المدينة (اختياري)';
+
+  @override
+  String get regAreasBody =>
+      'اختر الولايات التي تتنقل إليها، إضافة إلى ولايتك.';
+
+  @override
+  String get regServicesBody => 'أضف خدمات أخرى تقدمها.';
+
+  @override
+  String get regPhone => 'هاتف التواصل';
+
+  @override
+  String get regPhoneHelper =>
+      'لا يراه إلا الأعضاء المسجلون، وعند طلبهم له فقط.';
+
+  @override
+  String get regPhotoLater => 'الصورة الشخصية قادمة قريبًا.';
+
+  @override
+  String get regErrName => 'بين 2 و120 حرفًا.';
+
+  @override
+  String get regErrDescription => 'بين 20 و2000 حرف.';
+
+  @override
+  String get regErrCategory => 'اختر مهنة.';
+
+  @override
+  String get regErrGovernorate => 'اختر ولاية.';
+
+  @override
+  String get regErrYears => 'بين 0 و60.';
+
+  @override
+  String get regErrPhone => 'رقم تونسي غير صالح (8 أرقام).';
+
+  @override
+  String get regReviewBody => 'هذا ما سيراه الزبائن.';
+
+  @override
+  String get regPublish => 'نشر ملفي';
+
+  @override
+  String get regUnpublish => 'إزالة من القائمة';
+
+  @override
+  String get regSaveDraft => 'حفظ ومغادرة';
+
+  @override
+  String get regPublished => 'ملفك منشور.';
+
+  @override
+  String get regDraft => 'مسودة: غير ظاهرة للزبائن.';
+
+  @override
+  String regMissing(String items) {
+    return 'للنشر ينقصك: $items.';
+  }
+
+  @override
+  String get gapName => 'الاسم';
+
+  @override
+  String get gapCategory => 'المهنة';
+
+  @override
+  String get gapDescription => 'الوصف';
+
+  @override
+  String get gapLocation => 'الولاية';
+
+  @override
+  String get gapPhone => 'الهاتف';
+
+  @override
+  String get regFailNetwork => 'لا يوجد اتصال. إجاباتك محفوظة، أعد المحاولة.';
+
+  @override
+  String get regFailInvalid => 'تم رفض بعض البيانات. تحقق منها.';
+
+  @override
+  String get regFailForbidden => 'هذا الحساب غير مسموح له بذلك.';
+
+  @override
+  String get regFailGeneric => 'تعذّر الحفظ. حاول مجددًا.';
+
+  @override
+  String get regFailNotConfigured => 'الخدمة غير متاحة حاليًا.';
+
+  @override
+  String get proCompleteCta => 'أكمل ملفي';
+
+  @override
+  String get proEditCta => 'تعديل ملفي المهني';
+
+  @override
+  String get proStatusDraft => 'الملف غير منشور';
+
+  @override
+  String get proStatusPublished => 'الملف منشور';
+
+  @override
+  String get dashTitle => 'فضائي المهني';
+
+  @override
+  String get dashAvailability => 'التوفر';
+
+  @override
+  String get dashActivity => 'النشاط';
+
+  @override
+  String get dashActivityNote =>
+      'أرقام مجهولة بتأخير ساعة: لا ترى من اطّلع على ملفك أو حفظه.';
+
+  @override
+  String get dashViews30d => 'أرقام التواصل المعروضة (30 يومًا)';
+
+  @override
+  String get dashViewsTotal => 'أرقام التواصل المعروضة (المجموع)';
+
+  @override
+  String get dashFavorites => 'محفوظ في المفضلة';
+
+  @override
+  String get dashActivityFailed => 'النشاط غير متاح حاليًا.';
+
+  @override
+  String get dashViewPublic => 'عرض ملفي العام';
+
+  @override
+  String get dashSaveFailed => 'تعذّر التغيير. حاول مجددًا.';
+
+  @override
+  String get dashRefreshFailed =>
+      'تعذّر التحديث. قد تكون البيانات المعروضة قديمة.';
+
+  @override
+  String get portfolioTitle => 'صور أعمالي';
+
+  @override
+  String get portfolioSection => 'صور الأعمال';
+
+  @override
+  String get portfolioAdd => 'إضافة صورة';
+
+  @override
+  String portfolioCount(int count, int max) {
+    return '$count من $max صور';
+  }
+
+  @override
+  String get portfolioHint =>
+      'صور من أعمالك. يتم تصغيرها تلقائيًا وتُحذف منها معلوماتها (الموقع، الجهاز).';
+
+  @override
+  String get portfolioEmpty => 'لا توجد صور بعد.';
+
+  @override
+  String get portfolioRemove => 'حذف الصورة';
+
+  @override
+  String get portfolioRemoveTitle => 'حذف هذه الصورة؟';
+
+  @override
+  String get portfolioRemoveBody => 'لن تظهر بعد الآن في ملفك.';
+
+  @override
+  String portfolioPhotoOf(int index, int total) {
+    return 'الصورة $index من $total';
+  }
+
+  @override
+  String get portfolioFailTooLarge =>
+      'هذه الصورة ثقيلة جدًا حتى بعد التصغير. اختر غيرها.';
+
+  @override
+  String get portfolioFailNotImage =>
+      'هذا الملف ليس صورة قابلة للقراءة (JPEG أو PNG أو WebP).';
+
+  @override
+  String get portfolioFailLimit => 'وصلت إلى الحد الأقصى: 12 صورة.';
+
+  @override
+  String get portfolioFailNetwork => 'لا يوجد اتصال. حاول مجددًا.';
+
+  @override
+  String get portfolioFailGeneric => 'تعذّر تعديل صورك. حاول مجددًا.';
+
+  @override
+  String get portfolioFailNotConfigured => 'الخدمة غير متاحة حاليًا.';
+
+  @override
+  String get portfolioPreparing => 'جارٍ تجهيز الصورة…';
+
+  @override
+  String get close => 'إغلاق';
 }

@@ -720,4 +720,259 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get mapNothingBody =>
       'Aucun de ces professionnels n’a de position connue.';
+
+  @override
+  String get regTitle => 'Profil professionnel';
+
+  @override
+  String regStepOf(int current, int total) {
+    return 'Étape $current sur $total';
+  }
+
+  @override
+  String get regNext => 'Continuer';
+
+  @override
+  String get regBack => 'Retour';
+
+  @override
+  String get regStepBusiness => 'Votre activité';
+
+  @override
+  String get regStepLocation => 'Où travaillez-vous ?';
+
+  @override
+  String get regStepAreas => 'Zones d’intervention';
+
+  @override
+  String get regStepServices => 'Autres services';
+
+  @override
+  String get regStepContact => 'Contact';
+
+  @override
+  String get regStepReview => 'Vérifier et publier';
+
+  @override
+  String get regBusinessName => 'Nom affiché (entreprise ou personne)';
+
+  @override
+  String get regYears => 'Années d’expérience (facultatif)';
+
+  @override
+  String get regCategory => 'Métier principal';
+
+  @override
+  String get regDescription => 'Description de vos services';
+
+  @override
+  String get regDescriptionHelper => 'Au moins 20 caractères.';
+
+  @override
+  String get regGovernorate => 'Gouvernorat';
+
+  @override
+  String get regCity => 'Ville (facultatif)';
+
+  @override
+  String get regAreasBody =>
+      'Choisissez les gouvernorats où vous vous déplacez, en plus du vôtre.';
+
+  @override
+  String get regServicesBody => 'Ajoutez d’autres services que vous proposez.';
+
+  @override
+  String get regPhone => 'Téléphone de contact';
+
+  @override
+  String get regPhoneHelper =>
+      'Seuls les membres connectés le voient, et seulement s’ils le demandent.';
+
+  @override
+  String get regPhotoLater => 'La photo de profil arrive bientôt.';
+
+  @override
+  String get regErrName => 'Entre 2 et 120 caractères.';
+
+  @override
+  String get regErrDescription => 'Entre 20 et 2000 caractères.';
+
+  @override
+  String get regErrCategory => 'Choisissez un métier.';
+
+  @override
+  String get regErrGovernorate => 'Choisissez un gouvernorat.';
+
+  @override
+  String get regErrYears => 'Entre 0 et 60.';
+
+  @override
+  String get regErrPhone => 'Numéro tunisien invalide (8 chiffres).';
+
+  @override
+  String get regReviewBody => 'Voici ce que verront les clients.';
+
+  @override
+  String get regPublish => 'Publier mon profil';
+
+  @override
+  String get regUnpublish => 'Retirer de la liste';
+
+  @override
+  String get regSaveDraft => 'Enregistrer et quitter';
+
+  @override
+  String get regPublished => 'Votre profil est publié.';
+
+  @override
+  String get regDraft => 'Brouillon : invisible pour les clients.';
+
+  @override
+  String regMissing(String items) {
+    return 'Pour publier, il manque : $items.';
+  }
+
+  @override
+  String get gapName => 'le nom';
+
+  @override
+  String get gapCategory => 'le métier';
+
+  @override
+  String get gapDescription => 'la description';
+
+  @override
+  String get gapLocation => 'le gouvernorat';
+
+  @override
+  String get gapPhone => 'le téléphone';
+
+  @override
+  String get regFailNetwork =>
+      'Connexion impossible. Vos réponses sont conservées, réessayez.';
+
+  @override
+  String get regFailInvalid =>
+      'Certaines informations sont refusées. Vérifiez-les.';
+
+  @override
+  String get regFailForbidden => 'Action non autorisée pour ce compte.';
+
+  @override
+  String get regFailGeneric => 'Impossible d’enregistrer. Réessayez.';
+
+  @override
+  String get regFailNotConfigured =>
+      'Le service n’est pas disponible pour le moment.';
+
+  @override
+  String get proCompleteCta => 'Compléter mon profil';
+
+  @override
+  String get proEditCta => 'Modifier mon profil professionnel';
+
+  @override
+  String get proStatusDraft => 'Profil non publié';
+
+  @override
+  String get proStatusPublished => 'Profil publié';
+
+  @override
+  String get dashTitle => 'Mon espace pro';
+
+  @override
+  String get dashAvailability => 'Disponibilité';
+
+  @override
+  String get dashActivity => 'Activité';
+
+  @override
+  String get dashActivityNote =>
+      'Chiffres anonymes, avec une heure de décalage : vous ne voyez pas qui a consulté ou enregistré votre profil.';
+
+  @override
+  String get dashViews30d => 'Contacts consultés (30 jours)';
+
+  @override
+  String get dashViewsTotal => 'Contacts consultés (total)';
+
+  @override
+  String get dashFavorites => 'Enregistrés en favoris';
+
+  @override
+  String get dashActivityFailed => 'Activité indisponible pour le moment.';
+
+  @override
+  String get dashViewPublic => 'Voir mon profil public';
+
+  @override
+  String get dashSaveFailed => 'Modification impossible. Réessayez.';
+
+  @override
+  String get dashRefreshFailed =>
+      'Impossible d’actualiser. Les chiffres affichés peuvent être anciens.';
+
+  @override
+  String get portfolioTitle => 'Mes réalisations';
+
+  @override
+  String get portfolioSection => 'Réalisations';
+
+  @override
+  String get portfolioAdd => 'Ajouter une photo';
+
+  @override
+  String portfolioCount(int count, int max) {
+    return '$count sur $max photos';
+  }
+
+  @override
+  String get portfolioHint =>
+      'Photos de vos travaux. Elles sont réduites automatiquement et leurs informations (position, appareil) sont retirées.';
+
+  @override
+  String get portfolioEmpty => 'Aucune photo pour le moment.';
+
+  @override
+  String get portfolioRemove => 'Supprimer la photo';
+
+  @override
+  String get portfolioRemoveTitle => 'Supprimer cette photo ?';
+
+  @override
+  String get portfolioRemoveBody =>
+      'Elle ne sera plus visible sur votre profil.';
+
+  @override
+  String portfolioPhotoOf(int index, int total) {
+    return 'Photo $index sur $total';
+  }
+
+  @override
+  String get portfolioFailTooLarge =>
+      'Cette photo est trop lourde, même réduite. Choisissez-en une autre.';
+
+  @override
+  String get portfolioFailNotImage =>
+      'Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).';
+
+  @override
+  String get portfolioFailLimit => 'Vous avez atteint la limite de 12 photos.';
+
+  @override
+  String get portfolioFailNetwork => 'Connexion impossible. Réessayez.';
+
+  @override
+  String get portfolioFailGeneric =>
+      'Impossible de modifier vos photos. Réessayez.';
+
+  @override
+  String get portfolioFailNotConfigured =>
+      'Le service n’est pas disponible pour le moment.';
+
+  @override
+  String get portfolioPreparing => 'Préparation de la photo…';
+
+  @override
+  String get close => 'Fermer';
 }
