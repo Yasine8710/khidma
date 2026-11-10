@@ -5,7 +5,7 @@
 Claude plans → delegates to Codex (review or isolated-branch implementation) → Claude reviews/integrates → tests → docs. No two agents edit the same files; use branches/worktrees.
 
 ## Status
-- Phase: 1 (design system). Slices 1.0 tokens, 1.1 l10n, 1.2 navigation merged to develop; next 1.3 components.
+- Phase: 1 (design system). Slices 1.0 tokens, 1.1 l10n, 1.2 navigation, 1.3 components merged to develop; next 1.4 onboarding.
 - Claude: repo, license, docs, Flutter bootstrap
 - Codex: architecture review DONE (raw output: docs/reviews-codex-phase0.md)
 - Accepted from Codex: manual Riverpod, lifecycle state machine, atomic accept, permission matrix, multi-role flags, outbox notifications, privacy split, early signed-iOS proof, Google Maps pending benchmark.
@@ -36,3 +36,19 @@ Visual check: web build rendered on a 390 px viewport in French light and Arabic
 Not done (deferred, stated): browser Back/Forward history tests and nested-detail restoration tests, because no detail routes exist yet; keyboard-focus ring visual check.
 Test-env caveat: flutter test text widths are not representative of real fonts, so a truncation test at 2x was dropped.
 Tests: 42 pass, analyze clean.
+
+## Phase 1, slice 1.3 (components): Codex review, 2026-11-10
+Codex (read-only, static) raised 7 P1, 17 P2. Fixed:
+- Password toggle was unreachable by screen readers (MergeSemantics swallowed its action): label now names the field, toggle stays its own button; toggle follows `enabled` and re-syncs on `obscureText` change.
+- Loading button lost its button role: now stays a disabled button, spinner announces "loading"; duplicate label removed.
+- Tappable card: label and tap now on one node, min 48 high.
+- Chip: packs in a Wrap (was one per row), grows with text, label wraps, keeps focus semantics.
+- Inline (`expand: false`) buttons no longer demand infinite width.
+- Field and chip borders were 1.28:1 (below WCAG 3:1 for controls): `outline` is now a control color (3.7:1 light, 3.65:1 dark); the old hairline moved to `outlineVariant` for cards, dividers and bars.
+- Neutral badge text was 4.17:1: darkened (found by our own contrast test).
+- Avatar: grapheme-safe initials, no blank frame before load, safe `cacheWidth`, `decorative` mode.
+- Rating: wraps instead of overflowing; number/count forced LTR.
+- Header action capped so translations wrap.
+Deferred (stated): count text on primary-container backgrounds is 4.12:1 dark (no such use yet; fix when a card uses it); keyboard-focus ring and shimmer-unmount tests; controlled image-stream avatar tests; 2x text scale with real fonts (test env uses substitute font widths).
+Visual review of all components is part of slice 1.6 (gallery); they have not been seen on screen yet.
+Tests: 83 pass, analyze clean.

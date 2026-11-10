@@ -98,4 +98,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backToHome => 'Back to home';
+
+  @override
+  String get verified => 'Verified';
+
+  @override
+  String get ratingNone => 'No reviews yet';
+
+  @override
+  String ratingSummary(String value, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count reviews',
+      one: '1 review',
+    );
+    return 'Rated $value out of 5, $_temp0';
+  }
+
+  @override
+  String get errorTitle => 'Something went wrong';
+
+  @override
+  String get errorBody => 'Check your connection and try again.';
+
+  @override
+  String get retry => 'Try again';
+
+  @override
+  String get loading => 'Loading…';
+
+  @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
 }

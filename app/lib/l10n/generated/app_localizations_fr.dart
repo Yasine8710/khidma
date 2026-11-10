@@ -98,4 +98,39 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backToHome => 'Retour à l\'accueil';
+
+  @override
+  String get verified => 'Vérifié';
+
+  @override
+  String get ratingNone => 'Pas encore d\'avis';
+
+  @override
+  String ratingSummary(String value, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count avis',
+      one: '1 avis',
+    );
+    return 'Note $value sur 5, $_temp0';
+  }
+
+  @override
+  String get errorTitle => 'Une erreur est survenue';
+
+  @override
+  String get errorBody => 'Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get retry => 'Réessayer';
+
+  @override
+  String get loading => 'Chargement…';
+
+  @override
+  String get showPassword => 'Afficher le mot de passe';
+
+  @override
+  String get hidePassword => 'Masquer le mot de passe';
 }

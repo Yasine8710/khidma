@@ -25,5 +25,14 @@
   "themeDark": "داكن",
   "notFoundTitle": "الصفحة غير موجودة",
   "notFoundBody": "هذه الصفحة غير موجودة أو تم نقلها.",
-  "backToHome": "العودة إلى الرئيسية"
+  "backToHome": "العودة إلى الرئيسية",
+  "verified": "موثّق",
+  "ratingNone": "لا توجد تقييمات بعد",
+  "ratingSummary": "التقييم {value} من 5، {count, plural, =1{تقييم واحد} =2{تقييمان} few{{count} تقييمات} many{{count} تقييمًا} other{{count} تقييم}}",
+  "errorTitle": "حدث خطأ ما",
+  "errorBody": "تحقق من اتصالك وأعد المحاولة.",
+  "retry": "إعادة المحاولة",
+  "loading": "جارٍ التحميل…",
+  "showPassword": "إظهار كلمة المرور",
+  "hidePassword": "إخفاء كلمة المرور"
 }

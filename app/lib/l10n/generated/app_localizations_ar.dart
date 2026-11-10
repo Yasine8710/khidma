@@ -98,4 +98,42 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backToHome => 'العودة إلى الرئيسية';
+
+  @override
+  String get verified => 'موثّق';
+
+  @override
+  String get ratingNone => 'لا توجد تقييمات بعد';
+
+  @override
+  String ratingSummary(String value, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count تقييم',
+      many: '$count تقييمًا',
+      few: '$count تقييمات',
+      two: 'تقييمان',
+      one: 'تقييم واحد',
+    );
+    return 'التقييم $value من 5، $_temp0';
+  }
+
+  @override
+  String get errorTitle => 'حدث خطأ ما';
+
+  @override
+  String get errorBody => 'تحقق من اتصالك وأعد المحاولة.';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get loading => 'جارٍ التحميل…';
+
+  @override
+  String get showPassword => 'إظهار كلمة المرور';
+
+  @override
+  String get hidePassword => 'إخفاء كلمة المرور';
 }

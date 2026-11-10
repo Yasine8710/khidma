@@ -25,5 +25,14 @@
   "themeDark": "Dark",
   "notFoundTitle": "Page not found",
   "notFoundBody": "This page doesn't exist or has moved.",
-  "backToHome": "Back to home"
+  "backToHome": "Back to home",
+  "verified": "Verified",
+  "ratingNone": "No reviews yet",
+  "ratingSummary": "Rated {value} out of 5, {count, plural, =1{1 review} other{{count} reviews}}",
+  "errorTitle": "Something went wrong",
+  "errorBody": "Check your connection and try again.",
+  "retry": "Try again",
+  "loading": "Loading…",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password"
 }

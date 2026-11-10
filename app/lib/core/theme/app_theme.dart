@@ -30,7 +30,7 @@ abstract final class AppTheme {
       surface: AppColors.surface,
       onSurface: AppColors.ink,
       onSurfaceVariant: AppColors.muted,
-      outline: AppColors.border,
+      outline: AppColors.control,
       outlineVariant: AppColors.border,
     ),
     AppColors.background,
@@ -61,7 +61,7 @@ abstract final class AppTheme {
       surface: AppColors.darkSurface,
       onSurface: AppColors.darkInk,
       onSurfaceVariant: AppColors.darkMuted,
-      outline: AppColors.darkBorder,
+      outline: AppColors.darkControl,
       outlineVariant: AppColors.darkBorder,
     ),
     AppColors.darkBackground,
@@ -82,7 +82,7 @@ abstract final class AppTheme {
       scaffoldBackgroundColor: background,
       fontFamily: AppTypography.familyFor(locale),
       textTheme: text,
-      dividerColor: cs.outline,
+      dividerColor: cs.outlineVariant,
       splashFactory: NoSplash.splashFactory,
       appBarTheme: AppBarTheme(
         backgroundColor: background,
@@ -98,7 +98,7 @@ abstract final class AppTheme {
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          side: BorderSide(color: cs.outline),
+          side: BorderSide(color: cs.outlineVariant),
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(

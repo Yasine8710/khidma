@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/theme_mode_controller.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../settings/presentation/language_selector.dart';
+import '../../../core/haptics.dart';
 
 /// Settings only for now (language, appearance). Account features arrive in
 /// Phase 2.
@@ -46,7 +46,7 @@ class ProfileScreen extends ConsumerWidget {
             ],
             selected: {mode},
             onSelectionChanged: (s) {
-              HapticFeedback.selectionClick();
+              AppHaptics.selection();
               ref.read(themeModeProvider.notifier).setMode(s.first);
             },
           ),
