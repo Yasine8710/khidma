@@ -9,6 +9,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../auth/application/auth_providers.dart';
+import 'delete_account_dialog.dart';
 import '../application/profile_providers.dart';
 import 'edit_profile_screen.dart';
 import '../../auth/presentation/auth_texts.dart';
@@ -152,6 +153,14 @@ class _AccountCard extends ConsumerWidget {
                 );
               }
             },
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          AppButton(
+            label: l10n.deleteAccount,
+            variant: AppButtonVariant.text,
+            onPressed: busy
+                ? null
+                : () => confirmAndDeleteAccount(context, ref),
           ),
         ],
       ),

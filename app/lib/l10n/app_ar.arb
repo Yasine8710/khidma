@@ -112,5 +112,12 @@
   "failProfileLoad": "تعذّر تحميل ملفك.",
   "failProfileInvalid": "بعض المعلومات غير صالحة.",
   "continueWithApple": "المتابعة عبر Apple",
-  "orSeparator": "أو"
+  "orSeparator": "أو",
+  "deleteAccount": "حذف حسابي",
+  "deleteAccountTitle": "حذف حسابك؟",
+  "deleteAccountBody": "سيتم حذف ملفك ومعلوماتك والبيانات المرتبطة بها نهائيًا. لا يمكن التراجع عن هذا الإجراء.",
+  "deleteConfirmWord": "حذف",
+  "deleteTypeToConfirm": "اكتب {word} للتأكيد",
+  "cancel": "إلغاء",
+  "accountDeleted": "تم حذف حسابك."
 }

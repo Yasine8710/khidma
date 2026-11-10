@@ -98,4 +98,8 @@ class SupabaseProfileRepository implements ProfileRepository {
   @override
   Future<void> becomeProfessional() =>
       _guard(() => _client.rpc('become_professional'));
+
+  @override
+  Future<void> deleteMyAccount() =>
+      _guard(() => _client.rpc('delete_my_account'));
 }

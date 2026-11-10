@@ -390,4 +390,28 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get orSeparator => 'أو';
+
+  @override
+  String get deleteAccount => 'حذف حسابي';
+
+  @override
+  String get deleteAccountTitle => 'حذف حسابك؟';
+
+  @override
+  String get deleteAccountBody =>
+      'سيتم حذف ملفك ومعلوماتك والبيانات المرتبطة بها نهائيًا. لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get deleteConfirmWord => 'حذف';
+
+  @override
+  String deleteTypeToConfirm(String word) {
+    return 'اكتب $word للتأكيد';
+  }
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get accountDeleted => 'تم حذف حسابك.';
 }

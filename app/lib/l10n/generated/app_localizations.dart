@@ -777,6 +777,48 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'ou'**
   String get orSeparator;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer mon compte'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer votre compte ?'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre profil, vos informations et vos données associées seront supprimés définitivement. Cette action est irréversible.'**
+  String get deleteAccountBody;
+
+  /// No description provided for @deleteConfirmWord.
+  ///
+  /// In fr, this message translates to:
+  /// **'SUPPRIMER'**
+  String get deleteConfirmWord;
+
+  /// No description provided for @deleteTypeToConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisissez {word} pour confirmer'**
+  String deleteTypeToConfirm(String word);
+
+  /// No description provided for @cancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get cancel;
+
+  /// No description provided for @accountDeleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre compte a été supprimé.'**
+  String get accountDeleted;
 }
 
 class _AppLocalizationsDelegate

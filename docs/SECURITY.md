@@ -56,6 +56,12 @@ Functions (all `SECURITY DEFINER` ones pin `search_path = ''`; no function is ca
 - **Errors and logs:** error messages from the server are never shown or forwarded (mapped to localized categories); release builds log nothing, debug builds log only the error type.
 - **Autofill** offers to save credentials only after a successful sign-in.
 
+### Account deletion (Phase 2.7, App Store 5.1.1(v))
+- Profile > "Delete my account" opens a confirmation that explains the consequences and requires typing a localized word (SUPPRIMER / DELETE / حذف); Cancel changes nothing.
+- The app calls `delete_my_account()`: a `SECURITY DEFINER` function with no arguments (a person can only delete themselves), executable by registered users only (not anon, not anonymous-auth). It deletes the caller from `auth.users`, and every row cascades. A backend test lists every user-id column in `public` and proves nothing is left, including reveal-log rows about the person.
+- If the server call fails, nothing is deleted and the person stays signed in with an error message. On success the app signs out locally and forgets the device's pending account choice.
+- **Not done / to verify on the real project:** the function assumes its owner may delete from `auth.users` (true on hosted Supabase, to be confirmed in issue #6; otherwise use an Edge Function with the admin API). Revoking the Apple token on deletion needs a server-side Edge Function holding the owner's Apple key (issue #32 stays open for it). Any future table with personal data must cascade from `profiles`/`auth.users`.
+
 ### Sign in with Apple (app side, Phase 2.4)
 - iOS only. Flow: a fresh random nonce per attempt; Apple receives its SHA-256, Supabase receives the original and checks that they match (replay protection); the Apple identity token is exchanged with `signInWithIdToken`. Tests assert hash vs original on the wire, that a missing token sends nothing, and that closing Apple's sheet is a silent cancel, not an error.
 - Apple shares the person's name only on the first sign-in; the app stores it in the auth metadata when given. Apple users start with no profile name until they edit it.

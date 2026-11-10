@@ -391,4 +391,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orSeparator => 'or';
+
+  @override
+  String get deleteAccount => 'Delete my account';
+
+  @override
+  String get deleteAccountTitle => 'Delete your account?';
+
+  @override
+  String get deleteAccountBody =>
+      'Your profile, your details and the data linked to them will be permanently deleted. This cannot be undone.';
+
+  @override
+  String get deleteConfirmWord => 'DELETE';
+
+  @override
+  String deleteTypeToConfirm(String word) {
+    return 'Type $word to confirm';
+  }
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get accountDeleted => 'Your account has been deleted.';
 }
