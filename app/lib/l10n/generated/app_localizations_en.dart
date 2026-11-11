@@ -814,6 +814,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get regDone => 'Done';
 
   @override
+  String get regUsePosition => 'Use my current location';
+
+  @override
+  String get regPositionSet => 'Approximate position saved (about 1 km).';
+
+  @override
+  String get regPositionFailed =>
+      'Could not get your position. Check the location permission: otherwise the map will use your governorate.';
+
+  @override
   String get regSaveDraft => 'Save and leave';
 
   @override

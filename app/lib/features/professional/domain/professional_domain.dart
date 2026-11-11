@@ -1,3 +1,4 @@
+import '../../location/domain/location_domain.dart';
 import '../../../core/format/tunisian_phone.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
 
@@ -34,6 +35,7 @@ class ProfessionalProfileInput {
     this.cityId,
     this.neighborhoodId,
     this.phone,
+    this.position,
   });
 
   final String? businessName;
@@ -46,6 +48,9 @@ class ProfessionalProfileInput {
   /// Kept only while the city is unchanged (a neighbourhood belongs to a city).
   final int? neighborhoodId;
   final String? phone;
+
+  /// Where the pin goes (about 1 km). Null: the database uses the governorate.
+  final LocationFix? position;
 }
 
 /// The signed-in professional's own profile, draft or published.
@@ -59,6 +64,7 @@ class ProfessionalDraft {
     this.cityId,
     this.neighborhoodId,
     this.phone,
+    this.position,
     this.serviceCategoryIds = const {},
     this.areas = const [],
     this.availability = Availability.available,
@@ -76,6 +82,9 @@ class ProfessionalDraft {
 
   /// E.164 (`+216...`), readable only by the owner.
   final String? phone;
+
+  /// The pin on the map: the owner's own, or the governorate centre.
+  final LocationFix? position;
   final Set<int> serviceCategoryIds;
   final List<ServiceArea> areas;
   final Availability availability;

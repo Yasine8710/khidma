@@ -811,6 +811,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get regDone => 'تم';
 
   @override
+  String get regUsePosition => 'استخدام موقعي الحالي';
+
+  @override
+  String get regPositionSet => 'تم حفظ موقع تقريبي (حوالي 1 كم).';
+
+  @override
+  String get regPositionFailed =>
+      'تعذّر تحديد موقعك. تحقق من إذن الموقع، وإلا ستستخدم الخريطة ولايتك.';
+
+  @override
   String get regSaveDraft => 'حفظ ومغادرة';
 
   @override

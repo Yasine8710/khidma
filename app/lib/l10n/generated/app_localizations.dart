@@ -1528,6 +1528,24 @@ abstract class AppLocalizations {
   /// **'Terminer'**
   String get regDone;
 
+  /// No description provided for @regUsePosition.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utiliser ma position actuelle'**
+  String get regUsePosition;
+
+  /// No description provided for @regPositionSet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Position approximative enregistrée (environ 1 km).'**
+  String get regPositionSet;
+
+  /// No description provided for @regPositionFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Position introuvable. Vérifiez l’autorisation de localisation : sinon la carte utilisera votre gouvernorat.'**
+  String get regPositionFailed;
+
   /// No description provided for @regSaveDraft.
   ///
   /// In fr, this message translates to:

@@ -12,6 +12,8 @@ import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../location/application/location_providers.dart';
+import '../../location/domain/location_domain.dart';
 import '../../marketplace/application/marketplace_providers.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
 import '../application/professional_providers.dart';
@@ -101,6 +103,9 @@ class _WizardState extends ConsumerState<_Wizard> {
   late int? _category = widget.initial.categoryId;
   late int? _governorate = widget.initial.governorateId;
   late int? _city = widget.initial.cityId;
+  late LocationFix? _position = widget.initial.position;
+  bool _locating = false;
+  String? _positionError;
   late final Set<int> _areas = {
     for (final a in widget.initial.areas)
       if (a.cityId == null) a.governorateId,
@@ -131,7 +136,39 @@ class _WizardState extends ConsumerState<_Wizard> {
         ? widget.initial.neighborhoodId
         : null,
     phone: _phone.text,
+    position: _position,
   );
+
+  /// The owner's approximate position (about 1 km, rounded before use).
+  Future<void> _usePosition() async {
+    if (_locating) return;
+    setState(() {
+      _locating = true;
+      _positionError = null;
+    });
+    final (gov, city) = (_governorate, _city);
+    LocationFix? fix;
+    try {
+      fix = await ref.read(locationServiceProvider).current();
+    } catch (_) {
+      // Permission refused, service off, timeout: the map falls back.
+      fix = null;
+    }
+    if (!mounted) return;
+    // The place was changed while waiting: this fix belongs to the old one.
+    if (gov != _governorate || city != _city) {
+      setState(() => _locating = false);
+      return;
+    }
+    setState(() {
+      _locating = false;
+      if (fix != null) {
+        _position = fix;
+      } else {
+        _positionError = AppLocalizations.of(context).regPositionFailed;
+      }
+    });
+  }
 
   /// Areas stored: whole governorates chosen here, never the home one twice
   /// (its professionals already match through their base location), and any
@@ -432,7 +469,12 @@ class _WizardState extends ConsumerState<_Wizard> {
                 DropdownMenuItem(value: g.id, child: Text(g.nameFor(locale))),
             ],
             onChanged: (v) => setState(() {
-              if (v != _governorate) _city = null;
+              if (v != _governorate) {
+                _city = null;
+                // A pin from another governorate would be wrong.
+                _position = null;
+                _positionError = null;
+              }
               _governorate = v;
               _governorateError = false;
             }),
@@ -452,8 +494,37 @@ class _WizardState extends ConsumerState<_Wizard> {
             ],
             onChanged: _governorate == null
                 ? null
-                : (v) => setState(() => _city = v),
+                : (v) => setState(() {
+                    if (v != _city) _position = null;
+                    _city = v;
+                  }),
           ),
+          gap,
+          AppButton(
+            label: l10n.regUsePosition,
+            variant: AppButtonVariant.secondary,
+            isLoading: _locating,
+            onPressed: _governorate == null ? null : _usePosition,
+          ),
+          if (_position != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              l10n.regPositionSet,
+              style: text.bodySmall?.copyWith(color: muted),
+            ),
+          ],
+          if (_positionError != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Semantics(
+              liveRegion: true,
+              child: Text(
+                _positionError!,
+                style: text.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+            ),
+          ],
         ];
       case _Step.areas:
         return [

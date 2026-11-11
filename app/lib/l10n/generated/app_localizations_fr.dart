@@ -822,6 +822,17 @@ class AppLocalizationsFr extends AppLocalizations {
   String get regDone => 'Terminer';
 
   @override
+  String get regUsePosition => 'Utiliser ma position actuelle';
+
+  @override
+  String get regPositionSet =>
+      'Position approximative enregistrée (environ 1 km).';
+
+  @override
+  String get regPositionFailed =>
+      'Position introuvable. Vérifiez l’autorisation de localisation : sinon la carte utilisera votre gouvernorat.';
+
+  @override
   String get regSaveDraft => 'Enregistrer et quitter';
 
   @override

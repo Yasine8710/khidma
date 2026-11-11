@@ -22,3 +22,6 @@ Run the 60-address benchmark from docs/ARCHITECTURE.md against Google (and Apple
 - Tunisia only: bounds ignore the antimeridian; the app is iOS/Android only.
 - iOS side is unverified (no Mac): `AppDelegate.swift`, `Info.plist` (`GMSApiKey`), `Maps.xcconfig`.
 - Widget tests cannot render the native map; the pure logic (camera target, bounds, availability) is unit-tested.
+
+## Where pins come from (migration 1600)
+Each governorate has a centre. A trigger on `professional_profiles` fills a missing position from the city (when it has coordinates) or the governorate, so every published profile appears on the map. A professional can instead tap "Utiliser ma position actuelle" in the wizard: the app sends their approximate position (rounded to ~1 km on the device and again by the database). Changing the governorate or city drops the pin so it is placed again. Known limits: the tapped position is not checked against the chosen governorate, and the app cannot tell a saved GPS pin from the governorate centre.
