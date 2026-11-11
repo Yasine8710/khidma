@@ -819,6 +819,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get regUnpublish => 'Retirer de la liste';
 
   @override
+  String get regDone => 'Terminer';
+
+  @override
   String get regSaveDraft => 'Enregistrer et quitter';
 
   @override

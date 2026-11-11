@@ -308,21 +308,35 @@ class _WizardState extends ConsumerState<_Wizard> {
                         : _back,
                   ),
                 ),
-                if (!isReview) ...[
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: AppButton(
-                      label: l10n.regNext,
-                      isLoading: busy,
-                      onPressed: _next,
-                    ),
-                  ),
-                ],
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: isReview
+                      ? _finishButton(l10n, busy)
+                      : AppButton(
+                          label: l10n.regNext,
+                          isLoading: busy,
+                          onPressed: _next,
+                        ),
+                ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  /// The last step's main action lives in the footer, always visible: the
+  /// publish button used to sit below the fold of the scrolling review.
+  Widget _finishButton(AppLocalizations l10n, bool busy) {
+    final draft = ref.watch(myProfessionalProvider).value ?? widget.initial;
+    if (draft.isPublished) {
+      return AppButton(label: l10n.regDone, onPressed: () => context.pop());
+    }
+    return AppButton(
+      label: l10n.regPublish,
+      isLoading: busy,
+      onPressed: draft.gaps.isEmpty ? () => _setPublished(true) : null,
     );
   }
 
@@ -559,12 +573,6 @@ class _WizardState extends ConsumerState<_Wizard> {
           variant: AppButtonVariant.secondary,
           isLoading: busy,
           onPressed: () => _setPublished(false),
-        )
-      else
-        AppButton(
-          label: l10n.regPublish,
-          isLoading: busy,
-          onPressed: gaps.isEmpty ? () => _setPublished(true) : null,
         ),
     ];
   }

@@ -179,9 +179,19 @@ void main() {
         find.text('Brouillon : invisible pour les clients.'),
         findsOneWidget,
       );
+      // The main action is in the footer, not inside the scrolling review.
+      expect(
+        find.descendant(
+          of: find.byType(SingleChildScrollView),
+          matching: find.text('Publier mon profil'),
+        ),
+        findsNothing,
+      );
       await _tap(tester, 'Publier mon profil');
       expect(repo.publishCalls, [true]);
       expect(find.text('Votre profil est publié.'), findsOneWidget);
+      // Once published, the footer offers a way out.
+      expect(find.widgetWithText(FilledButton, 'Terminer'), findsOneWidget);
       await _tap(tester, 'Retirer de la liste');
       expect(repo.publishCalls, [true, false]);
     });

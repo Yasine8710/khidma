@@ -1522,6 +1522,12 @@ abstract class AppLocalizations {
   /// **'Retirer de la liste'**
   String get regUnpublish;
 
+  /// No description provided for @regDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminer'**
+  String get regDone;
+
   /// No description provided for @regSaveDraft.
   ///
   /// In fr, this message translates to:

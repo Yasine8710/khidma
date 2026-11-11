@@ -808,6 +808,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get regUnpublish => 'إزالة من القائمة';
 
   @override
+  String get regDone => 'تم';
+
+  @override
   String get regSaveDraft => 'حفظ ومغادرة';
 
   @override
