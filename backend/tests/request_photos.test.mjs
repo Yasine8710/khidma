@@ -18,8 +18,12 @@ async function pro(db, { publish = true } = {}) {
 }
 const ask = (db, who) =>
   user(db, who).query(`select public.create_quote_request('Fuite sous évier', 'Une fuite sous le lavabo.', 1::smallint, 11::smallint) as id`).then((r) => r.rows[0].id);
-const upload = (db, who, name = `${who}/${randomUUID()}.jpg`, bucket = 'request-photos') =>
-  user(db, who).query('insert into storage.objects (bucket_id, name, owner) values ($1, $2, $3)', [bucket, name, who]).then(() => name);
+const alias = async (db, who) => (await db.query('select file_alias from public.customer_profiles where user_id = $1', [who])).rows[0].file_alias;
+const upload = async (db, who, name, bucket = 'request-photos') => {
+  const path = name ?? `${await alias(db, who)}/${randomUUID()}.jpg`;
+  await user(db, who).query('insert into storage.objects (bucket_id, name, owner) values ($1, $2, $3)', [bucket, path, who]);
+  return path;
+};
 const attach = (db, who, request, path) =>
   user(db, who).query('insert into public.request_photos (request_id, path) values ($1, $2)', [request, path]);
 const rows = async (client) => (await client.query('select request_id, path from public.request_photos order by path')).rows;
@@ -78,8 +82,8 @@ describe('request photos', () => {
     const mine = await upload(db, cust);
     await denies(attach(db, stranger, req, await upload(db, stranger)), DENIED);
     await denies(attach(db, p1, req, await upload(db, p1)), DENIED);
-    await denies(attach(db, cust, req, `${stranger}/${randomUUID()}.jpg`), DENIED);
-    await denies(attach(db, cust, req, `${cust}/x.html`), CHECK);
+    await denies(attach(db, cust, req, `${await alias(db, stranger)}/${randomUUID()}.jpg`), DENIED);
+    await denies(attach(db, cust, req, `${await alias(db, cust)}/x.html`), CHECK);
     await attach(db, cust, req, mine);
   });
 
@@ -112,25 +116,27 @@ describe('request photos', () => {
   });
 
   test('storage: own folder only, customers only, anonymous-auth and anon refused', async () => {
-    await denies(upload(db, cust, `${stranger}/x.jpg`), DENIED);
+    await denies(upload(db, cust, `${await alias(db, stranger)}/x.jpg`), DENIED);
     await denies(upload(db, cust, 'x.jpg'), DENIED);
-    await denies(anonymousAuthUser(db, cust).query(`insert into storage.objects (bucket_id, name) values ('request-photos', $1)`, [`${cust}/y.jpg`]), DENIED);
-    await denies(anon(db).query(`insert into storage.objects (bucket_id, name) values ('request-photos', $1)`, [`${cust}/y.jpg`]), DENIED);
+    await denies(anonymousAuthUser(db, cust).query(`insert into storage.objects (bucket_id, name) values ('request-photos', $1)`, [`${await alias(db, cust)}/y.jpg`]), DENIED);
+    await denies(anon(db).query(`insert into storage.objects (bucket_id, name) values ('request-photos', $1)`, [`${await alias(db, cust)}/y.jpg`]), DENIED);
   });
 
   test('storage is capped at 60 files per person', async () => {
     const heavy = await createUser(db);
-    for (let i = 0; i < 60; i++) await upload(db, heavy, `${heavy}/f${i}.jpg`);
-    await denies(upload(db, heavy, `${heavy}/f60.jpg`), DENIED);
+    const ha = await alias(db, heavy);
+    for (let i = 0; i < 60; i++) await upload(db, heavy, `${ha}/f${i}.jpg`);
+    await denies(upload(db, heavy, `${ha}/f60.jpg`), DENIED);
   });
 
   test('deleting the account removes the request and photo rows and queues the files', async () => {
     const leaving = await createUser(db);
+    const al = await alias(db, leaving);
     const r = await ask(db, leaving);
     await attach(db, leaving, r, await upload(db, leaving));
     await user(db, leaving).query('select public.delete_my_account()');
     assert.equal((await db.query('select count(*)::int as n from public.request_photos where request_id = $1', [r])).rows[0].n, 0);
-    assert.equal((await db.query(`select count(*)::int as n from public.storage_cleanup_queue where split_part(name, '/', 1) = $1`, [leaving])).rows[0].n, 1);
+    assert.equal((await db.query(`select count(*)::int as n from public.storage_cleanup_queue where split_part(name, '/', 1) = $1`, [al])).rows[0].n, 1);
   });
 
   test('the photos of a closed request can no longer be deleted', async () => {
@@ -157,5 +163,16 @@ describe('request photos', () => {
     assert.equal((await user(db, p1).query('select * from public.get_my_quote_request($1)', [r])).rows.length, 0);
     assert.equal((await user(db, c).query('select * from public.get_my_quote_request($1)', [r])).rows.length, 1);
     await denies(anon(db).query('select * from public.my_quote_requests()'), DENIED);
+  });
+  test('a professional reading a photo row learns nothing about the customer account', async () => {
+    const rowsSeen = (await user(db, p1).query('select path from public.request_photos')).rows;
+    assert.ok(rowsSeen.length >= 1);
+    for (const r of rowsSeen) assert.ok(!r.path.startsWith(cust), 'the folder is an alias, not the user id');
+    const ids = (await db.query('select user_id::text as u from public.customer_profiles')).rows.map((x) => x.u);
+    for (const r of rowsSeen) assert.ok(!ids.includes(r.path.split('/')[0]));
+    // the alias itself is private to its owner
+    const mine = (await user(db, p1).query('select public.my_file_alias() as a')).rows[0].a;
+    assert.notEqual(mine, await alias(db, cust), 'everyone gets their own alias');
+    assert.deepEqual((await user(db, p1).query('select file_alias from public.customer_profiles')).rows.map((r) => r.file_alias), [mine], 'only their own row');
   });
 });

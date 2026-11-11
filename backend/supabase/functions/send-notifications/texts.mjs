@@ -74,3 +74,14 @@ export function notificationRoute(kind, payload) {
       return '/home';
   }
 }
+
+/** True when [header] is `Bearer <secret>` for the configured worker secret.
+ * Compared in constant time; an empty or missing secret never authorizes. */
+export function isAuthorized(header, secret) {
+  if (typeof header !== 'string' || typeof secret !== 'string' || secret.length < 16) return false;
+  const given = header.startsWith('Bearer ') ? header.slice(7) : '';
+  if (given.length !== secret.length) return false;
+  let diff = 0;
+  for (let i = 0; i < secret.length; i++) diff |= given.charCodeAt(i) ^ secret.charCodeAt(i);
+  return diff === 0;
+}

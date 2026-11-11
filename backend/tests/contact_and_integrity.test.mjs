@@ -229,7 +229,7 @@ describe('sequence and function exposure', () => {
       'create_quote_request', 'decline_offer', 'delete_my_account', 'get_my_activity',
       'get_my_professional_contact', 'get_my_quote_request', 'get_open_request', 'has_offered_on', 'is_admin',
       'is_conversation_member', 'is_request_owner', 'list_open_requests', 'mark_booking_done',
-      'mark_conversation_read', 'my_conversations', 'my_notification_preferences', 'my_portfolio_file_count', 'my_quote_requests',
+      'mark_conversation_read', 'my_conversations', 'my_notification_preferences', '_my_file_alias_text', 'my_file_alias', 'my_portfolio_file_count', 'my_quote_requests',
       'my_request_file_count', 'my_reviewed_bookings', 'owns_open_request', 'register_device_token', 'request_photo_is_locked', 'reveal_professional_contact',
       'search_normalize', 'search_professionals', 'send_message', 'set_notification_preferences', 'start_booking',
       'start_conversation', 'submit_offer', 'submit_review', 'unregister_device_token', 'withdraw_offer',

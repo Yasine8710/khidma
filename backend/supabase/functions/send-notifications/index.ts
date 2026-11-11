@@ -8,6 +8,9 @@
 // Run it on a schedule (e.g. every minute via pg_cron + pg_net, or a Supabase
 // scheduled function). Secrets (never in the repo):
 //   FIREBASE_SERVICE_ACCOUNT  JSON of a service account allowed to send FCM
+//   NOTIFY_SECRET             long random string; the scheduler sends it as
+//                             `Authorization: Bearer <secret>` (callers without
+//                             it are refused, so users cannot trigger the worker)
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY  (provided by Supabase)
 //
 // Flow: claim_notifications() -> for each token send via FCM HTTP v1 ->
@@ -17,7 +20,7 @@
 // one of the account's devices accepted it.
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
-import { notificationRoute, notificationText } from './texts.mjs';
+import { isAuthorized, notificationRoute, notificationText } from './texts.mjs';
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
@@ -54,7 +57,10 @@ async function accessToken(): Promise<string> {
   return (await r.json()).access_token;
 }
 
-Deno.serve(async () => {
+Deno.serve(async (req) => {
+  if (!isAuthorized(req.headers.get('authorization'), Deno.env.get('NOTIFY_SECRET') ?? '')) {
+    return new Response('forbidden', { status: 403 });
+  }
   const { data: rows, error } = await supabase.rpc('claim_notifications', { p_limit: 100 });
   if (error) return new Response(error.message, { status: 500 });
   if (!rows?.length) return new Response('nothing to send');

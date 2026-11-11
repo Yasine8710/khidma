@@ -556,7 +556,6 @@ void main() {
   group('wire format', () {
     late List<http.BaseRequest> requests;
     SupabaseRequestsRepository build({
-      String? uid = 'u1',
       Object Function(http.BaseRequest)? answer,
     }) {
       requests = [];
@@ -577,7 +576,6 @@ void main() {
             );
           }),
         ),
-        userId: () => uid,
       );
     }
 
@@ -615,6 +613,8 @@ void main() {
       final repo = build(
         answer: (r) => r.url.path.endsWith('create_quote_request')
             ? 'new-id'
+            : r.url.path.endsWith('my_file_alias')
+            ? 'alias-1'
             : r.url.path.startsWith('/storage')
             ? {'Key': 'request-photos/x'}
             : <Object>[],
@@ -625,7 +625,7 @@ void main() {
       expect(uploads.length, 2);
       expect(
         uploads.first.url.path,
-        startsWith('/storage/v1/object/request-photos/u1/'),
+        startsWith('/storage/v1/object/request-photos/alias-1/'),
       );
       final attach = requests.where(
         (r) => r.url.path == '/rest/v1/request_photos' && r.method == 'POST',
@@ -662,6 +662,8 @@ void main() {
       final repo = build(
         answer: (r) => r.url.path.endsWith('create_quote_request')
             ? 'new-id'
+            : r.url.path.endsWith('my_file_alias')
+            ? 'alias-1'
             : r.url.path.startsWith('/storage')
             ? {'Key': 'request-photos/x'}
             : <Object>[],
