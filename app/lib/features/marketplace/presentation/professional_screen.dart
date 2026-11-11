@@ -35,6 +35,29 @@ class ProfessionalScreen extends ConsumerStatefulWidget {
 
 class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
   bool _recorded = false;
+  final _scroll = ScrollController();
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  /// Contact is the last section, below portfolio and reviews: the button
+  /// near the top takes the person straight to it.
+  void _toContact() {
+    if (!_scroll.hasClients) return;
+    final end = _scroll.position.maxScrollExtent;
+    if (MediaQuery.of(context).disableAnimations) {
+      _scroll.jumpTo(end);
+    } else {
+      _scroll.animateTo(
+        end,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeOutCubic,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +112,7 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
                 .firstOrNull;
             final years = p.yearsExperience;
             return ListView(
+              controller: _scroll,
               padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
               children: [
                 Row(
@@ -132,6 +156,12 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
                     if (years != null && years > 0)
                       AppBadge(label: l10n.yearsExperience(years)),
                   ],
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                FilledButton.icon(
+                  onPressed: _toContact,
+                  icon: const Icon(Icons.phone_outlined),
+                  label: Text(l10n.contactTitle),
                 ),
                 if (p.description.isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.xl),

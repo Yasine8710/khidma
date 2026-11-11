@@ -121,6 +121,8 @@
   "homeGreeting": "Hello",
   "homeGreetingNamed": "Hello, {name}",
   "homeSubtitle": "What service do you need?",
+  "homeQuoteTitle": "Need a job done?",
+  "homeQuoteBody": "Describe it once and receive offers from professionals.",
   "searchHint": "Search a trade, a name, a city…",
   "placeAll": "All of Tunisia",
   "placeChoose": "Choose an area",

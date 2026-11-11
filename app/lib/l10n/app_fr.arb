@@ -176,6 +176,8 @@
   "homeGreeting": "Bonjour",
   "homeGreetingNamed": "Bonjour, {name}",
   "homeSubtitle": "De quel service avez-vous besoin ?",
+  "homeQuoteTitle": "Besoin d’un service ?",
+  "homeQuoteBody": "Décrivez-le une fois et recevez des offres de professionnels.",
   "searchHint": "Rechercher un métier, un nom, une ville…",
   "placeAll": "Toute la Tunisie",
   "placeChoose": "Choisir une zone",

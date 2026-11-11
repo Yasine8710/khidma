@@ -826,6 +826,18 @@ abstract class AppLocalizations {
   /// **'De quel service avez-vous besoin ?'**
   String get homeSubtitle;
 
+  /// No description provided for @homeQuoteTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Besoin d’un service ?'**
+  String get homeQuoteTitle;
+
+  /// No description provided for @homeQuoteBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Décrivez-le une fois et recevez des offres de professionnels.'**
+  String get homeQuoteBody;
+
   /// No description provided for @searchHint.
   ///
   /// In fr, this message translates to:

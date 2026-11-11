@@ -421,6 +421,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeSubtitle => 'What service do you need?';
 
   @override
+  String get homeQuoteTitle => 'Need a job done?';
+
+  @override
+  String get homeQuoteBody =>
+      'Describe it once and receive offers from professionals.';
+
+  @override
   String get searchHint => 'Search a trade, a name, a city…';
 
   @override

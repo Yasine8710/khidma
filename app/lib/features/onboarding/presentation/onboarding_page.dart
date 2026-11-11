@@ -36,51 +36,68 @@ class OnboardingPage extends StatelessWidget {
     // Only drop decoration when space is really tight (very short screen or
     // large text); the brand logo should survive on ordinary small screens.
     final tight = media.size.height < 560 || media.textScaler.scale(10) > 13;
-    final iconBox = compact ? 64.0 : 96.0;
-    return SingleChildScrollView(
-      padding: const EdgeInsetsDirectional.symmetric(
-        horizontal: AppSpacing.gutter,
-        vertical: AppSpacing.lg,
-      ),
-      child: Column(
-        children: [
-          if (!(tight && hideIconWhenCompact)) ...[
-            if (leading != null)
-              leading!
-            else
-              Container(
-                width: iconBox,
-                height: iconBox,
-                decoration: BoxDecoration(
-                  color: scheme.primaryContainer,
-                  shape: BoxShape.circle,
+    final iconBox = compact ? 72.0 : 120.0;
+    // The group sits in the middle of the page instead of hugging the top
+    // with a dead zone below; it still scrolls when space is tight.
+    return LayoutBuilder(
+      builder: (context, box) => SingleChildScrollView(
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: AppSpacing.gutter,
+          vertical: AppSpacing.lg,
+        ),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: box.maxHeight - AppSpacing.lg * 2,
+          ),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (!(tight && hideIconWhenCompact)) ...[
+                  if (leading != null)
+                    leading!
+                  else
+                    Container(
+                      width: iconBox,
+                      height: iconBox,
+                      decoration: BoxDecoration(
+                        color: scheme.primaryContainer,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        icon,
+                        size: iconBox * 0.46,
+                        color: scheme.brightness == Brightness.light
+                            ? scheme.primary
+                            : scheme.onPrimaryContainer,
+                      ),
+                    ),
+                  SizedBox(height: compact ? AppSpacing.lg : AppSpacing.xl),
+                ],
+                Semantics(
+                  header: true,
+                  child: Text(
+                    title,
+                    style: text.headlineMedium,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-                child: Icon(
-                  icon,
-                  size: iconBox * 0.46,
-                  color: scheme.brightness == Brightness.light
-                      ? scheme.primary
-                      : scheme.onPrimaryContainer,
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  body,
+                  style: text.bodyLarge?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-              ),
-            SizedBox(height: compact ? AppSpacing.lg : AppSpacing.xl),
-          ],
-          Semantics(
-            header: true,
-            child: Text(
-              title,
-              style: text.headlineMedium,
-              textAlign: TextAlign.center,
+                if (extra != null) ...[
+                  const SizedBox(height: AppSpacing.xl),
+                  extra!,
+                ],
+              ],
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            body,
-            style: text.bodyLarge?.copyWith(color: scheme.onSurfaceVariant),
-            textAlign: TextAlign.center,
-          ),
-          if (extra != null) ...[const SizedBox(height: AppSpacing.xl), extra!],
-        ],
+        ),
       ),
     );
   }

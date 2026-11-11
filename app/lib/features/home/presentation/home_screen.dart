@@ -66,6 +66,8 @@ class HomeScreen extends ConsumerWidget {
             const _PlaceButton(),
             const SizedBox(height: AppSpacing.md),
             const _SearchBar(),
+            const SizedBox(height: AppSpacing.lg),
+            const _QuoteCard(),
             const SizedBox(height: AppSpacing.xl),
             SectionHeader(title: l10n.sectionCategories),
             const _Categories(),
@@ -165,6 +167,54 @@ class _PlaceButton extends ConsumerWidget {
           avatar: const Icon(Icons.place_rounded, size: 18),
           label: Text(label),
           onPressed: () => showPlaceSheet(context),
+        ),
+      ),
+    );
+  }
+}
+
+/// The main customer action, one tap from Home: ask for quotes.
+class _QuoteCard extends StatelessWidget {
+  const _QuoteCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: scheme.primaryContainer,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+      ),
+      child: Padding(
+        padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Semantics(
+              header: true,
+              child: Text(
+                l10n.homeQuoteTitle,
+                style: text.titleLarge?.copyWith(
+                  color: scheme.onPrimaryContainer,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              l10n.homeQuoteBody,
+              style: text.bodyMedium?.copyWith(
+                color: scheme.onPrimaryContainer,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            FilledButton.icon(
+              onPressed: () => context.push(AppRoutes.newRequest),
+              icon: const Icon(Icons.edit_note_rounded),
+              label: Text(l10n.reqEmptyCta),
+            ),
+          ],
         ),
       ),
     );

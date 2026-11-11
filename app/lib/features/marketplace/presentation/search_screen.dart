@@ -203,9 +203,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           }) => null,
           decoration: InputDecoration(
             hintText: l10n.searchHint,
-            border: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
+            isDense: true,
+            prefixIcon: const Icon(Icons.search_rounded),
           ),
           onChanged: _changed,
         ),
@@ -220,41 +219,50 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 AppSpacing.gutter,
                 AppSpacing.sm,
               ),
-              child: Wrap(
-                spacing: AppSpacing.sm,
-                runSpacing: AppSpacing.sm,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  ActionChip(
-                    avatar: const Icon(Icons.place_rounded, size: 18),
-                    label: Text(placeLabel(l10n, locale, place, govs, cities)),
-                    onPressed: () async {
-                      await showPlaceSheet(context);
-                      if (mounted) setState(() => _pages = 1);
-                    },
-                  ),
-                  FilterChip(
-                    avatar: const Icon(Icons.my_location_rounded, size: 18),
-                    label: Text(l10n.nearMe),
-                    selected: where != null,
-                    onSelected: (on) => _toggleNearMe(on),
-                  ),
-                  Semantics(
-                    label: l10n.filtersActive(_filters.activeCount),
-                    excludeSemantics: true,
-                    button: true,
-                    onTap: _openFilters,
-                    child: ActionChip(
-                      avatar: const Icon(Icons.tune_rounded, size: 18),
-                      label: Text(
-                        _filters.activeCount == 0
-                            ? l10n.filtersAction
-                            : '${l10n.filtersAction} (${_filters.activeCount})',
+              // One scrolling row, aligned to the gutter (a Wrap inside a
+              // Column shrank to its content and floated to the middle).
+              child: SizedBox(
+                width: double.infinity,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      ActionChip(
+                        avatar: const Icon(Icons.place_rounded, size: 18),
+                        label: Text(
+                          placeLabel(l10n, locale, place, govs, cities),
+                        ),
+                        onPressed: () async {
+                          await showPlaceSheet(context);
+                          if (mounted) setState(() => _pages = 1);
+                        },
                       ),
-                      onPressed: _openFilters,
-                    ),
+                      const SizedBox(width: AppSpacing.sm),
+                      FilterChip(
+                        avatar: const Icon(Icons.my_location_rounded, size: 18),
+                        label: Text(l10n.nearMe),
+                        selected: where != null,
+                        onSelected: (on) => _toggleNearMe(on),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Semantics(
+                        label: l10n.filtersActive(_filters.activeCount),
+                        excludeSemantics: true,
+                        button: true,
+                        onTap: _openFilters,
+                        child: ActionChip(
+                          avatar: const Icon(Icons.tune_rounded, size: 18),
+                          label: Text(
+                            _filters.activeCount == 0
+                                ? l10n.filtersAction
+                                : '${l10n.filtersAction} (${_filters.activeCount})',
+                          ),
+                          onPressed: _openFilters,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
             Expanded(

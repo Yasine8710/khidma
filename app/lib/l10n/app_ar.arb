@@ -121,6 +121,8 @@
   "homeGreeting": "مرحبًا",
   "homeGreetingNamed": "مرحبًا، {name}",
   "homeSubtitle": "ما الخدمة التي تحتاجها؟",
+  "homeQuoteTitle": "تحتاج إلى خدمة؟",
+  "homeQuoteBody": "صِف طلبك مرة واحدة واستلم عروضاً من محترفين.",
   "searchHint": "ابحث عن مهنة أو اسم أو مدينة…",
   "placeAll": "كل تونس",
   "placeChoose": "اختر منطقة",

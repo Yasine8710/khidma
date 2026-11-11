@@ -421,6 +421,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeSubtitle => 'ما الخدمة التي تحتاجها؟';
 
   @override
+  String get homeQuoteTitle => 'تحتاج إلى خدمة؟';
+
+  @override
+  String get homeQuoteBody => 'صِف طلبك مرة واحدة واستلم عروضاً من محترفين.';
+
+  @override
   String get searchHint => 'ابحث عن مهنة أو اسم أو مدينة…';
 
   @override

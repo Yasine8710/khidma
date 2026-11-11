@@ -10,6 +10,7 @@ import 'package:khidma/features/marketplace/application/marketplace_providers.da
 import 'package:khidma/features/marketplace/data/demo_marketplace_repository.dart';
 import 'package:khidma/features/marketplace/domain/marketplace_domain.dart';
 import 'package:khidma/features/marketplace/presentation/professional_card.dart';
+import 'package:khidma/features/requests/presentation/new_request_screen.dart';
 import 'package:khidma/features/profile/domain/profile_domain.dart';
 
 import '../support/fake_auth_repository.dart';
@@ -120,9 +121,23 @@ void main() {
       expect(find.text('Vérifié'), findsOneWidget);
     });
 
+    testWidgets('the quote card is on Home and leads to a new request', (
+      tester,
+    ) async {
+      await pumpApp(tester);
+      expect(find.text('Besoin d’un service ?'), findsOneWidget);
+      await tester.ensureVisible(find.text('Demander un devis'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Demander un devis'));
+      await tester.pumpAndSettle();
+      expect(find.byType(NewRequestScreen), findsOneWidget);
+    });
+
     testWidgets('a category tile opens search filtered to it', (tester) async {
       await pumpApp(tester);
-      await tester.ensureVisible(find.text('Électricité').first);
+      // Bring the tile clear of the bottom bar before tapping it.
+      await tester.drag(find.byType(ListView).first, const Offset(0, -250));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Électricité').first);
       await tester.pumpAndSettle();
       expect(find.text('Recherche'), findsNothing); // title is the field

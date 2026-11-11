@@ -362,6 +362,9 @@ void main() {
         auth: auth,
         overrides: [favoritesRepositoryProvider.overrideWithValue(repo)],
       );
+      // Something must be watching the ids, as hearts on screen would.
+      final sub = c.listen(favoriteIdsProvider, (_, _) {});
+      addTearDown(sub.close);
       expect(c.read(favoriteIdsProvider).value, ['demo-01']);
       auth.emit(null);
       await tester.pumpAndSettle();
