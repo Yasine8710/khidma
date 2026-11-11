@@ -166,3 +166,6 @@ Known residuals, all waiting on the server-side worker of #32 or a real Supabase
 The suite was mutation-tested twice (19 mutations: revokes removed, RLS disabled, column grants widened, metadata trusted, search_path unpinned, phone exposed, rate limit removed, anonymous-auth accepted, sequences left open, a leaky function added, ...); every one was caught.
 
 Limits: PGlite is not a full Supabase stack (no Auth service, Storage, PostGIS or realtime). Storage policies, Edge Functions and JWT handling need testing against a real Supabase project (blocked on issue #6). Seed names, especially Arabic, need native-speaker review.
+
+### Storage cleanup worker (issue #34, free)
+`backend/supabase/functions/storage-cleanup` removes the files queued in `storage_cleanup_queue` (account deletion, cancelled requests, verification decisions) through the Storage API, then the queue rows. It only touches the four known buckets, refuses empty or path-escaping names, handles at most 200 rows per run and keeps rows of a failed bucket for the next run. Callers need `Authorization: Bearer <CLEANUP_SECRET>` (16+ characters, compared in constant time). Schedule it every few minutes (Dashboard > Integrations > Cron). Logic and secret check are tested in `backend/tests/storage_cleanup.test.mjs`; the deployed behaviour is not verified yet.
