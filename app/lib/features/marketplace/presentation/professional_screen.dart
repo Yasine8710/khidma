@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/app_avatar.dart';
+import '../../../shared/widgets/category_photo.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/rating_stars.dart';
@@ -76,111 +76,197 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
       });
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          ReportButton(target: ReportTarget.professional, targetId: widget.id),
-          FavoriteButton(
-            professionalId: widget.id,
-            professionalName: async.value?.name,
+    final scheme = Theme.of(context).colorScheme;
+    // Round buttons floating over the photo.
+    Widget onPhoto(Widget child) => Padding(
+      padding: const EdgeInsetsDirectional.symmetric(horizontal: 4),
+      child: Center(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: scheme.surface.withValues(alpha: 0.92),
+            shape: BoxShape.circle,
           ),
-        ],
+          child: child,
+        ),
       ),
-      body: SafeArea(
-        child: async.when(
-          loading: () => const SkeletonGroup(
-            child: Padding(
-              padding: EdgeInsetsDirectional.all(AppSpacing.gutter),
-              child: Skeleton(height: 160, radius: AppRadius.lg),
+    );
+
+    final p = async.value;
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        leading: Navigator.of(context).canPop()
+            ? onPhoto(const BackButton())
+            : null,
+        actions: [
+          onPhoto(
+            ReportButton(
+              target: ReportTarget.professional,
+              targetId: widget.id,
             ),
           ),
-          error: (e, _) => MarketplaceFailureView(
-            error: e,
-            onRetry: () => ref.invalidate(professionalProvider(widget.id)),
+          onPhoto(
+            FavoriteButton(
+              professionalId: widget.id,
+              professionalName: p?.name,
+            ),
           ),
-          data: (p) {
-            if (p == null) {
-              return EmptyState(
-                icon: Icons.person_off_rounded,
-                title: l10n.professionalNotFoundTitle,
-                body: l10n.professionalNotFoundBody,
-              );
-            }
-            final category = (ref.watch(categoriesProvider).value ?? const [])
-                .where((c) => c.id == p.categoryId)
-                .map((c) => c.nameFor(locale))
-                .firstOrNull;
-            final years = p.yearsExperience;
-            return ListView(
-              controller: _scroll,
-              padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
-              children: [
-                Row(
-                  children: [
-                    AppAvatar(name: p.name, size: 72, decorative: true),
-                    const SizedBox(width: AppSpacing.lg),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Semantics(
-                            header: true,
-                            child: Text(p.name, style: text.headlineSmall),
-                          ),
-                          if (category != null)
-                            Text(
-                              category,
-                              style: text.bodyMedium?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
+          const SizedBox(width: AppSpacing.sm),
+        ],
+      ),
+      // The contact action stays within reach while reading the profile.
+      bottomNavigationBar: p == null
+          ? null
+          : SafeArea(
+              child: Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                  AppSpacing.gutter,
+                  AppSpacing.sm,
+                  AppSpacing.gutter,
+                  AppSpacing.md,
                 ),
-                const SizedBox(height: AppSpacing.lg),
-                RatingStars(rating: p.rating, reviewCount: p.reviewCount),
-                const SizedBox(height: AppSpacing.md),
-                Wrap(
-                  spacing: AppSpacing.sm,
-                  runSpacing: AppSpacing.xs,
-                  children: [
-                    if (p.isVerified) AppBadge.verified(context),
-                    AppBadge(
-                      label: availabilityLabel(l10n, p.availability),
-                      tone: availabilityTone(p.availability),
-                    ),
-                    if (years != null && years > 0)
-                      AppBadge(label: l10n.yearsExperience(years)),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                FilledButton.icon(
+                child: FilledButton.icon(
                   onPressed: _toContact,
                   icon: const Icon(Icons.phone_outlined),
                   label: Text(l10n.contactTitle),
                 ),
-                if (p.description.isNotEmpty) ...[
-                  const SizedBox(height: AppSpacing.xl),
-                  Semantics(
-                    header: true,
-                    child: Text(l10n.aboutLabel, style: text.titleMedium),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(p.description, style: text.bodyLarge),
-                ],
-                ..._detailSections(context, ref, p, locale),
-                PortfolioGallery(professionalId: p.id),
-                ReviewsList(professionalId: p.id),
-                const SizedBox(height: AppSpacing.xl),
-                ContactSection(professionalId: p.id),
-              ],
-            );
-          },
+              ),
+            ),
+      body: async.when(
+        loading: () => const SafeArea(
+          child: SkeletonGroup(
+            child: Padding(
+              padding: EdgeInsetsDirectional.all(AppSpacing.gutter),
+              child: Skeleton(height: 220, radius: AppRadius.lg),
+            ),
+          ),
         ),
+        error: (e, _) => SafeArea(
+          child: MarketplaceFailureView(
+            error: e,
+            onRetry: () => ref.invalidate(professionalProvider(widget.id)),
+          ),
+        ),
+        data: (p) {
+          if (p == null) {
+            return SafeArea(
+              child: EmptyState(
+                icon: Icons.person_off_rounded,
+                title: l10n.professionalNotFoundTitle,
+                body: l10n.professionalNotFoundBody,
+              ),
+            );
+          }
+          final cat = (ref.watch(categoriesProvider).value ?? const [])
+              .where((c) => c.id == p.categoryId)
+              .firstOrNull;
+          final category = cat?.nameFor(locale);
+          final years = p.yearsExperience;
+          return ListView(
+            controller: _scroll,
+            padding: EdgeInsets.zero,
+            children: [
+              // Cover: the category photo until the professional has their own.
+              SizedBox(
+                height: 300,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CategoryPhoto(
+                      slug: cat?.slug,
+                      icon: cat?.icon,
+                      radius: 0,
+                      alignment: const Alignment(0, -0.3),
+                    ),
+                    const DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Color(0x66123D78), Color(0x00123D78)],
+                          stops: [0, 0.45],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // The details sheet rides up over the photo.
+              Transform.translate(
+                offset: const Offset(0, -AppRadius.xl),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(AppRadius.xl),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                      AppSpacing.gutter,
+                      AppSpacing.xl,
+                      AppSpacing.gutter,
+                      AppSpacing.xl,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Semantics(
+                          header: true,
+                          child: Text(p.name, style: text.headlineSmall),
+                        ),
+                        if (category != null)
+                          Text(
+                            category,
+                            style: text.bodyLarge?.copyWith(
+                              color: scheme.onSurfaceVariant,
+                            ),
+                          ),
+                        const SizedBox(height: AppSpacing.md),
+                        RatingStars(
+                          rating: p.rating,
+                          reviewCount: p.reviewCount,
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        Wrap(
+                          spacing: AppSpacing.sm,
+                          runSpacing: AppSpacing.xs,
+                          children: [
+                            if (p.isVerified) AppBadge.verified(context),
+                            AppBadge(
+                              label: availabilityLabel(l10n, p.availability),
+                              tone: availabilityTone(p.availability),
+                            ),
+                            if (years != null && years > 0)
+                              AppBadge(label: l10n.yearsExperience(years)),
+                          ],
+                        ),
+                        if (p.description.isNotEmpty) ...[
+                          const SizedBox(height: AppSpacing.xl),
+                          Semantics(
+                            header: true,
+                            child: Text(
+                              l10n.aboutLabel,
+                              style: text.titleMedium,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          Text(p.description, style: text.bodyLarge),
+                        ],
+                        ..._detailSections(context, ref, p, locale),
+                        PortfolioGallery(professionalId: p.id),
+                        ReviewsList(professionalId: p.id),
+                        const SizedBox(height: AppSpacing.xl),
+                        ContactSection(professionalId: p.id),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

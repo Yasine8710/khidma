@@ -29,6 +29,7 @@ class MessagesScreen extends ConsumerWidget {
       return SafeArea(
         child: SignedOutPrompt(
           icon: Icons.chat_bubble_outline_rounded,
+          photo: 'assets/photos/onb-trust.jpg',
           title: l10n.messagesSignedOutTitle,
           body: l10n.messagesSignedOutBody,
         ),

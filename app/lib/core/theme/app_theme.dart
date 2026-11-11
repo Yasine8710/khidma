@@ -70,10 +70,10 @@ abstract final class AppTheme {
   static ThemeData _build(Locale locale, ColorScheme cs, Color background) {
     final text = AppTypography.textTheme(locale, cs.onSurface);
     final shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(AppRadius.md),
+      borderRadius: BorderRadius.circular(AppRadius.lg),
     );
     OutlineInputBorder border(Color c, [double w = 1]) => OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppRadius.md),
+      borderRadius: BorderRadius.circular(AppRadius.lg),
       borderSide: BorderSide(color: c, width: w),
     );
     return ThemeData(
@@ -94,16 +94,29 @@ abstract final class AppTheme {
       ),
       cardTheme: CardThemeData(
         color: cs.surface,
-        elevation: 0,
+        // Floating, soft-shadowed cards in light mode; hairline in dark.
+        elevation: cs.brightness == Brightness.light ? 3 : 0,
+        shadowColor: const Color(0x33123D78),
+        surfaceTintColor: Colors.transparent,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          side: BorderSide(color: cs.outlineVariant),
+          side: BorderSide(
+            color: cs.brightness == Brightness.light
+                ? Colors.transparent
+                : cs.outlineVariant,
+          ),
         ),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: cs.surface,
+        side: BorderSide(color: cs.outlineVariant),
+        shape: const StadiumBorder(),
+        labelStyle: text.labelLarge,
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          minimumSize: const Size.fromHeight(52),
+          minimumSize: const Size.fromHeight(54),
           shape: shape,
           textStyle: text.labelLarge,
         ),

@@ -123,6 +123,8 @@ void main() {
       final persisted = c.read(keyValueStoreProvider).getString('favorites');
       expect(persisted, '["demo-01"]');
       final c2 = await pumpApp(tester, prefs: {'favorites': persisted!});
+      c2.listen(favoriteIdsProvider, (_, _) {});
+      await tester.pumpAndSettle();
       expect(c2.read(favoriteIdsProvider).value, ['demo-01']);
     });
 
@@ -365,6 +367,7 @@ void main() {
       // Something must be watching the ids, as hearts on screen would.
       final sub = c.listen(favoriteIdsProvider, (_, _) {});
       addTearDown(sub.close);
+      await tester.pumpAndSettle();
       expect(c.read(favoriteIdsProvider).value, ['demo-01']);
       auth.emit(null);
       await tester.pumpAndSettle();

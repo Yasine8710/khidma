@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../l10n/generated/app_localizations.dart';
+import '../../core/router/app_routes.dart';
 import 'app_bottom_nav.dart';
 
 /// Scaffold around the tab branches. Each branch keeps its own state and
@@ -23,6 +24,8 @@ class AppShell extends StatelessWidget {
           // Tapping the active tab returns to its root screen.
           initialLocation: i == navigationShell.currentIndex,
         ),
+        centerLabel: l10n.reqEmptyCta,
+        onCenter: () => context.push(AppRoutes.newRequest),
         items: [
           NavItem(Icons.home_outlined, Icons.home_rounded, l10n.navHome),
           NavItem(

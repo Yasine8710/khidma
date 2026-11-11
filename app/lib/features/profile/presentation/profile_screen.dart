@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/theme_mode_controller.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -30,68 +31,143 @@ class ProfileScreen extends ConsumerWidget {
     final text = Theme.of(context).textTheme;
     final mode = ref.watch(themeModeProvider);
 
-    return SafeArea(
-      child: ListView(
-        padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
-        children: [
-          const SizedBox(height: AppSpacing.lg),
-          Text(l10n.navProfile, style: text.headlineMedium),
-          const SizedBox(height: AppSpacing.lg),
-          const _AccountCard(),
-          const SizedBox(height: AppSpacing.md),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const Icon(Icons.favorite_border_rounded),
-            title: Text(l10n.favoritesTitle),
-            trailing: const Icon(Icons.chevron_right_rounded),
-            onTap: () => context.push(AppRoutes.favorites),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(l10n.chooseLanguage, style: text.titleMedium),
-          const SizedBox(height: AppSpacing.md),
-          const LanguageSelector(),
-          const SizedBox(height: AppSpacing.xl),
-          Text(l10n.themeTitle, style: text.titleMedium),
-          const SizedBox(height: AppSpacing.md),
-          SegmentedButton<ThemeMode>(
-            showSelectedIcon: false,
-            segments: [
-              ButtonSegment(
-                value: ThemeMode.system,
-                label: Text(l10n.themeSystem),
+    final scheme = Theme.of(context).colorScheme;
+    Widget row(IconData icon, String label, VoidCallback onTap) => ListTile(
+      leading: DecoratedBox(
+        decoration: BoxDecoration(
+          color: scheme.primaryContainer,
+          shape: BoxShape.circle,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Icon(icon, size: 20, color: scheme.onPrimaryContainer),
+        ),
+      ),
+      title: Text(label),
+      trailing: const Icon(Icons.chevron_right_rounded),
+      onTap: onTap,
+    );
+
+    return ListView(
+      padding: const EdgeInsetsDirectional.only(bottom: 112),
+      children: [
+        // Blue header with the account card riding over its lower edge.
+        Stack(
+          children: [
+            const PositionedDirectional(
+              top: 0,
+              start: 0,
+              end: 0,
+              height: 170,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: AppColors.brandGradient,
+                  borderRadius: BorderRadiusDirectional.vertical(
+                    bottom: Radius.circular(AppRadius.xl),
+                  ),
+                ),
               ),
-              ButtonSegment(
-                value: ThemeMode.light,
-                label: Text(l10n.themeLight),
+            ),
+            SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                  AppSpacing.gutter,
+                  AppSpacing.lg,
+                  AppSpacing.gutter,
+                  0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Semantics(
+                      header: true,
+                      child: Text(
+                        l10n.navProfile,
+                        style: text.headlineMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    const _AccountCard(),
+                  ],
+                ),
               ),
-              ButtonSegment(value: ThemeMode.dark, label: Text(l10n.themeDark)),
-            ],
-            selected: {mode},
-            onSelectionChanged: (s) {
-              AppHaptics.selection();
-              ref.read(themeModeProvider.notifier).setMode(s.first);
-            },
-          ),
-          const SizedBox(height: AppSpacing.md),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const Icon(Icons.notifications_none_rounded),
-            title: Text(l10n.notifTitle),
-            trailing: const Icon(Icons.chevron_right_rounded),
-            onTap: () => context.push(AppRoutes.notificationSettings),
-          ),
-          if (kShowGallery) ...[
-            const SizedBox(height: AppSpacing.xl),
-            // Developer-only entry; not localized on purpose.
-            ListTile(
-              leading: const Icon(Icons.palette_outlined),
-              title: const Text('Design gallery'),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () => context.push(AppRoutes.gallery),
             ),
           ],
-        ],
-      ),
+        ),
+        Padding(
+          padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AppCard(
+                padding: EdgeInsets.zero,
+                child: Column(
+                  children: [
+                    row(
+                      Icons.favorite_border_rounded,
+                      l10n.favoritesTitle,
+                      () => context.push(AppRoutes.favorites),
+                    ),
+                    Divider(
+                      height: 1,
+                      indent: 64,
+                      color: scheme.outlineVariant,
+                    ),
+                    row(
+                      Icons.notifications_none_rounded,
+                      l10n.notifTitle,
+                      () => context.push(AppRoutes.notificationSettings),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              Text(l10n.chooseLanguage, style: text.titleMedium),
+              const SizedBox(height: AppSpacing.md),
+              const LanguageSelector(),
+              const SizedBox(height: AppSpacing.xl),
+              Text(l10n.themeTitle, style: text.titleMedium),
+              const SizedBox(height: AppSpacing.md),
+              SegmentedButton<ThemeMode>(
+                showSelectedIcon: false,
+                segments: [
+                  ButtonSegment(
+                    value: ThemeMode.system,
+                    label: Text(l10n.themeSystem),
+                  ),
+                  ButtonSegment(
+                    value: ThemeMode.light,
+                    label: Text(l10n.themeLight),
+                  ),
+                  ButtonSegment(
+                    value: ThemeMode.dark,
+                    label: Text(l10n.themeDark),
+                  ),
+                ],
+                selected: {mode},
+                onSelectionChanged: (s) {
+                  AppHaptics.selection();
+                  ref.read(themeModeProvider.notifier).setMode(s.first);
+                },
+              ),
+              if (kShowGallery) ...[
+                const SizedBox(height: AppSpacing.xl),
+                // Developer-only entry; not localized on purpose.
+                ListTile(
+                  leading: const Icon(Icons.palette_outlined),
+                  title: const Text('Design gallery'),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => context.push(AppRoutes.gallery),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -8,6 +8,7 @@ class OnboardingPage extends StatelessWidget {
   const OnboardingPage({
     super.key,
     this.icon,
+    this.photo,
     this.leading,
     required this.title,
     required this.body,
@@ -16,6 +17,9 @@ class OnboardingPage extends StatelessWidget {
   });
 
   final IconData? icon;
+
+  /// Bundled photo shown instead of the icon badge (value pages).
+  final String? photo;
 
   /// Replaces the icon badge (e.g. the brand logo on the first page).
   final Widget? leading;
@@ -54,7 +58,20 @@ class OnboardingPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (!(tight && hideIconWhenCompact)) ...[
-                  if (leading != null)
+                  if (photo != null)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(AppRadius.xl),
+                      child: Image.asset(
+                        photo!,
+                        height: compact ? 200 : 320,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        // Decoration only: the title says everything.
+                        excludeFromSemantics: true,
+                        errorBuilder: (_, _, _) => const SizedBox(height: 120),
+                      ),
+                    )
+                  else if (leading != null)
                     leading!
                   else
                     Container(

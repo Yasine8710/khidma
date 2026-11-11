@@ -30,50 +30,62 @@ class AuthScaffold extends ConsumerWidget {
     final available = ref.watch(authAvailableProvider);
     return Scaffold(
       appBar: AppBar(),
-      body: SafeArea(
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
-            child: ListView(
-              padding: const EdgeInsetsDirectional.fromSTEB(
-                AppSpacing.gutter,
-                AppSpacing.sm,
-                AppSpacing.gutter,
-                AppSpacing.xxl,
-              ),
-              children: [
-                const Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: KhidmaLogo(markSize: 36),
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                Semantics(
-                  header: true,
-                  child: Text(title, style: text.headlineMedium),
-                ),
-                if (subtitle != null) ...[
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    subtitle!,
-                    style: text.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+      body: Stack(
+        children: [
+          // A soft photo wash at the top: brand mood without moving content.
+          const PositionedDirectional(
+            top: 0,
+            start: 0,
+            end: 0,
+            height: 280,
+            child: _PhotoWash(),
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 480),
+                child: ListView(
+                  padding: const EdgeInsetsDirectional.fromSTEB(
+                    AppSpacing.gutter,
+                    AppSpacing.sm,
+                    AppSpacing.gutter,
+                    AppSpacing.xxl,
+                  ),
+                  children: [
+                    const Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: KhidmaLogo(markSize: 36),
                     ),
-                  ),
-                ],
-                const SizedBox(height: AppSpacing.xl),
-                if (!available) ...[
-                  InlineNotice(
-                    message: l10n.failureText(AuthFailure.notConfigured),
-                    tone: NoticeTone.info,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                ],
-                ...children,
-              ],
+                    const SizedBox(height: AppSpacing.xl),
+                    Semantics(
+                      header: true,
+                      child: Text(title, style: text.headlineMedium),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        subtitle!,
+                        style: text.bodyLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: AppSpacing.xl),
+                    if (!available) ...[
+                      InlineNotice(
+                        message: l10n.failureText(AuthFailure.notConfigured),
+                        tone: NoticeTone.info,
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                    ],
+                    ...children,
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -134,6 +146,31 @@ class InlineNotice extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PhotoWash extends StatelessWidget {
+  const _PhotoWash();
+
+  @override
+  Widget build(BuildContext context) {
+    final background = Theme.of(context).scaffoldBackgroundColor;
+    return ExcludeSemantics(
+      child: ShaderMask(
+        blendMode: BlendMode.dstIn,
+        shaderCallback: (rect) => const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0x38000000), Color(0x00000000)],
+        ).createShader(rect),
+        child: Image.asset(
+          'assets/photos/hero-home.jpg',
+          fit: BoxFit.cover,
+          alignment: const Alignment(0.2, -0.3),
+          errorBuilder: (_, _, _) => ColoredBox(color: background),
         ),
       ),
     );

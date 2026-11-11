@@ -65,10 +65,15 @@ void main() {
       );
       expect(find.text('Données de démonstration'), findsNothing);
       expect(find.text(_pro), findsNothing);
-      expect(
-        find.text("Ils apparaîtront ici dès qu'ils auront rejoint Khidma."),
-        findsOneWidget,
+      final empty = find.text(
+        "Ils apparaîtront ici dès qu'ils auront rejoint Khidma.",
       );
+      await tester.scrollUntilVisible(
+        empty,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(empty, findsOneWidget);
     });
 
     testWidgets('greets a signed-in person by first name', (tester) async {

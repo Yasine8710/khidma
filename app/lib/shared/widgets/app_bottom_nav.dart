@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/haptics.dart';
 
@@ -10,52 +11,113 @@ class NavItem {
   final String label;
 }
 
-/// Custom bottom navigation: hairline top border, a tinted pill behind the
-/// active icon, selection haptic. Items are laid out with a Row, so the order
-/// mirrors automatically in RTL.
+/// Floating bottom navigation: a soft-shadowed pill with four destinations
+/// and a raised round action in the middle (ask for a quote). Items are laid
+/// out with a Row, so the order mirrors automatically in RTL.
 class AppBottomNav extends StatelessWidget {
   const AppBottomNav({
     super.key,
     required this.items,
     required this.currentIndex,
     required this.onSelected,
+    this.centerLabel,
+    this.onCenter,
   });
 
+  /// Exactly the destinations; the centre action sits after the first half.
   final List<NavItem> items;
   final int currentIndex;
   final ValueChanged<int> onSelected;
+  final String? centerLabel;
+  final VoidCallback? onCenter;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    // The border sits outside the Material so ink, hover and focus effects
-    // of the buttons stay visible on top of the surface.
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: scheme.outlineVariant)),
+    final light = scheme.brightness == Brightness.light;
+    final half = items.length ~/ 2;
+    Widget button(int i) => Expanded(
+      child: _NavButton(
+        item: items[i],
+        selected: i == currentIndex,
+        onTap: () {
+          AppHaptics.selection();
+          onSelected(i);
+        },
       ),
-      child: Material(
-        color: scheme.surface,
-        child: SafeArea(
-          top: false,
+    );
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(
+          AppSpacing.lg,
+          AppSpacing.sm,
+          AppSpacing.lg,
+          AppSpacing.md,
+        ),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: scheme.surface,
+            borderRadius: BorderRadius.circular(AppRadius.xl + 4),
+            boxShadow: light ? AppColors.softShadow : null,
+            border: light ? null : Border.all(color: scheme.outlineVariant),
+          ),
           // Labels stay readable but do not grow with huge accessibility sizes.
           child: MediaQuery.withClampedTextScaling(
             maxScaleFactor: 1.3,
             child: Row(
               children: [
-                for (var i = 0; i < items.length; i++)
-                  Expanded(
-                    child: _NavButton(
-                      item: items[i],
-                      selected: i == currentIndex,
-                      onTap: () {
-                        AppHaptics.selection();
-                        onSelected(i);
-                      },
-                    ),
-                  ),
+                for (var i = 0; i < half; i++) button(i),
+                if (onCenter != null)
+                  _CenterAction(label: centerLabel ?? '', onTap: onCenter!),
+                for (var i = half; i < items.length; i++) button(i),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The raised round action: brand gradient, white plus, soft glow.
+class _CenterAction extends StatelessWidget {
+  const _CenterAction({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: AppSpacing.sm,
+        ),
+        child: GestureDetector(
+          onTap: () {
+            AppHaptics.light();
+            onTap();
+          },
+          child: Container(
+            width: 56,
+            height: 56,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: AppColors.brandGradient,
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0x662F7DE1),
+                  blurRadius: 16,
+                  offset: Offset(0, 6),
+                ),
+              ],
+            ),
+            child: const Icon(Icons.add_rounded, color: Colors.white, size: 30),
           ),
         ),
       ),

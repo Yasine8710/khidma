@@ -26,6 +26,7 @@ class FavoritesScreen extends ConsumerWidget {
     if (needSignIn) {
       body = SignedOutPrompt(
         icon: Icons.favorite_border_rounded,
+        photo: 'assets/photos/onb-find.jpg',
         title: l10n.favoritesSignInTitle,
         body: l10n.favoritesSignInBody,
       );

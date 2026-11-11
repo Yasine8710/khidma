@@ -3,15 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/router/app_routes.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_badge.dart';
+import '../../../shared/widgets/category_photo.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/application/home_providers.dart';
 import '../../marketplace/application/marketplace_providers.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
-import '../../marketplace/presentation/category_icon.dart';
 import '../../marketplace/presentation/marketplace_failure_view.dart';
 import '../../marketplace/presentation/place_sheet.dart';
 import '../../marketplace/presentation/professional_card.dart';
@@ -23,7 +24,6 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final text = Theme.of(context).textTheme;
     final name = _firstName(ref.watch(visibleProfileProvider)?.fullName);
     final isDemo = ref.watch(isDemoDataProvider);
 
@@ -37,49 +37,50 @@ class HomeScreen extends ConsumerWidget {
       } catch (_) {}
     }
 
-    return SafeArea(
-      child: RefreshIndicator(
-        onRefresh: refresh,
-        child: ListView(
-          padding: const EdgeInsetsDirectional.fromSTEB(
-            AppSpacing.gutter,
-            AppSpacing.lg,
-            AppSpacing.gutter,
-            AppSpacing.xxl,
+    // The photo header runs under the status bar; the list scrolls beneath
+    // the floating navigation, so it needs room at the bottom.
+    return RefreshIndicator(
+      onRefresh: refresh,
+      child: ListView(
+        padding: const EdgeInsetsDirectional.only(bottom: 112),
+        children: [
+          _Hero(
+            title: name == null
+                ? l10n.homeGreeting
+                : l10n.homeGreetingNamed(name),
+            subtitle: l10n.homeSubtitle,
           ),
-          children: [
-            if (isDemo) const _DemoBanner(),
-            Semantics(
-              header: true,
-              child: Text(
-                name == null ? l10n.homeGreeting : l10n.homeGreetingNamed(name),
-                style: text.headlineMedium,
-              ),
+          Padding(
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.gutter,
             ),
-            Text(
-              l10n.homeSubtitle,
-              style: text.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: AppSpacing.xl + AppSpacing.md),
+                if (isDemo) const _DemoBanner(),
+                SectionHeader(title: l10n.sectionCategories),
+                const _Categories(),
+                const SizedBox(height: AppSpacing.xl),
+                const _QuoteCard(),
+                const SizedBox(height: AppSpacing.xl),
+                SectionHeader(title: l10n.sectionTopRated),
+              ],
             ),
-            const SizedBox(height: AppSpacing.lg),
-            const _PlaceButton(),
-            const SizedBox(height: AppSpacing.md),
-            const _SearchBar(),
-            const SizedBox(height: AppSpacing.lg),
-            const _QuoteCard(),
-            const SizedBox(height: AppSpacing.xl),
-            SectionHeader(title: l10n.sectionCategories),
-            const _Categories(),
-            const SizedBox(height: AppSpacing.xl),
-            SectionHeader(title: l10n.sectionTopRated),
-            const _ProfessionalList(kind: _Kind.topRated),
-            const SizedBox(height: AppSpacing.xl),
-            SectionHeader(title: l10n.sectionInYourArea),
-            const _ProfessionalList(kind: _Kind.area),
-            const _RecentSection(),
-          ],
-        ),
+          ),
+          const _Carousel(kind: _Kind.topRated),
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(
+              AppSpacing.gutter,
+              AppSpacing.xl,
+              AppSpacing.gutter,
+              0,
+            ),
+            child: SectionHeader(title: l10n.sectionInYourArea),
+          ),
+          const _Carousel(kind: _Kind.area),
+          const _RecentSection(),
+        ],
       ),
     );
   }
@@ -88,6 +89,108 @@ class HomeScreen extends ConsumerWidget {
 String? _firstName(String? fullName) {
   final words = fullName?.trim().split(RegExp(r'\s+')) ?? const [];
   return words.isEmpty || words.first.isEmpty ? null : words.first;
+}
+
+/// Full-bleed photo header: area picker on top, greeting at the bottom, and
+/// the search bar floating over the lower edge.
+class _Hero extends StatelessWidget {
+  const _Hero({required this.title, required this.subtitle});
+
+  final String title;
+  final String subtitle;
+
+  static const _baseHeight = 300.0;
+  static const _overlap = 28.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    // Taller with large text, so the greeting never gets squeezed.
+    final scale = MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.0);
+    final height = _baseHeight + 140 * (scale - 1);
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        SizedBox(
+          height: height,
+          width: double.infinity,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              ExcludeSemantics(
+                child: Image.asset(
+                  'assets/photos/hero-home.jpg',
+                  fit: BoxFit.cover,
+                  alignment: const Alignment(0.25, -0.2),
+                  errorBuilder: (_, _, _) => const DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: AppColors.brandGradient,
+                    ),
+                  ),
+                ),
+              ),
+              // Deep blue wash: keeps the white text readable on any photo.
+              const DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0x99123D78),
+                      Color(0x66123D78),
+                      Color(0xE60E2F5E),
+                    ],
+                    stops: [0, 0.4, 1],
+                  ),
+                ),
+              ),
+              SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(
+                    AppSpacing.gutter,
+                    AppSpacing.md,
+                    AppSpacing.gutter,
+                    _overlap + AppSpacing.lg,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const _PlaceButton(),
+                      const Spacer(),
+                      Semantics(
+                        header: true,
+                        child: Text(
+                          title,
+                          style: text.headlineMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        subtitle,
+                        style: text.bodyLarge?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.92),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const PositionedDirectional(
+          start: AppSpacing.gutter,
+          end: AppSpacing.gutter,
+          bottom: -_overlap,
+          child: _SearchBar(),
+        ),
+      ],
+    );
+  }
 }
 
 class _DemoBanner extends StatelessWidget {
@@ -145,6 +248,7 @@ class _DemoBanner extends StatelessWidget {
   }
 }
 
+/// The area picker, a white pill floating on the photo.
 class _PlaceButton extends ConsumerWidget {
   const _PlaceButton();
 
@@ -164,57 +268,17 @@ class _PlaceButton extends ConsumerWidget {
         excludeSemantics: true,
         onTap: () => showPlaceSheet(context),
         child: ActionChip(
-          avatar: const Icon(Icons.place_rounded, size: 18),
+          avatar: const Icon(
+            Icons.place_rounded,
+            size: 18,
+            color: AppColors.primary,
+          ),
           label: Text(label),
+          labelStyle: Theme.of(context).textTheme.labelLarge
+              ?.copyWith(color: AppColors.ink),
+          backgroundColor: Colors.white.withValues(alpha: 0.95),
+          side: BorderSide.none,
           onPressed: () => showPlaceSheet(context),
-        ),
-      ),
-    );
-  }
-}
-
-/// The main customer action, one tap from Home: ask for quotes.
-class _QuoteCard extends StatelessWidget {
-  const _QuoteCard();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
-    final text = Theme.of(context).textTheme;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: scheme.primaryContainer,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-      ),
-      child: Padding(
-        padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Semantics(
-              header: true,
-              child: Text(
-                l10n.homeQuoteTitle,
-                style: text.titleLarge?.copyWith(
-                  color: scheme.onPrimaryContainer,
-                ),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              l10n.homeQuoteBody,
-              style: text.bodyMedium?.copyWith(
-                color: scheme.onPrimaryContainer,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            FilledButton.icon(
-              onPressed: () => context.push(AppRoutes.newRequest),
-              icon: const Icon(Icons.edit_note_rounded),
-              label: Text(l10n.reqEmptyCta),
-            ),
-          ],
         ),
       ),
     );
@@ -233,36 +297,101 @@ class _SearchBar extends StatelessWidget {
       label: l10n.searchHint,
       excludeSemantics: true,
       onTap: () => context.push(AppRoutes.search),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        onTap: () => context.push(AppRoutes.search),
-        child: Ink(
-          decoration: BoxDecoration(
-            border: Border.all(color: scheme.outline),
-            borderRadius: BorderRadius.circular(AppRadius.md),
-          ),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 52),
-            child: Padding(
-              padding: const EdgeInsetsDirectional.symmetric(
-                horizontal: AppSpacing.lg,
-                vertical: AppSpacing.md,
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.search_rounded, color: scheme.onSurfaceVariant),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: Text(
-                      l10n.searchHint,
-                      style: Theme.of(context).textTheme.bodyMedium
-                          ?.copyWith(color: scheme.onSurfaceVariant),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: scheme.surface,
+          borderRadius: BorderRadius.circular(AppRadius.xl),
+          boxShadow: scheme.brightness == Brightness.light
+              ? AppColors.softShadow
+              : null,
+          border: scheme.brightness == Brightness.light
+              ? null
+              : Border.all(color: scheme.outlineVariant),
+        ),
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(AppRadius.xl),
+            onTap: () => context.push(AppRoutes.search),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 56),
+              child: Padding(
+                padding: const EdgeInsetsDirectional.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.md,
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.search_rounded, color: AppColors.primary),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Text(
+                        l10n.searchHint,
+                        style: Theme.of(context).textTheme.bodyMedium
+                            ?.copyWith(color: scheme.onSurfaceVariant),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The main customer action, one tap from Home: ask for quotes.
+class _QuoteCard extends StatelessWidget {
+  const _QuoteCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: AppColors.brandGradient,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x332F7DE1),
+            blurRadius: 20,
+            offset: Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Semantics(
+              header: true,
+              child: Text(
+                l10n.homeQuoteTitle,
+                style: text.titleLarge?.copyWith(color: Colors.white),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              l10n.homeQuoteBody,
+              style: text.bodyMedium?.copyWith(
+                color: Colors.white.withValues(alpha: 0.92),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: AppColors.primaryDark,
+              ),
+              onPressed: () => context.push(AppRoutes.newRequest),
+              icon: const Icon(Icons.edit_note_rounded),
+              label: Text(l10n.reqEmptyCta),
+            ),
+          ],
         ),
       ),
     );
@@ -278,7 +407,7 @@ class _Categories extends ConsumerWidget {
     final async = ref.watch(categoriesProvider);
     return async.when(
       loading: () => const SkeletonGroup(
-        child: Skeleton(height: 96, radius: AppRadius.md),
+        child: Skeleton(height: 120, radius: AppRadius.lg),
       ),
       error: (e, _) => MarketplaceFailureView(
         error: e,
@@ -296,6 +425,7 @@ class _Categories extends ConsumerWidget {
               for (final c in list)
                 SizedBox(
                   width: width,
+                  height: width,
                   child: _CategoryTile(category: c, locale: locale),
                 ),
             ],
@@ -306,6 +436,7 @@ class _Categories extends ConsumerWidget {
   }
 }
 
+/// A photo tile with the category name over a deep-blue fade.
 class _CategoryTile extends StatelessWidget {
   const _CategoryTile({required this.category, required this.locale});
 
@@ -314,43 +445,51 @@ class _CategoryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final name = category.nameFor(locale);
+    void open() => context.push(AppRoutes.searchPath(categoryId: category.id));
     return Semantics(
       button: true,
       label: name,
       excludeSemantics: true,
-      onTap: () => context.push(AppRoutes.searchPath(categoryId: category.id)),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        onTap: () =>
-            context.push(AppRoutes.searchPath(categoryId: category.id)),
-        child: Padding(
-          padding: const EdgeInsetsDirectional.symmetric(
-            vertical: AppSpacing.sm,
-            horizontal: AppSpacing.xs,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(
-                radius: 26,
-                backgroundColor: scheme.primaryContainer,
-                child: Icon(
-                  categoryIcon(category.icon),
-                  color: scheme.onPrimaryContainer,
+      onTap: open,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            CategoryPhoto(slug: category.slug, icon: category.icon, radius: 0),
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0x00123D78), Color(0xE60E2F5E)],
+                  stops: [0.35, 1],
                 ),
               ),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
+            ),
+            PositionedDirectional(
+              start: AppSpacing.sm,
+              end: AppSpacing.sm,
+              bottom: AppSpacing.sm,
+              child: Text(
                 name,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.labelMedium,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
               ),
-            ],
-          ),
+            ),
+            Positioned.fill(
+              child: Material(
+                type: MaterialType.transparency,
+                child: InkWell(onTap: open),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -359,8 +498,9 @@ class _CategoryTile extends StatelessWidget {
 
 enum _Kind { topRated, area }
 
-class _ProfessionalList extends ConsumerWidget {
-  const _ProfessionalList({required this.kind});
+/// A horizontally scrolling row of professional tiles.
+class _Carousel extends ConsumerWidget {
+  const _Carousel({required this.kind});
 
   final _Kind kind;
 
@@ -371,66 +511,51 @@ class _ProfessionalList extends ConsumerWidget {
     final provider = kind == _Kind.topRated
         ? topRatedProvider
         : inYourAreaProvider;
+    Widget note(String s) => Padding(
+      padding: const EdgeInsetsDirectional.symmetric(
+        horizontal: AppSpacing.gutter,
+      ),
+      child: Text(s, style: Theme.of(context).textTheme.bodyMedium),
+    );
 
     if (kind == _Kind.area && place == null) {
-      return Text(
-        l10n.sectionInYourAreaPrompt,
-        style: Theme.of(context).textTheme.bodyMedium,
-      );
+      return note(l10n.sectionInYourAreaPrompt);
     }
-
     return ref
         .watch(provider)
         .when(
-          loading: () => const _CardsSkeleton(),
-          error: (e, _) => MarketplaceFailureView(
-            error: e,
-            onRetry: () => ref.invalidate(provider),
+          loading: () => const Padding(
+            padding: EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.gutter,
+            ),
+            child: _CardsSkeleton(),
+          ),
+          error: (e, _) => Padding(
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.gutter,
+            ),
+            child: MarketplaceFailureView(
+              error: e,
+              onRetry: () => ref.invalidate(provider),
+            ),
           ),
           data: (list) => list.isEmpty
-              ? Text(
+              ? note(
                   kind == _Kind.topRated
                       ? l10n.noProfessionalsBody
                       : l10n.noProfessionalsInArea,
-                  style: Theme.of(context).textTheme.bodyMedium,
                 )
-              : _Cards(list: list),
+              : ProfessionalCarousel(list: list),
         );
   }
-}
-
-class _Cards extends StatelessWidget {
-  const _Cards({required this.list});
-
-  final List<ProfessionalSummary> list;
-
-  @override
-  Widget build(BuildContext context) => Column(
-    children: [
-      for (final p in list) ...[
-        ProfessionalCard(
-          professional: p,
-          onTap: () => context.push(AppRoutes.professionalPath(p.id)),
-        ),
-        const SizedBox(height: AppSpacing.md),
-      ],
-    ],
-  );
 }
 
 class _CardsSkeleton extends StatelessWidget {
   const _CardsSkeleton();
 
   @override
-  Widget build(BuildContext context) => const SkeletonGroup(
-    child: Column(
-      children: [
-        Skeleton(height: 112, radius: AppRadius.lg),
-        SizedBox(height: AppSpacing.md),
-        Skeleton(height: 112, radius: AppRadius.lg),
-      ],
-    ),
-  );
+  Widget build(BuildContext context) =>
+      const SkeletonGroup(child: Skeleton(height: 220, radius: AppRadius.lg));
 }
 
 class _RecentSection extends ConsumerWidget {
@@ -444,9 +569,16 @@ class _RecentSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: AppSpacing.xl),
-        SectionHeader(title: l10n.sectionRecent),
-        _Cards(list: list),
+        Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(
+            AppSpacing.gutter,
+            AppSpacing.xl,
+            AppSpacing.gutter,
+            0,
+          ),
+          child: SectionHeader(title: l10n.sectionRecent),
+        ),
+        ProfessionalCarousel(list: list),
       ],
     );
   }

@@ -77,16 +77,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ),
       OnboardingPage(
         icon: Icons.verified_user_outlined,
+        photo: 'assets/photos/onb-find.jpg',
         title: l10n.onbTitle1,
         body: l10n.onbBody1,
       ),
       OnboardingPage(
         icon: Icons.request_quote_outlined,
+        photo: 'assets/photos/onb-compare.jpg',
         title: l10n.onbTitle2,
         body: l10n.onbBody2,
       ),
       OnboardingPage(
         icon: Icons.forum_outlined,
+        photo: 'assets/photos/onb-trust.jpg',
         title: l10n.onbTitle3,
         body: l10n.onbBody3,
       ),

@@ -39,6 +39,7 @@ void main() {
   testWidgets('switching to Arabic flips to RTL and persists', (tester) async {
     final c = await pumpApp(tester);
     await _openProfile(tester, 'Profil');
+    await scrollProfileTo(tester, find.text('العربية'));
     await tester.tap(find.text('العربية'));
     await tester.pumpAndSettle();
 

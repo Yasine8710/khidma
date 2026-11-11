@@ -31,6 +31,7 @@ class RequestsScreen extends ConsumerWidget {
       return SafeArea(
         child: SignedOutPrompt(
           icon: Icons.assignment_outlined,
+          photo: 'assets/photos/onb-compare.jpg',
           title: l10n.requestsSignedOutTitle,
           body: l10n.requestsSignedOutBody,
         ),
@@ -45,6 +46,7 @@ class RequestsScreen extends ConsumerWidget {
       body = list.isEmpty
           ? EmptyState(
               icon: Icons.assignment_outlined,
+              photo: 'assets/photos/onb-compare.jpg',
               title: l10n.requestsEmptyTitle,
               body: l10n.requestsEmptyBody,
               actionLabel: l10n.reqEmptyCta,

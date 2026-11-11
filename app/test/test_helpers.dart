@@ -102,14 +102,12 @@ Future<void> loadAppFonts() async {
 }
 
 /// Scrolls the Profile list (lazy) until [target] is built and visible.
-Future<void> scrollProfileTo(WidgetTester tester, Finder target) =>
-    tester.scrollUntilVisible(
-      target,
-      300,
-      scrollable: find
-          .descendant(
-            of: find.byType(ListView),
-            matching: find.byType(Scrollable),
-          )
-          .first,
-    );
+Future<void> scrollProfileTo(WidgetTester tester, Finder target) async {
+  final scrollable = find
+      .descendant(of: find.byType(ListView), matching: find.byType(Scrollable))
+      .first;
+  await tester.scrollUntilVisible(target, 300, scrollable: scrollable);
+  // Clear of the floating bottom bar, which sits over the list's lower edge.
+  await tester.drag(scrollable, const Offset(0, -160));
+  await tester.pumpAndSettle();
+}
