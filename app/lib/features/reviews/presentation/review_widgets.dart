@@ -1,3 +1,6 @@
+import '../../trust/domain/trust_domain.dart';
+import '../../trust/presentation/report_sheet.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -304,6 +307,11 @@ class _ReviewsListState extends ConsumerState<ReviewsList> {
                       Text(
                         '${l10n.reviewAuthorAnon} · ${formatMonthYear(r.month, locale)}',
                         style: text.bodySmall?.copyWith(color: muted),
+                      ),
+                      ReportButton(
+                        target: ReportTarget.review,
+                        targetId: r.id,
+                        compact: true,
                       ),
                     ],
                   ),

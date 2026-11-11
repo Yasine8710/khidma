@@ -165,6 +165,13 @@ class _BodyState extends ConsumerState<_Body> {
         ),
         const SizedBox(height: AppSpacing.sm),
         AppButton(
+          label: l10n.verifCta,
+          icon: Icons.verified_outlined,
+          variant: AppButtonVariant.secondary,
+          onPressed: () => context.push(AppRoutes.proVerification),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        AppButton(
           label: l10n.proInboxTitle,
           icon: Icons.inbox_outlined,
           variant: AppButtonVariant.secondary,

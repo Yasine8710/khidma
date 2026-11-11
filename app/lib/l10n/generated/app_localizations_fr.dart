@@ -1562,4 +1562,138 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get reviewFailLimit =>
       'Vous avez déjà donné trop d’avis sur ce professionnel.';
+
+  @override
+  String get reportAction => 'Signaler';
+
+  @override
+  String get reportTitle => 'Signaler un problème';
+
+  @override
+  String get reportHint =>
+      'Notre équipe examine chaque signalement. La personne signalée ne saura pas que c’est vous.';
+
+  @override
+  String get reportReasonSpam => 'Publicité ou spam';
+
+  @override
+  String get reportReasonFake => 'Faux profil ou faux avis';
+
+  @override
+  String get reportReasonAbuse => 'Harcèlement ou insultes';
+
+  @override
+  String get reportReasonScam => 'Arnaque ou demande d’argent suspecte';
+
+  @override
+  String get reportReasonInappropriate => 'Contenu inapproprié';
+
+  @override
+  String get reportReasonOther => 'Autre';
+
+  @override
+  String get reportDetailsLabel => 'Détails (facultatif)';
+
+  @override
+  String get reportSend => 'Envoyer le signalement';
+
+  @override
+  String get reportSent => 'Merci. Votre signalement a été envoyé.';
+
+  @override
+  String get reportFailAlready =>
+      'Vous avez déjà signalé cela. Nous l’examinons.';
+
+  @override
+  String get reportFailRate =>
+      'Trop de signalements aujourd’hui. Réessayez demain.';
+
+  @override
+  String get reportFailGone => 'Ce contenu n’est plus disponible.';
+
+  @override
+  String get reportFailGeneric =>
+      'Le signalement n’a pas pu être envoyé. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get verifTitle => 'Vérification du profil';
+
+  @override
+  String get verifCta => 'Faire vérifier mon profil';
+
+  @override
+  String get verifIntro =>
+      'Envoyez une photo de votre carte d’identité ou de votre registre de commerce. Après vérification, un badge apparaît sur votre profil.';
+
+  @override
+  String get verifPrivacy =>
+      'Vos documents sont privés : seuls vous et notre équipe de vérification peuvent les voir, et ils sont supprimés dès la décision.';
+
+  @override
+  String get verifStatusNone => 'Pas encore vérifié';
+
+  @override
+  String get verifStatusPending => 'En cours de vérification';
+
+  @override
+  String get verifStatusApproved => 'Profil vérifié';
+
+  @override
+  String get verifStatusRejected => 'Demande refusée';
+
+  @override
+  String get verifStatusCancelled => 'Demande annulée';
+
+  @override
+  String verifRejectReason(Object reason) {
+    return 'Motif : $reason';
+  }
+
+  @override
+  String get verifPendingBody =>
+      'Nous examinons vos documents. Vous serez prévenu de la décision.';
+
+  @override
+  String get verifAdd => 'Ajouter une photo';
+
+  @override
+  String verifCount(Object count, Object max) {
+    return '$count sur $max documents';
+  }
+
+  @override
+  String verifRemove(Object index) {
+    return 'Retirer le document $index';
+  }
+
+  @override
+  String get verifSubmit => 'Envoyer pour vérification';
+
+  @override
+  String get verifCancel => 'Annuler la demande';
+
+  @override
+  String get verifSent => 'Documents envoyés. Nous vous répondons bientôt.';
+
+  @override
+  String get verifCancelled =>
+      'Demande annulée. Vos documents ont été supprimés.';
+
+  @override
+  String get verifFailPending => 'Une demande est déjà en cours.';
+
+  @override
+  String get verifFailVerified => 'Votre profil est déjà vérifié.';
+
+  @override
+  String get verifFailLimit =>
+      'Trop de demandes ces 30 derniers jours. Réessayez plus tard.';
+
+  @override
+  String get verifFailGeneric =>
+      'L’envoi a échoué. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get verifFailImage =>
+      'Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).';
 }

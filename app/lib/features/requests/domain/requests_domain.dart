@@ -122,6 +122,15 @@ enum RequestsFailure {
 
   /// You already reviewed this job.
   alreadyReviewed,
+
+  /// You already have an open report on this.
+  alreadyReported,
+
+  /// A verification request is already waiting for review.
+  alreadyPending,
+
+  /// The profile is already verified.
+  alreadyVerified,
   notFound,
   notConfigured,
   unknown,

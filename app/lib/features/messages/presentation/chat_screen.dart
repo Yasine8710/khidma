@@ -1,3 +1,6 @@
+import '../../trust/domain/trust_domain.dart';
+import '../../trust/presentation/report_sheet.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -131,6 +134,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         title: Text(
           summary == null ? l10n.navMessages : conversationTitle(l10n, summary),
         ),
+        actions: [
+          ReportButton(
+            target: ReportTarget.conversation,
+            targetId: widget.conversationId,
+          ),
+        ],
         bottom: summary == null
             ? null
             : PreferredSize(

@@ -205,27 +205,32 @@ describe('admin verification', () => {
     await publish(db, pro);
   });
 
-  test('non-admins cannot verify, including the professional themselves', async () => {
-    await denies(user(db, pro).query(`select public.admin_set_verification($1, 'verified')`, [pro]), DENIED);
-    await denies(user(db, other).query(`select public.admin_set_verification($1, 'verified')`, [pro]), DENIED);
-    await denies(anon(db).query(`select public.admin_set_verification($1, 'verified')`, [pro]), DENIED);
+  const submit = async () => {
+    const name = `${pro}/${Math.random().toString(16).slice(2)}.jpg`;
+    await db.query(`insert into storage.objects (bucket_id, name, owner) values ('verification-docs', $1, $2)`, [name, pro]);
+    return (await user(db, pro).query('select public.submit_verification($1::text[]) as id', [[name]])).rows[0].id;
+  };
+
+  test('nobody can set the verification status directly, not even an admin', async () => {
+    for (const who of [user(db, pro), user(db, other), user(db, admin), anon(db)]) {
+      await denies(who.query(`select public.admin_set_verification($1, 'verified')`, [pro]), DENIED);
+    }
   });
 
-  test('an admin verifies; the badge becomes public; timestamp set', async () => {
-    await user(db, admin).query(`select public.admin_set_verification($1, 'verified')`, [pro]);
+  test('an admin verifies through the review; the badge becomes public; timestamp set', async () => {
+    await user(db, admin).query('select public.admin_review_verification($1, true)', [await submit()]);
     const r = await anon(db).query('select verification_status from public.professional_profiles');
     assert.equal(r.rows[0].verification_status, 'verified');
     const t = await db.query('select verified_at from public.professional_profiles where user_id = $1', [pro]);
     assert.ok(t.rows[0].verified_at);
   });
 
-  test('rejecting clears the timestamp; invalid input and unknown users fail', async () => {
-    await user(db, admin).query(`select public.admin_set_verification($1, 'rejected')`, [pro]);
+  test('rejecting clears the timestamp', async () => {
+    await db.query(`update public.professional_profiles set verification_status = 'unverified', verified_at = null where user_id = $1`, [pro]);
+    await user(db, admin).query('select public.admin_review_verification($1, false, $2)', [await submit(), 'Photo illisible']);
     const t = await db.query('select verified_at, verification_status from public.professional_profiles where user_id = $1', [pro]);
     assert.equal(t.rows[0].verified_at, null);
     assert.equal(t.rows[0].verification_status, 'rejected');
-    await denies(user(db, admin).query(`select public.admin_set_verification($1, 'super-verified')`, [pro]), '22023');
-    await denies(user(db, admin).query(`select public.admin_set_verification(gen_random_uuid(), 'verified')`), 'P0002');
   });
 });
 

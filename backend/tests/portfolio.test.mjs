@@ -150,14 +150,14 @@ describe('portfolio storage', () => {
     assert.equal((await db.query(`select count(*)::int as n from storage.objects where name = $1`, [`${b}/keep.jpg`])).rows[0].n, 0);
   });
 
-  test('deleting the account removes the object rows too (nothing is left that blocks it)', async () => {
+  test('deleting the account queues its files for the cleanup worker (SQL cannot delete storage rows)', async () => {
     const leaving = await pro(db);
     await upload(db, leaving, `${leaving}/a.jpg`);
     await upload(db, leaving, `${leaving}/b.jpg`);
     await upload(db, a, `${a}/stays.jpg`);
     await user(db, leaving).query('select public.delete_my_account()');
-    const n = async (who) => (await db.query(`select count(*)::int as n from storage.objects where (storage.foldername(name))[1] = $1`, [who])).rows[0].n;
-    assert.equal(await n(leaving), 0);
-    assert.ok((await n(a)) >= 1, 'others untouched');
+    const q = async (who) => (await db.query(`select count(*)::int as n from public.storage_cleanup_queue where split_part(name, '/', 1) = $1`, [who])).rows[0].n;
+    assert.equal(await q(leaving), 2);
+    assert.equal(await q(a), 0, 'others untouched');
   });
 });

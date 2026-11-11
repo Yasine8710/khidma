@@ -204,7 +204,7 @@ describe('structural security guards', () => {
     assert.equal(await can('anon', 'public.become_professional()'), false);
     assert.equal(await can('authenticated', 'public.become_professional()'), true);
     assert.equal(await can('anon', 'public.admin_set_verification(uuid, text)'), false);
-    assert.equal(await can('authenticated', 'public.admin_set_verification(uuid, text)'), true);
+    assert.equal(await can('authenticated', 'public.admin_set_verification(uuid, text)'), false, 'only the reviewed workflow may verify');
     assert.equal(await can('anon', 'public.handle_new_user()'), false);
     assert.equal(await can('authenticated', 'public.handle_new_user()'), false);
     assert.equal(await can('authenticated', 'public.set_updated_at()'), false);

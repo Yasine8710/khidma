@@ -345,9 +345,10 @@ describe('messaging', () => {
       await user(db, leaving).query('select public.delete_my_account()');
       assert.equal((await db.query('select count(*)::int as n from public.conversations where id = $1', [c1])).rows[0].n, 0);
       assert.equal((await db.query('select count(*)::int as n from public.messages where conversation_id = $1', [c1])).rows[0].n, 0);
-      assert.equal((await db.query(`select count(*)::int as n from storage.objects where name = $1`, [`${c1}/a.jpg`])).rows[0].n, 0);
+      assert.equal((await db.query(`select count(*)::int as n from public.storage_cleanup_queue where name = $1`, [`${c1}/a.jpg`])).rows[0].n, 1, 'queued for the cleanup worker');
       assert.equal((await db.query('select count(*)::int as n from public.conversations where id = $1', [c2])).rows[0].n, 1);
       assert.equal((await db.query(`select count(*)::int as n from storage.objects where name = $1`, [`${c2}/b.jpg`])).rows[0].n, 1);
+      assert.equal((await db.query(`select count(*)::int as n from public.storage_cleanup_queue where name = $1`, [`${c2}/b.jpg`])).rows[0].n, 0, 'the other side keeps theirs');
     });
   });
 });

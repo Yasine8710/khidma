@@ -46,6 +46,15 @@ RequestsFailure mapRequestsException(Object error) {
         if (m.contains('already_reviewed')) {
           return RequestsFailure.alreadyReviewed;
         }
+        if (m.contains('already_reported')) {
+          return RequestsFailure.alreadyReported;
+        }
+        if (m.contains('already_pending')) {
+          return RequestsFailure.alreadyPending;
+        }
+        if (m.contains('already_verified')) {
+          return RequestsFailure.alreadyVerified;
+        }
         if (m.contains('offer_closed')) return RequestsFailure.offerClosed;
         if (m.contains('invalid_transition')) {
           return RequestsFailure.invalidTransition;

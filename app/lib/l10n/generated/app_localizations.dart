@@ -2811,6 +2811,240 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Vous avez déjà donné trop d’avis sur ce professionnel.'**
   String get reviewFailLimit;
+
+  /// No description provided for @reportAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Signaler'**
+  String get reportAction;
+
+  /// No description provided for @reportTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Signaler un problème'**
+  String get reportTitle;
+
+  /// No description provided for @reportHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notre équipe examine chaque signalement. La personne signalée ne saura pas que c’est vous.'**
+  String get reportHint;
+
+  /// No description provided for @reportReasonSpam.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publicité ou spam'**
+  String get reportReasonSpam;
+
+  /// No description provided for @reportReasonFake.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faux profil ou faux avis'**
+  String get reportReasonFake;
+
+  /// No description provided for @reportReasonAbuse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Harcèlement ou insultes'**
+  String get reportReasonAbuse;
+
+  /// No description provided for @reportReasonScam.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arnaque ou demande d’argent suspecte'**
+  String get reportReasonScam;
+
+  /// No description provided for @reportReasonInappropriate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contenu inapproprié'**
+  String get reportReasonInappropriate;
+
+  /// No description provided for @reportReasonOther.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autre'**
+  String get reportReasonOther;
+
+  /// No description provided for @reportDetailsLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détails (facultatif)'**
+  String get reportDetailsLabel;
+
+  /// No description provided for @reportSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer le signalement'**
+  String get reportSend;
+
+  /// No description provided for @reportSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Merci. Votre signalement a été envoyé.'**
+  String get reportSent;
+
+  /// No description provided for @reportFailAlready.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez déjà signalé cela. Nous l’examinons.'**
+  String get reportFailAlready;
+
+  /// No description provided for @reportFailRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop de signalements aujourd’hui. Réessayez demain.'**
+  String get reportFailRate;
+
+  /// No description provided for @reportFailGone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce contenu n’est plus disponible.'**
+  String get reportFailGone;
+
+  /// No description provided for @reportFailGeneric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le signalement n’a pas pu être envoyé. Vérifiez votre connexion et réessayez.'**
+  String get reportFailGeneric;
+
+  /// No description provided for @verifTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérification du profil'**
+  String get verifTitle;
+
+  /// No description provided for @verifCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faire vérifier mon profil'**
+  String get verifCta;
+
+  /// No description provided for @verifIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyez une photo de votre carte d’identité ou de votre registre de commerce. Après vérification, un badge apparaît sur votre profil.'**
+  String get verifIntro;
+
+  /// No description provided for @verifPrivacy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos documents sont privés : seuls vous et notre équipe de vérification peuvent les voir, et ils sont supprimés dès la décision.'**
+  String get verifPrivacy;
+
+  /// No description provided for @verifStatusNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore vérifié'**
+  String get verifStatusNone;
+
+  /// No description provided for @verifStatusPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'En cours de vérification'**
+  String get verifStatusPending;
+
+  /// No description provided for @verifStatusApproved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil vérifié'**
+  String get verifStatusApproved;
+
+  /// No description provided for @verifStatusRejected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande refusée'**
+  String get verifStatusRejected;
+
+  /// No description provided for @verifStatusCancelled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande annulée'**
+  String get verifStatusCancelled;
+
+  /// No description provided for @verifRejectReason.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif : {reason}'**
+  String verifRejectReason(Object reason);
+
+  /// No description provided for @verifPendingBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nous examinons vos documents. Vous serez prévenu de la décision.'**
+  String get verifPendingBody;
+
+  /// No description provided for @verifAdd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une photo'**
+  String get verifAdd;
+
+  /// No description provided for @verifCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} sur {max} documents'**
+  String verifCount(Object count, Object max);
+
+  /// No description provided for @verifRemove.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer le document {index}'**
+  String verifRemove(Object index);
+
+  /// No description provided for @verifSubmit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer pour vérification'**
+  String get verifSubmit;
+
+  /// No description provided for @verifCancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler la demande'**
+  String get verifCancel;
+
+  /// No description provided for @verifSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Documents envoyés. Nous vous répondons bientôt.'**
+  String get verifSent;
+
+  /// No description provided for @verifCancelled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande annulée. Vos documents ont été supprimés.'**
+  String get verifCancelled;
+
+  /// No description provided for @verifFailPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une demande est déjà en cours.'**
+  String get verifFailPending;
+
+  /// No description provided for @verifFailVerified.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre profil est déjà vérifié.'**
+  String get verifFailVerified;
+
+  /// No description provided for @verifFailLimit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop de demandes ces 30 derniers jours. Réessayez plus tard.'**
+  String get verifFailLimit;
+
+  /// No description provided for @verifFailGeneric.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’envoi a échoué. Vérifiez votre connexion et réessayez.'**
+  String get verifFailGeneric;
+
+  /// No description provided for @verifFailImage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).'**
+  String get verifFailImage;
 }
 
 class _AppLocalizationsDelegate

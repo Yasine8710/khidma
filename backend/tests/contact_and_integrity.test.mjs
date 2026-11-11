@@ -118,7 +118,8 @@ describe('verification is withdrawn when identity details change', () => {
     await becomePro(db, pro);
     await publish(db, pro);
   });
-  const verify = () => user(db, admin).query(`select public.admin_set_verification($1, 'verified')`, [pro]);
+  // Verification only comes from the reviewed workflow; here the badge is set directly to test the reset trigger.
+  const verify = () => db.query(`update public.professional_profiles set verification_status = 'verified', verified_at = now() where user_id = $1`, [pro]);
   const status = async () =>
     (await db.query('select verification_status, verified_at from public.professional_profiles where user_id = $1', [pro])).rows[0];
 
@@ -223,7 +224,7 @@ describe('sequence and function exposure', () => {
     const authCan = r.rows.filter((x) => x.auth_x).map((x) => x.proname).sort();
     assert.deepEqual(anonCan, ['is_admin', 'search_normalize', 'search_professionals']);
     assert.deepEqual(authCan, [
-      'accept_offer', 'admin_set_review_status', 'admin_set_verification', 'become_professional', 'can_view_request_photos', 'cancel_booking',
+      'accept_offer', 'admin_set_review_status', 'become_professional', 'can_view_request_photos', 'cancel_booking',
       'cancel_quote_request', 'chat_file_unsent', 'chat_folder_member', 'chat_folder_writable', 'chat_image_count', 'confirm_booking_completed',
       'create_quote_request', 'decline_offer', 'delete_my_account', 'get_my_activity',
       'get_my_professional_contact', 'get_my_quote_request', 'get_open_request', 'has_offered_on', 'is_admin',
@@ -232,7 +233,11 @@ describe('sequence and function exposure', () => {
       'my_request_file_count', 'my_reviewed_bookings', 'owns_open_request', 'register_device_token', 'request_photo_is_locked', 'reveal_professional_contact',
       'search_normalize', 'search_professionals', 'send_message', 'set_notification_preferences', 'start_booking',
       'start_conversation', 'submit_offer', 'submit_review', 'unregister_device_token', 'withdraw_offer',
-    ]);
+      // verification and reports
+      'admin_audit_log_page', 'admin_handle_report', 'admin_list_reports', 'admin_list_verifications', 'admin_report_context',
+      'admin_review_verification', 'admin_set_suspended', 'admin_verification_documents', 'cancel_verification', 'my_verification',
+      'my_verification_file_count', 'report_content', 'submit_verification', 'verification_file_unsubmitted',
+    ].sort());
   });
 
   test('every SECURITY DEFINER function pins search_path to the empty string exactly', async () => {

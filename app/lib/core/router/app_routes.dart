@@ -27,6 +27,7 @@ abstract final class AppRoutes {
   static const proRegistration = '/pro/profile';
   static const proDashboard = '/pro';
   static const proPortfolio = '/pro/portfolio';
+  static const proVerification = '/pro/verification';
   static const search = '/search';
   static const professional = '/professional/:id';
   static String professionalPath(String id) =>

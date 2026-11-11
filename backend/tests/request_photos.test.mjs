@@ -124,13 +124,13 @@ describe('request photos', () => {
     await denies(upload(db, heavy, `${heavy}/f60.jpg`), DENIED);
   });
 
-  test('deleting the account removes the request, its photo rows and the object rows', async () => {
+  test('deleting the account removes the request and photo rows and queues the files', async () => {
     const leaving = await createUser(db);
     const r = await ask(db, leaving);
     await attach(db, leaving, r, await upload(db, leaving));
     await user(db, leaving).query('select public.delete_my_account()');
     assert.equal((await db.query('select count(*)::int as n from public.request_photos where request_id = $1', [r])).rows[0].n, 0);
-    assert.equal((await db.query(`select count(*)::int as n from storage.objects where (storage.foldername(name))[1] = $1`, [leaving])).rows[0].n, 0);
+    assert.equal((await db.query(`select count(*)::int as n from public.storage_cleanup_queue where split_part(name, '/', 1) = $1`, [leaving])).rows[0].n, 1);
   });
 
   test('the photos of a closed request can no longer be deleted', async () => {

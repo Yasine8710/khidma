@@ -1,3 +1,6 @@
+import '../../trust/domain/trust_domain.dart';
+import '../../trust/presentation/report_sheet.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -53,6 +56,7 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          ReportButton(target: ReportTarget.professional, targetId: widget.id),
           FavoriteButton(
             professionalId: widget.id,
             professionalName: async.value?.name,

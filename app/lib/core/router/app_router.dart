@@ -19,6 +19,7 @@ import '../../features/offers/presentation/my_offers_screen.dart';
 import '../../features/offers/presentation/pro_inbox_screen.dart';
 import '../../features/offers/presentation/pro_request_screen.dart';
 import '../../features/portfolio/presentation/portfolio_screen.dart';
+import '../../features/trust/presentation/verification_screen.dart';
 import '../../features/requests/presentation/new_request_screen.dart';
 import '../../features/requests/presentation/request_detail_screen.dart';
 import '../../features/professional/presentation/dashboard_screen.dart';
@@ -134,6 +135,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.proPortfolio,
         builder: (context, state) => const PortfolioScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.proVerification,
+        builder: (context, state) => const VerificationScreen(),
       ),
       GoRoute(
         path: AppRoutes.proDashboard,
