@@ -47,7 +47,7 @@ Postgres on Supabase; SQL migrations in `backend/supabase/migrations`, tested wi
 - **Benchmark plan (needs the owner's keys and a device).** Take 60 real Tunisian addresses (20 Greater Tunis, 20 other governorates incl. Sfax/Sousse, 20 informal: landmark, "près de ...", Arabic-only). For each candidate (Google Maps, Apple Maps, MapLibre + an OSM tile source): tiles and labels render in Arabic and French, pin lands within 100 m of the true spot, cold start time, size added to the app, monthly cost at 10k MAU. Pick the best; implement `MapProvider` for it, add the key through `--dart-define`, restrict the key by bundle id / package + SHA-1, and enable the toggle.
 
 ## Admin
-Separate web app in `admin/` (Phase 7), role-gated by RLS and server checks.
+Separate web app in `admin/` (Vite, React, TypeScript), role-gated by the server: it has no table access and calls `admin_*` functions only, each of which checks `is_admin()`, which requires a TOTP (aal2) session (`admin_config.require_mfa`). Identity documents and reported chat images reach the browser only through the `admin-media` Edge Function (audited call first, then 2-minute signed links). See `admin/README.md`.
 
 ## Open questions
 PostGIS on the chosen Supabase plan; map vendor (benchmark plan above; needs keys); iOS signing/APNs proof needs a Mac and iPhone; Linux golden baselines once CI is unlocked.

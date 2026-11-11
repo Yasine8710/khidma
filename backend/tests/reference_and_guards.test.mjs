@@ -25,25 +25,22 @@ describe('service categories', () => {
 
   test('regular users cannot create, change or delete categories', async () => {
     await denies(user(db, a).query(`insert into public.service_categories (slug, name_fr, name_ar, name_en) values ('x', 'x', 'x', 'x')`), DENIED);
-    const upd = await user(db, a).query(`update public.service_categories set name_fr = 'Hacked'`);
-    assert.equal(upd.affectedRows, 0);
-    const del = await user(db, a).query('delete from public.service_categories');
-    assert.equal(del.affectedRows, 0);
+    await denies(user(db, a).query(`update public.service_categories set name_fr = 'Hacked'`), DENIED);
+    await denies(user(db, a).query('delete from public.service_categories'), DENIED);
     await denies(anon(db).query(`update public.service_categories set name_fr = 'Hacked'`), DENIED);
     const names = await anon(db).query(`select count(*)::int as n from public.service_categories where name_fr = 'Hacked'`);
     assert.equal(names.rows[0].n, 0);
   });
 
-  test('admins edit categories; deactivated ones disappear for the public', async () => {
-    // Creation is a migration / service-role action (no API insert grant).
-    await db.query(`insert into public.service_categories (slug, name_fr, name_ar, name_en) values ('welding', 'Soudure', 'اللحام', 'Welding')`);
-    await user(db, admin).query(`update public.service_categories set is_active = false where slug = 'welding'`);
+  test('admins edit categories only through the audited function; deactivated ones disappear for the public', async () => {
+    const id = (await user(db, admin).query(`select public.admin_upsert_category(null, 'welding', 'Soudure', 'اللحام', 'Welding') as id`)).rows[0].id;
+    await denies(user(db, admin).query(`update public.service_categories set is_active = false where slug = 'welding'`), DENIED);
+    await user(db, admin).query(`select public.admin_upsert_category($1, 'welding', 'Soudure', 'اللحام', 'Welding', 'build', 0, false)`, [id]);
     const pub = await anon(db).query(`select slug from public.service_categories where slug = 'welding'`);
     assert.equal(pub.rows.length, 0);
     const adm = await user(db, admin).query(`select slug from public.service_categories where slug = 'welding'`);
     assert.equal(adm.rows.length, 1);
-    const del = await user(db, admin).query(`delete from public.service_categories where slug = 'welding'`);
-    assert.equal(del.affectedRows, 1);
+    await denies(user(db, admin).query(`delete from public.service_categories where slug = 'welding'`), DENIED);
   });
 
   test('slugs are validated', async () => {
@@ -126,8 +123,6 @@ describe('structural security guards', () => {
       'anon:professional_services:SELECT',
       'anon:service_areas:SELECT',
       ...reference.map((t) => `authenticated:${t}:SELECT`),
-      'authenticated:service_categories:UPDATE',
-      'authenticated:service_categories:DELETE',
       'authenticated:profiles:SELECT',
       'authenticated:customer_profiles:SELECT',
       'authenticated:professional_services:SELECT',
