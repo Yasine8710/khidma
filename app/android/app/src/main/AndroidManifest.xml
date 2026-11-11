@@ -44,6 +44,11 @@
                  pushing it into the router as a route. -->
             <meta-data android:name="flutter_deeplinking_enabled" android:value="false"/>
         </activity>
+        <!-- Google Maps SDK key, filled from --dart-define=GOOGLE_MAPS_API_KEY
+             (see build.gradle.kts and docs/MAPS.md). Empty: the map is hidden. -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${mapsApiKey}" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

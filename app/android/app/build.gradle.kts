@@ -4,6 +4,15 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// `flutter run --dart-define=GOOGLE_MAPS_API_KEY=...` also reaches Gradle as a
+// base64 list; the same value goes into the manifest so there is one source.
+val dartDefines: Map<String, String> =
+    (project.findProperty("dart-defines") as String? ?: "")
+        .split(",")
+        .filter { it.isNotEmpty() }
+        .map { String(java.util.Base64.getDecoder().decode(it)) }
+        .associate { it.substringBefore("=") to it.substringAfter("=", "") }
+
 android {
     namespace = "tn.khidma.khidma"
     compileSdk = flutter.compileSdkVersion
@@ -27,6 +36,7 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["mapsApiKey"] = dartDefines["GOOGLE_MAPS_API_KEY"] ?: ""
     }
 
     buildTypes {

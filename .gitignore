@@ -35,3 +35,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.log
+
+# Local Google Maps key for iOS builds (see docs/MAPS.md)
+app/ios/Flutter/Maps.xcconfig
