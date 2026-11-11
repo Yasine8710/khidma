@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { KINDS, LANGUAGES, notificationRoute, notificationText } from '../supabase/functions/send-notifications/texts.mjs';
+import { isAuthorized, KINDS, LANGUAGES, notificationRoute, notificationText } from '../supabase/functions/send-notifications/texts.mjs';
 
 test('every kind has a title and body in every language, with no placeholders', () => {
   for (const kind of KINDS) {
@@ -44,4 +44,14 @@ test('the Edge Function never logs or forwards message content', () => {
   const src = readFileSync(new URL('../supabase/functions/send-notifications/index.ts', import.meta.url), 'utf8');
   assert.ok(!/\bbody\b.*messages/i.test(src.replace(/response|\.text\(\)/g, '')) || true);
   assert.ok(!src.includes("from('messages')"), 'the worker never reads the messages table');
+});
+
+test('the worker is only for callers with the configured secret', () => {
+  const secret = 'a-long-random-secret-value';
+  assert.equal(isAuthorized(`Bearer ${secret}`, secret), true);
+  for (const bad of [null, undefined, '', 'Bearer', 'Bearer x', secret, `Basic ${secret}`, `Bearer ${secret}x`, `bearer ${secret}`]) {
+    assert.equal(isAuthorized(bad, secret), false, String(bad));
+  }
+  assert.equal(isAuthorized('Bearer ', ''), false, 'no secret configured');
+  assert.equal(isAuthorized('Bearer short', 'short'), false, 'a short secret is refused');
 });

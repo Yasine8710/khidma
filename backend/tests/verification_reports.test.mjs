@@ -359,3 +359,34 @@ describe('conversation and review reports', () => {
     assert.ok(audit.includes('review_hidden'));
   });
 });
+
+describe('security pass', () => {
+  let db, admin;
+  before(async () => {
+    db = await newDb();
+    admin = await createUser(db);
+    await makeAdmin(db, admin);
+  });
+
+  test('changing name or phone withdraws a pending verification and queues its documents', async () => {
+    const p = await pro(db);
+    await put(db, p, 'a.jpg');
+    const req = await submit(db, p, ['a.jpg']);
+    await user(db, p).query(`update public.professional_profiles set business_name = 'Autre nom' where user_id = $1`, [p]);
+    assert.equal(await status(db, p), 'unverified');
+    const r = (await db.query('select status from public.verification_requests where id = $1', [req])).rows[0];
+    assert.equal(r.status, 'cancelled');
+    assert.equal((await db.query(`select count(*)::int as n from public.storage_cleanup_queue where name like $1`, [`${p}/%`])).rows[0].n, 1);
+    await assert.rejects(user(db, admin).query('select public.admin_review_verification($1, true)', [req]), (e) => e.message === 'invalid_transition');
+    // other edits keep a pending request
+    await put(db, p, 'b.jpg');
+    await submit(db, p, ['b.jpg']);
+    await user(db, p).query(`update public.professional_profiles set description = 'Une description complètement différente.' where user_id = $1`, [p]);
+    assert.equal(await status(db, p), 'pending');
+  });
+
+  test('the review pair cap is serialized (a lock precedes the count)', async () => {
+    const src = (await db.query(`select prosrc from pg_proc where proname = 'submit_review'`)).rows[0].prosrc;
+    assert.ok(src.indexOf('pg_advisory_xact_lock') > -1 && src.indexOf('pg_advisory_xact_lock') < src.indexOf('review_limit'));
+  });
+});

@@ -146,6 +146,15 @@ Not yet verified against a real project: the end-to-end link flow on a device, t
 - The app keeps its session in `sessionStorage` (closing the tab signs out), ships a strict CSP (own scripts only, Supabase for connect/img), and links open with `rel="noreferrer noopener"`.
 - Not verified live: sign-in, TOTP enrollment, the Edge Function and signed links (need a real Supabase project, #6). Residual: no rate limit on admin sign-in beyond Supabase Auth's own; account recovery for a lost authenticator is a manual SQL step for the owner.
 
+### Full security pass (Phase 8, #30)
+Codex audited every migration, both Edge Functions and the app's data layer. Fixed: request-photo folders now use a private alias (`my_file_alias()`), not the account id, because a professional can read a photo row's path; a pending verification is withdrawn when the business name or phone changes; the review pair cap takes a per-pair lock; the notification worker refuses callers without `NOTIFY_SECRET`; admin dependencies upgraded (`npm audit --omit=dev` is clean).
+
+Known residuals, all waiting on the server-side worker of #32 or a real Supabase project:
+- **Signed upload URLs can pre-reserve names**, so per-user file counts (6 verification files, 16 portfolio, 60 request photos) can be overshot by someone who creates many signed upload tokens first. The cleanup sweep must delete files no row points to, and the bucket size limits still apply per file.
+- **Public portfolio files of a deleted account stay reachable** by their URL until the cleanup worker removes the queued files (SQL cannot delete storage rows).
+- The remaining `npm audit` findings are dev-only tooling (vitest worker and vite dev server): they cannot run in production, and tests only load our own code.
+- Concurrency fixes (review pair lock, verification file locks, upload quota lock) are checked structurally; a true parallel test needs a real Postgres.
+
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.
 - The Supabase SDK's own debug logger is disabled; the app prints only error types, and only in debug builds.

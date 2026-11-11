@@ -81,14 +81,9 @@ RequestsFailure mapRequestsException(Object error) {
 /// Requests through PostgREST and Storage. Reads are narrowed by Row Level
 /// Security; every change goes through a database function.
 class SupabaseRequestsRepository implements RequestsRepository {
-  SupabaseRequestsRepository(
-    this._client, {
-    String? Function()? userId,
-    this._random,
-  }) : _userId = userId ?? (() => _client.auth.currentUser?.id);
+  SupabaseRequestsRepository(this._client, {this._random});
 
   final sb.SupabaseClient _client;
-  final String? Function() _userId;
   final Random? _random;
 
   Future<T> _guard<T>(Future<T> Function() run) async {
@@ -152,10 +147,20 @@ class SupabaseRequestsRepository implements RequestsRepository {
       }
       return row;
     });
+    final wanted = photos.take(maxRequestPhotos).toList();
+    if (wanted.isEmpty) return CreatedRequest(id: id, failedPhotos: 0);
+    // Files go in a folder named after a private alias, never the account id
+    // (a professional can read the path of a request photo).
+    final String alias;
+    try {
+      alias = await _fileAlias();
+    } catch (_) {
+      return CreatedRequest(id: id, failedPhotos: wanted.length);
+    }
     var failed = 0;
-    for (final photo in photos.take(maxRequestPhotos)) {
+    for (final photo in wanted) {
       try {
-        await _attach(id, photo);
+        await _attach(id, alias, photo);
       } catch (_) {
         failed++;
       }
@@ -163,13 +168,23 @@ class SupabaseRequestsRepository implements RequestsRepository {
     return CreatedRequest(id: id, failedPhotos: failed);
   }
 
-  Future<void> _attach(String requestId, PreparedPhoto photo) async {
-    final uid = _userId();
-    if (uid == null) throw const RequestsError(RequestsFailure.notSignedIn);
+  Future<String> _fileAlias() => _guard(() async {
+    final row = await _client.rpc('my_file_alias');
+    if (row is! String || row.isEmpty) {
+      throw const RequestsError(RequestsFailure.unknown);
+    }
+    return row;
+  });
+
+  Future<void> _attach(
+    String requestId,
+    String alias,
+    PreparedPhoto photo,
+  ) async {
     if (photo.bytes.length > maxUploadBytes) {
       throw const RequestsError(RequestsFailure.invalidInput);
     }
-    final path = '$uid/${randomFileId(_random)}.jpg';
+    final path = '$alias/${randomFileId(_random)}.jpg';
     final bucket = _client.storage.from(requestPhotoBucket);
     await bucket.uploadBinary(
       path,
