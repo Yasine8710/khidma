@@ -14,6 +14,8 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../requests/presentation/requests_texts.dart';
+import '../../reviews/application/reviews_providers.dart';
+import '../../reviews/presentation/review_widgets.dart';
 import '../application/offers_providers.dart';
 import '../domain/offers_domain.dart';
 import 'offers_texts.dart';
@@ -202,6 +204,8 @@ class JobsScreen extends ConsumerWidget {
                             ),
                           ],
                         ),
+                        if (j.status == BookingStatus.completed)
+                          _JobReview(bookingId: j.id),
                         if (j.canStart || j.canMarkDone || j.canCancel) ...[
                           const SizedBox(height: AppSpacing.md),
                           Wrap(
@@ -271,6 +275,47 @@ class JobsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.jobsTitle)),
       body: SafeArea(child: body),
+    );
+  }
+}
+
+class _JobReview extends ConsumerWidget {
+  const _JobReview({required this.bookingId});
+
+  final String bookingId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final reviewed = ref.watch(reviewedBookingsProvider).value;
+    if (reviewed == null) return const SizedBox.shrink();
+    if (reviewed.contains(bookingId)) {
+      return Padding(
+        padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
+        child: AppBadge(label: l10n.reviewDone, tone: BadgeTone.success),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
+      child: AppButton(
+        label: l10n.reviewCtaPro,
+        icon: Icons.star_outline_rounded,
+        variant: AppButtonVariant.secondary,
+        expand: false,
+        onPressed: () async {
+          final messenger = ScaffoldMessenger.of(context);
+          final done = await showReviewSheet(
+            context,
+            bookingId: bookingId,
+            aboutCustomer: true,
+          );
+          if (done) {
+            messenger
+              ..clearSnackBars()
+              ..showSnackBar(SnackBar(content: Text(l10n.reviewThanks)));
+          }
+        },
+      ),
     );
   }
 }

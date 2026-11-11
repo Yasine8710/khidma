@@ -15,10 +15,18 @@ import 'features/favorites/application/favorites_providers.dart';
 import 'features/favorites/data/supabase_favorites_repository.dart';
 import 'features/marketplace/application/marketplace_providers.dart';
 import 'features/marketplace/data/supabase_marketplace_repository.dart';
+import 'features/messages/application/messages_providers.dart';
+import 'features/messages/data/supabase_messages_repository.dart';
+import 'features/notifications/application/notifications_providers.dart';
+import 'features/notifications/data/supabase_notifications_repository.dart';
 import 'features/offers/application/offers_providers.dart';
 import 'features/offers/data/supabase_offers_repository.dart';
 import 'features/portfolio/application/portfolio_providers.dart';
 import 'features/requests/application/customer_offers_providers.dart';
+import 'features/reviews/application/reviews_providers.dart';
+import 'features/reviews/data/supabase_reviews_repository.dart';
+import 'features/trust/application/trust_providers.dart';
+import 'features/trust/data/supabase_trust_repository.dart';
 import 'features/requests/application/requests_providers.dart';
 import 'features/requests/data/supabase_customer_offers_repository.dart';
 import 'features/requests/data/supabase_requests_repository.dart';
@@ -49,6 +57,26 @@ Future<void> main() async {
         if (auth.isAvailable)
           customerOffersRepositoryProvider.overrideWithValue(
             SupabaseCustomerOffersRepository(Supabase.instance.client),
+          ),
+        if (auth.isAvailable)
+          messagesRepositoryProvider.overrideWithValue(
+            SupabaseMessagesRepository(Supabase.instance.client),
+          ),
+        if (auth.isAvailable)
+          notificationsRepositoryProvider.overrideWithValue(
+            SupabaseNotificationsRepository(Supabase.instance.client),
+          ),
+        // Stop pushes for this account on this device before signing out.
+        beforeSignOutProvider.overrideWith(
+          (ref) => [() => ref.read(pushLifecycleProvider).unregister()],
+        ),
+        if (auth.isAvailable)
+          reviewsRepositoryProvider.overrideWithValue(
+            SupabaseReviewsRepository(Supabase.instance.client),
+          ),
+        if (auth.isAvailable)
+          trustRepositoryProvider.overrideWithValue(
+            SupabaseTrustRepository(Supabase.instance.client),
           ),
         if (auth.isAvailable)
           requestsRepositoryProvider.overrideWithValue(

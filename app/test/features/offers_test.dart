@@ -528,7 +528,10 @@ void main() {
       await _open(tester, repo, AppRoutes.proJobs);
       expect(find.text('Terminé'), findsOneWidget);
       expect(find.text('Annulé'), findsOneWidget);
-      expect(find.byType(OutlinedButton), findsNothing);
+      expect(find.text('Annuler le chantier'), findsNothing);
+      expect(find.text('Marquer comme terminé'), findsNothing);
+      // The one thing left on a completed job is rating the customer.
+      expect(find.text('Noter le client'), findsOneWidget);
       expect(find.text('Démarrer'), findsNothing);
     });
 

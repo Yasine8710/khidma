@@ -30,6 +30,8 @@ void main() {
           )
           .first,
     );
+    await tester.ensureVisible(find.text('Design gallery'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Design gallery'));
     // The gallery has a looping shimmer, so settle by time, not by idle.
     await tester.pump();

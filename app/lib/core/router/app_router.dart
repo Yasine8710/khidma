@@ -12,11 +12,14 @@ import '../../features/gallery/gallery_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/marketplace/presentation/professional_screen.dart';
 import '../../features/marketplace/presentation/search_screen.dart';
+import '../../features/messages/presentation/chat_screen.dart';
 import '../../features/messages/presentation/messages_screen.dart';
+import '../../features/notifications/presentation/notification_settings_screen.dart';
 import '../../features/offers/presentation/my_offers_screen.dart';
 import '../../features/offers/presentation/pro_inbox_screen.dart';
 import '../../features/offers/presentation/pro_request_screen.dart';
 import '../../features/portfolio/presentation/portfolio_screen.dart';
+import '../../features/trust/presentation/verification_screen.dart';
 import '../../features/requests/presentation/new_request_screen.dart';
 import '../../features/requests/presentation/request_detail_screen.dart';
 import '../../features/professional/presentation/dashboard_screen.dart';
@@ -121,8 +124,21 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const JobsScreen(),
       ),
       GoRoute(
+        path: AppRoutes.notificationSettings,
+        builder: (context, state) => const NotificationSettingsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.chat,
+        builder: (context, state) =>
+            ChatScreen(conversationId: state.pathParameters['id'] ?? ''),
+      ),
+      GoRoute(
         path: AppRoutes.proPortfolio,
         builder: (context, state) => const PortfolioScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.proVerification,
+        builder: (context, state) => const VerificationScreen(),
       ),
       GoRoute(
         path: AppRoutes.proDashboard,

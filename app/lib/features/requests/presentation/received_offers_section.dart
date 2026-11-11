@@ -16,6 +16,9 @@ import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
 import '../../offers/domain/offers_domain.dart';
 import '../../offers/presentation/offers_texts.dart';
+import '../../messages/application/messages_providers.dart';
+import '../../reviews/application/reviews_providers.dart';
+import '../../reviews/presentation/review_widgets.dart';
 import '../application/customer_offers_providers.dart';
 import '../domain/customer_offers_domain.dart';
 import '../domain/requests_domain.dart';
@@ -124,6 +127,30 @@ class _ReceivedOffersSectionState extends ConsumerState<ReceivedOffersSection> {
       );
   }
 
+  Future<void> _message(ReceivedOffer offer) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final router = GoRouter.of(context);
+    final (id, failure) = await ref
+        .read(messageActionsProvider.notifier)
+        .open(offer.id);
+    if (id != null) {
+      router.push(AppRoutes.chatPath(id));
+      return;
+    }
+    messenger
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            failure == RequestsFailure.notOpen
+                ? l10n.chatClosed
+                : l10n.chatOpenFailed,
+          ),
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -205,6 +232,7 @@ class _ReceivedOffersSectionState extends ConsumerState<ReceivedOffersSection> {
                   _decide(accept: true, offer: o, proName: name),
               onDecline: (name) =>
                   _decide(accept: false, offer: o, proName: name),
+              onMessage: () => _message(o),
             ),
             const SizedBox(height: AppSpacing.md),
           ],
@@ -238,6 +266,7 @@ class _OfferCard extends StatelessWidget {
     required this.canAccept,
     required this.onAccept,
     required this.onDecline,
+    required this.onMessage,
   });
 
   final ReceivedOffer offer;
@@ -247,6 +276,7 @@ class _OfferCard extends StatelessWidget {
   final bool canAccept;
   final void Function(String name) onAccept;
   final void Function(String name) onDecline;
+  final VoidCallback onMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -335,6 +365,19 @@ class _OfferCard extends StatelessWidget {
             if (offer.message != null && offer.message!.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.sm),
               Text(offer.message!, style: text.bodyMedium),
+            ],
+            if (live) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: AppButton(
+                  label: l10n.chatAskPro,
+                  icon: Icons.chat_bubble_outline_rounded,
+                  variant: AppButtonVariant.text,
+                  expand: false,
+                  onPressed: onMessage,
+                ),
+              ),
             ],
             if (canAct) ...[
               const SizedBox(height: AppSpacing.md),
@@ -477,6 +520,8 @@ class BookingSection extends ConsumerWidget {
             ),
           ],
         ),
+        if (booking.status == BookingStatus.completed)
+          _ReviewPrompt(bookingId: booking.id, aboutCustomer: false),
         if (booking.canConfirm) ...[
           const SizedBox(height: AppSpacing.sm),
           Text(l10n.bookingWaitingForYou, style: text.bodyMedium),
@@ -501,6 +546,49 @@ class BookingSection extends ConsumerWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+/// "Leave a review" for a completed job, or a thank-you once it was given.
+class _ReviewPrompt extends ConsumerWidget {
+  const _ReviewPrompt({required this.bookingId, required this.aboutCustomer});
+
+  final String bookingId;
+  final bool aboutCustomer;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final reviewed = ref.watch(reviewedBookingsProvider).value;
+    // Unknown (loading or failed) shows nothing rather than a wrong button.
+    if (reviewed == null) return const SizedBox.shrink();
+    if (reviewed.contains(bookingId)) {
+      return Padding(
+        padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
+        child: AppBadge(label: l10n.reviewDone, tone: BadgeTone.success),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
+      child: AppButton(
+        label: aboutCustomer ? l10n.reviewCtaPro : l10n.reviewCta,
+        icon: Icons.star_outline_rounded,
+        variant: AppButtonVariant.secondary,
+        onPressed: () async {
+          final messenger = ScaffoldMessenger.of(context);
+          final done = await showReviewSheet(
+            context,
+            bookingId: bookingId,
+            aboutCustomer: aboutCustomer,
+          );
+          if (done) {
+            messenger
+              ..clearSnackBars()
+              ..showSnackBar(SnackBar(content: Text(l10n.reviewThanks)));
+          }
+        },
+      ),
     );
   }
 }

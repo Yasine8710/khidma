@@ -1,3 +1,6 @@
+import '../../trust/domain/trust_domain.dart';
+import '../../trust/presentation/report_sheet.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,6 +17,7 @@ import '../application/search_providers.dart';
 import '../domain/marketplace_domain.dart';
 import '../../favorites/presentation/favorite_button.dart';
 import '../../portfolio/presentation/portfolio_gallery.dart';
+import '../../reviews/presentation/review_widgets.dart';
 import 'contact_section.dart';
 import 'marketplace_failure_view.dart';
 import 'professional_card.dart';
@@ -52,6 +56,7 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          ReportButton(target: ReportTarget.professional, targetId: widget.id),
           FavoriteButton(
             professionalId: widget.id,
             professionalName: async.value?.name,
@@ -139,6 +144,7 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
                 ],
                 ..._detailSections(context, ref, p, locale),
                 PortfolioGallery(professionalId: p.id),
+                ReviewsList(professionalId: p.id),
                 const SizedBox(height: AppSpacing.xl),
                 ContactSection(professionalId: p.id),
               ],

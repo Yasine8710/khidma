@@ -114,6 +114,31 @@ Not yet verified against a real project: the end-to-end link flow on a device, t
 - The `request-photos` bucket is private (signed links, one hour). Readers: the owner; published professionals while the request is open; a professional while their own offer is pending or accepted. Photos of a closed request cannot be deleted. Account deletion removes the object rows.
 - Upload quotas (60 files per customer here, 16 per professional for the portfolio) are counted from a snapshot, so a burst of parallel uploads can overshoot slightly; the server-side sweep planned in #32 should also delete files no row points to.
 
+### Messaging (Phase 6.1)
+- A conversation hangs on one offer; either side opens it, nobody else can. Customers are anonymous to professionals: no user id is selectable on `conversations` or `messages` (messages carry only a role flag, so realtime payloads leak nothing), and the inbox function shows a professional's public name but never the customer's.
+- Clients only read (RLS by membership); `send_message` checks membership, that the offer is pending/accepted and the request open (not expired) or awarded, and rate limits to 30 per minute. Closed conversations are read-only, including image uploads.
+- Images: private `chat-images` bucket (2 MB, jpeg/png/webp), members only, 100 per conversation; an upload no message points to can be removed. Read markers are message ids set only up to what was shown.
+- Deleting an account removes its conversations and the matching object rows (bytes: server-side cleanup, #32).
+
+### Notifications (Phase 6.2)
+- Events write to `notification_outbox` in the same transaction (triggers on offers, messages, bookings); a row holds a kind and ids only, never text, names or message content. Push texts are built from the kind in the recipient's language. Preferences (offers/messages/jobs) are honoured when enqueueing; messages notify once per unread burst.
+- The delivery worker is an Edge Function using the service role (`claim_notifications`, `complete_notification` fenced by attempt number, retries with backoff, given up after 5 attempts). Clients cannot read the outbox or the tokens.
+- A device token belongs to one account at a time: signing out unregisters it first; if that fails it moves on the next sign-in, and is dropped after 60 days unseen. Residual risk: a signed-out phone that could not unregister may still show generic pushes (no content) until then.
+- **Owner step (#26):** create a Firebase project, add APNs auth key, put the service-account JSON in the Edge Function secrets, add `firebase_messaging` and the platform files, implement `PushService`, schedule the function. The Edge Function has not been run.
+
+### Reviews (Phase 6.3)
+- One review per person per completed job, written through `submit_review` (checks the job is completed and the caller took part); at most 3 per author about one subject (anti-farming). Only reviews a customer wrote about the job's professional are public and count towards the rating; the other direction stays private (not selectable by anyone but moderators).
+- Public columns: rating, comment, month and an ordering counter; never author, job or exact time. Ratings are recomputed by a trigger serialized per professional; clients cannot write them. Admins hide reviews through `admin_set_review_status` (hidden ones leave the list and the average).
+
+### Verification and reports (Phase 6.4)
+- Verification documents (photos, up to 3 per request) live in the private `verification-docs` bucket: only the owner can read them through Storage (at most 6 files, counted under a per-user lock), and a file attached to a request cannot be deleted by its owner. Requests are not readable by clients at all; the owner uses `my_verification()`, admins the `admin_*` functions. One pending request at a time, at most 3 per 30 days.
+- Only the reviewed workflow sets the public "verified" status: `admin_review_verification` is the only caller of `admin_set_verification`, which clients can no longer execute. A rejection needs a reason (shown to the owner).
+- **Admins do not read documents through Storage** (there is no admin Storage policy), so the audit cannot be bypassed: the dashboard's server-side signer (service role, to be built with #29) must call `admin_verification_documents` (which logs the view) and then sign links. The same signer is how admins view images of a reported chat.
+- **Files are never deleted from SQL.** Supabase rejects direct deletes on `storage.objects`, so decisions, cancellation and account deletion put names in `storage_cleanup_queue` (service role only); the worker in #32 deletes them through the Storage API. Until it runs, queued files stay in the bucket but no longer count against the owner's allowance. (Earlier slices' account-deletion migrations deleted storage rows directly; the latest `delete_my_account` replaces them and queues instead.)
+- Reports: `report_content` accepts a published professional (not yourself), a public review written by someone else, or a conversation you belong to; 10 per day, one open report per reporter and target. The reporter is never exposed to the reported person, and the admin queue does not show reporters. Reading a reported conversation (last 50 messages) is an explicit admin action and is audited.
+- Admins can suspend a professional (unpublishes; the owner cannot republish while suspended). Every admin action (verification, suspension, report handling, review moderation, document viewing) is written to `admin_audit_log`, readable only through `admin_audit_log_page`.
+- Residual: the delete-versus-submit race is closed with a row lock plus a re-check, which needs real Postgres to exercise (PGlite is single-connection). The app only offers photos (the bucket also accepts PDF). A second factor for admin sessions is an owner step for the dashboard (#29).
+
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.
 - The Supabase SDK's own debug logger is disabled; the app prints only error types, and only in debug builds.

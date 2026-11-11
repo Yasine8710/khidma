@@ -1376,4 +1376,305 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get bookingWaitingForYou =>
       'The professional says the work is done. Is it done properly?';
+
+  @override
+  String get chatTitleClient => 'Customer';
+
+  @override
+  String get chatInputHint => 'Write a message…';
+
+  @override
+  String get chatSend => 'Send';
+
+  @override
+  String get chatAddImage => 'Attach a photo';
+
+  @override
+  String get chatEmpty => 'No messages yet. Say hello!';
+
+  @override
+  String get chatReadOnly =>
+      'This conversation has ended: you can read it, but not write.';
+
+  @override
+  String get chatImageSent => 'Photo sent';
+
+  @override
+  String get chatYouSent => 'You';
+
+  @override
+  String get chatThem => 'Other person';
+
+  @override
+  String chatUnread(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unread messages',
+      one: '1 unread message',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSendFailed => 'Message not sent. Try again.';
+
+  @override
+  String get chatRateLimited => 'You are writing too fast. Wait a moment.';
+
+  @override
+  String get chatClosed => 'This conversation has ended.';
+
+  @override
+  String get chatOpenFailed => 'Couldn’t open the conversation. Try again.';
+
+  @override
+  String get chatLiveFailed => 'Live updates stopped. Pull to refresh.';
+
+  @override
+  String get chatPhotoFailed => 'Photo not sent. Try again.';
+
+  @override
+  String get chatAskPro => 'Ask a question';
+
+  @override
+  String get chatWriteCustomer => 'Message the customer';
+
+  @override
+  String get chatPhoto => 'Photo';
+
+  @override
+  String get notifTitle => 'Notifications';
+
+  @override
+  String get notifIntro =>
+      'Choose what you want to be told about. Notifications never contain the text of your messages.';
+
+  @override
+  String get notifOffers => 'Offers received and accepted';
+
+  @override
+  String get notifMessages => 'New messages';
+
+  @override
+  String get notifJobs => 'Job progress';
+
+  @override
+  String get notifNoPush =>
+      'Push notifications are not available on this device yet. Your choices are saved for later.';
+
+  @override
+  String get notifSaveFailed => 'Couldn’t save that choice. Try again.';
+
+  @override
+  String get reviewsTitle => 'Reviews';
+
+  @override
+  String get reviewsEmpty => 'No reviews yet.';
+
+  @override
+  String get reviewsMore => 'Show more reviews';
+
+  @override
+  String get reviewsLoadFailed => 'Couldn’t load the reviews.';
+
+  @override
+  String get reviewCta => 'Leave a review';
+
+  @override
+  String get reviewCtaPro => 'Rate the customer';
+
+  @override
+  String get reviewSheetTitle => 'Your review';
+
+  @override
+  String get reviewSheetTitlePro => 'Your review of the customer';
+
+  @override
+  String get reviewRatingHint => 'Tap a star';
+
+  @override
+  String reviewStar(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count stars',
+      one: '1 star',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewComment => 'Comment (optional)';
+
+  @override
+  String get reviewSubmit => 'Publish my review';
+
+  @override
+  String get reviewPublicNote =>
+      'Your review will be public, without your name.';
+
+  @override
+  String get reviewPrivateNote =>
+      'This review is only visible to the Khidma team.';
+
+  @override
+  String get reviewErrRating => 'Choose a rating from 1 to 5.';
+
+  @override
+  String get reviewThanks => 'Thank you for your review.';
+
+  @override
+  String get reviewDone => 'Review given';
+
+  @override
+  String get reviewFailAlready => 'You already reviewed this job.';
+
+  @override
+  String get reviewFailNotCompleted =>
+      'The job must be completed to leave a review.';
+
+  @override
+  String get reviewFailGeneric => 'Couldn’t send the review. Try again.';
+
+  @override
+  String get reviewAuthorAnon => 'Customer';
+
+  @override
+  String get reviewFailLimit =>
+      'You have already given this professional too many reviews.';
+
+  @override
+  String get reportAction => 'Report';
+
+  @override
+  String get reportTitle => 'Report a problem';
+
+  @override
+  String get reportHint =>
+      'Our team reviews every report. The person reported will not know it was you.';
+
+  @override
+  String get reportReasonSpam => 'Advertising or spam';
+
+  @override
+  String get reportReasonFake => 'Fake profile or review';
+
+  @override
+  String get reportReasonAbuse => 'Harassment or insults';
+
+  @override
+  String get reportReasonScam => 'Scam or suspicious money request';
+
+  @override
+  String get reportReasonInappropriate => 'Inappropriate content';
+
+  @override
+  String get reportReasonOther => 'Other';
+
+  @override
+  String get reportDetailsLabel => 'Details (optional)';
+
+  @override
+  String get reportSend => 'Send report';
+
+  @override
+  String get reportSent => 'Thank you. Your report was sent.';
+
+  @override
+  String get reportFailAlready =>
+      'You already reported this. We are looking at it.';
+
+  @override
+  String get reportFailRate => 'Too many reports today. Try again tomorrow.';
+
+  @override
+  String get reportFailGone => 'This content is no longer available.';
+
+  @override
+  String get reportFailGeneric =>
+      'The report could not be sent. Check your connection and try again.';
+
+  @override
+  String get verifTitle => 'Profile verification';
+
+  @override
+  String get verifCta => 'Get my profile verified';
+
+  @override
+  String get verifIntro =>
+      'Send a photo of your ID card or business registration. Once checked, a badge shows on your profile.';
+
+  @override
+  String get verifPrivacy =>
+      'Your documents are private: only you and our verification team can see them, and they are deleted as soon as a decision is made.';
+
+  @override
+  String get verifStatusNone => 'Not verified yet';
+
+  @override
+  String get verifStatusPending => 'Being checked';
+
+  @override
+  String get verifStatusApproved => 'Profile verified';
+
+  @override
+  String get verifStatusRejected => 'Request declined';
+
+  @override
+  String get verifStatusCancelled => 'Request cancelled';
+
+  @override
+  String verifRejectReason(Object reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String get verifPendingBody =>
+      'We are checking your documents. You will be told the decision.';
+
+  @override
+  String get verifAdd => 'Add a photo';
+
+  @override
+  String verifCount(Object count, Object max) {
+    return '$count of $max documents';
+  }
+
+  @override
+  String verifRemove(Object index) {
+    return 'Remove document $index';
+  }
+
+  @override
+  String get verifSubmit => 'Send for checking';
+
+  @override
+  String get verifCancel => 'Cancel the request';
+
+  @override
+  String get verifSent => 'Documents sent. We will get back to you soon.';
+
+  @override
+  String get verifCancelled =>
+      'Request cancelled. Your documents were deleted.';
+
+  @override
+  String get verifFailPending => 'A request is already being checked.';
+
+  @override
+  String get verifFailVerified => 'Your profile is already verified.';
+
+  @override
+  String get verifFailLimit =>
+      'Too many requests in the last 30 days. Try again later.';
+
+  @override
+  String get verifFailGeneric =>
+      'Sending failed. Check your connection and try again.';
+
+  @override
+  String get verifFailImage =>
+      'This file is not a readable photo (JPEG, PNG or WebP).';
 }

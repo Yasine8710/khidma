@@ -2523,6 +2523,528 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Le professionnel indique avoir terminé. Le travail est-il bien fait ?'**
   String get bookingWaitingForYou;
+
+  /// No description provided for @chatTitleClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get chatTitleClient;
+
+  /// No description provided for @chatInputHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écrivez un message…'**
+  String get chatInputHint;
+
+  /// No description provided for @chatSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer'**
+  String get chatSend;
+
+  /// No description provided for @chatAddImage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Joindre une photo'**
+  String get chatAddImage;
+
+  /// No description provided for @chatEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun message. Dites bonjour !'**
+  String get chatEmpty;
+
+  /// No description provided for @chatReadOnly.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette conversation est terminée : vous pouvez la relire, mais plus y écrire.'**
+  String get chatReadOnly;
+
+  /// No description provided for @chatImageSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo envoyée'**
+  String get chatImageSent;
+
+  /// No description provided for @chatYouSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous'**
+  String get chatYouSent;
+
+  /// No description provided for @chatThem.
+  ///
+  /// In fr, this message translates to:
+  /// **'Interlocuteur'**
+  String get chatThem;
+
+  /// No description provided for @chatUnread.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{} =1{1 message non lu} other{{count} messages non lus}}'**
+  String chatUnread(int count);
+
+  /// No description provided for @chatSendFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message non envoyé. Réessayez.'**
+  String get chatSendFailed;
+
+  /// No description provided for @chatRateLimited.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous écrivez trop vite. Patientez un instant.'**
+  String get chatRateLimited;
+
+  /// No description provided for @chatClosed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette conversation est terminée.'**
+  String get chatClosed;
+
+  /// No description provided for @chatOpenFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d’ouvrir la conversation. Réessayez.'**
+  String get chatOpenFailed;
+
+  /// No description provided for @chatLiveFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mise à jour en direct interrompue. Tirez pour actualiser.'**
+  String get chatLiveFailed;
+
+  /// No description provided for @chatPhotoFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo non envoyée. Réessayez.'**
+  String get chatPhotoFailed;
+
+  /// No description provided for @chatAskPro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Poser une question'**
+  String get chatAskPro;
+
+  /// No description provided for @chatWriteCustomer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écrire au client'**
+  String get chatWriteCustomer;
+
+  /// No description provided for @chatPhoto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo'**
+  String get chatPhoto;
+
+  /// No description provided for @notifTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications'**
+  String get notifTitle;
+
+  /// No description provided for @notifIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez ce pour quoi vous voulez être prévenu. Les notifications ne contiennent jamais le texte de vos messages.'**
+  String get notifIntro;
+
+  /// No description provided for @notifOffers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Offres reçues et acceptées'**
+  String get notifOffers;
+
+  /// No description provided for @notifMessages.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveaux messages'**
+  String get notifMessages;
+
+  /// No description provided for @notifJobs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avancement des chantiers'**
+  String get notifJobs;
+
+  /// No description provided for @notifNoPush.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les notifications push ne sont pas encore disponibles sur cet appareil. Vos choix sont enregistrés pour plus tard.'**
+  String get notifNoPush;
+
+  /// No description provided for @notifSaveFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d’enregistrer ce choix. Réessayez.'**
+  String get notifSaveFailed;
+
+  /// No description provided for @reviewsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avis'**
+  String get reviewsTitle;
+
+  /// No description provided for @reviewsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore d’avis.'**
+  String get reviewsEmpty;
+
+  /// No description provided for @reviewsMore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir plus d’avis'**
+  String get reviewsMore;
+
+  /// No description provided for @reviewsLoadFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger les avis.'**
+  String get reviewsLoadFailed;
+
+  /// No description provided for @reviewCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Laisser un avis'**
+  String get reviewCta;
+
+  /// No description provided for @reviewCtaPro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Noter le client'**
+  String get reviewCtaPro;
+
+  /// No description provided for @reviewSheetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre avis'**
+  String get reviewSheetTitle;
+
+  /// No description provided for @reviewSheetTitlePro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre avis sur le client'**
+  String get reviewSheetTitlePro;
+
+  /// No description provided for @reviewRatingHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Touchez une étoile'**
+  String get reviewRatingHint;
+
+  /// No description provided for @reviewStar.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 étoile} other{{count} étoiles}}'**
+  String reviewStar(int count);
+
+  /// No description provided for @reviewComment.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commentaire (facultatif)'**
+  String get reviewComment;
+
+  /// No description provided for @reviewSubmit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publier mon avis'**
+  String get reviewSubmit;
+
+  /// No description provided for @reviewPublicNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre avis sera public, sans votre nom.'**
+  String get reviewPublicNote;
+
+  /// No description provided for @reviewPrivateNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cet avis n’est visible que par l’équipe Khidma.'**
+  String get reviewPrivateNote;
+
+  /// No description provided for @reviewErrRating.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez une note de 1 à 5.'**
+  String get reviewErrRating;
+
+  /// No description provided for @reviewThanks.
+  ///
+  /// In fr, this message translates to:
+  /// **'Merci pour votre avis.'**
+  String get reviewThanks;
+
+  /// No description provided for @reviewDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avis donné'**
+  String get reviewDone;
+
+  /// No description provided for @reviewFailAlready.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez déjà donné votre avis sur ce chantier.'**
+  String get reviewFailAlready;
+
+  /// No description provided for @reviewFailNotCompleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le chantier doit être terminé pour laisser un avis.'**
+  String get reviewFailNotCompleted;
+
+  /// No description provided for @reviewFailGeneric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d’envoyer l’avis. Réessayez.'**
+  String get reviewFailGeneric;
+
+  /// No description provided for @reviewAuthorAnon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get reviewAuthorAnon;
+
+  /// No description provided for @reviewFailLimit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez déjà donné trop d’avis sur ce professionnel.'**
+  String get reviewFailLimit;
+
+  /// No description provided for @reportAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Signaler'**
+  String get reportAction;
+
+  /// No description provided for @reportTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Signaler un problème'**
+  String get reportTitle;
+
+  /// No description provided for @reportHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notre équipe examine chaque signalement. La personne signalée ne saura pas que c’est vous.'**
+  String get reportHint;
+
+  /// No description provided for @reportReasonSpam.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publicité ou spam'**
+  String get reportReasonSpam;
+
+  /// No description provided for @reportReasonFake.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faux profil ou faux avis'**
+  String get reportReasonFake;
+
+  /// No description provided for @reportReasonAbuse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Harcèlement ou insultes'**
+  String get reportReasonAbuse;
+
+  /// No description provided for @reportReasonScam.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arnaque ou demande d’argent suspecte'**
+  String get reportReasonScam;
+
+  /// No description provided for @reportReasonInappropriate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contenu inapproprié'**
+  String get reportReasonInappropriate;
+
+  /// No description provided for @reportReasonOther.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autre'**
+  String get reportReasonOther;
+
+  /// No description provided for @reportDetailsLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détails (facultatif)'**
+  String get reportDetailsLabel;
+
+  /// No description provided for @reportSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer le signalement'**
+  String get reportSend;
+
+  /// No description provided for @reportSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Merci. Votre signalement a été envoyé.'**
+  String get reportSent;
+
+  /// No description provided for @reportFailAlready.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez déjà signalé cela. Nous l’examinons.'**
+  String get reportFailAlready;
+
+  /// No description provided for @reportFailRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop de signalements aujourd’hui. Réessayez demain.'**
+  String get reportFailRate;
+
+  /// No description provided for @reportFailGone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce contenu n’est plus disponible.'**
+  String get reportFailGone;
+
+  /// No description provided for @reportFailGeneric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le signalement n’a pas pu être envoyé. Vérifiez votre connexion et réessayez.'**
+  String get reportFailGeneric;
+
+  /// No description provided for @verifTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérification du profil'**
+  String get verifTitle;
+
+  /// No description provided for @verifCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faire vérifier mon profil'**
+  String get verifCta;
+
+  /// No description provided for @verifIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyez une photo de votre carte d’identité ou de votre registre de commerce. Après vérification, un badge apparaît sur votre profil.'**
+  String get verifIntro;
+
+  /// No description provided for @verifPrivacy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos documents sont privés : seuls vous et notre équipe de vérification peuvent les voir, et ils sont supprimés dès la décision.'**
+  String get verifPrivacy;
+
+  /// No description provided for @verifStatusNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore vérifié'**
+  String get verifStatusNone;
+
+  /// No description provided for @verifStatusPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'En cours de vérification'**
+  String get verifStatusPending;
+
+  /// No description provided for @verifStatusApproved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil vérifié'**
+  String get verifStatusApproved;
+
+  /// No description provided for @verifStatusRejected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande refusée'**
+  String get verifStatusRejected;
+
+  /// No description provided for @verifStatusCancelled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande annulée'**
+  String get verifStatusCancelled;
+
+  /// No description provided for @verifRejectReason.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif : {reason}'**
+  String verifRejectReason(Object reason);
+
+  /// No description provided for @verifPendingBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nous examinons vos documents. Vous serez prévenu de la décision.'**
+  String get verifPendingBody;
+
+  /// No description provided for @verifAdd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une photo'**
+  String get verifAdd;
+
+  /// No description provided for @verifCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} sur {max} documents'**
+  String verifCount(Object count, Object max);
+
+  /// No description provided for @verifRemove.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer le document {index}'**
+  String verifRemove(Object index);
+
+  /// No description provided for @verifSubmit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer pour vérification'**
+  String get verifSubmit;
+
+  /// No description provided for @verifCancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler la demande'**
+  String get verifCancel;
+
+  /// No description provided for @verifSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Documents envoyés. Nous vous répondons bientôt.'**
+  String get verifSent;
+
+  /// No description provided for @verifCancelled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande annulée. Vos documents ont été supprimés.'**
+  String get verifCancelled;
+
+  /// No description provided for @verifFailPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une demande est déjà en cours.'**
+  String get verifFailPending;
+
+  /// No description provided for @verifFailVerified.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre profil est déjà vérifié.'**
+  String get verifFailVerified;
+
+  /// No description provided for @verifFailLimit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop de demandes ces 30 derniers jours. Réessayez plus tard.'**
+  String get verifFailLimit;
+
+  /// No description provided for @verifFailGeneric.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’envoi a échoué. Vérifiez votre connexion et réessayez.'**
+  String get verifFailGeneric;
+
+  /// No description provided for @verifFailImage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).'**
+  String get verifFailImage;
 }
 
 class _AppLocalizationsDelegate

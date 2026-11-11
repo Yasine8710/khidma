@@ -1368,4 +1368,301 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get bookingWaitingForYou =>
       'يقول الحرفي إنه أنهى العمل. هل أُنجز كما يجب؟';
+
+  @override
+  String get chatTitleClient => 'الزبون';
+
+  @override
+  String get chatInputHint => 'اكتب رسالة…';
+
+  @override
+  String get chatSend => 'إرسال';
+
+  @override
+  String get chatAddImage => 'إرفاق صورة';
+
+  @override
+  String get chatEmpty => 'لا توجد رسائل. ابدأ بالتحية!';
+
+  @override
+  String get chatReadOnly =>
+      'انتهت هذه المحادثة: يمكنك قراءتها لكن لا يمكنك الكتابة.';
+
+  @override
+  String get chatImageSent => 'تم إرسال صورة';
+
+  @override
+  String get chatYouSent => 'أنت';
+
+  @override
+  String get chatThem => 'الطرف الآخر';
+
+  @override
+  String chatUnread(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count رسالة غير مقروءة',
+      few: '$count رسائل غير مقروءة',
+      two: 'رسالتان غير مقروءتين',
+      one: 'رسالة غير مقروءة',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSendFailed => 'لم تُرسل الرسالة. حاول مجددًا.';
+
+  @override
+  String get chatRateLimited => 'تكتب بسرعة كبيرة. انتظر لحظة.';
+
+  @override
+  String get chatClosed => 'انتهت هذه المحادثة.';
+
+  @override
+  String get chatOpenFailed => 'تعذّر فتح المحادثة. حاول مجددًا.';
+
+  @override
+  String get chatLiveFailed => 'توقف التحديث المباشر. اسحب للتحديث.';
+
+  @override
+  String get chatPhotoFailed => 'لم تُرسل الصورة. حاول مجددًا.';
+
+  @override
+  String get chatAskPro => 'اطرح سؤالًا';
+
+  @override
+  String get chatWriteCustomer => 'راسل الزبون';
+
+  @override
+  String get chatPhoto => 'صورة';
+
+  @override
+  String get notifTitle => 'الإشعارات';
+
+  @override
+  String get notifIntro =>
+      'اختر ما تريد أن يتم إشعارك به. لا تحتوي الإشعارات أبدًا على نص رسائلك.';
+
+  @override
+  String get notifOffers => 'العروض المستلمة والمقبولة';
+
+  @override
+  String get notifMessages => 'الرسائل الجديدة';
+
+  @override
+  String get notifJobs => 'تقدّم الأعمال';
+
+  @override
+  String get notifNoPush =>
+      'الإشعارات غير متاحة على هذا الجهاز بعد. اختياراتك محفوظة لوقت لاحق.';
+
+  @override
+  String get notifSaveFailed => 'تعذّر حفظ هذا الاختيار. حاول مجددًا.';
+
+  @override
+  String get reviewsTitle => 'التقييمات';
+
+  @override
+  String get reviewsEmpty => 'لا توجد تقييمات بعد.';
+
+  @override
+  String get reviewsMore => 'عرض المزيد من التقييمات';
+
+  @override
+  String get reviewsLoadFailed => 'تعذّر تحميل التقييمات.';
+
+  @override
+  String get reviewCta => 'اترك تقييمًا';
+
+  @override
+  String get reviewCtaPro => 'قيّم الزبون';
+
+  @override
+  String get reviewSheetTitle => 'تقييمك';
+
+  @override
+  String get reviewSheetTitlePro => 'تقييمك للزبون';
+
+  @override
+  String get reviewRatingHint => 'المس نجمة';
+
+  @override
+  String reviewStar(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count نجمة',
+      few: '$count نجوم',
+      two: 'نجمتان',
+      one: 'نجمة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewComment => 'تعليق (اختياري)';
+
+  @override
+  String get reviewSubmit => 'نشر تقييمي';
+
+  @override
+  String get reviewPublicNote => 'سيكون تقييمك علنيًا دون اسمك.';
+
+  @override
+  String get reviewPrivateNote => 'هذا التقييم لا يراه إلا فريق خدمة.';
+
+  @override
+  String get reviewErrRating => 'اختر تقييمًا من 1 إلى 5.';
+
+  @override
+  String get reviewThanks => 'شكرًا على تقييمك.';
+
+  @override
+  String get reviewDone => 'تم التقييم';
+
+  @override
+  String get reviewFailAlready => 'لقد قيّمت هذا العمل من قبل.';
+
+  @override
+  String get reviewFailNotCompleted => 'يجب أن يكتمل العمل لترك تقييم.';
+
+  @override
+  String get reviewFailGeneric => 'تعذّر إرسال التقييم. حاول مجددًا.';
+
+  @override
+  String get reviewAuthorAnon => 'زبون';
+
+  @override
+  String get reviewFailLimit =>
+      'لقد قدّمت عددًا كبيرًا من التقييمات لهذا الحرفي.';
+
+  @override
+  String get reportAction => 'إبلاغ';
+
+  @override
+  String get reportTitle => 'الإبلاغ عن مشكلة';
+
+  @override
+  String get reportHint =>
+      'يراجع فريقنا كل بلاغ. لن يعرف الشخص المبلّغ عنه أنك أنت من أبلغ.';
+
+  @override
+  String get reportReasonSpam => 'إعلانات أو رسائل مزعجة';
+
+  @override
+  String get reportReasonFake => 'حساب أو تقييم مزيّف';
+
+  @override
+  String get reportReasonAbuse => 'تحرّش أو إساءة';
+
+  @override
+  String get reportReasonScam => 'احتيال أو طلب مال مشبوه';
+
+  @override
+  String get reportReasonInappropriate => 'محتوى غير لائق';
+
+  @override
+  String get reportReasonOther => 'أخرى';
+
+  @override
+  String get reportDetailsLabel => 'تفاصيل (اختياري)';
+
+  @override
+  String get reportSend => 'إرسال البلاغ';
+
+  @override
+  String get reportSent => 'شكرًا لك. تم إرسال بلاغك.';
+
+  @override
+  String get reportFailAlready => 'لقد أبلغت عن هذا من قبل. نحن نراجعه.';
+
+  @override
+  String get reportFailRate => 'بلاغات كثيرة اليوم. حاول مجددًا غدًا.';
+
+  @override
+  String get reportFailGone => 'هذا المحتوى لم يعد متاحًا.';
+
+  @override
+  String get reportFailGeneric =>
+      'تعذّر إرسال البلاغ. تحقق من اتصالك وحاول مجددًا.';
+
+  @override
+  String get verifTitle => 'توثيق الحساب';
+
+  @override
+  String get verifCta => 'وثّق حسابي';
+
+  @override
+  String get verifIntro =>
+      'أرسل صورة لبطاقة هويتك أو سجلّك التجاري. بعد المراجعة تظهر شارة على ملفك.';
+
+  @override
+  String get verifPrivacy =>
+      'مستنداتك خاصة: أنت وفريق التوثيق فقط من يراها، وتُحذف فور اتخاذ القرار.';
+
+  @override
+  String get verifStatusNone => 'لم يتم التوثيق بعد';
+
+  @override
+  String get verifStatusPending => 'قيد المراجعة';
+
+  @override
+  String get verifStatusApproved => 'الحساب موثّق';
+
+  @override
+  String get verifStatusRejected => 'تم رفض الطلب';
+
+  @override
+  String get verifStatusCancelled => 'تم إلغاء الطلب';
+
+  @override
+  String verifRejectReason(Object reason) {
+    return 'السبب: $reason';
+  }
+
+  @override
+  String get verifPendingBody => 'نراجع مستنداتك. سيتم إعلامك بالقرار.';
+
+  @override
+  String get verifAdd => 'إضافة صورة';
+
+  @override
+  String verifCount(Object count, Object max) {
+    return '$count من $max مستندات';
+  }
+
+  @override
+  String verifRemove(Object index) {
+    return 'إزالة المستند $index';
+  }
+
+  @override
+  String get verifSubmit => 'إرسال للمراجعة';
+
+  @override
+  String get verifCancel => 'إلغاء الطلب';
+
+  @override
+  String get verifSent => 'تم إرسال المستندات. سنردّ عليك قريبًا.';
+
+  @override
+  String get verifCancelled => 'تم إلغاء الطلب وحذف مستنداتك.';
+
+  @override
+  String get verifFailPending => 'يوجد طلب قيد المراجعة بالفعل.';
+
+  @override
+  String get verifFailVerified => 'حسابك موثّق بالفعل.';
+
+  @override
+  String get verifFailLimit => 'طلبات كثيرة خلال آخر 30 يومًا. حاول لاحقًا.';
+
+  @override
+  String get verifFailGeneric => 'فشل الإرسال. تحقق من اتصالك وحاول مجددًا.';
+
+  @override
+  String get verifFailImage =>
+      'هذا الملف ليس صورة قابلة للقراءة (JPEG أو PNG أو WebP).';
 }

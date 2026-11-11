@@ -1392,4 +1392,308 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get bookingWaitingForYou =>
       'Le professionnel indique avoir terminé. Le travail est-il bien fait ?';
+
+  @override
+  String get chatTitleClient => 'Client';
+
+  @override
+  String get chatInputHint => 'Écrivez un message…';
+
+  @override
+  String get chatSend => 'Envoyer';
+
+  @override
+  String get chatAddImage => 'Joindre une photo';
+
+  @override
+  String get chatEmpty => 'Aucun message. Dites bonjour !';
+
+  @override
+  String get chatReadOnly =>
+      'Cette conversation est terminée : vous pouvez la relire, mais plus y écrire.';
+
+  @override
+  String get chatImageSent => 'Photo envoyée';
+
+  @override
+  String get chatYouSent => 'Vous';
+
+  @override
+  String get chatThem => 'Interlocuteur';
+
+  @override
+  String chatUnread(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count messages non lus',
+      one: '1 message non lu',
+      zero: '',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSendFailed => 'Message non envoyé. Réessayez.';
+
+  @override
+  String get chatRateLimited => 'Vous écrivez trop vite. Patientez un instant.';
+
+  @override
+  String get chatClosed => 'Cette conversation est terminée.';
+
+  @override
+  String get chatOpenFailed =>
+      'Impossible d’ouvrir la conversation. Réessayez.';
+
+  @override
+  String get chatLiveFailed =>
+      'Mise à jour en direct interrompue. Tirez pour actualiser.';
+
+  @override
+  String get chatPhotoFailed => 'Photo non envoyée. Réessayez.';
+
+  @override
+  String get chatAskPro => 'Poser une question';
+
+  @override
+  String get chatWriteCustomer => 'Écrire au client';
+
+  @override
+  String get chatPhoto => 'Photo';
+
+  @override
+  String get notifTitle => 'Notifications';
+
+  @override
+  String get notifIntro =>
+      'Choisissez ce pour quoi vous voulez être prévenu. Les notifications ne contiennent jamais le texte de vos messages.';
+
+  @override
+  String get notifOffers => 'Offres reçues et acceptées';
+
+  @override
+  String get notifMessages => 'Nouveaux messages';
+
+  @override
+  String get notifJobs => 'Avancement des chantiers';
+
+  @override
+  String get notifNoPush =>
+      'Les notifications push ne sont pas encore disponibles sur cet appareil. Vos choix sont enregistrés pour plus tard.';
+
+  @override
+  String get notifSaveFailed => 'Impossible d’enregistrer ce choix. Réessayez.';
+
+  @override
+  String get reviewsTitle => 'Avis';
+
+  @override
+  String get reviewsEmpty => 'Pas encore d’avis.';
+
+  @override
+  String get reviewsMore => 'Voir plus d’avis';
+
+  @override
+  String get reviewsLoadFailed => 'Impossible de charger les avis.';
+
+  @override
+  String get reviewCta => 'Laisser un avis';
+
+  @override
+  String get reviewCtaPro => 'Noter le client';
+
+  @override
+  String get reviewSheetTitle => 'Votre avis';
+
+  @override
+  String get reviewSheetTitlePro => 'Votre avis sur le client';
+
+  @override
+  String get reviewRatingHint => 'Touchez une étoile';
+
+  @override
+  String reviewStar(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count étoiles',
+      one: '1 étoile',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewComment => 'Commentaire (facultatif)';
+
+  @override
+  String get reviewSubmit => 'Publier mon avis';
+
+  @override
+  String get reviewPublicNote => 'Votre avis sera public, sans votre nom.';
+
+  @override
+  String get reviewPrivateNote =>
+      'Cet avis n’est visible que par l’équipe Khidma.';
+
+  @override
+  String get reviewErrRating => 'Choisissez une note de 1 à 5.';
+
+  @override
+  String get reviewThanks => 'Merci pour votre avis.';
+
+  @override
+  String get reviewDone => 'Avis donné';
+
+  @override
+  String get reviewFailAlready =>
+      'Vous avez déjà donné votre avis sur ce chantier.';
+
+  @override
+  String get reviewFailNotCompleted =>
+      'Le chantier doit être terminé pour laisser un avis.';
+
+  @override
+  String get reviewFailGeneric => 'Impossible d’envoyer l’avis. Réessayez.';
+
+  @override
+  String get reviewAuthorAnon => 'Client';
+
+  @override
+  String get reviewFailLimit =>
+      'Vous avez déjà donné trop d’avis sur ce professionnel.';
+
+  @override
+  String get reportAction => 'Signaler';
+
+  @override
+  String get reportTitle => 'Signaler un problème';
+
+  @override
+  String get reportHint =>
+      'Notre équipe examine chaque signalement. La personne signalée ne saura pas que c’est vous.';
+
+  @override
+  String get reportReasonSpam => 'Publicité ou spam';
+
+  @override
+  String get reportReasonFake => 'Faux profil ou faux avis';
+
+  @override
+  String get reportReasonAbuse => 'Harcèlement ou insultes';
+
+  @override
+  String get reportReasonScam => 'Arnaque ou demande d’argent suspecte';
+
+  @override
+  String get reportReasonInappropriate => 'Contenu inapproprié';
+
+  @override
+  String get reportReasonOther => 'Autre';
+
+  @override
+  String get reportDetailsLabel => 'Détails (facultatif)';
+
+  @override
+  String get reportSend => 'Envoyer le signalement';
+
+  @override
+  String get reportSent => 'Merci. Votre signalement a été envoyé.';
+
+  @override
+  String get reportFailAlready =>
+      'Vous avez déjà signalé cela. Nous l’examinons.';
+
+  @override
+  String get reportFailRate =>
+      'Trop de signalements aujourd’hui. Réessayez demain.';
+
+  @override
+  String get reportFailGone => 'Ce contenu n’est plus disponible.';
+
+  @override
+  String get reportFailGeneric =>
+      'Le signalement n’a pas pu être envoyé. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get verifTitle => 'Vérification du profil';
+
+  @override
+  String get verifCta => 'Faire vérifier mon profil';
+
+  @override
+  String get verifIntro =>
+      'Envoyez une photo de votre carte d’identité ou de votre registre de commerce. Après vérification, un badge apparaît sur votre profil.';
+
+  @override
+  String get verifPrivacy =>
+      'Vos documents sont privés : seuls vous et notre équipe de vérification peuvent les voir, et ils sont supprimés dès la décision.';
+
+  @override
+  String get verifStatusNone => 'Pas encore vérifié';
+
+  @override
+  String get verifStatusPending => 'En cours de vérification';
+
+  @override
+  String get verifStatusApproved => 'Profil vérifié';
+
+  @override
+  String get verifStatusRejected => 'Demande refusée';
+
+  @override
+  String get verifStatusCancelled => 'Demande annulée';
+
+  @override
+  String verifRejectReason(Object reason) {
+    return 'Motif : $reason';
+  }
+
+  @override
+  String get verifPendingBody =>
+      'Nous examinons vos documents. Vous serez prévenu de la décision.';
+
+  @override
+  String get verifAdd => 'Ajouter une photo';
+
+  @override
+  String verifCount(Object count, Object max) {
+    return '$count sur $max documents';
+  }
+
+  @override
+  String verifRemove(Object index) {
+    return 'Retirer le document $index';
+  }
+
+  @override
+  String get verifSubmit => 'Envoyer pour vérification';
+
+  @override
+  String get verifCancel => 'Annuler la demande';
+
+  @override
+  String get verifSent => 'Documents envoyés. Nous vous répondons bientôt.';
+
+  @override
+  String get verifCancelled =>
+      'Demande annulée. Vos documents ont été supprimés.';
+
+  @override
+  String get verifFailPending => 'Une demande est déjà en cours.';
+
+  @override
+  String get verifFailVerified => 'Votre profil est déjà vérifié.';
+
+  @override
+  String get verifFailLimit =>
+      'Trop de demandes ces 30 derniers jours. Réessayez plus tard.';
+
+  @override
+  String get verifFailGeneric =>
+      'L’envoi a échoué. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get verifFailImage =>
+      'Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).';
 }
