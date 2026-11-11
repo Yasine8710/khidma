@@ -838,6 +838,54 @@ abstract class AppLocalizations {
   /// **'Décrivez-le une fois et recevez des offres de professionnels.'**
   String get homeQuoteBody;
 
+  /// No description provided for @avatarChange.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer la photo'**
+  String get avatarChange;
+
+  /// No description provided for @avatarChoose.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une photo'**
+  String get avatarChoose;
+
+  /// No description provided for @avatarRemove.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer la photo'**
+  String get avatarRemove;
+
+  /// No description provided for @avatarFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de mettre à jour votre photo. Essayez une autre image.'**
+  String get avatarFailed;
+
+  /// No description provided for @avatarLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo de profil'**
+  String get avatarLabel;
+
+  /// No description provided for @statRating.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note'**
+  String get statRating;
+
+  /// No description provided for @statReviews.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avis'**
+  String get statReviews;
+
+  /// No description provided for @statYears.
+  ///
+  /// In fr, this message translates to:
+  /// **'Années'**
+  String get statYears;
+
   /// No description provided for @searchHint.
   ///
   /// In fr, this message translates to:

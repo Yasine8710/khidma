@@ -32,7 +32,7 @@ test('rows are grouped per bucket, keeping ids and names aligned', () => {
 
 test('unknown buckets, empty names and path escapes are skipped', () => {
   const plan = planBatches([
-    { id: 1, bucket_id: 'avatars', name: 'x.jpg' },
+    { id: 1, bucket_id: 'secrets', name: 'x.jpg' },
     { id: 2, bucket_id: 'portfolio', name: '' },
     { id: 3, bucket_id: 'portfolio', name: '../other/x.jpg' },
     { id: 4, bucket_id: 'portfolio', name: '/abs.jpg' },

@@ -431,6 +431,31 @@ class AppLocalizationsFr extends AppLocalizations {
       'Décrivez-le une fois et recevez des offres de professionnels.';
 
   @override
+  String get avatarChange => 'Changer la photo';
+
+  @override
+  String get avatarChoose => 'Choisir une photo';
+
+  @override
+  String get avatarRemove => 'Supprimer la photo';
+
+  @override
+  String get avatarFailed =>
+      'Impossible de mettre à jour votre photo. Essayez une autre image.';
+
+  @override
+  String get avatarLabel => 'Photo de profil';
+
+  @override
+  String get statRating => 'Note';
+
+  @override
+  String get statReviews => 'Avis';
+
+  @override
+  String get statYears => 'Années';
+
+  @override
   String get searchHint => 'Rechercher un métier, un nom, une ville…';
 
   @override

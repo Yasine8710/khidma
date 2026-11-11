@@ -127,9 +127,13 @@ class ProfessionalSummary {
     this.rating = 0,
     this.reviewCount = 0,
     this.distanceKm,
+    this.avatarUrl,
   });
 
   final String id;
+
+  /// Public address of the professional's own picture, when they added one.
+  final String? avatarUrl;
 
   /// The public name (business or professional name).
   final String name;
@@ -150,6 +154,27 @@ class ProfessionalSummary {
 
   /// Distance from the position used for the search, when one was given.
   final double? distanceKm;
+
+  /// The same professional with a picture address (search results come from a
+  /// function that does not carry it).
+  ProfessionalSummary withAvatar(String? url) => ProfessionalSummary(
+    id: id,
+    name: name,
+    categoryId: categoryId,
+    description: description,
+    yearsExperience: yearsExperience,
+    governorateId: governorateId,
+    cityId: cityId,
+    neighborhoodId: neighborhoodId,
+    latitude: latitude,
+    longitude: longitude,
+    availability: availability,
+    verification: verification,
+    rating: rating,
+    reviewCount: reviewCount,
+    distanceKm: distanceKm,
+    avatarUrl: url,
+  );
 
   bool get isVerified => verification == Verification.verified;
   bool get hasReviews => reviewCount > 0;

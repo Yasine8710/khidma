@@ -436,7 +436,6 @@ class _Categories extends ConsumerWidget {
   }
 }
 
-/// A photo tile with the category name over a deep-blue fade.
 class _CategoryTile extends StatelessWidget {
   const _CategoryTile({required this.category, required this.locale});
 
@@ -444,56 +443,12 @@ class _CategoryTile extends StatelessWidget {
   final Locale locale;
 
   @override
-  Widget build(BuildContext context) {
-    final name = category.nameFor(locale);
-    void open() => context.push(AppRoutes.searchPath(categoryId: category.id));
-    return Semantics(
-      button: true,
-      label: name,
-      excludeSemantics: true,
-      onTap: open,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            CategoryPhoto(slug: category.slug, icon: category.icon, radius: 0),
-            const DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Color(0x00123D78), Color(0xE60E2F5E)],
-                  stops: [0.35, 1],
-                ),
-              ),
-            ),
-            PositionedDirectional(
-              start: AppSpacing.sm,
-              end: AppSpacing.sm,
-              bottom: AppSpacing.sm,
-              child: Text(
-                name,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-            Positioned.fill(
-              child: Material(
-                type: MaterialType.transparency,
-                child: InkWell(onTap: open),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => CategoryTile(
+    name: category.nameFor(locale),
+    slug: category.slug,
+    icon: category.icon,
+    onTap: () => context.push(AppRoutes.searchPath(categoryId: category.id)),
+  );
 }
 
 enum _Kind { topRated, area }

@@ -157,10 +157,10 @@ describe('structural security guards', () => {
         order by 1, 2, 3`);
     const updates = (grantee, table) =>
       r.rows.filter((x) => x.grantee === grantee && x.table_name === table).map((x) => x.column_name).sort();
-    assert.deepEqual(updates('authenticated', 'profiles'), ['avatar_url', 'full_name', 'phone', 'preferred_language']);
+    assert.deepEqual(updates('authenticated', 'profiles'), ['avatar_path', 'avatar_url', 'full_name', 'phone', 'preferred_language']);
     assert.deepEqual(updates('authenticated', 'customer_profiles'), ['default_city_id', 'default_governorate_id']);
     assert.deepEqual(updates('authenticated', 'professional_profiles'), [
-      'availability', 'business_name', 'city_id', 'contact_phone', 'description', 'governorate_id',
+      'availability', 'avatar_path', 'business_name', 'city_id', 'contact_phone', 'description', 'governorate_id',
       'is_published', 'latitude', 'longitude', 'neighborhood_id', 'primary_category_id', 'years_experience',
     ]);
     assert.deepEqual(

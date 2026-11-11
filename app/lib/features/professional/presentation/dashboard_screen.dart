@@ -13,6 +13,7 @@ import '../../../shared/widgets/skeleton.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
 import '../../marketplace/presentation/professional_card.dart';
+import '../../profile/presentation/avatar_editor.dart';
 import '../application/professional_providers.dart';
 import '../domain/professional_domain.dart';
 import 'registration_screen.dart' show failureText, gapText;
@@ -112,7 +113,15 @@ class _BodyState extends ConsumerState<_Body> {
     return ListView(
       padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
       children: [
-        Text(draft.businessName ?? '', style: text.headlineSmall),
+        Row(
+          children: [
+            const AvatarEditor(size: 72),
+            const SizedBox(width: AppSpacing.lg),
+            Expanded(
+              child: Text(draft.businessName ?? '', style: text.headlineSmall),
+            ),
+          ],
+        ),
         const SizedBox(height: AppSpacing.sm),
         Wrap(
           spacing: AppSpacing.sm,
@@ -156,40 +165,52 @@ class _BodyState extends ConsumerState<_Body> {
             onPressed: () => context.push(AppRoutes.professionalPath(uid)),
           ),
         ],
-        const SizedBox(height: AppSpacing.sm),
-        AppButton(
-          label: l10n.portfolioTitle,
-          icon: Icons.photo_library_outlined,
-          variant: AppButtonVariant.secondary,
-          onPressed: () => context.push(AppRoutes.proPortfolio),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        AppButton(
-          label: l10n.verifCta,
-          icon: Icons.verified_outlined,
-          variant: AppButtonVariant.secondary,
-          onPressed: () => context.push(AppRoutes.proVerification),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        AppButton(
-          label: l10n.proInboxTitle,
-          icon: Icons.inbox_outlined,
-          variant: AppButtonVariant.secondary,
-          onPressed: () => context.push(AppRoutes.proInbox),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        AppButton(
-          label: l10n.offersTitle,
-          icon: Icons.local_offer_outlined,
-          variant: AppButtonVariant.secondary,
-          onPressed: () => context.push(AppRoutes.proOffers),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        AppButton(
-          label: l10n.jobsTitle,
-          icon: Icons.handyman_outlined,
-          variant: AppButtonVariant.secondary,
-          onPressed: () => context.push(AppRoutes.proJobs),
+        const SizedBox(height: AppSpacing.xl),
+        // Everything a professional does, as a grid of tiles.
+        LayoutBuilder(
+          builder: (context, box) {
+            final gap = AppSpacing.md;
+            final width = (box.maxWidth - gap) / 2;
+            Widget tile(IconData icon, String label, String route) => SizedBox(
+              width: width,
+              child: _ActionTile(
+                icon: icon,
+                label: label,
+                onTap: () => context.push(route),
+              ),
+            );
+            return Wrap(
+              spacing: gap,
+              runSpacing: gap,
+              children: [
+                tile(
+                  Icons.inbox_outlined,
+                  l10n.proInboxTitle,
+                  AppRoutes.proInbox,
+                ),
+                tile(
+                  Icons.local_offer_outlined,
+                  l10n.offersTitle,
+                  AppRoutes.proOffers,
+                ),
+                tile(
+                  Icons.handyman_outlined,
+                  l10n.jobsTitle,
+                  AppRoutes.proJobs,
+                ),
+                tile(
+                  Icons.photo_library_outlined,
+                  l10n.portfolioTitle,
+                  AppRoutes.proPortfolio,
+                ),
+                tile(
+                  Icons.verified_outlined,
+                  l10n.verifCta,
+                  AppRoutes.proVerification,
+                ),
+              ],
+            );
+          },
         ),
         const SizedBox(height: AppSpacing.xl),
         Semantics(
@@ -245,14 +266,29 @@ class _Activity extends ConsumerWidget {
       ),
       data: (a) {
         final stats = a ?? const ProfessionalActivity();
-        return Column(
-          children: [
-            _Stat(label: l10n.dashViews30d, value: stats.contactViews30d),
-            const SizedBox(height: AppSpacing.sm),
-            _Stat(label: l10n.dashViewsTotal, value: stats.contactViewsTotal),
-            const SizedBox(height: AppSpacing.sm),
-            _Stat(label: l10n.dashFavorites, value: stats.favorites),
-          ],
+        return IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _Stat(
+                  label: l10n.dashViews30d,
+                  value: stats.contactViews30d,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: _Stat(
+                  label: l10n.dashViewsTotal,
+                  value: stats.contactViewsTotal,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: _Stat(label: l10n.dashFavorites, value: stats.favorites),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -270,14 +306,65 @@ class _Stat extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     return AppCard(
       semanticLabel: '$label: $value',
-      child: Row(
+      padding: const EdgeInsetsDirectional.all(AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: Text(label, style: text.bodyMedium)),
-          const SizedBox(width: AppSpacing.md),
           // Digits always read left to right and are Western.
           Directionality(
             textDirection: TextDirection.ltr,
-            child: Text('$value', style: text.titleLarge),
+            child: Text('$value', style: text.headlineSmall),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            label,
+            style: text.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A square-ish tile: tinted icon on top, label below.
+class _ActionTile extends StatelessWidget {
+  const _ActionTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return AppCard(
+      onTap: onTap,
+      semanticLabel: label,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: scheme.primaryContainer,
+              shape: BoxShape.circle,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Icon(icon, size: 22, color: scheme.onPrimaryContainer),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.titleSmall,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

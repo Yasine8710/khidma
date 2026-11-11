@@ -83,3 +83,104 @@ class CategoryPhoto extends StatelessWidget {
     );
   }
 }
+
+/// A category as a photo tile with its name over a deep-blue fade. Used on
+/// Home (opens the search) and in the request form (picks the category:
+/// [selected] draws a blue ring and a check).
+class CategoryTile extends StatelessWidget {
+  const CategoryTile({
+    super.key,
+    required this.name,
+    required this.slug,
+    required this.icon,
+    required this.onTap,
+    this.selected,
+  });
+
+  final String name;
+  final String? slug;
+  final String? icon;
+  final VoidCallback onTap;
+
+  /// Null when the tile is only a link (no selection state).
+  final bool? selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final on = selected ?? false;
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: name,
+      excludeSemantics: true,
+      onTap: onTap,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            CategoryPhoto(slug: slug, icon: icon, radius: 0),
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0x00123D78), Color(0xE60E2F5E)],
+                  stops: [0.35, 1],
+                ),
+              ),
+            ),
+            PositionedDirectional(
+              start: AppSpacing.sm,
+              end: AppSpacing.sm,
+              bottom: AppSpacing.sm,
+              child: Text(
+                name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 11,
+                ),
+              ),
+            ),
+            if (selected != null && on) ...[
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
+                    border: Border.all(color: scheme.primary, width: 3),
+                    color: scheme.primary.withValues(alpha: 0.18),
+                  ),
+                ),
+              ),
+              PositionedDirectional(
+                top: AppSpacing.sm,
+                end: AppSpacing.sm,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: scheme.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.check_rounded,
+                    size: 18,
+                    color: scheme.onPrimary,
+                  ),
+                ),
+              ),
+            ],
+            Positioned.fill(
+              child: Material(
+                type: MaterialType.transparency,
+                child: InkWell(onTap: onTap),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

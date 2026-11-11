@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/l10n/locale_controller.dart';
 import '../../../core/storage/preferences_provider.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../portfolio/application/portfolio_providers.dart';
+import '../../portfolio/data/image_prep.dart';
+import '../../portfolio/domain/portfolio_domain.dart';
 import '../domain/profile_domain.dart';
 
 /// Overridden in `main()` with the Supabase repository when a backend exists.
@@ -124,6 +128,28 @@ class ProfileActions extends Notifier<bool> {
       state = false;
     }
   }
+
+  /// Lets the person pick a photo, prepares it (square, small) and uploads it.
+  /// Returns null when they close the picker without choosing.
+  Future<ProfileResult?> pickAvatar() async {
+    if (state) return const ProfileResult.failed(ProfileFailure.unknown);
+    final Uint8List? picked;
+    try {
+      picked = await ref.read(photoPickerProvider).pick();
+    } catch (_) {
+      return const ProfileResult.failed(ProfileFailure.unknown);
+    }
+    if (picked == null) return null;
+    final Uint8List jpeg;
+    try {
+      jpeg = prepareAvatar(picked);
+    } on PortfolioError {
+      return const ProfileResult.failed(ProfileFailure.invalidData);
+    }
+    return _run((r) => r.setAvatar(jpeg));
+  }
+
+  Future<ProfileResult> removeAvatar() => _run((r) => r.removeAvatar());
 
   Future<ProfileResult> becomeProfessional() =>
       _run((r) => r.becomeProfessional());

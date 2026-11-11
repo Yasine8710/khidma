@@ -107,7 +107,13 @@ Future<void> scrollProfileTo(WidgetTester tester, Finder target) async {
       .descendant(of: find.byType(ListView), matching: find.byType(Scrollable))
       .first;
   await tester.scrollUntilVisible(target, 300, scrollable: scrollable);
+  await tester.ensureVisible(target.first);
+  await tester.pumpAndSettle();
   // Clear of the floating bottom bar, which sits over the list's lower edge.
-  await tester.drag(scrollable, const Offset(0, -160));
+  final screen = tester.view.physicalSize / tester.view.devicePixelRatio;
+  final overlap = tester.getRect(target.first).bottom - (screen.height - 130);
+  if (overlap > 0) {
+    await tester.drag(scrollable, Offset(0, -overlap));
+  }
   await tester.pumpAndSettle();
 }

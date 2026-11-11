@@ -63,3 +63,44 @@ PreparedPhoto preparePhoto(Uint8List input) {
 /// [preparePhoto] off the UI thread (decoding a 12 MP photo takes a moment).
 Future<PreparedPhoto> preparePhotoInBackground(Uint8List input) =>
     compute(preparePhoto, input);
+
+/// Side of a prepared profile picture.
+const avatarSide = 512;
+
+/// Prepares a profile picture: upright, cropped to the centre square, 512 px,
+/// JPEG, metadata dropped. Always small (well under the 1 MB bucket limit).
+/// Throws [PortfolioError].
+Uint8List prepareAvatar(Uint8List input) {
+  if (input.isEmpty || input.length > maxOriginalBytes) {
+    throw const PortfolioError(PortfolioFailure.tooLarge);
+  }
+  img.Image? decoded;
+  try {
+    decoded = img.decodeImage(input);
+  } catch (_) {
+    decoded = null;
+  }
+  if (decoded == null || decoded.width < 1 || decoded.height < 1) {
+    throw const PortfolioError(PortfolioFailure.notAnImage);
+  }
+  final upright = img.bakeOrientation(decoded);
+  final side = upright.width < upright.height ? upright.width : upright.height;
+  final square = img.copyCrop(
+    upright,
+    x: (upright.width - side) ~/ 2,
+    y: (upright.height - side) ~/ 2,
+    width: side,
+    height: side,
+  );
+  final small = side > avatarSide
+      ? img.copyResize(
+          square,
+          width: avatarSide,
+          height: avatarSide,
+          interpolation: img.Interpolation.average,
+        )
+      : square;
+  small.exif = img.ExifData();
+  small.iccProfile = null;
+  return Uint8List.fromList(img.encodeJpg(small, quality: 82));
+}

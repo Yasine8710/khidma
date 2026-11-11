@@ -428,6 +428,30 @@ class AppLocalizationsEn extends AppLocalizations {
       'Describe it once and receive offers from professionals.';
 
   @override
+  String get avatarChange => 'Change photo';
+
+  @override
+  String get avatarChoose => 'Choose a photo';
+
+  @override
+  String get avatarRemove => 'Remove photo';
+
+  @override
+  String get avatarFailed => 'Could not update your photo. Try another image.';
+
+  @override
+  String get avatarLabel => 'Profile photo';
+
+  @override
+  String get statRating => 'Rating';
+
+  @override
+  String get statReviews => 'Reviews';
+
+  @override
+  String get statYears => 'Years';
+
+  @override
   String get searchHint => 'Search a trade, a name, a city…';
 
   @override

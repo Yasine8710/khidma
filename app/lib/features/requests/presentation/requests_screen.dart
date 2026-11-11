@@ -9,6 +9,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/category_photo.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
@@ -64,7 +65,7 @@ class RequestsScreen extends ConsumerWidget {
                   AppSpacing.gutter,
                   AppSpacing.sm,
                   AppSpacing.gutter,
-                  AppSpacing.xxl,
+                  120,
                 ),
                 itemCount: list.length,
                 separatorBuilder: (_, _) =>
@@ -127,48 +128,77 @@ class _RequestCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final locale = Localizations.localeOf(context);
+    final cat = (ref.watch(categoriesProvider).value ?? const [])
+        .where((c) => c.id == request.categoryId)
+        .firstOrNull;
+    final category = cat?.nameFor(locale);
+    return AppCard(
+      semanticLabel: request.title,
+      onTap: () => context.push(AppRoutes.requestPath(request.id)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CategoryPhoto(
+            slug: cat?.slug,
+            icon: cat?.icon,
+            width: 72,
+            height: 72,
+            radius: AppRadius.md,
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: _RequestText(request: request, category: category),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Title, status and counts of a request card.
+class _RequestText extends StatelessWidget {
+  const _RequestText({required this.request, required this.category});
+
+  final QuoteRequest request;
+  final String? category;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context);
     final text = Theme.of(context).textTheme;
     final muted = Theme.of(context).colorScheme.onSurfaceVariant;
-    final category = (ref.watch(categoriesProvider).value ?? const [])
-        .where((c) => c.id == request.categoryId)
-        .map((c) => c.nameFor(locale))
-        .firstOrNull;
-    return AppCard(
-      semanticLabel: request.title,
-      onTap: () => context.push(AppRoutes.requestPath(request.id)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            request.title,
-            style: text.titleSmall,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          if (category != null)
-            Text(category, style: text.bodySmall?.copyWith(color: muted)),
-          const SizedBox(height: AppSpacing.sm),
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.xs,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              AppBadge(
-                label: statusLabel(l10n, request.status),
-                tone: statusTone(request.status),
-                icon: statusIcon(request.status),
-              ),
-              Text(l10n.reqOffers(request.offerCount), style: text.bodySmall),
-              Text(
-                formatDate(request.createdAt, locale),
-                style: text.bodySmall?.copyWith(color: muted),
-              ),
-            ],
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          request.title,
+          style: text.titleSmall,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        if (category != null)
+          Text(category!, style: text.bodySmall?.copyWith(color: muted)),
+        const SizedBox(height: AppSpacing.sm),
+        Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.xs,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            AppBadge(
+              label: statusLabel(l10n, request.status),
+              tone: statusTone(request.status),
+              icon: statusIcon(request.status),
+            ),
+            Text(l10n.reqOffers(request.offerCount), style: text.bodySmall),
+            Text(
+              formatDate(request.createdAt, locale),
+              style: text.bodySmall?.copyWith(color: muted),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

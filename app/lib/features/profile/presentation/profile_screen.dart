@@ -13,6 +13,7 @@ import '../../auth/application/auth_providers.dart';
 import 'delete_account_dialog.dart';
 import '../../professional/application/professional_providers.dart';
 import '../application/profile_providers.dart';
+import 'avatar_editor.dart';
 import 'edit_profile_screen.dart';
 import '../../auth/presentation/auth_texts.dart';
 import '../../gallery/gallery_config.dart';
@@ -215,16 +216,20 @@ class _AccountCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          const Center(child: AvatarEditor(size: 96)),
+          const SizedBox(height: AppSpacing.md),
           // The saved profile name wins over the sign-up metadata, so an edit
           // shows up here right away.
           if ((myProfile?.fullName ?? user.fullName)?.isNotEmpty ?? false)
             Text(
               (myProfile?.fullName ?? user.fullName)!,
               style: text.titleMedium,
+              textAlign: TextAlign.center,
             ),
           Text(
             l10n.signedInAs(user.email),
             style: text.bodyMedium?.copyWith(color: muted),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.lg),
           AppButton(

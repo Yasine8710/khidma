@@ -284,7 +284,7 @@ class _Bubble extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    final bg = mine ? scheme.primary : scheme.surfaceContainerHighest;
+    final bg = mine ? scheme.primary : scheme.surface;
     final fg = mine ? scheme.onPrimary : scheme.onSurface;
     final who = mine ? l10n.chatYouSent : l10n.chatThem;
     final body = message.body;
@@ -308,7 +308,25 @@ class _Bubble extends ConsumerWidget {
             padding: const EdgeInsetsDirectional.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: bg,
-              borderRadius: BorderRadius.circular(AppRadius.lg),
+              // The corner under the sender is squared: a tail.
+              borderRadius: BorderRadiusDirectional.only(
+                topStart: const Radius.circular(AppRadius.lg),
+                topEnd: const Radius.circular(AppRadius.lg),
+                bottomStart: Radius.circular(mine ? AppRadius.lg : 6),
+                bottomEnd: Radius.circular(mine ? 6 : AppRadius.lg),
+              ),
+              boxShadow: !mine && scheme.brightness == Brightness.light
+                  ? const [
+                      BoxShadow(
+                        color: Color(0x14123D78),
+                        blurRadius: 8,
+                        offset: Offset(0, 2),
+                      ),
+                    ]
+                  : null,
+              border: !mine && scheme.brightness == Brightness.dark
+                  ? Border.all(color: scheme.outlineVariant)
+                  : null,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

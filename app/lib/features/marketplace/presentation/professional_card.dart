@@ -67,7 +67,8 @@ class ProfessionalCard extends ConsumerWidget {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              CategoryPhoto(
+              ProfessionalPhoto(
+                avatarUrl: p.avatarUrl,
                 slug: cat?.slug,
                 icon: cat?.icon,
                 width: 88,
@@ -207,7 +208,8 @@ class ProfessionalTile extends ConsumerWidget {
         children: [
           Stack(
             children: [
-              CategoryPhoto(
+              ProfessionalPhoto(
+                avatarUrl: p.avatarUrl,
                 slug: cat?.slug,
                 icon: cat?.icon,
                 width: double.infinity,
@@ -271,6 +273,59 @@ class ProfessionalTile extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// The professional's own picture when they added one, otherwise the photo of
+/// their category (never a broken image). Decoration: the name sits next to it.
+class ProfessionalPhoto extends StatelessWidget {
+  const ProfessionalPhoto({
+    super.key,
+    required this.avatarUrl,
+    required this.slug,
+    required this.icon,
+    this.width,
+    this.height,
+    this.radius = AppRadius.md,
+  });
+
+  final String? avatarUrl;
+  final String? slug;
+  final String? icon;
+  final double? width;
+  final double? height;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) {
+    final fallback = CategoryPhoto(
+      slug: slug,
+      icon: icon,
+      width: width,
+      height: height,
+      radius: radius,
+    );
+    final url = avatarUrl;
+    if (url == null || url.isEmpty) return fallback;
+    final px =
+        (width ?? height ?? 120) * MediaQuery.devicePixelRatioOf(context);
+    return ExcludeSemantics(
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(radius),
+          child: Image.network(
+            url,
+            fit: BoxFit.cover,
+            cacheWidth: px.isFinite && px >= 1 ? px.round() : null,
+            errorBuilder: (_, _, _) => fallback,
+            loadingBuilder: (context, child, progress) =>
+                progress == null ? child : fallback,
+          ),
+        ),
       ),
     );
   }

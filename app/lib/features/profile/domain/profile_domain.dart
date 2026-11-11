@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 /// What a person chooses to be when signing up. There is deliberately no
 /// admin option: admins are created by the platform owner in the database.
 enum AccountType { customer, professional }
@@ -11,7 +13,11 @@ class AppProfile {
     this.preferredLanguage = 'fr',
     this.isCustomer = true,
     this.isProfessional = false,
+    this.avatarUrl,
   });
+
+  /// Public address of the profile picture, or null.
+  final String? avatarUrl;
 
   final String id;
   final String? fullName;
@@ -34,6 +40,7 @@ class AppProfile {
     preferredLanguage: preferredLanguage ?? this.preferredLanguage,
     isCustomer: isCustomer,
     isProfessional: isProfessional ?? this.isProfessional,
+    avatarUrl: avatarUrl,
   );
 }
 
@@ -63,6 +70,12 @@ abstract interface class ProfileRepository {
     required String preferredLanguage,
   });
 
+  /// Replaces the profile picture with [jpeg] (already prepared: square, small).
+  Future<void> setAvatar(Uint8List jpeg);
+
+  /// Removes the profile picture.
+  Future<void> removeAvatar();
+
   /// Opt in to offering services. Idempotent; does not touch customer access.
   Future<void> becomeProfessional();
 
@@ -81,6 +94,10 @@ class NotConfiguredProfileRepository implements ProfileRepository {
     required String? phone,
     required String preferredLanguage,
   }) async => _fail();
+  @override
+  Future<void> setAvatar(Uint8List jpeg) async => _fail();
+  @override
+  Future<void> removeAvatar() async => _fail();
   @override
   Future<void> becomeProfessional() async => _fail();
   @override

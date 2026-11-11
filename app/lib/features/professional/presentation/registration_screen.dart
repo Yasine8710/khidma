@@ -16,6 +16,7 @@ import '../../location/application/location_providers.dart';
 import '../../location/domain/location_domain.dart';
 import '../../marketplace/application/marketplace_providers.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
+import '../../profile/presentation/avatar_editor.dart';
 import '../application/professional_providers.dart';
 import '../domain/professional_domain.dart';
 
@@ -392,6 +393,20 @@ class _WizardState extends ConsumerState<_Wizard> {
     switch (_step) {
       case _Step.business:
         return [
+          // A real picture builds trust; optional, and shared with the account.
+          Center(
+            child: Column(
+              children: [
+                const AvatarEditor(size: 96),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  l10n.avatarLabel,
+                  style: text.bodySmall?.copyWith(color: muted),
+                ),
+              ],
+            ),
+          ),
+          gap,
           AppTextField(
             label: l10n.regBusinessName,
             controller: _name,

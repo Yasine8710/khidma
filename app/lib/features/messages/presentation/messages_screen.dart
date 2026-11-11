@@ -53,7 +53,12 @@ class MessagesScreen extends ConsumerWidget {
                 } catch (_) {}
               },
               child: ListView.separated(
-                padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                  AppSpacing.gutter,
+                  AppSpacing.gutter,
+                  AppSpacing.gutter,
+                  120,
+                ),
                 itemCount: list.length,
                 separatorBuilder: (_, _) =>
                     const SizedBox(height: AppSpacing.md),
@@ -128,7 +133,7 @@ class _Row extends StatelessWidget {
       onTap: () => context.push(AppRoutes.chatPath(c.id)),
       child: Row(
         children: [
-          AppAvatar(name: title, size: 44, decorative: true),
+          AppAvatar(name: title, size: 52, decorative: true),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(

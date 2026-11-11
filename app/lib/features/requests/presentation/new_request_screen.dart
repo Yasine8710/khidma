@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../../shared/widgets/category_photo.dart';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -178,20 +181,34 @@ class _NewRequestScreenState extends ConsumerState<NewRequestScreen> {
                 gap,
                 Text(l10n.reqFormCategory, style: text.titleSmall),
                 const SizedBox(height: AppSpacing.sm),
-                Wrap(
-                  spacing: AppSpacing.sm,
-                  runSpacing: AppSpacing.sm,
-                  children: [
-                    for (final c in categories)
-                      ChoiceChip(
-                        label: Text(c.nameFor(locale)),
-                        selected: _category == c.id,
-                        onSelected: (_) => setState(() {
-                          _category = c.id;
-                          _categoryError = false;
-                        }),
-                      ),
-                  ],
+                LayoutBuilder(
+                  builder: (context, box) {
+                    const columns = 3;
+                    final width =
+                        (box.maxWidth - AppSpacing.sm * (columns - 1)) /
+                        columns;
+                    return Wrap(
+                      spacing: AppSpacing.sm,
+                      runSpacing: AppSpacing.sm,
+                      children: [
+                        for (final c in categories)
+                          SizedBox(
+                            width: width,
+                            height: width * 0.8,
+                            child: CategoryTile(
+                              name: c.nameFor(locale),
+                              slug: c.slug,
+                              icon: c.icon,
+                              selected: _category == c.id,
+                              onTap: () => setState(() {
+                                _category = c.id;
+                                _categoryError = false;
+                              }),
+                            ),
+                          ),
+                      ],
+                    );
+                  },
                 ),
                 if (_categoryError)
                   Padding(

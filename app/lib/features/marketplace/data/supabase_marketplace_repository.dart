@@ -128,9 +128,25 @@ class SupabaseMarketplaceRepository implements MarketplaceRepository {
       'p_offset': q.offset,
     };
     final rows = await _client.rpc('search_professionals', params: params);
-    return [
+    final list = [
       for (final r in (rows as List)) _summary(r as Map<String, dynamic>),
     ];
+    if (list.isEmpty) return list;
+    // The search function does not carry the picture: one extra read for the
+    // page. A failure here only means cards show the category photo.
+    try {
+      final pics = await _client
+          .from('professional_profiles')
+          .select('user_id, avatar_path')
+          .inFilter('user_id', [for (final p in list) p.id]);
+      final byId = {
+        for (final r in pics)
+          r['user_id'] as String: _avatarUrl(r['avatar_path'] as String?),
+      };
+      return [for (final p in list) p.withAvatar(byId[p.id])];
+    } catch (_) {
+      return list;
+    }
   });
 
   /// The same public columns the search returns; Row Level Security hides
@@ -142,7 +158,7 @@ class SupabaseMarketplaceRepository implements MarketplaceRepository {
         .select(
           'user_id, business_name, primary_category_id, description, years_experience, '
           'governorate_id, city_id, neighborhood_id, latitude, longitude, availability, '
-          'verification_status, rating_avg, review_count',
+          'verification_status, rating_avg, review_count, avatar_path',
         )
         .eq('user_id', id)
         .eq('is_published', true)
@@ -153,7 +169,7 @@ class SupabaseMarketplaceRepository implements MarketplaceRepository {
   static const _summaryCols =
       'user_id, business_name, primary_category_id, description, years_experience, '
       'governorate_id, city_id, neighborhood_id, latitude, longitude, availability, '
-      'verification_status, rating_avg, review_count';
+      'verification_status, rating_avg, review_count, avatar_path';
 
   @override
   Future<List<ProfessionalSummary>> professionals(List<String> ids) =>
@@ -246,5 +262,10 @@ class SupabaseMarketplaceRepository implements MarketplaceRepository {
     rating: (r['rating_avg'] as num?)?.toDouble() ?? 0,
     reviewCount: (r['review_count'] as int?) ?? 0,
     distanceKm: (r['distance_km'] as num?)?.toDouble(),
+    avatarUrl: _avatarUrl(r['avatar_path'] as String?),
   );
+
+  String? _avatarUrl(String? path) => path == null || path.isEmpty
+      ? null
+      : _client.storage.from('avatars').getPublicUrl(path);
 }

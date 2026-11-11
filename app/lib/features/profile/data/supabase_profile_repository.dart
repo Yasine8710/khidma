@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'dart:async';
 
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
@@ -41,7 +43,7 @@ class SupabaseProfileRepository implements ProfileRepository {
   final String? Function() _userId;
 
   static const _columns =
-      'id, full_name, phone, preferred_language, is_customer, is_professional';
+      'id, full_name, phone, preferred_language, is_customer, is_professional, avatar_path';
 
   String get _uid {
     final id = _userId();
@@ -56,7 +58,12 @@ class SupabaseProfileRepository implements ProfileRepository {
     preferredLanguage: (r['preferred_language'] as String?) ?? 'fr',
     isCustomer: (r['is_customer'] as bool?) ?? true,
     isProfessional: (r['is_professional'] as bool?) ?? false,
+    avatarUrl: _avatarUrl(r['avatar_path'] as String?),
   );
+
+  String? _avatarUrl(String? path) => path == null || path.isEmpty
+      ? null
+      : _client.storage.from('avatars').getPublicUrl(path);
 
   Future<T> _guard<T>(Future<T> Function() run) async {
     try {
@@ -93,6 +100,58 @@ class SupabaseProfileRepository implements ProfileRepository {
         .select(_columns)
         .single();
     return _row(row);
+  });
+
+  /// Uploads a new file, then points the profile (and the public professional
+  /// profile, when there is one) at it; the previous file is removed last, on a
+  /// best-effort basis, so a failure never leaves a profile without a picture.
+  @override
+  Future<void> setAvatar(Uint8List jpeg) => _guard(() async {
+    final uid = _uid;
+    final bucket = _client.storage.from('avatars');
+    final old = await _client
+        .from('profiles')
+        .select('avatar_path')
+        .eq('id', uid)
+        .single();
+    final path = '$uid/avatar-${DateTime.now().millisecondsSinceEpoch}.jpg';
+    await bucket.uploadBinary(
+      path,
+      jpeg,
+      fileOptions: const sb.FileOptions(contentType: 'image/jpeg'),
+    );
+    await _client.from('profiles').update({'avatar_path': path}).eq('id', uid);
+    await _client
+        .from('professional_profiles')
+        .update({'avatar_path': path})
+        .eq('user_id', uid);
+    final previous = old['avatar_path'] as String?;
+    if (previous != null && previous != path) {
+      try {
+        await bucket.remove([previous]);
+      } catch (_) {}
+    }
+  });
+
+  @override
+  Future<void> removeAvatar() => _guard(() async {
+    final uid = _uid;
+    final old = await _client
+        .from('profiles')
+        .select('avatar_path')
+        .eq('id', uid)
+        .single();
+    await _client.from('profiles').update({'avatar_path': null}).eq('id', uid);
+    await _client
+        .from('professional_profiles')
+        .update({'avatar_path': null})
+        .eq('user_id', uid);
+    final previous = old['avatar_path'] as String?;
+    if (previous != null) {
+      try {
+        await _client.storage.from('avatars').remove([previous]);
+      } catch (_) {}
+    }
   });
 
   @override

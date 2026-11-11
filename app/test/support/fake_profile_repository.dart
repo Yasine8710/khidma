@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:khidma/features/profile/domain/profile_domain.dart';
 
@@ -34,6 +35,40 @@ class FakeProfileRepository implements ProfileRepository {
     fetchCalls++;
     await _pre();
     return profile ?? (throw const ProfileError(ProfileFailure.notSignedIn));
+  }
+
+  int avatarSets = 0;
+  int avatarRemovals = 0;
+
+  @override
+  Future<void> setAvatar(Uint8List jpeg) async {
+    await _pre();
+    avatarSets++;
+    final p = profile!;
+    profile = AppProfile(
+      id: p.id,
+      fullName: p.fullName,
+      phone: p.phone,
+      preferredLanguage: p.preferredLanguage,
+      isCustomer: p.isCustomer,
+      isProfessional: p.isProfessional,
+      avatarUrl: 'https://example.test/avatar.jpg',
+    );
+  }
+
+  @override
+  Future<void> removeAvatar() async {
+    await _pre();
+    avatarRemovals++;
+    final p = profile!;
+    profile = AppProfile(
+      id: p.id,
+      fullName: p.fullName,
+      phone: p.phone,
+      preferredLanguage: p.preferredLanguage,
+      isCustomer: p.isCustomer,
+      isProfessional: p.isProfessional,
+    );
   }
 
   @override

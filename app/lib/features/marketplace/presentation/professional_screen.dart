@@ -6,10 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/app_avatar.dart';
 import '../../../shared/widgets/category_photo.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/empty_state.dart';
-import '../../../shared/widgets/rating_stars.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../application/home_providers.dart';
 import '../application/marketplace_providers.dart';
@@ -212,6 +213,25 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // The picture rides over the edge of the photo.
+                        SizedBox(
+                          height: 56,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              PositionedDirectional(
+                                top: -56,
+                                start: 0,
+                                child: _ProfileAvatar(
+                                  name: p.name,
+                                  url: p.avatarUrl,
+                                  verified: p.isVerified,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
                         Semantics(
                           header: true,
                           child: Text(p.name, style: text.headlineSmall),
@@ -224,11 +244,6 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
                             ),
                           ),
                         const SizedBox(height: AppSpacing.md),
-                        RatingStars(
-                          rating: p.rating,
-                          reviewCount: p.reviewCount,
-                        ),
-                        const SizedBox(height: AppSpacing.md),
                         Wrap(
                           spacing: AppSpacing.sm,
                           runSpacing: AppSpacing.xs,
@@ -238,8 +253,40 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
                               label: availabilityLabel(l10n, p.availability),
                               tone: availabilityTone(p.availability),
                             ),
-                            if (years != null && years > 0)
-                              AppBadge(label: l10n.yearsExperience(years)),
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+                        // The numbers that build trust, side by side.
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _Stat(
+                                icon: Icons.star_rounded,
+                                iconColor: AppColors.saffron,
+                                value: p.reviewCount == 0
+                                    ? '–'
+                                    : p.rating.toStringAsFixed(1),
+                                label: l10n.statRating,
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.md),
+                            Expanded(
+                              child: _Stat(
+                                icon: Icons.chat_bubble_outline_rounded,
+                                value: '${p.reviewCount}',
+                                label: l10n.statReviews,
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.md),
+                            Expanded(
+                              child: _Stat(
+                                icon: Icons.workspace_premium_outlined,
+                                value: years == null || years == 0
+                                    ? '–'
+                                    : '$years',
+                                label: l10n.statYears,
+                              ),
+                            ),
                           ],
                         ),
                         if (p.description.isNotEmpty) ...[
@@ -321,4 +368,120 @@ List<Widget> _detailSections(
     if (services.isNotEmpty) chips(l10n.servicesTitle, services),
     if (areas.isNotEmpty) chips(l10n.areasTitle, areas),
   ];
+}
+
+/// The professional's picture (or initials) in a white ring, with a verified
+/// seal when they are verified.
+class _ProfileAvatar extends StatelessWidget {
+  const _ProfileAvatar({
+    required this.name,
+    required this.url,
+    required this.verified,
+  });
+
+  final String name;
+  final String? url;
+  final bool verified;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: scheme.surface, width: 5),
+            boxShadow: AppColors.softShadow,
+          ),
+          child: AppAvatar(
+            name: name,
+            imageUrl: url,
+            size: 104,
+            decorative: true,
+          ),
+        ),
+        if (verified)
+          PositionedDirectional(
+            end: -2,
+            bottom: 2,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: scheme.surface,
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(2),
+                child: Icon(
+                  Icons.verified_rounded,
+                  size: 28,
+                  color: scheme.primary,
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// One number with its label, in a soft card.
+class _Stat extends StatelessWidget {
+  const _Stat({
+    required this.icon,
+    required this.value,
+    required this.label,
+    this.iconColor,
+  });
+
+  final IconData icon;
+  final Color? iconColor;
+  final String value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
+    return Semantics(
+      container: true,
+      label: '$label: $value',
+      excludeSemantics: true,
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsetsDirectional.symmetric(
+            vertical: AppSpacing.md,
+            horizontal: AppSpacing.sm,
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, size: 18, color: iconColor ?? scheme.primary),
+                  const SizedBox(width: 4),
+                  Flexible(
+                    child: Text(
+                      value,
+                      style: text.titleLarge,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

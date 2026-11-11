@@ -427,6 +427,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeQuoteBody => 'صِف طلبك مرة واحدة واستلم عروضاً من محترفين.';
 
   @override
+  String get avatarChange => 'تغيير الصورة';
+
+  @override
+  String get avatarChoose => 'اختيار صورة';
+
+  @override
+  String get avatarRemove => 'حذف الصورة';
+
+  @override
+  String get avatarFailed => 'تعذّر تحديث صورتك. جرّب صورة أخرى.';
+
+  @override
+  String get avatarLabel => 'صورة الملف الشخصي';
+
+  @override
+  String get statRating => 'التقييم';
+
+  @override
+  String get statReviews => 'التقييمات';
+
+  @override
+  String get statYears => 'السنوات';
+
+  @override
   String get searchHint => 'ابحث عن مهنة أو اسم أو مدينة…';
 
   @override
