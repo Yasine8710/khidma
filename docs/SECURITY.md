@@ -139,6 +139,13 @@ Not yet verified against a real project: the end-to-end link flow on a device, t
 - Admins can suspend a professional (unpublishes; the owner cannot republish while suspended). Every admin action (verification, suspension, report handling, review moderation, document viewing) is written to `admin_audit_log`, readable only through `admin_audit_log_page`.
 - Residual: the delete-versus-submit race is closed with a row lock plus a re-check, which needs real Postgres to exercise (PGlite is single-connection). The app only offers photos (the bucket also accepts PDF). A second factor for admin sessions is an owner step for the dashboard (#29).
 
+### Admin dashboard (Phase 7)
+- Admin means a row in `admin_users` **and** a second-factor session: `is_admin()` also requires the JWT claim `aal = 'aal2'` while `admin_config.require_mfa` is on (default). A stolen password alone opens nothing, in the dashboard or through the API. The flag is unreachable by clients; turning it off in production is an owner decision (the tests switch it off, and one test checks it works when on).
+- The dashboard has no table access: every list and action is an `admin_*` function (definer, `search_path` pinned, paged and capped at 200 rows, wildcard characters in searches escaped). Lists show names and ids, never phone numbers or message bodies; reading a conversation is a separate, audited action. Mutations (verification, reports, suspension, review moderation, categories) are written to `admin_audit_log`.
+- Documents and chat images come from the `admin-media` Edge Function: it calls the audited function **as the caller** (so the database enforces admin + MFA and logs the view), re-validates every path, and signs for 120 seconds with the service role. CORS allows only `ADMIN_ORIGIN`.
+- The app keeps its session in `sessionStorage` (closing the tab signs out), ships a strict CSP (own scripts only, Supabase for connect/img), and links open with `rel="noreferrer noopener"`.
+- Not verified live: sign-in, TOTP enrollment, the Edge Function and signed links (need a real Supabase project, #6). Residual: no rate limit on admin sign-in beyond Supabase Auth's own; account recovery for a lost authenticator is a manual SQL step for the owner.
+
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.
 - The Supabase SDK's own debug logger is disabled; the app prints only error types, and only in debug builds.

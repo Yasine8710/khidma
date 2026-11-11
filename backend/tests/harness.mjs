@@ -68,6 +68,9 @@ export async function newDb() {
   for (const f of files) {
     await db.exec(readFileSync(join(migrationsDir, f), 'utf8'));
   }
+  // Production requires an aal2 (TOTP) session for admins; most tests act as a
+  // plain admin and switch it back on where they test the rule.
+  await db.exec('update public.admin_config set require_mfa = false');
   return db;
 }
 

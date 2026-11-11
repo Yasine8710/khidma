@@ -160,7 +160,7 @@ describe('inactive categories', () => {
     admin = await createUser(db);
     await makeAdmin(db, admin);
     await becomePro(db, pro);
-    await user(db, admin).query(`update public.service_categories set is_active = false where id = 5`);
+    await db.query(`update public.service_categories set is_active = false where id = 5`);
   });
 
   test('cannot be assigned as primary category or as a service', async () => {
@@ -170,14 +170,14 @@ describe('inactive categories', () => {
 
   test('cannot be published with; existing professionals keep working', async () => {
     // Legacy state: assigned while active, deactivated afterwards.
-    await user(db, admin).query(`update public.service_categories set is_active = true where id = 5`);
+    await db.query(`update public.service_categories set is_active = true where id = 5`);
     await user(db, pro).query('update public.professional_profiles set primary_category_id = 5 where user_id = $1', [pro]);
-    await user(db, admin).query(`update public.service_categories set is_active = false where id = 5`);
+    await db.query(`update public.service_categories set is_active = false where id = 5`);
     await denies(publish(db, pro, 5), CHECK);
     // Editing other fields of a profile whose category was deactivated later is fine.
     const r = await user(db, pro).query(`update public.professional_profiles set years_experience = 7 where user_id = $1`, [pro]);
     assert.equal(r.affectedRows, 1);
-    await user(db, admin).query(`update public.service_categories set is_active = true where id = 5`);
+    await db.query(`update public.service_categories set is_active = true where id = 5`);
     assert.equal((await publish(db, pro, 5)).affectedRows, 1);
   });
 });
@@ -234,6 +234,8 @@ describe('sequence and function exposure', () => {
       'search_normalize', 'search_professionals', 'send_message', 'set_notification_preferences', 'start_booking',
       'start_conversation', 'submit_offer', 'submit_review', 'unregister_device_token', 'withdraw_offer',
       // verification and reports
+      'admin_list_professionals', 'admin_list_requests', 'admin_list_reviews', 'admin_list_users', 'admin_overview',
+      'admin_stats_daily', 'admin_upsert_category',
       'admin_audit_log_page', 'admin_handle_report', 'admin_list_reports', 'admin_list_verifications', 'admin_report_context',
       'admin_review_verification', 'admin_set_suspended', 'admin_verification_documents', 'cancel_verification', 'my_verification',
       'my_verification_file_count', 'report_content', 'submit_verification', 'verification_file_unsubmitted',

@@ -81,7 +81,7 @@ begin
     from public.admin_audit_log a
    order by a.id desc
    limit greatest(1, least(coalesce(p_limit, 50), 200))
-  offset greatest(0, least(coalesce(p_offset, 0), 5000));
+  offset greatest(0, coalesce(p_offset, 0));
 end;
 $$;
 
@@ -366,14 +366,16 @@ begin
    where v.status = p_status
    order by v.submitted_at, v.id
    limit greatest(1, least(coalesce(p_limit, 50), 200))
-  offset greatest(0, least(coalesce(p_offset, 0), 5000));
+  offset greatest(0, coalesce(p_offset, 0));
 end;
 $$;
 
+-- Volatile on purpose: it writes the audit row, and PostgREST runs STABLE
+-- functions in a read-only transaction.
 create or replace function public.admin_verification_documents(p_request uuid)
 returns table (path text)
 language plpgsql
-stable
+volatile
 security definer
 set search_path = ''
 as $$
@@ -513,7 +515,7 @@ begin
    where r.status = p_status
    order by r.created_at, r.id
    limit greatest(1, least(coalesce(p_limit, 50), 200))
-  offset greatest(0, least(coalesce(p_offset, 0), 5000));
+  offset greatest(0, coalesce(p_offset, 0));
 end;
 $$;
 
