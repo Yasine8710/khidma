@@ -75,36 +75,30 @@ flutter:
   generate: true
 
   fonts:
-    - family: Inter
+    - family: Anton
       fonts:
-        - asset: assets/fonts/Inter.ttf
-    - family: ZillaSlab
+        - asset: assets/fonts/Anton-Regular.ttf
+    - family: Barlow
       fonts:
-        - asset: assets/fonts/ZillaSlab-Medium.ttf
+        - asset: assets/fonts/Barlow-Regular.ttf
+        - asset: assets/fonts/Barlow-Medium.ttf
           weight: 500
-        - asset: assets/fonts/ZillaSlab-SemiBold.ttf
+        - asset: assets/fonts/Barlow-SemiBold.ttf
           weight: 600
-        - asset: assets/fonts/ZillaSlab-Bold.ttf
+        - asset: assets/fonts/Barlow-Bold.ttf
           weight: 700
-    - family: Lato
+    - family: Lalezar
       fonts:
-        - asset: assets/fonts/Lato-Regular.ttf
-        - asset: assets/fonts/Lato-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Lato-Black.ttf
-          weight: 900
-    - family: IBMPlexSansArabic
+        - asset: assets/fonts/Lalezar-Regular.ttf
+    - family: Tajawal
       fonts:
-        - asset: assets/fonts/IBMPlexSansArabic-Regular.ttf
-        - asset: assets/fonts/IBMPlexSansArabic-Medium.ttf
+        - asset: assets/fonts/Tajawal-Regular.ttf
+        - asset: assets/fonts/Tajawal-Medium.ttf
           weight: 500
-        - asset: assets/fonts/IBMPlexSansArabic-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/IBMPlexSansArabic-Bold.ttf
+        - asset: assets/fonts/Tajawal-Bold.ttf
           weight: 700
-
-  assets:
-    - assets/photos/
+        - asset: assets/fonts/Tajawal-ExtraBold.ttf
+          weight: 800
 
   # To add assets to your application, add an assets section, like this:
   # assets:

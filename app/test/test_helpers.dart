@@ -92,18 +92,19 @@ Future<void> loadAppFonts() async {
     ..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'));
   await icons.load();
 
-  await load('Inter', ['Inter.ttf']);
-  await load('ZillaSlab', [
-    'ZillaSlab-Medium.ttf',
-    'ZillaSlab-SemiBold.ttf',
-    'ZillaSlab-Bold.ttf',
+  await load('Anton', ['Anton-Regular.ttf']);
+  await load('Barlow', [
+    'Barlow-Regular.ttf',
+    'Barlow-Medium.ttf',
+    'Barlow-SemiBold.ttf',
+    'Barlow-Bold.ttf',
   ]);
-  await load('Lato', ['Lato-Regular.ttf', 'Lato-Bold.ttf', 'Lato-Black.ttf']);
-  await load('IBMPlexSansArabic', [
-    'IBMPlexSansArabic-Regular.ttf',
-    'IBMPlexSansArabic-Medium.ttf',
-    'IBMPlexSansArabic-SemiBold.ttf',
-    'IBMPlexSansArabic-Bold.ttf',
+  await load('Lalezar', ['Lalezar-Regular.ttf']);
+  await load('Tajawal', [
+    'Tajawal-Regular.ttf',
+    'Tajawal-Medium.ttf',
+    'Tajawal-Bold.ttf',
+    'Tajawal-ExtraBold.ttf',
   ]);
 }
 

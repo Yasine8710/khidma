@@ -6,6 +6,7 @@ import 'core/l10n/locale_controller.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_mode_controller.dart';
+import 'core/theme/world_controller.dart';
 import 'core/router/app_routes.dart';
 import 'features/auth/application/auth_providers.dart';
 import 'features/notifications/application/notifications_providers.dart';
@@ -18,6 +19,7 @@ class KhidmaApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
+    final world = ref.watch(worldProvider).world;
     ref.watch(accountSetupProvider);
     ref.watch(pushRegistrationProvider);
     // Opening a password-reset link brings the user to the new-password screen.
@@ -35,8 +37,8 @@ class KhidmaApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      theme: AppTheme.light(locale),
-      darkTheme: AppTheme.dark(locale),
+      theme: AppTheme.light(locale, world: world),
+      darkTheme: AppTheme.dark(locale, world: world),
       themeMode: ref.watch(themeModeProvider),
       routerConfig: ref.watch(routerProvider),
     );

@@ -1,58 +1,83 @@
 import 'package:flutter/material.dart';
 
-/// Khidma "Atelier" palette: bone paper, warm ink, one terracotta action
-/// colour, olive for trust, ochre only for stars. Flat colours, no gradients
-/// or glow. Every text pair is checked for contrast (see docs/DESIGN.md).
+/// Khidma "Signal": the colours of workshop signage. Hard black ink on flat
+/// colour fields, one loud colour per world: mimosa yellow for the trades,
+/// zellij green for the digital services. No gradients, no blur, no pastel.
+/// Every text pair is checked for contrast (see docs/DESIGN.md).
 abstract final class AppColors {
-  // Terracotta (harissa clay): the one colour that says "tap here".
-  static const primary = Color(0xFFB0432A);
-  static const primaryDark = Color(0xFF6E2614);
-  static const primaryTint = Color(0xFFF6E6DE);
+  // ---- Worlds (the loud colour of each section) ----
+  /// Local trades: signage yellow. Always carries ink text, never used as text.
+  static const yellow = Color(0xFFF5C400);
 
-  /// Ochre: stars and small marks only (too light for text).
-  static const saffron = Color(0xFFC98E1F);
+  /// Digital services: deep zellij green. Carries white text.
+  static const green = Color(0xFF0B6B4D);
+  static const greenBright = Color(0xFF30C48D); // green on dark surfaces
 
-  /// Olive: verified, success, "available".
-  static const olive = Color(0xFF46613E);
-  static const oliveTint = Color(0xFFDDE5D3);
+  // ---- Neutrals ----
+  static const ink = Color(0xFF0E0E0E);
+  static const paper = Color(0xFFFFFFFF);
+  static const ground = Color(0xFFEDEDE8); // app background
+  static const sunken = Color(0xFFDFDFD8); // inset blocks
+  static const muted = Color(0xFF55554F);
+  static const rule = Color(0xFFBDBDB4); // hairlines, decorative
+  static const control = Color(0xFF6F6F68); // outlines of controls (>= 3:1)
 
-  static const background = Color(0xFFF4EFE6); // bone paper
-  static const surface = Color(0xFFFFFCF6); // card paper
-  static const surfaceAlt = Color(0xFFEAE2D3); // sunken blocks
-  static const ink = Color(0xFF1F1B16);
-  static const muted = Color(0xFF6B6257);
+  static const darkInk = Color(0xFFF4F4EE);
+  static const darkGround = Color(0xFF0B0B0B);
+  static const darkPaper = Color(0xFF171717);
+  static const darkSunken = Color(0xFF242424);
+  static const darkMuted = Color(0xFFB4B4AC);
+  static const darkRule = Color(0xFF3C3C3C);
+  static const darkControl = Color(0xFF8A8A82);
 
-  /// Hairline rules between rows and around cards (decorative).
-  static const border = Color(0xFFD9CFBD);
-
-  /// Boundary of interactive controls (fields, chips): >= 3:1 on paper.
-  static const control = Color(0xFF8A8070);
-  static const mutedStrong = Color(0xFF4F483F);
-
-  static const darkBackground = Color(0xFF16130F);
-  static const darkSurface = Color(0xFF201C17);
-  static const darkSurfaceAlt = Color(0xFF2A251E);
-  static const darkInk = Color(0xFFEEE7DA);
-  static const darkMuted = Color(0xFFB3A896);
-  static const darkBorder = Color(0xFF3A3328);
-  static const darkControl = Color(0xFF7F7566);
-  static const darkPrimary = Color(0xFFE07A5F);
-  static const darkPrimaryContainer = Color(0xFF4A2418);
-  static const darkOnPrimaryContainer = Color(0xFFF6D6CB);
-
-  static const success = olive;
+  // ---- Status ----
+  static const success = green;
   static const warning = Color(0xFF8A5A00);
-  static const error = Color(0xFFA12A1F);
+  static const error = Color(0xFFC0261C);
+  static const darkSuccess = greenBright;
+  static const darkWarning = Color(0xFFF5C400);
+  static const darkError = Color(0xFFFF8A80);
 
-  static const darkSuccess = Color(0xFFA9C39A);
-  static const darkWarning = Color(0xFFE6B45C);
-  static const darkError = Color(0xFFF2B8B5);
+  /// Stars: the yellow, with an ink outline where it sits on paper.
+  static const star = yellow;
 
-  /// Kept for older call sites: flat terracotta, no colour sweep.
-  static const brandGradient = LinearGradient(
-    colors: [primary, primary],
-  );
-
-  /// Kept for older call sites: the Atelier look has no drop shadows.
+  // Compatibility names for older call sites.
+  static const primary = ink;
+  static const primaryDark = ink;
+  static const primaryTint = yellow;
+  static const saffron = yellow;
+  static const olive = green;
+  static const oliveTint = Color(0xFFD5E8DF);
+  static const background = ground;
+  static const surface = paper;
+  static const surfaceAlt = sunken;
+  static const border = rule;
+  static const mutedStrong = muted;
+  static const darkBackground = darkGround;
+  static const darkSurface = darkPaper;
+  static const darkSurfaceAlt = darkSunken;
+  static const darkBorder = darkRule;
+  static const darkPrimary = darkInk;
+  static const darkPrimaryContainer = yellow;
+  static const darkOnPrimaryContainer = ink;
+  static const brandGradient = LinearGradient(colors: [yellow, yellow]);
   static const softShadow = <BoxShadow>[];
+}
+
+/// The two sections of the app. Switching the world recolours everything.
+enum AppWorld {
+  trades,
+  digital;
+
+  Color accent(Brightness b) => switch (this) {
+    AppWorld.trades => AppColors.yellow,
+    AppWorld.digital =>
+      b == Brightness.dark ? AppColors.greenBright : AppColors.green,
+  };
+
+  /// Text/icons that sit on [accent].
+  Color onAccent(Brightness b) => switch (this) {
+    AppWorld.trades => AppColors.ink,
+    AppWorld.digital => b == Brightness.dark ? AppColors.ink : Colors.white,
+  };
 }
