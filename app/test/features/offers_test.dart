@@ -210,6 +210,8 @@ void main() {
         scrollable: find.byType(Scrollable).last,
       );
       expect(find.text('Voir plus'), findsNothing);
+      // Rows cascade in on first build: let the entrance finish.
+      await tester.pumpAndSettle();
     });
   });
 

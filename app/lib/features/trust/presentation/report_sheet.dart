@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_spacing.dart';
+import '../../requests/presentation/ledger_widgets.dart' show LedgerRule;
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
@@ -138,7 +139,7 @@ class _ReportSheetState extends ConsumerState<_ReportSheet> {
         children: [
           Semantics(
             header: true,
-            child: Text(l10n.reportTitle, style: text.titleLarge),
+            child: Text(l10n.reportTitle, style: text.headlineSmall),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
@@ -146,7 +147,7 @@ class _ReportSheetState extends ConsumerState<_ReportSheet> {
             style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
           ),
           const SizedBox(height: AppSpacing.md),
-          const Divider(),
+          const LedgerRule(strong: true),
           // Reasons as ruled form lines, ticked in ink: the send button is the
           // sheet's one terracotta action.
           Theme(
@@ -173,7 +174,7 @@ class _ReportSheetState extends ConsumerState<_ReportSheet> {
                       contentPadding: EdgeInsets.zero,
                       title: Text(reportReasonLabel(l10n, r)),
                     ),
-                    const Divider(),
+                    const LedgerRule(),
                   ],
                 ],
               ),

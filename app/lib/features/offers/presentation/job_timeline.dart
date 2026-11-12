@@ -42,6 +42,7 @@ class JobTrack extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final stamp = LedgerStamp(
+      big: true,
       label: jobStatusLabel(l10n, status),
       tone: jobStatusTone(status),
     );

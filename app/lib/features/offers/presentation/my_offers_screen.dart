@@ -9,7 +9,6 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../requests/presentation/ledger_widgets.dart';
@@ -43,7 +42,7 @@ class MyOffersScreen extends ConsumerWidget {
     final Widget body;
     if (list != null) {
       body = list.isEmpty
-          ? EmptyState(
+          ? TypeEmpty(
               icon: Icons.local_offer_outlined,
               title: l10n.offersTitle,
               body: l10n.offersEmpty,
@@ -54,9 +53,10 @@ class MyOffersScreen extends ConsumerWidget {
                 padding: _listPadding,
                 itemCount: list.length + 1,
                 itemBuilder: (context, i) {
-                  if (i == 0) return const LedgerRule(strong: true);
+                  if (i == 0) return const SizedBox(height: AppSpacing.sm);
                   final o = list[i - 1];
                   return LedgerRow(
+                    index: i - 1,
                     semanticLabel: o.requestTitle,
                     onTap: () =>
                         context.push(AppRoutes.proRequestPath(o.requestId)),
@@ -84,10 +84,11 @@ class MyOffersScreen extends ConsumerWidget {
                               textDirection: TextDirection.ltr,
                               child: Text(
                                 formatTnd(o.priceTnd, locale),
-                                style: text.titleLarge,
+                                style: text.headlineSmall,
                               ),
                             ),
                             LedgerStamp(
+                              big: true,
                               label: offerStatusLabel(l10n, o.status),
                               tone: offerStatusTone(o.status),
                             ),
@@ -174,7 +175,7 @@ class JobsScreen extends ConsumerWidget {
     final Widget body;
     if (list != null) {
       body = list.isEmpty
-          ? EmptyState(
+          ? TypeEmpty(
               icon: Icons.handyman_outlined,
               title: l10n.jobsTitle,
               body: l10n.jobsEmpty,
@@ -185,9 +186,10 @@ class JobsScreen extends ConsumerWidget {
                 padding: _listPadding,
                 itemCount: list.length + 1,
                 itemBuilder: (context, i) {
-                  if (i == 0) return const LedgerRule(strong: true);
+                  if (i == 0) return const SizedBox(height: AppSpacing.sm);
                   final j = list[i - 1];
                   return LedgerRow(
+                    index: i - 1,
                     onTap: null,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,6 +305,7 @@ class _JobReview extends ConsumerWidget {
       return Padding(
         padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
         child: LedgerStamp(
+          big: true,
           label: l10n.reviewDone,
           tone: BadgeTone.success,
           icon: Icons.check_rounded,
