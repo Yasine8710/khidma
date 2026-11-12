@@ -8,9 +8,10 @@ import '../application/auth_providers.dart';
 import 'auth_texts.dart';
 import '../domain/auth_domain.dart';
 
-/// Shared frame for the auth screens: back button, phone-width column, logo,
-/// title and subtitle, plus an honest notice when accounts are not available
-/// (no backend configured).
+/// Shared frame for the auth screens, a clean form page on plain paper: back
+/// button, phone-width column, logo, slab title and subtitle over a hairline,
+/// plus an honest notice when accounts are not available (no backend
+/// configured).
 class AuthScaffold extends ConsumerWidget {
   const AuthScaffold({
     super.key,
@@ -30,62 +31,53 @@ class AuthScaffold extends ConsumerWidget {
     final available = ref.watch(authAvailableProvider);
     return Scaffold(
       appBar: AppBar(),
-      body: Stack(
-        children: [
-          // A soft photo wash at the top: brand mood without moving content.
-          const PositionedDirectional(
-            top: 0,
-            start: 0,
-            end: 0,
-            height: 280,
-            child: _PhotoWash(),
-          ),
-          SafeArea(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 480),
-                child: ListView(
-                  padding: const EdgeInsetsDirectional.fromSTEB(
-                    AppSpacing.gutter,
-                    AppSpacing.sm,
-                    AppSpacing.gutter,
-                    AppSpacing.xxl,
-                  ),
-                  children: [
-                    const Align(
-                      alignment: AlignmentDirectional.centerStart,
-                      child: KhidmaLogo(markSize: 36),
-                    ),
-                    const SizedBox(height: AppSpacing.xl),
-                    Semantics(
-                      header: true,
-                      child: Text(title, style: text.headlineMedium),
-                    ),
-                    if (subtitle != null) ...[
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        subtitle!,
-                        style: text.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: AppSpacing.xl),
-                    if (!available) ...[
-                      InlineNotice(
-                        message: l10n.failureText(AuthFailure.notConfigured),
-                        tone: NoticeTone.info,
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
-                    ],
-                    ...children,
-                  ],
-                ),
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: ListView(
+              padding: const EdgeInsetsDirectional.fromSTEB(
+                AppSpacing.gutter,
+                0,
+                AppSpacing.gutter,
+                AppSpacing.xxl,
               ),
+              children: [
+                const Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: KhidmaLogo(markSize: 30),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                Semantics(
+                  header: true,
+                  child: Text(title, style: text.headlineMedium),
+                ),
+                if (subtitle != null) ...[
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    subtitle!,
+                    style: text.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+                // A hairline under the heading, like the head of a form.
+                const SizedBox(height: AppSpacing.lg),
+                const Divider(),
+                const SizedBox(height: AppSpacing.lg),
+                if (!available) ...[
+                  InlineNotice(
+                    message: l10n.failureText(AuthFailure.notConfigured),
+                    tone: NoticeTone.info,
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                ],
+                ...children,
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -109,12 +101,12 @@ class InlineNotice extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final error = tone == NoticeTone.error;
-    final fg = error
-        ? (scheme.brightness == Brightness.dark ? scheme.error : scheme.error)
-        : scheme.onPrimaryContainer;
+    // Flat paper slip with a ruled frame: error in the error ink, info in
+    // plain ink on sunken paper.
+    final fg = error ? scheme.error : scheme.onSurface;
     final bg = error
-        ? Color.alphaBlend(scheme.error.withValues(alpha: 0.10), scheme.surface)
-        : scheme.primaryContainer;
+        ? Color.alphaBlend(scheme.error.withValues(alpha: 0.06), scheme.surface)
+        : scheme.surfaceContainerHighest;
     return Semantics(
       liveRegion: true,
       container: true,
@@ -122,7 +114,9 @@ class InlineNotice extends StatelessWidget {
         decoration: BoxDecoration(
           color: bg,
           borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(color: fg.withValues(alpha: 0.4)),
+          border: Border.all(
+            color: error ? scheme.error : scheme.outlineVariant,
+          ),
         ),
         child: Padding(
           padding: const EdgeInsetsDirectional.all(AppSpacing.md),
@@ -146,31 +140,6 @@ class InlineNotice extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _PhotoWash extends StatelessWidget {
-  const _PhotoWash();
-
-  @override
-  Widget build(BuildContext context) {
-    final background = Theme.of(context).scaffoldBackgroundColor;
-    return ExcludeSemantics(
-      child: ShaderMask(
-        blendMode: BlendMode.dstIn,
-        shaderCallback: (rect) => const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0x38000000), Color(0x00000000)],
-        ).createShader(rect),
-        child: Image.asset(
-          'assets/photos/hero-home.jpg',
-          fit: BoxFit.cover,
-          alignment: const Alignment(0.2, -0.3),
-          errorBuilder: (_, _, _) => ColoredBox(color: background),
         ),
       ),
     );

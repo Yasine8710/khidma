@@ -3,9 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/format/dates.dart';
 import '../../../core/format/digits.dart';
-import '../../../core/format/money.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -15,11 +13,11 @@ import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
-import '../../marketplace/application/marketplace_providers.dart';
-import '../../portfolio/presentation/portfolio_image.dart';
-import '../../requests/application/requests_providers.dart';
-import '../../requests/domain/requests_domain.dart';
 import '../../messages/application/messages_providers.dart';
+import '../../requests/domain/requests_domain.dart';
+import '../../requests/presentation/ledger_widgets.dart';
+import '../../requests/presentation/request_detail_screen.dart'
+    show RequestPhotoStrip, WorkOrderHeader;
 import '../application/offers_providers.dart';
 import '../domain/offers_domain.dart';
 import 'offers_texts.dart';
@@ -70,91 +68,68 @@ class _Body extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final locale = Localizations.localeOf(context);
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
-    final category = (ref.watch(categoriesProvider).value ?? const [])
-        .where((c) => c.id == request.categoryId)
-        .map((c) => c.nameFor(locale))
-        .firstOrNull;
-    final photosAsync = ref.watch(requestPhotosProvider(request.id));
-    final photos = photosAsync.value ?? const <RequestPhoto>[];
+    final scheme = Theme.of(context).colorScheme;
     final mine = request.myOfferStatus;
 
-    return ListView(
-      padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
-      children: [
-        Semantics(
-          header: true,
-          child: Text(request.title, style: text.headlineSmall),
-        ),
-        if (category != null)
-          Text(category, style: text.bodyMedium?.copyWith(color: muted)),
-        const SizedBox(height: AppSpacing.lg),
-        Text(request.description, style: text.bodyLarge),
-        const SizedBox(height: AppSpacing.md),
-        if (request.budgetTnd != null)
+    return SingleChildScrollView(
+      padding: const EdgeInsetsDirectional.fromSTEB(
+        AppSpacing.gutter,
+        AppSpacing.sm,
+        AppSpacing.gutter,
+        AppSpacing.xl,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          WorkOrderHeader(
+            id: request.id,
+            title: request.title,
+            description: request.description,
+            categoryId: request.categoryId,
+            governorateId: request.governorateId,
+            cityId: request.cityId,
+            createdAt: request.createdAt,
+            budgetTnd: request.budgetTnd,
+            neededBy: request.neededBy,
+            expiresAt: request.expiresAt,
+          ),
+          const SizedBox(height: AppSpacing.sm),
           Text(
-            l10n.reqBudget(formatTnd(request.budgetTnd!, locale)),
-            style: text.bodyMedium,
+            l10n.offerOthers(
+              // Without my own offer, if I have one.
+              (request.offersCount - (mine == null ? 0 : 1)).clamp(0, 1 << 30),
+            ),
+            style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
           ),
-        if (request.neededBy != null)
-          Text(
-            l10n.reqNeededBy(formatDate(request.neededBy!, locale)),
-            style: text.bodyMedium,
-          ),
-        Text(
-          l10n.offerOthers(
-            // Without my own offer, if I have one.
-            (request.offersCount - (mine == null ? 0 : 1)).clamp(0, 1 << 30),
-          ),
-          style: text.bodySmall?.copyWith(color: muted),
-        ),
-        if (photosAsync.hasError && !photosAsync.hasValue) ...[
-          const SizedBox(height: AppSpacing.lg),
-          Row(
-            children: [
-              Expanded(child: Text(l10n.reqPhotosFailed)),
-              AppButton(
-                label: l10n.retry,
-                variant: AppButtonVariant.text,
-                expand: false,
-                onPressed: () =>
-                    ref.invalidate(requestPhotosProvider(request.id)),
-              ),
-            ],
-          ),
-        ],
-        if (photos.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.lg),
-          SizedBox(
-            height: 110,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: photos.length,
-              separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.sm),
-              itemBuilder: (context, i) => AspectRatio(
-                aspectRatio: 1,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                  child: PortfolioImage(
-                    url: photos[i].url,
-                    semanticLabel: l10n.reqPhotoLabel(i + 1, photos.length),
-                    cacheWidth: 330,
+          RequestPhotoStrip(requestId: request.id),
+          const SizedBox(height: AppSpacing.xl),
+          // The quote being written, on its own framed slip.
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: scheme.surface,
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              border: Border.all(color: scheme.outlineVariant),
+            ),
+            child: Padding(
+              padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Semantics(
+                    header: true,
+                    child: Text(l10n.offerTitle, style: text.titleLarge),
                   ),
-                ),
+                  const SizedBox(height: AppSpacing.sm),
+                  const LedgerRule(strong: true),
+                  const SizedBox(height: AppSpacing.lg),
+                  _OfferGate(request: request),
+                ],
               ),
             ),
           ),
         ],
-        const SizedBox(height: AppSpacing.xl),
-        Semantics(
-          header: true,
-          child: Text(l10n.offerTitle, style: text.titleMedium),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        _OfferGate(request: request),
-      ],
+      ),
     );
   }
 }
@@ -317,9 +292,10 @@ class _OfferSectionState extends ConsumerState<_OfferSection> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppBadge(
+          LedgerStamp(
             label: offerStatusLabel(l10n, OfferStatus.accepted),
             tone: BadgeTone.success,
+            icon: Icons.check_rounded,
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(l10n.offerAcceptedNote, style: text.bodyMedium),
@@ -336,7 +312,7 @@ class _OfferSectionState extends ConsumerState<_OfferSection> {
           if (status != null)
             Align(
               alignment: AlignmentDirectional.centerStart,
-              child: AppBadge(
+              child: LedgerStamp(
                 label: l10n.offerYours(offerStatusLabel(l10n, status)),
                 tone: offerStatusTone(status),
               ),

@@ -143,22 +143,33 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         bottom: summary == null
             ? null
             : PreferredSize(
-                preferredSize: const Size.fromHeight(24),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(
-                    start: AppSpacing.gutter,
-                    end: AppSpacing.gutter,
-                    bottom: AppSpacing.sm,
+                preferredSize: Size.fromHeight(
+                  MediaQuery.textScalerOf(context).scale(18) +
+                      AppSpacing.sm +
+                      1,
+                ),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    border: BorderDirectional(
+                      bottom: BorderSide(color: scheme.outlineVariant),
+                    ),
                   ),
-                  child: Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: Text(
-                      summary.requestTitle,
-                      style: text.bodySmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(
+                      start: AppSpacing.gutter,
+                      end: AppSpacing.gutter,
+                      bottom: AppSpacing.sm,
+                    ),
+                    child: Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Text(
+                        summary.requestTitle,
+                        style: text.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
@@ -210,55 +221,91 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
               ),
             if (!writable)
-              Padding(
-                padding: const EdgeInsetsDirectional.all(AppSpacing.md),
-                child: Text(
-                  l10n.chatReadOnly,
-                  style: text.bodyMedium?.copyWith(
-                    color: scheme.onSurfaceVariant,
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainerHighest,
+                  border: BorderDirectional(
+                    top: BorderSide(color: scheme.outlineVariant),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.lock_outline_rounded,
+                        size: 18,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: Text(
+                          l10n.chatReadOnly,
+                          style: text.bodyMedium?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               )
             else
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(
-                  AppSpacing.sm,
-                  AppSpacing.xs,
-                  AppSpacing.sm,
-                  AppSpacing.sm,
+              // The composer: a band of card paper under a rule.
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: scheme.surface,
+                  border: BorderDirectional(
+                    top: BorderSide(color: scheme.outlineVariant),
+                  ),
                 ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      tooltip: l10n.chatAddImage,
-                      icon: const Icon(Icons.add_photo_alternate_outlined),
-                      onPressed: busy ? null : _sendImage,
-                    ),
-                    Expanded(
-                      child: TextField(
-                        controller: _controller,
-                        minLines: 1,
-                        maxLines: 5,
-                        maxLength: maxMessageLength,
-                        textInputAction: TextInputAction.newline,
-                        buildCounter: (
-                          _, {
-                          required currentLength,
-                          required isFocused,
-                          maxLength,
-                        }) => null,
-                        decoration: InputDecoration(
-                          hintText: l10n.chatInputHint,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(
+                    AppSpacing.xs,
+                    AppSpacing.sm,
+                    AppSpacing.sm,
+                    AppSpacing.sm,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        tooltip: l10n.chatAddImage,
+                        icon: const Icon(Icons.add_photo_alternate_outlined),
+                        onPressed: busy ? null : _sendImage,
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: _controller,
+                          minLines: 1,
+                          maxLines: 5,
+                          maxLength: maxMessageLength,
+                          textInputAction: TextInputAction.newline,
+                          buildCounter: (
+                            _, {
+                            required currentLength,
+                            required isFocused,
+                            maxLength,
+                          }) => null,
+                          decoration: InputDecoration(
+                            hintText: l10n.chatInputHint,
+                          ),
                         ),
                       ),
-                    ),
-                    IconButton.filled(
-                      tooltip: l10n.chatSend,
-                      icon: const Icon(Icons.send_rounded),
-                      onPressed: busy ? null : _send,
-                    ),
-                  ],
+                      const SizedBox(width: AppSpacing.sm),
+                      IconButton.filled(
+                        tooltip: l10n.chatSend,
+                        style: IconButton.styleFrom(
+                          minimumSize: const Size(48, 48),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(AppRadius.md),
+                          ),
+                        ),
+                        icon: const Icon(Icons.arrow_upward_rounded),
+                        onPressed: busy ? null : _send,
+                      ),
+                    ],
+                  ),
                 ),
               ),
           ],
@@ -284,8 +331,10 @@ class _Bubble extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    final bg = mine ? scheme.primary : scheme.surface;
-    final fg = mine ? scheme.onPrimary : scheme.onSurface;
+    // Mine in ink with paper text; theirs on card paper with a rule.
+    final bg = mine ? scheme.inverseSurface : scheme.surface;
+    final fg = mine ? scheme.onInverseSurface : scheme.onSurface;
+    const r = Radius.circular(AppRadius.md);
     final who = mine ? l10n.chatYouSent : l10n.chatThem;
     final body = message.body;
     final image = message.imagePath;
@@ -305,28 +354,22 @@ class _Bubble extends ConsumerWidget {
             margin: const EdgeInsetsDirectional.symmetric(
               vertical: AppSpacing.xs,
             ),
-            padding: const EdgeInsetsDirectional.all(AppSpacing.md),
+            padding: const EdgeInsetsDirectional.fromSTEB(
+              AppSpacing.md,
+              AppSpacing.sm + 2,
+              AppSpacing.md,
+              AppSpacing.sm,
+            ),
             decoration: BoxDecoration(
               color: bg,
-              // The corner under the sender is squared: a tail.
+              // The corner on the sender's side is squared off.
               borderRadius: BorderRadiusDirectional.only(
-                topStart: const Radius.circular(AppRadius.lg),
-                topEnd: const Radius.circular(AppRadius.lg),
-                bottomStart: Radius.circular(mine ? AppRadius.lg : 6),
-                bottomEnd: Radius.circular(mine ? 6 : AppRadius.lg),
+                topStart: r,
+                topEnd: r,
+                bottomStart: mine ? r : Radius.zero,
+                bottomEnd: mine ? Radius.zero : r,
               ),
-              boxShadow: !mine && scheme.brightness == Brightness.light
-                  ? const [
-                      BoxShadow(
-                        color: Color(0x14123D78),
-                        blurRadius: 8,
-                        offset: Offset(0, 2),
-                      ),
-                    ]
-                  : null,
-              border: !mine && scheme.brightness == Brightness.dark
-                  ? Border.all(color: scheme.outlineVariant)
-                  : null,
+              border: mine ? null : Border.all(color: scheme.outlineVariant),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -344,7 +387,10 @@ class _Bubble extends ConsumerWidget {
                 Text(
                   formatTime(message.createdAt, locale),
                   style: text.labelSmall?.copyWith(
-                    color: fg.withValues(alpha: 0.8),
+                    color: mine
+                        ? fg.withValues(alpha: 0.75)
+                        : scheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
@@ -376,7 +422,9 @@ class _ChatImage extends ConsumerWidget {
             semanticLabel: l10n.chatPhoto,
             cacheWidth: 440,
           ),
-          loading: () => const ColoredBox(color: Color(0x22000000)),
+          loading: () => ColoredBox(
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          ),
           error: (_, _) => Center(
             child: IconButton(
               tooltip: l10n.retry,

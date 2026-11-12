@@ -1,14 +1,15 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/router/app_routes.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/category_photo.dart';
-import '../../../shared/widgets/section_header.dart';
+import '../../../shared/widgets/khidma_logo.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/application/home_providers.dart';
 import '../../marketplace/application/marketplace_providers.dart';
@@ -18,12 +19,20 @@ import '../../marketplace/presentation/place_sheet.dart';
 import '../../marketplace/presentation/professional_card.dart';
 import '../../profile/application/profile_providers.dart';
 
+/// Widest the page's text column grows on tablets.
+const _maxContentWidth = 760.0;
+
+/// Home, laid out like the front page of a trade register: a masthead with
+/// the area, one big question, the search field, the quote action, then the
+/// trades and the professionals as ruled lists.
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
     final name = _firstName(ref.watch(visibleProfileProvider)?.fullName);
     final isDemo = ref.watch(isDemoDataProvider);
 
@@ -37,50 +46,56 @@ class HomeScreen extends ConsumerWidget {
       } catch (_) {}
     }
 
-    // The photo header runs under the status bar; the list scrolls beneath
-    // the floating navigation, so it needs room at the bottom.
-    return RefreshIndicator(
-      onRefresh: refresh,
-      child: ListView(
-        padding: const EdgeInsetsDirectional.only(bottom: 112),
-        children: [
-          _Hero(
-            title: name == null
-                ? l10n.homeGreeting
-                : l10n.homeGreetingNamed(name),
-            subtitle: l10n.homeSubtitle,
-          ),
-          Padding(
-            padding: const EdgeInsetsDirectional.symmetric(
-              horizontal: AppSpacing.gutter,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return SafeArea(
+      bottom: false,
+      child: RefreshIndicator(
+        onRefresh: refresh,
+        child: LayoutBuilder(
+          builder: (context, box) {
+            final side = math.max(
+              AppSpacing.gutter,
+              (box.maxWidth - _maxContentWidth) / 2,
+            );
+            return ListView(
+              padding: EdgeInsetsDirectional.fromSTEB(
+                side,
+                AppSpacing.sm,
+                side,
+                AppSpacing.lg,
+              ),
               children: [
-                const SizedBox(height: AppSpacing.xl + AppSpacing.md),
-                if (isDemo) const _DemoBanner(),
-                SectionHeader(title: l10n.sectionCategories),
+                const _Masthead(),
+                const _DoubleRule(),
+                if (isDemo) const _DemoStamp(),
+                const SizedBox(height: AppSpacing.xl),
+                Text(
+                  name == null
+                      ? l10n.homeGreeting
+                      : l10n.homeGreetingNamed(name),
+                  style: text.labelLarge?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Semantics(
+                  header: true,
+                  child: Text(l10n.homeSubtitle, style: text.displaySmall),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                const _SearchField(),
+                const SizedBox(height: AppSpacing.md),
+                const _QuoteBlock(),
+                const SizedBox(height: AppSpacing.xxl + AppSpacing.sm),
                 const _Categories(),
-                const SizedBox(height: AppSpacing.xl),
-                const _QuoteCard(),
-                const SizedBox(height: AppSpacing.xl),
-                SectionHeader(title: l10n.sectionTopRated),
+                const SizedBox(height: AppSpacing.xxl),
+                const _Professionals(kind: _Kind.topRated),
+                const SizedBox(height: AppSpacing.xxl),
+                const _Professionals(kind: _Kind.area),
+                const _RecentSection(),
               ],
-            ),
-          ),
-          const _Carousel(kind: _Kind.topRated),
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(
-              AppSpacing.gutter,
-              AppSpacing.xl,
-              AppSpacing.gutter,
-              0,
-            ),
-            child: SectionHeader(title: l10n.sectionInYourArea),
-          ),
-          const _Carousel(kind: _Kind.area),
-          const _RecentSection(),
-        ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -91,150 +106,157 @@ String? _firstName(String? fullName) {
   return words.isEmpty || words.first.isEmpty ? null : words.first;
 }
 
-/// Full-bleed photo header: area picker on top, greeting at the bottom, and
-/// the search bar floating over the lower edge.
-class _Hero extends StatelessWidget {
-  const _Hero({required this.title, required this.subtitle});
-
-  final String title;
-  final String subtitle;
-
-  static const _baseHeight = 300.0;
-  static const _overlap = 28.0;
+/// The wordmark on the start side, the area as an underlined link on the end.
+class _Masthead extends StatelessWidget {
+  const _Masthead();
 
   @override
   Widget build(BuildContext context) {
-    final text = Theme.of(context).textTheme;
-    // Taller with large text, so the greeting never gets squeezed.
-    final scale = MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.0);
-    final height = _baseHeight + 140 * (scale - 1);
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        SizedBox(
-          height: height,
-          width: double.infinity,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              ExcludeSemantics(
-                child: Image.asset(
-                  'assets/photos/hero-home.jpg',
-                  fit: BoxFit.cover,
-                  alignment: const Alignment(0.25, -0.2),
-                  errorBuilder: (_, _, _) => const DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: AppColors.brandGradient,
-                    ),
-                  ),
-                ),
-              ),
-              // Deep blue wash: keeps the white text readable on any photo.
-              const DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0x99123D78),
-                      Color(0x66123D78),
-                      Color(0xE60E2F5E),
-                    ],
-                    stops: [0, 0.4, 1],
-                  ),
-                ),
-              ),
-              SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(
-                    AppSpacing.gutter,
-                    AppSpacing.md,
-                    AppSpacing.gutter,
-                    _overlap + AppSpacing.lg,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const _PlaceButton(),
-                      const Spacer(),
-                      Semantics(
-                        header: true,
-                        child: Text(
-                          title,
-                          style: text.headlineMedium?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        subtitle,
-                        style: text.bodyLarge?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.92),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 56),
+      child: const Row(
+        children: [
+          Flexible(
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: KhidmaLogo(markSize: 30),
+            ),
           ),
-        ),
-        const PositionedDirectional(
-          start: AppSpacing.gutter,
-          end: AppSpacing.gutter,
-          bottom: -_overlap,
-          child: _SearchBar(),
-        ),
-      ],
+          SizedBox(width: AppSpacing.md),
+          Flexible(
+            child: Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: _PlaceLink(),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _DemoBanner extends StatelessWidget {
-  const _DemoBanner();
+/// A heavy rule over a hairline: the masthead's printed underline.
+class _DoubleRule extends StatelessWidget {
+  const _DoubleRule();
+
+  @override
+  Widget build(BuildContext context) {
+    final ink = Theme.of(context).colorScheme.onSurface;
+    return ExcludeSemantics(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(height: 2, child: ColoredBox(color: ink)),
+          const SizedBox(height: 2),
+          SizedBox(height: 1, child: ColoredBox(color: ink)),
+        ],
+      ),
+    );
+  }
+}
+
+/// The area picker: the chosen place as a terracotta text link.
+class _PlaceLink extends ConsumerWidget {
+  const _PlaceLink();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context);
+    final scheme = Theme.of(context).colorScheme;
+    final place = ref.watch(selectedPlaceProvider);
+    final govs = ref.watch(governoratesProvider).value ?? const <Governorate>[];
+    final cities = ref.watch(citiesProvider(null)).value ?? const <City>[];
+    final label = placeLabel(l10n, locale, place, govs, cities);
+    return Semantics(
+      button: true,
+      label: '${l10n.placeChoose}: $label',
+      excludeSemantics: true,
+      onTap: () => showPlaceSheet(context),
+      child: InkWell(
+        onTap: () => showPlaceSheet(context),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Padding(
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.xs,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.place_outlined, size: 18, color: scheme.primary),
+                const SizedBox(width: AppSpacing.xs),
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: scheme.primary,
+                      decoration: TextDecoration.underline,
+                      decorationColor: scheme.primary,
+                      decorationThickness: 1.5,
+                    ),
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_drop_down_rounded,
+                  size: 22,
+                  color: scheme.primary,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The demo-data notice, printed as an outlined stamp rather than a box.
+class _DemoStamp extends StatelessWidget {
+  const _DemoStamp();
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    final tone = AppBadge.foreground(BadgeTone.warning, scheme);
     return Padding(
-      padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.lg),
+      padding: const EdgeInsetsDirectional.only(top: AppSpacing.lg),
       child: Semantics(
         container: true,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: AppBadge.background(
-              BadgeTone.warning,
-              Theme.of(context).colorScheme,
-            ),
-            borderRadius: BorderRadius.circular(AppRadius.md),
+            border: Border.all(color: tone),
+            borderRadius: BorderRadius.circular(2),
           ),
           child: Padding(
-            padding: const EdgeInsetsDirectional.all(AppSpacing.md),
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm + 2,
+            ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.science_rounded,
-                  color: AppBadge.foreground(
-                    BadgeTone.warning,
-                    Theme.of(context).colorScheme,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
+                Icon(Icons.science_outlined, size: 18, color: tone),
+                const SizedBox(width: AppSpacing.sm + 2),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         l10n.demoBannerTitle,
-                        style: Theme.of(context).textTheme.titleSmall,
+                        style: text.labelLarge?.copyWith(color: tone),
                       ),
+                      const SizedBox(height: 2),
                       Text(
                         l10n.demoBannerBody,
-                        style: Theme.of(context).textTheme.bodySmall,
+                        style: text.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
@@ -248,45 +270,9 @@ class _DemoBanner extends StatelessWidget {
   }
 }
 
-/// The area picker, a white pill floating on the photo.
-class _PlaceButton extends ConsumerWidget {
-  const _PlaceButton();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final locale = Localizations.localeOf(context);
-    final place = ref.watch(selectedPlaceProvider);
-    final govs = ref.watch(governoratesProvider).value ?? const <Governorate>[];
-    final cities = ref.watch(citiesProvider(null)).value ?? const <City>[];
-    final label = placeLabel(l10n, locale, place, govs, cities);
-    return Align(
-      alignment: AlignmentDirectional.centerStart,
-      child: Semantics(
-        button: true,
-        label: '${l10n.placeChoose}: $label',
-        excludeSemantics: true,
-        onTap: () => showPlaceSheet(context),
-        child: ActionChip(
-          avatar: const Icon(
-            Icons.place_rounded,
-            size: 18,
-            color: AppColors.primary,
-          ),
-          label: Text(label),
-          labelStyle: Theme.of(context).textTheme.labelLarge
-              ?.copyWith(color: AppColors.ink),
-          backgroundColor: Colors.white.withValues(alpha: 0.95),
-          side: BorderSide.none,
-          onPressed: () => showPlaceSheet(context),
-        ),
-      ),
-    );
-  }
-}
-
-class _SearchBar extends StatelessWidget {
-  const _SearchBar();
+/// Looks like a field, opens the search screen.
+class _SearchField extends StatelessWidget {
+  const _SearchField();
 
   @override
   Widget build(BuildContext context) {
@@ -297,42 +283,34 @@ class _SearchBar extends StatelessWidget {
       label: l10n.searchHint,
       excludeSemantics: true,
       onTap: () => context.push(AppRoutes.search),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: scheme.surface,
-          borderRadius: BorderRadius.circular(AppRadius.xl),
-          boxShadow: scheme.brightness == Brightness.light
-              ? AppColors.softShadow
-              : null,
-          border: scheme.brightness == Brightness.light
-              ? null
-              : Border.all(color: scheme.outlineVariant),
+      child: Material(
+        color: scheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          side: BorderSide(color: scheme.onSurface, width: 1.2),
         ),
-        child: Material(
-          type: MaterialType.transparency,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(AppRadius.xl),
-            onTap: () => context.push(AppRoutes.search),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 56),
-              child: Padding(
-                padding: const EdgeInsetsDirectional.symmetric(
-                  horizontal: AppSpacing.lg,
-                  vertical: AppSpacing.md,
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.search_rounded, color: AppColors.primary),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: Text(
-                        l10n.searchHint,
-                        style: Theme.of(context).textTheme.bodyMedium
-                            ?.copyWith(color: scheme.onSurfaceVariant),
-                      ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => context.push(AppRoutes.search),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 54),
+            child: Padding(
+              padding: const EdgeInsetsDirectional.symmetric(
+                horizontal: AppSpacing.md + 2,
+                vertical: AppSpacing.sm + 2,
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.search_rounded, color: scheme.onSurface),
+                  const SizedBox(width: AppSpacing.sm + 2),
+                  Expanded(
+                    child: Text(
+                      l10n.searchHint,
+                      style: Theme.of(context).textTheme.bodyMedium
+                          ?.copyWith(color: scheme.onSurfaceVariant),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -342,120 +320,262 @@ class _SearchBar extends StatelessWidget {
   }
 }
 
-/// The main customer action, one tap from Home: ask for quotes.
-class _QuoteCard extends StatelessWidget {
-  const _QuoteCard();
+/// The one terracotta block on Home: ask for quotes.
+class _QuoteBlock extends StatelessWidget {
+  const _QuoteBlock();
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: AppColors.brandGradient,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x332F7DE1),
-            blurRadius: 20,
-            offset: Offset(0, 8),
+    final scheme = Theme.of(context).colorScheme;
+    final on = scheme.onPrimary;
+    return Semantics(
+      container: true,
+      button: true,
+      onTap: () => context.push(AppRoutes.newRequest),
+      child: Material(
+        color: scheme.primary,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => context.push(AppRoutes.newRequest),
+          excludeFromSemantics: true,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(
+              AppSpacing.lg + 2,
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.lg + 2,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.homeQuoteTitle,
+                  style: text.labelLarge?.copyWith(color: on),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.reqEmptyCta,
+                        style: text.headlineSmall?.copyWith(color: on),
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Icon(Icons.arrow_forward_rounded, color: on, size: 26),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                SizedBox(height: 1, child: ColoredBox(color: on)),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  l10n.homeQuoteBody,
+                  style: text.bodyMedium?.copyWith(color: on),
+                ),
+              ],
+            ),
           ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Semantics(
-              header: true,
-              child: Text(
-                l10n.homeQuoteTitle,
-                style: text.titleLarge?.copyWith(color: Colors.white),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              l10n.homeQuoteBody,
-              style: text.bodyMedium?.copyWith(
-                color: Colors.white.withValues(alpha: 0.92),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            FilledButton.icon(
-              style: FilledButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: AppColors.primaryDark,
-              ),
-              onPressed: () => context.push(AppRoutes.newRequest),
-              icon: const Icon(Icons.edit_note_rounded),
-              label: Text(l10n.reqEmptyCta),
-            ),
-          ],
         ),
       ),
     );
   }
 }
 
+/// A one-line description of what a trade covers: the server's own text when
+/// it has one, otherwise the bundled wording for the known trades.
+String? _categoryHint(AppLocalizations l10n, ServiceCategory c, Locale locale) {
+  final own = c.descriptionFor(locale).trim();
+  if (own.isNotEmpty) return own;
+  return switch (c.slug) {
+    'plumbing' => l10n.discHintPlumbing,
+    'electricity' => l10n.discHintElectricity,
+    'air-conditioning' => l10n.discHintAirConditioning,
+    'mechanics' => l10n.discHintMechanics,
+    'painting' => l10n.discHintPainting,
+    'carpentry' => l10n.discHintCarpentry,
+    'cleaning' => l10n.discHintCleaning,
+    'appliance-repair' => l10n.discHintAppliance,
+    'construction' => l10n.discHintConstruction,
+    'gardening' => l10n.discHintGardening,
+    'moving' => l10n.discHintMoving,
+    'maintenance' => l10n.discHintMaintenance,
+    _ => null,
+  };
+}
+
+String _two(int n) => n.toString().padLeft(2, '0');
+
+/// The trades as a numbered register (two columns on wide screens).
 class _Categories extends ConsumerWidget {
   const _Categories();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context);
     final async = ref.watch(categoriesProvider);
-    return async.when(
-      loading: () => const SkeletonGroup(
-        child: Skeleton(height: 120, radius: AppRadius.lg),
-      ),
-      error: (e, _) => MarketplaceFailureView(
-        error: e,
-        onRetry: () => ref.invalidate(categoriesProvider),
-      ),
-      data: (list) => LayoutBuilder(
-        builder: (context, box) {
-          final columns = box.maxWidth >= 480 ? 4 : 3;
-          final gap = AppSpacing.md;
-          final width = (box.maxWidth - gap * (columns - 1)) / columns;
-          return Wrap(
-            spacing: gap,
-            runSpacing: gap,
-            children: [
-              for (final c in list)
+    final count = async.value?.length;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        RegisterHeading(
+          title: l10n.sectionCategories,
+          figure: count == null || count == 0 ? null : _two(count),
+        ),
+        async.when(
+          loading: () => const _RowsSkeleton(thumb: 44, rows: 4),
+          error: (e, _) => MarketplaceFailureView(
+            error: e,
+            onRetry: () => ref.invalidate(categoriesProvider),
+          ),
+          data: (list) => LayoutBuilder(
+            builder: (context, box) {
+              Widget row(int i) => _CategoryRow(
+                number: i + 1,
+                category: list[i],
+                hint: _categoryHint(l10n, list[i], locale),
+                locale: locale,
+              );
+              if (box.maxWidth < 600) {
+                return Column(
+                  children: [for (var i = 0; i < list.length; i++) row(i)],
+                );
+              }
+              // Read down the first column, then the second, like a ledger.
+              final half = (list.length + 1) ~/ 2;
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [for (var i = 0; i < half; i++) row(i)],
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.xl),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        for (var i = half; i < list.length; i++) row(i),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CategoryRow extends StatelessWidget {
+  const _CategoryRow({
+    required this.number,
+    required this.category,
+    required this.hint,
+    required this.locale,
+  });
+
+  final int number;
+  final ServiceCategory category;
+  final String? hint;
+  final Locale locale;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
+    final name = category.nameFor(locale);
+    void open() => context.push(AppRoutes.searchPath(categoryId: category.id));
+    return Semantics(
+      button: true,
+      label: name,
+      excludeSemantics: true,
+      onTap: open,
+      child: InkWell(
+        onTap: open,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: BorderDirectional(
+              bottom: BorderSide(color: scheme.outlineVariant),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsetsDirectional.symmetric(
+              vertical: AppSpacing.sm + 2,
+            ),
+            child: Row(
+              children: [
                 SizedBox(
-                  width: width,
-                  height: width,
-                  child: _CategoryTile(category: c, locale: locale),
+                  width: 30,
+                  child: Text(
+                    _two(number),
+                    style: text.labelMedium?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
                 ),
-            ],
-          );
-        },
+                DecoratedBox(
+                  position: DecorationPosition.foreground,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: scheme.outlineVariant),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                  ),
+                  child: CategoryPhoto(
+                    slug: category.slug,
+                    icon: category.icon,
+                    width: 44,
+                    height: 44,
+                    radius: AppRadius.sm,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: text.titleSmall,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (hint != null)
+                        Text(
+                          hint!,
+                          style: text.bodySmall?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: scheme.onSurfaceVariant,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
-class _CategoryTile extends StatelessWidget {
-  const _CategoryTile({required this.category, required this.locale});
-
-  final ServiceCategory category;
-  final Locale locale;
-
-  @override
-  Widget build(BuildContext context) => CategoryTile(
-    name: category.nameFor(locale),
-    slug: category.slug,
-    icon: category.icon,
-    onTap: () => context.push(AppRoutes.searchPath(categoryId: category.id)),
-  );
-}
-
 enum _Kind { topRated, area }
 
-/// A horizontally scrolling row of professional tiles.
-class _Carousel extends ConsumerWidget {
-  const _Carousel({required this.kind});
+/// A ruled list of professionals under its heading.
+class _Professionals extends ConsumerWidget {
+  const _Professionals({required this.kind});
 
   final _Kind kind;
 
@@ -466,51 +586,43 @@ class _Carousel extends ConsumerWidget {
     final provider = kind == _Kind.topRated
         ? topRatedProvider
         : inYourAreaProvider;
-    Widget note(String s) => Padding(
-      padding: const EdgeInsetsDirectional.symmetric(
-        horizontal: AppSpacing.gutter,
-      ),
-      child: Text(s, style: Theme.of(context).textTheme.bodyMedium),
-    );
+    final title = kind == _Kind.topRated
+        ? l10n.sectionTopRated
+        : l10n.sectionInYourArea;
 
+    final Widget body;
+    int? count;
     if (kind == _Kind.area && place == null) {
-      return note(l10n.sectionInYourAreaPrompt);
+      body = _Note(l10n.sectionInYourAreaPrompt);
+    } else {
+      final async = ref.watch(provider);
+      count = async.value?.length;
+      body = async.when(
+        loading: () => const _RowsSkeleton(thumb: 64, rows: 2),
+        error: (e, _) => MarketplaceFailureView(
+          error: e,
+          onRetry: () => ref.invalidate(provider),
+        ),
+        data: (list) => list.isEmpty
+            ? _Note(
+                kind == _Kind.topRated
+                    ? l10n.noProfessionalsBody
+                    : l10n.noProfessionalsInArea,
+              )
+            : ProfessionalRegister(list: list),
+      );
     }
-    return ref
-        .watch(provider)
-        .when(
-          loading: () => const Padding(
-            padding: EdgeInsetsDirectional.symmetric(
-              horizontal: AppSpacing.gutter,
-            ),
-            child: _CardsSkeleton(),
-          ),
-          error: (e, _) => Padding(
-            padding: const EdgeInsetsDirectional.symmetric(
-              horizontal: AppSpacing.gutter,
-            ),
-            child: MarketplaceFailureView(
-              error: e,
-              onRetry: () => ref.invalidate(provider),
-            ),
-          ),
-          data: (list) => list.isEmpty
-              ? note(
-                  kind == _Kind.topRated
-                      ? l10n.noProfessionalsBody
-                      : l10n.noProfessionalsInArea,
-                )
-              : ProfessionalCarousel(list: list),
-        );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        RegisterHeading(
+          title: title,
+          figure: count == null || count == 0 ? null : _two(count),
+        ),
+        body,
+      ],
+    );
   }
-}
-
-class _CardsSkeleton extends StatelessWidget {
-  const _CardsSkeleton();
-
-  @override
-  Widget build(BuildContext context) =>
-      const SkeletonGroup(child: Skeleton(height: 220, radius: AppRadius.lg));
 }
 
 class _RecentSection extends ConsumerWidget {
@@ -521,20 +633,70 @@ class _RecentSection extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final list = ref.watch(recentProfessionalsProvider).value ?? const [];
     if (list.isEmpty) return const SizedBox.shrink();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(
-            AppSpacing.gutter,
-            AppSpacing.xl,
-            AppSpacing.gutter,
-            0,
-          ),
-          child: SectionHeader(title: l10n.sectionRecent),
-        ),
-        ProfessionalCarousel(list: list),
-      ],
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(top: AppSpacing.xxl),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          RegisterHeading(title: l10n.sectionRecent, figure: _two(list.length)),
+          ProfessionalRegister(list: list),
+        ],
+      ),
     );
   }
+}
+
+/// A plain muted line in place of an empty list.
+class _Note extends StatelessWidget {
+  const _Note(this.message);
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsetsDirectional.symmetric(vertical: AppSpacing.md),
+    child: Text(
+      message,
+      style: Theme.of(context).textTheme.bodyMedium
+          ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+    ),
+  );
+}
+
+/// Placeholder register rows while a list loads.
+class _RowsSkeleton extends StatelessWidget {
+  const _RowsSkeleton({required this.thumb, required this.rows});
+
+  final double thumb;
+  final int rows;
+
+  @override
+  Widget build(BuildContext context) => SkeletonGroup(
+    child: Column(
+      children: [
+        for (var i = 0; i < rows; i++)
+          Padding(
+            padding: const EdgeInsetsDirectional.symmetric(
+              vertical: AppSpacing.md,
+            ),
+            child: Row(
+              children: [
+                Skeleton(width: thumb, height: thumb),
+                const SizedBox(width: AppSpacing.md),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Skeleton(width: 160, height: 14),
+                      SizedBox(height: AppSpacing.sm),
+                      Skeleton(width: 100, height: 12),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+    ),
+  );
 }

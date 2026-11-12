@@ -7,7 +7,6 @@ import '../../../core/format/money.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/app_avatar.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -15,6 +14,7 @@ import '../../../shared/widgets/rating_stars.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
 import '../../offers/domain/offers_domain.dart';
+import '../../offers/presentation/job_timeline.dart';
 import '../../offers/presentation/offers_texts.dart';
 import '../../messages/application/messages_providers.dart';
 import '../../reviews/application/reviews_providers.dart';
@@ -22,6 +22,7 @@ import '../../reviews/presentation/review_widgets.dart';
 import '../application/customer_offers_providers.dart';
 import '../domain/customer_offers_domain.dart';
 import '../domain/requests_domain.dart';
+import 'ledger_widgets.dart';
 import 'requests_texts.dart';
 
 enum _Sort { price, rating, delay }
@@ -241,16 +242,24 @@ class _ReceivedOffersSectionState extends ConsumerState<ReceivedOffersSection> {
     }
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Semantics(
           header: true,
-          child: Text(
-            '${l10n.offersReceived} · ${l10n.reqOffers(widget.request.offerCount)}',
-            style: text.titleMedium,
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: l10n.offersReceived),
+                TextSpan(
+                  text: '  ·  ${l10n.reqOffers(widget.request.offerCount)}',
+                  style: text.bodyMedium?.copyWith(color: muted),
+                ),
+              ],
+            ),
+            style: text.titleLarge,
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.md),
         body,
       ],
     );
@@ -284,127 +293,174 @@ class _OfferCard extends StatelessWidget {
     final locale = Localizations.localeOf(context);
     final text = Theme.of(context).textTheme;
     final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    final scheme = Theme.of(context).colorScheme;
     final name = pro?.name.isNotEmpty == true
         ? pro!.name
         : l10n.offerProUnknown;
     final live = offer.isPending || offer.status == OfferStatus.accepted;
+    final won = offer.status == OfferStatus.accepted;
+    final scale = MediaQuery.textScalerOf(context).scale(1);
 
-    return AppCard(
+    // The quoted sum, set large like the total on a printed quote. Prices
+    // read left to right with Western digits in every language.
+    final price = Directionality(
+      textDirection: TextDirection.ltr,
+      child: Text(
+        formatTnd(offer.priceTnd, locale),
+        style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+      ),
+    );
+
+    final who = Row(
+      children: [
+        InitialsBlock(name: name, size: 40),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: text.titleSmall,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              if (pro != null)
+                RatingStars(
+                  rating: pro!.rating,
+                  reviewCount: pro!.reviewCount,
+                  size: 14,
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    final slip = Opacity(
+      opacity: live ? 1 : 0.6,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Side by side when there is room; the sum under the name on a
+          // narrow screen or with large text.
+          LayoutBuilder(
+            builder: (context, box) => box.maxWidth >= 260 * scale
+                ? Row(
+                    children: [
+                      Expanded(child: who),
+                      const SizedBox(width: AppSpacing.md),
+                      price,
+                    ],
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      who,
+                      const SizedBox(height: AppSpacing.sm),
+                      price,
+                    ],
+                  ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.xs,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              if (pro?.isVerified ?? false)
+                LedgerStamp(
+                  label: l10n.verified,
+                  tone: BadgeTone.success,
+                  icon: Icons.check_rounded,
+                ),
+              if (isLowest)
+                LedgerStamp(label: l10n.offerLowest, tone: BadgeTone.success),
+              if (!offer.isPending)
+                LedgerStamp(
+                  label: offerStatusLabel(l10n, offer.status),
+                  tone: offerStatusTone(offer.status),
+                ),
+              if (offer.estimatedDays != null)
+                Text(
+                  l10n.offerDelay(offer.estimatedDays!),
+                  style: text.labelMedium,
+                ),
+              Text(
+                formatDate(offer.createdAt, locale),
+                style: text.bodySmall?.copyWith(color: muted),
+              ),
+            ],
+          ),
+          if (offer.message != null && offer.message!.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.md),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                border: BorderDirectional(
+                  start: BorderSide(color: scheme.outlineVariant, width: 2),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(start: AppSpacing.md),
+                child: Text(offer.message!, style: text.bodyMedium),
+              ),
+            ),
+          ],
+          if (live)
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: AppButton(
+                label: l10n.chatAskPro,
+                icon: Icons.chat_bubble_outline_rounded,
+                variant: AppButtonVariant.text,
+                expand: false,
+                onPressed: onMessage,
+              ),
+            ),
+          if (canAct) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Row(
+              children: [
+                Expanded(
+                  child: AppButton(
+                    label: l10n.offerDecline,
+                    variant: AppButtonVariant.secondary,
+                    onPressed: () => onDecline(name),
+                  ),
+                ),
+                if (canAccept) ...[
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: AppButton(
+                      label: l10n.offerAccept,
+                      onPressed: () => onAccept(name),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+
+    final card = AppCard(
       semanticLabel: '$name, ${formatTnd(offer.priceTnd, locale)}',
       onTap: pro == null
           ? null
           : () =>
                 context.push(AppRoutes.professionalPath(offer.professionalId)),
-      child: Opacity(
-        opacity: live ? 1 : 0.6,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                AppAvatar(name: name, size: 40, decorative: true),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        name,
-                        style: text.titleSmall,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      if (pro != null)
-                        RatingStars(
-                          rating: pro!.rating,
-                          reviewCount: pro!.reviewCount,
-                          size: 14,
-                        ),
-                    ],
-                  ),
-                ),
-                // Prices read left to right with Western digits in every language.
-                Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: Text(
-                    formatTnd(offer.priceTnd, locale),
-                    style: text.titleMedium,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.xs,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                if (pro?.isVerified ?? false) AppBadge.verified(context),
-                if (isLowest)
-                  AppBadge(
-                    label: l10n.offerLowest,
-                    tone: BadgeTone.success,
-                    icon: Icons.south_rounded,
-                  ),
-                if (!offer.isPending)
-                  AppBadge(
-                    label: offerStatusLabel(l10n, offer.status),
-                    tone: offerStatusTone(offer.status),
-                  ),
-                if (offer.estimatedDays != null)
-                  Text(
-                    l10n.offerDelay(offer.estimatedDays!),
-                    style: text.bodySmall,
-                  ),
-                Text(
-                  formatDate(offer.createdAt, locale),
-                  style: text.bodySmall?.copyWith(color: muted),
-                ),
-              ],
-            ),
-            if (offer.message != null && offer.message!.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Text(offer.message!, style: text.bodyMedium),
-            ],
-            if (live) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: AppButton(
-                  label: l10n.chatAskPro,
-                  icon: Icons.chat_bubble_outline_rounded,
-                  variant: AppButtonVariant.text,
-                  expand: false,
-                  onPressed: onMessage,
-                ),
-              ),
-            ],
-            if (canAct) ...[
-              const SizedBox(height: AppSpacing.md),
-              Row(
-                children: [
-                  Expanded(
-                    child: AppButton(
-                      label: l10n.offerDecline,
-                      variant: AppButtonVariant.secondary,
-                      onPressed: () => onDecline(name),
-                    ),
-                  ),
-                  if (canAccept) ...[
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: AppButton(
-                        label: l10n.offerAccept,
-                        onPressed: () => onAccept(name),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ],
-          ],
-        ),
+      child: slip,
+    );
+    if (!won) return card;
+    // The accepted quote is ruled in ink, like a signed copy.
+    return DecoratedBox(
+      position: DecorationPosition.foreground,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: scheme.onSurface, width: 1.5),
       ),
+      child: card,
     );
   }
 }
@@ -496,30 +552,33 @@ class BookingSection extends ConsumerWidget {
       );
     }
 
+    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: AppSpacing.xl),
+        const LedgerRule(strong: true),
+        const SizedBox(height: AppSpacing.md),
         Semantics(
           header: true,
-          child: Text(l10n.bookingTitle, style: text.titleMedium),
+          child: Text(l10n.bookingTitle, style: text.titleLarge),
         ),
-        const SizedBox(height: AppSpacing.sm),
-        Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.xs,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            AppBadge(
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          l10n.jobAgreedPrice(formatTnd(booking.priceTnd, locale)),
+          style: text.bodyMedium?.copyWith(color: muted),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        if (booking.status == BookingStatus.cancelled)
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: LedgerStamp(
               label: jobStatusLabel(l10n, booking.status),
               tone: jobStatusTone(booking.status),
             ),
-            Text(
-              l10n.jobAgreedPrice(formatTnd(booking.priceTnd, locale)),
-              style: text.bodySmall,
-            ),
-          ],
-        ),
+          )
+        else
+          JobTimeline(status: booking.status),
         if (booking.status == BookingStatus.completed)
           _ReviewPrompt(bookingId: booking.id, aboutCustomer: false),
         if (booking.canConfirm) ...[
@@ -566,7 +625,14 @@ class _ReviewPrompt extends ConsumerWidget {
     if (reviewed.contains(bookingId)) {
       return Padding(
         padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
-        child: AppBadge(label: l10n.reviewDone, tone: BadgeTone.success),
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: LedgerStamp(
+            label: l10n.reviewDone,
+            tone: BadgeTone.success,
+            icon: Icons.check_rounded,
+          ),
+        ),
       );
     }
     return Padding(

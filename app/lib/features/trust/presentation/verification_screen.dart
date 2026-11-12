@@ -99,29 +99,46 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       body = ListView(
         padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
         children: [
+          // The file's status, framed like the stamp box of a licence:
+          // olive once verified, plain ink otherwise.
           Semantics(
             liveRegion: true,
-            child: Row(
-              children: [
-                Icon(
-                  approved
-                      ? Icons.verified_rounded
-                      : pending
-                      ? Icons.hourglass_top_rounded
-                      : Icons.shield_outlined,
-                  color: approved ? scheme.primary : scheme.onSurfaceVariant,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: scheme.surface,
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                border: Border.all(
+                  color: approved ? scheme.secondary : scheme.outlineVariant,
                 ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(switch (info.status) {
-                    VerificationStatus.none => l10n.verifStatusNone,
-                    VerificationStatus.pending => l10n.verifStatusPending,
-                    VerificationStatus.approved => l10n.verifStatusApproved,
-                    VerificationStatus.rejected => l10n.verifStatusRejected,
-                    VerificationStatus.cancelled => l10n.verifStatusCancelled,
-                  }, style: text.titleMedium),
+              ),
+              child: Padding(
+                padding: const EdgeInsetsDirectional.all(AppSpacing.md),
+                child: Row(
+                  children: [
+                    Icon(
+                      approved
+                          ? Icons.verified_rounded
+                          : pending
+                          ? Icons.hourglass_top_rounded
+                          : Icons.shield_outlined,
+                      color: approved
+                          ? scheme.secondary
+                          : scheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Text(switch (info.status) {
+                        VerificationStatus.none => l10n.verifStatusNone,
+                        VerificationStatus.pending => l10n.verifStatusPending,
+                        VerificationStatus.approved => l10n.verifStatusApproved,
+                        VerificationStatus.rejected => l10n.verifStatusRejected,
+                        VerificationStatus.cancelled =>
+                          l10n.verifStatusCancelled,
+                      }, style: text.titleMedium),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
           if (info.status == VerificationStatus.rejected &&
@@ -156,19 +173,27 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                 padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
                 child: Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.memory(
-                        _documents[i].bytes,
-                        width: 72,
-                        height: 72,
-                        fit: BoxFit.cover,
-                        // The preview is decoration: the count says it all.
-                        excludeFromSemantics: true,
-                        errorBuilder: (_, _, _) => const SizedBox(
-                          width: 72,
-                          height: 72,
-                          child: Icon(Icons.description_outlined),
+                    // A small framed print of the document.
+                    DecoratedBox(
+                      position: DecorationPosition.foreground,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
+                        border: Border.all(color: scheme.outlineVariant),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
+                        child: Image.memory(
+                          _documents[i].bytes,
+                          width: 56,
+                          height: 56,
+                          fit: BoxFit.cover,
+                          // The preview is decoration: the count says it all.
+                          excludeFromSemantics: true,
+                          errorBuilder: (_, _, _) => const SizedBox(
+                            width: 56,
+                            height: 56,
+                            child: Icon(Icons.description_outlined),
+                          ),
                         ),
                       ),
                     ),

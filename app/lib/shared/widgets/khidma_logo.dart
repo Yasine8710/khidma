@@ -4,8 +4,8 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 
-/// The Khidma mark: a doorway arch (Sidi Bou Said doors) with a saffron
-/// lantern dot. Geometry matches `scripts/make_brand_assets.py` (120-unit
+/// The Khidma mark: a terracotta doorway arch (Sidi Bou Said doors) with an
+/// ochre lantern dot. Geometry matches `scripts/make_brand_assets.py` (120-unit
 /// grid) so the in-app mark and the app icon are the same drawing.
 class KhidmaMark extends StatelessWidget {
   const KhidmaMark({super.key, this.size = 48, this.color});
@@ -91,15 +91,16 @@ class KhidmaLogo extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // The wordmark is set in the heading slab, like a shop sign.
                 Text(
                   'Khidma',
                   textDirection: TextDirection.ltr,
                   style: TextStyle(
-                    fontFamily: AppTypography.latinFamily,
-                    fontSize: markSize * 0.62,
+                    fontFamily: AppTypography.headingFamily,
+                    fontSize: markSize * 0.68,
                     fontWeight: FontWeight.w700,
-                    letterSpacing: -0.5,
-                    height: 1.05,
+                    letterSpacing: 0,
+                    height: 1.0,
                     color: scheme.onSurface,
                   ),
                 ),
@@ -123,7 +124,8 @@ class KhidmaLogo extends StatelessWidget {
   }
 }
 
-/// Mark on a tinted circle, matching [EmptyState] and onboarding icons.
+/// Mark printed in a small ruled square on card paper, matching the framed
+/// icons of [EmptyState].
 class KhidmaMarkBadge extends StatelessWidget {
   const KhidmaMarkBadge({super.key, this.size = 96});
 
@@ -136,17 +138,13 @@ class KhidmaMarkBadge extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: scheme.primaryContainer,
-        shape: BoxShape.circle,
+        color: scheme.surface,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: scheme.outlineVariant),
       ),
       alignment: Alignment.center,
       padding: const EdgeInsets.all(AppSpacing.md),
-      child: KhidmaMark(
-        size: size * 0.6,
-        color: scheme.brightness == Brightness.light
-            ? scheme.primary
-            : scheme.onPrimaryContainer,
-      ),
+      child: KhidmaMark(size: size * 0.6),
     );
   }
 }

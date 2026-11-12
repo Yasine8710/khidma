@@ -4,6 +4,8 @@ import 'app_colors.dart';
 import 'app_spacing.dart';
 import 'app_typography.dart';
 
+/// The "Atelier" theme: flat paper surfaces separated by hairline rules,
+/// small corner radii, no shadows, one terracotta action colour.
 abstract final class AppTheme {
   static ThemeData light(Locale locale) => _build(
     locale,
@@ -13,25 +15,28 @@ abstract final class AppTheme {
       onPrimary: Colors.white,
       primaryContainer: AppColors.primaryTint,
       onPrimaryContainer: AppColors.primaryDark,
-      secondary: AppColors.saffron,
-      onSecondary: AppColors.ink,
-      secondaryContainer: AppColors.primaryTint,
-      onSecondaryContainer: AppColors.primaryDark,
-      tertiary: AppColors.primary,
-      onTertiary: Colors.white,
-      tertiaryContainer: AppColors.primaryTint,
-      onTertiaryContainer: AppColors.primaryDark,
-      secondaryFixed: AppColors.primaryTint,
-      secondaryFixedDim: AppColors.primaryTint,
-      onSecondaryFixed: AppColors.primaryDark,
-      onSecondaryFixedVariant: AppColors.primaryDark,
+      secondary: AppColors.olive,
+      onSecondary: Colors.white,
+      secondaryContainer: AppColors.oliveTint,
+      onSecondaryContainer: AppColors.olive,
+      tertiary: AppColors.saffron,
+      onTertiary: AppColors.ink,
+      tertiaryContainer: AppColors.surfaceAlt,
+      onTertiaryContainer: AppColors.ink,
       error: AppColors.error,
       onError: Colors.white,
       surface: AppColors.surface,
       onSurface: AppColors.ink,
       onSurfaceVariant: AppColors.muted,
+      surfaceContainerHighest: AppColors.surfaceAlt,
+      surfaceContainerHigh: AppColors.surfaceAlt,
+      surfaceContainer: AppColors.background,
+      surfaceContainerLow: AppColors.background,
+      surfaceContainerLowest: AppColors.surface,
       outline: AppColors.control,
       outlineVariant: AppColors.border,
+      inverseSurface: AppColors.ink,
+      onInverseSurface: AppColors.background,
     ),
     AppColors.background,
   );
@@ -41,28 +46,31 @@ abstract final class AppTheme {
     const ColorScheme(
       brightness: Brightness.dark,
       primary: AppColors.darkPrimary,
-      onPrimary: AppColors.darkBackground,
-      primaryContainer: AppColors.primaryDark,
-      onPrimaryContainer: AppColors.darkInk,
-      secondary: AppColors.saffron,
+      onPrimary: AppColors.ink,
+      primaryContainer: AppColors.darkPrimaryContainer,
+      onPrimaryContainer: AppColors.darkOnPrimaryContainer,
+      secondary: AppColors.darkSuccess,
       onSecondary: AppColors.ink,
-      secondaryContainer: AppColors.primaryDark,
-      onSecondaryContainer: AppColors.darkInk,
-      tertiary: AppColors.darkPrimary,
-      onTertiary: AppColors.darkBackground,
-      tertiaryContainer: AppColors.primaryDark,
+      secondaryContainer: Color(0xFF2C3A27),
+      onSecondaryContainer: AppColors.darkSuccess,
+      tertiary: AppColors.saffron,
+      onTertiary: AppColors.ink,
+      tertiaryContainer: AppColors.darkSurfaceAlt,
       onTertiaryContainer: AppColors.darkInk,
-      secondaryFixed: AppColors.primaryDark,
-      secondaryFixedDim: AppColors.primaryDark,
-      onSecondaryFixed: AppColors.darkInk,
-      onSecondaryFixedVariant: AppColors.darkInk,
-      error: Color(0xFFF2B8B5),
+      error: AppColors.darkError,
       onError: AppColors.ink,
       surface: AppColors.darkSurface,
       onSurface: AppColors.darkInk,
       onSurfaceVariant: AppColors.darkMuted,
+      surfaceContainerHighest: AppColors.darkSurfaceAlt,
+      surfaceContainerHigh: AppColors.darkSurfaceAlt,
+      surfaceContainer: AppColors.darkBackground,
+      surfaceContainerLow: AppColors.darkBackground,
+      surfaceContainerLowest: AppColors.darkSurface,
       outline: AppColors.darkControl,
       outlineVariant: AppColors.darkBorder,
+      inverseSurface: AppColors.darkInk,
+      onInverseSurface: AppColors.darkBackground,
     ),
     AppColors.darkBackground,
   );
@@ -70,10 +78,10 @@ abstract final class AppTheme {
   static ThemeData _build(Locale locale, ColorScheme cs, Color background) {
     final text = AppTypography.textTheme(locale, cs.onSurface);
     final shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(AppRadius.lg),
+      borderRadius: BorderRadius.circular(AppRadius.md),
     );
     OutlineInputBorder border(Color c, [double w = 1]) => OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppRadius.lg),
+      borderRadius: BorderRadius.circular(AppRadius.md),
       borderSide: BorderSide(color: c, width: w),
     );
     return ThemeData(
@@ -83,49 +91,62 @@ abstract final class AppTheme {
       fontFamily: AppTypography.familyFor(locale),
       textTheme: text,
       dividerColor: cs.outlineVariant,
+      dividerTheme: DividerThemeData(
+        color: cs.outlineVariant,
+        thickness: 1,
+        space: 1,
+      ),
       splashFactory: NoSplash.splashFactory,
       appBarTheme: AppBarTheme(
         backgroundColor: background,
         foregroundColor: cs.onSurface,
         elevation: 0,
         scrolledUnderElevation: 0,
-        centerTitle: true,
-        titleTextStyle: text.titleMedium,
+        centerTitle: false,
+        titleTextStyle: text.titleLarge,
       ),
       cardTheme: CardThemeData(
         color: cs.surface,
-        // Floating, soft-shadowed cards in light mode; hairline in dark.
-        elevation: cs.brightness == Brightness.light ? 3 : 0,
-        shadowColor: const Color(0x33123D78),
-        surfaceTintColor: Colors.transparent,
+        elevation: 0,
         margin: EdgeInsets.zero,
+        surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.lg),
-          side: BorderSide(
-            color: cs.brightness == Brightness.light
-                ? Colors.transparent
-                : cs.outlineVariant,
-          ),
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          side: BorderSide(color: cs.outlineVariant),
         ),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: cs.surface,
-        side: BorderSide(color: cs.outlineVariant),
-        shape: const StadiumBorder(),
+        selectedColor: cs.onSurface,
+        secondarySelectedColor: cs.onSurface,
+        side: BorderSide(color: cs.outline),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.sm),
+        ),
         labelStyle: text.labelLarge,
+        secondaryLabelStyle: text.labelLarge?.copyWith(color: cs.surface),
+        checkmarkColor: cs.surface,
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          minimumSize: const Size.fromHeight(54),
+          minimumSize: const Size.fromHeight(52),
           shape: shape,
           textStyle: text.labelLarge,
+          elevation: 0,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           minimumSize: const Size.fromHeight(52),
           shape: shape,
-          side: BorderSide(color: cs.outline),
+          side: BorderSide(color: cs.onSurface, width: 1.2),
+          foregroundColor: cs.onSurface,
+          textStyle: text.labelLarge,
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: cs.primary,
           textStyle: text.labelLarge,
         ),
       ),
@@ -133,12 +154,52 @@ abstract final class AppTheme {
         style: SegmentedButton.styleFrom(
           backgroundColor: cs.surface,
           foregroundColor: cs.onSurface,
-          selectedBackgroundColor: cs.primaryContainer,
-          selectedForegroundColor: cs.onPrimaryContainer,
+          selectedBackgroundColor: cs.onSurface,
+          selectedForegroundColor: cs.surface,
           side: BorderSide(color: cs.outline),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+          ),
           textStyle: text.labelLarge,
           minimumSize: const Size(0, 44),
         ),
+      ),
+      listTileTheme: ListTileThemeData(
+        iconColor: cs.onSurface,
+        titleTextStyle: text.bodyLarge,
+        subtitleTextStyle: text.bodySmall?.copyWith(
+          color: cs.onSurfaceVariant,
+        ),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: cs.surface,
+        surfaceTintColor: Colors.transparent,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppRadius.lg),
+          ),
+        ),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: cs.surface,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+        ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: cs.inverseSurface,
+        contentTextStyle: text.bodyMedium?.copyWith(
+          color: cs.onInverseSurface,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
+      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: cs.primary,
+        linearTrackColor: cs.outlineVariant,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -149,7 +210,7 @@ abstract final class AppTheme {
         ),
         border: border(cs.outline),
         enabledBorder: border(cs.outline),
-        focusedBorder: border(cs.primary, 1.6),
+        focusedBorder: border(cs.onSurface, 1.6),
       ),
     );
   }

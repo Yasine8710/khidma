@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_spacing.dart';
 
-/// Centered illustration-free empty state: icon in a tinted circle, title,
-/// explanatory body and an optional action.
+/// Centered empty state: a framed photo or a plain line icon, a slab title,
+/// an explanatory body and an optional action.
 class EmptyState extends StatelessWidget {
   const EmptyState({
     super.key,
@@ -15,7 +15,7 @@ class EmptyState extends StatelessWidget {
     this.photo,
   });
 
-  /// Bundled photo shown instead of the icon badge.
+  /// Bundled photo shown (framed) instead of the icon.
   final String? photo;
 
   final IconData icon;
@@ -34,35 +34,43 @@ class EmptyState extends StatelessWidget {
           horizontal: AppSpacing.xxl,
           vertical: AppSpacing.xl,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            StateVisual(icon: icon, photo: photo),
-            const SizedBox(height: AppSpacing.xl),
-            Text(title, style: text.titleLarge, textAlign: TextAlign.center),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              body,
-              style: text.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
-              textAlign: TextAlign.center,
-            ),
-            if (actionLabel != null && onAction != null) ...[
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 360),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              StateVisual(icon: icon, photo: photo),
               const SizedBox(height: AppSpacing.xl),
-              FilledButton(
-                onPressed: onAction,
-                style: FilledButton.styleFrom(minimumSize: const Size(160, 48)),
-                child: Text(actionLabel!),
+              Text(title, style: text.titleLarge, textAlign: TextAlign.center),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                body,
+                style: text.bodyMedium?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
               ),
+              if (actionLabel != null && onAction != null) ...[
+                const SizedBox(height: AppSpacing.xl),
+                FilledButton(
+                  onPressed: onAction,
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size(160, 48),
+                  ),
+                  child: Text(actionLabel!),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-/// The picture above a state's title: a rounded photo when one is given (and
-/// loads), otherwise the icon in a tinted circle. Decoration only.
+/// The picture above a state's title: a photo in a 1px rule frame when one
+/// is given (and loads), otherwise a plain line icon in a small ruled
+/// square. Never full-bleed, never tinted. Decoration only.
 class StateVisual extends StatelessWidget {
   const StateVisual({super.key, required this.icon, this.photo});
 
@@ -72,31 +80,36 @@ class StateVisual extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final badge = Container(
-      width: 72,
-      height: 72,
+    final mark = Container(
+      width: 64,
+      height: 64,
       decoration: BoxDecoration(
-        color: scheme.primaryContainer,
-        shape: BoxShape.circle,
+        color: scheme.surface,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: scheme.outlineVariant),
       ),
-      child: Icon(
-        icon,
-        size: 32,
-        color: scheme.brightness == Brightness.light
-            ? scheme.primary
-            : scheme.onPrimaryContainer,
-      ),
+      child: Icon(icon, size: 30, color: scheme.onSurfaceVariant),
     );
-    if (photo == null) return badge;
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadius.xl),
-      child: Image.asset(
-        photo!,
-        width: double.infinity,
-        height: 190,
-        fit: BoxFit.cover,
-        excludeFromSemantics: true,
-        errorBuilder: (_, _, _) => badge,
+    if (photo == null) return ExcludeSemantics(child: mark);
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 320),
+      child: DecoratedBox(
+        position: DecorationPosition.foreground,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          border: Border.all(color: scheme.outlineVariant),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          child: Image.asset(
+            photo!,
+            width: double.infinity,
+            height: 168,
+            fit: BoxFit.cover,
+            excludeFromSemantics: true,
+            errorBuilder: (_, _, _) => Center(child: mark),
+          ),
+        ),
       ),
     );
   }

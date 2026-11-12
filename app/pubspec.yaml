@@ -78,6 +78,21 @@ flutter:
     - family: Inter
       fonts:
         - asset: assets/fonts/Inter.ttf
+    - family: ZillaSlab
+      fonts:
+        - asset: assets/fonts/ZillaSlab-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/ZillaSlab-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/ZillaSlab-Bold.ttf
+          weight: 700
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/Lato-Regular.ttf
+        - asset: assets/fonts/Lato-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Lato-Black.ttf
+          weight: 900
     - family: IBMPlexSansArabic
       fonts:
         - asset: assets/fonts/IBMPlexSansArabic-Regular.ttf
@@ -133,19 +148,19 @@ flutter_launcher_icons:
   ios: true
   image_path: assets/brand/icon-1024.png
   remove_alpha_ios: true
-  adaptive_icon_background: "#1F5AA6"
+  adaptive_icon_background: "#B0432A"
   adaptive_icon_foreground: assets/brand/icon-foreground.png
   adaptive_icon_monochrome: assets/brand/icon-monochrome.png
   web:
     generate: true
     image_path: assets/brand/icon-1024.png
-    background_color: "#1F5AA6"
-    theme_color: "#1F5AA6"
+    background_color: "#F4EFE6"
+    theme_color: "#B0432A"
 
 flutter_native_splash:
-  color: "#1F5AA6"
+  color: "#F4EFE6"
   image: assets/brand/mark-splash.png
   android_12:
-    color: "#1F5AA6"
+    color: "#F4EFE6"
     image: assets/brand/mark-splash.png
   web: true

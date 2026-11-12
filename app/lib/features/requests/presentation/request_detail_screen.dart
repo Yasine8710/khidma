@@ -5,7 +5,6 @@ import '../../../core/format/dates.dart';
 import '../../../core/format/money.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
@@ -14,10 +13,12 @@ import '../../marketplace/application/marketplace_providers.dart';
 import '../../portfolio/presentation/portfolio_image.dart';
 import '../application/requests_providers.dart';
 import '../domain/requests_domain.dart';
+import 'ledger_widgets.dart';
 import 'received_offers_section.dart';
 import 'requests_texts.dart';
 
-/// One request: details, photos, status, and cancelling while it is open.
+/// One request as a work order: reference, title and status stamp, the facts
+/// as ruled rows, photos; then the quotes received and the job.
 class RequestDetailScreen extends ConsumerWidget {
   const RequestDetailScreen({super.key, required this.id});
 
@@ -37,7 +38,7 @@ class RequestDetailScreen extends ConsumerWidget {
       body = const SkeletonGroup(
         child: Padding(
           padding: EdgeInsetsDirectional.all(AppSpacing.gutter),
-          child: Skeleton(height: 160, radius: AppRadius.lg),
+          child: Skeleton(height: 160, radius: AppRadius.md),
         ),
       );
     } else {
@@ -50,6 +51,162 @@ class RequestDetailScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.reqDetailTitle)),
       body: SafeArea(child: body),
+    );
+  }
+}
+
+/// The head of a work order, shared by the customer's and the
+/// professional's view of a request: reference line with the status stamp,
+/// title, description, then the facts.
+class WorkOrderHeader extends ConsumerWidget {
+  const WorkOrderHeader({
+    super.key,
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.categoryId,
+    required this.governorateId,
+    required this.createdAt,
+    this.cityId,
+    this.budgetTnd,
+    this.neededBy,
+    this.expiresAt,
+    this.stamp,
+  });
+
+  final String id;
+  final String title;
+  final String description;
+  final int categoryId;
+  final int governorateId;
+  final int? cityId;
+  final DateTime createdAt;
+  final double? budgetTnd;
+  final DateTime? neededBy;
+
+  /// Shown while the request can still receive offers.
+  final DateTime? expiresAt;
+
+  /// Status stamp at the end of the reference line.
+  final Widget? stamp;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context);
+    final text = Theme.of(context).textTheme;
+    final category = (ref.watch(categoriesProvider).value ?? const [])
+        .where((c) => c.id == categoryId)
+        .map((c) => c.nameFor(locale))
+        .firstOrNull;
+    final governorate = (ref.watch(governoratesProvider).value ?? const [])
+        .where((g) => g.id == governorateId)
+        .map((g) => g.nameFor(locale))
+        .firstOrNull;
+    final city = cityId == null
+        ? null
+        : (ref.watch(citiesProvider(governorateId)).value ?? const [])
+              .where((c) => c.id == cityId)
+              .map((c) => c.nameFor(locale))
+              .firstOrNull;
+    final place = [?city, ?governorate].join(', ');
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: LedgerKicker(
+                '${ledgerRef(l10n, id)} · ${formatDate(createdAt, locale)}',
+              ),
+            ),
+            if (stamp != null) ...[
+              const SizedBox(width: AppSpacing.sm),
+              Flexible(child: stamp!),
+            ],
+          ],
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Semantics(header: true, child: Text(title, style: text.headlineSmall)),
+        const SizedBox(height: AppSpacing.sm),
+        Text(description, style: text.bodyLarge),
+        const SizedBox(height: AppSpacing.lg),
+        FactTable(
+          facts: [
+            if (category != null) (l10n.flowSecService, category),
+            if (place.isNotEmpty) (l10n.flowFactPlace, place),
+            if (budgetTnd != null)
+              (l10n.flowFactBudget, formatTnd(budgetTnd!, locale)),
+            if (neededBy != null)
+              (l10n.flowFactNeededBy, formatDate(neededBy!, locale)),
+            if (expiresAt != null)
+              (l10n.flowFactExpires, formatDate(expiresAt!, locale)),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// The photos of a request: framed squares in a strip, or a retry line.
+class RequestPhotoStrip extends ConsumerWidget {
+  const RequestPhotoStrip({super.key, required this.requestId});
+
+  final String requestId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final photosAsync = ref.watch(requestPhotosProvider(requestId));
+    final photos = photosAsync.value ?? const <RequestPhoto>[];
+    if (photosAsync.hasError && !photosAsync.hasValue) {
+      return Padding(
+        padding: const EdgeInsetsDirectional.only(top: AppSpacing.md),
+        child: Row(
+          children: [
+            Expanded(child: Text(l10n.reqPhotosFailed)),
+            AppButton(
+              label: l10n.retry,
+              variant: AppButtonVariant.text,
+              expand: false,
+              onPressed: () => ref.invalidate(requestPhotosProvider(requestId)),
+            ),
+          ],
+        ),
+      );
+    }
+    if (photos.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(top: AppSpacing.lg),
+      child: SizedBox(
+        height: 96,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: photos.length,
+          separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.sm),
+          itemBuilder: (context, i) => AspectRatio(
+            aspectRatio: 1,
+            child: DecoratedBox(
+              position: DecorationPosition.foreground,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+                border: Border.all(color: scheme.outlineVariant),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+                child: PortfolioImage(
+                  url: photos[i].url,
+                  semanticLabel: l10n.reqPhotoLabel(i + 1, photos.length),
+                  cacheWidth: 288,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -99,108 +256,52 @@ class _Details extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final locale = Localizations.localeOf(context);
-    final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
     final busy = ref.watch(requestActionsProvider);
-    final category = (ref.watch(categoriesProvider).value ?? const [])
-        .where((c) => c.id == request.categoryId)
-        .map((c) => c.nameFor(locale))
-        .firstOrNull;
-    final photosAsync = ref.watch(requestPhotosProvider(request.id));
-    final photos = photosAsync.value ?? const <RequestPhoto>[];
 
-    return ListView(
-      padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
-      children: [
-        Semantics(
-          header: true,
-          child: Text(request.title, style: text.headlineSmall),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.xs,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            AppBadge(
+    // Everything is built at once (no lazy list): the page is short and its
+    // lower parts (the job, the review) must be reachable by scrolling.
+    return SingleChildScrollView(
+      padding: const EdgeInsetsDirectional.fromSTEB(
+        AppSpacing.gutter,
+        AppSpacing.sm,
+        AppSpacing.gutter,
+        AppSpacing.xl,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          WorkOrderHeader(
+            id: request.id,
+            title: request.title,
+            description: request.description,
+            categoryId: request.categoryId,
+            governorateId: request.governorateId,
+            cityId: request.cityId,
+            createdAt: request.createdAt,
+            budgetTnd: request.budgetTnd,
+            neededBy: request.neededBy,
+            expiresAt: request.isOpen ? request.expiresAt : null,
+            stamp: LedgerStamp(
               label: statusLabel(l10n, request.status),
               tone: statusTone(request.status),
-              icon: statusIcon(request.status),
-            ),
-            if (category != null)
-              Text(category, style: text.bodyMedium?.copyWith(color: muted)),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        Text(request.description, style: text.bodyLarge),
-        const SizedBox(height: AppSpacing.lg),
-        if (request.budgetTnd != null)
-          Text(
-            l10n.reqBudget(formatTnd(request.budgetTnd!, locale)),
-            style: text.bodyMedium,
-          ),
-        if (request.neededBy != null)
-          Text(
-            l10n.reqNeededBy(formatDate(request.neededBy!, locale)),
-            style: text.bodyMedium,
-          ),
-        if (request.isOpen)
-          Text(
-            l10n.reqExpiresOn(formatDate(request.expiresAt, locale)),
-            style: text.bodySmall?.copyWith(color: muted),
-          ),
-        if (photosAsync.hasError && !photosAsync.hasValue) ...[
-          const SizedBox(height: AppSpacing.lg),
-          Row(
-            children: [
-              Expanded(child: Text(l10n.reqPhotosFailed)),
-              AppButton(
-                label: l10n.retry,
-                variant: AppButtonVariant.text,
-                expand: false,
-                onPressed: () =>
-                    ref.invalidate(requestPhotosProvider(request.id)),
-              ),
-            ],
-          ),
-        ],
-        if (photos.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.lg),
-          SizedBox(
-            height: 110,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: photos.length,
-              separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.sm),
-              itemBuilder: (context, i) => AspectRatio(
-                aspectRatio: 1,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                  child: PortfolioImage(
-                    url: photos[i].url,
-                    semanticLabel: l10n.reqPhotoLabel(i + 1, photos.length),
-                    cacheWidth: 330,
-                  ),
-                ),
-              ),
             ),
           ),
-        ],
-        const SizedBox(height: AppSpacing.xl),
-        ReceivedOffersSection(request: request),
-        if (request.status == RequestStatus.awarded)
-          BookingSection(requestId: request.id),
-        if (request.isOpen) ...[
+          RequestPhotoStrip(requestId: request.id),
           const SizedBox(height: AppSpacing.xl),
-          AppButton(
-            label: l10n.reqCancel,
-            variant: AppButtonVariant.secondary,
-            isLoading: busy,
-            onPressed: () => _cancel(context, ref),
-          ),
+          ReceivedOffersSection(request: request),
+          if (request.status == RequestStatus.awarded)
+            BookingSection(requestId: request.id),
+          if (request.isOpen) ...[
+            const SizedBox(height: AppSpacing.lg),
+            AppButton(
+              label: l10n.reqCancel,
+              variant: AppButtonVariant.secondary,
+              isLoading: busy,
+              onPressed: () => _cancel(context, ref),
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }

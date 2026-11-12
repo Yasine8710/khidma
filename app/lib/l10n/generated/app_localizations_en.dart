@@ -19,6 +19,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseLanguage => 'Choose language';
 
   @override
+  String get acctMemberCard => 'Member card';
+
+  @override
+  String get acctAccountType => 'Account type';
+
+  @override
+  String get acctCustomer => 'Customer';
+
+  @override
+  String get acctSettings => 'Settings';
+
+  @override
+  String get acctAccount => 'Account';
+
+  @override
+  String get acctWorkshop => 'Workshop';
+
+  @override
+  String get acctStatus => 'Status';
+
+  @override
+  String get acctTools => 'Tools';
+
+  @override
   String get languageFrench => 'Français';
 
   @override
@@ -419,6 +443,54 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeSubtitle => 'What service do you need?';
+
+  @override
+  String get discLicenceKicker => 'Trade record';
+
+  @override
+  String get discFactExperience => 'Experience';
+
+  @override
+  String get discFactAvailability => 'Availability';
+
+  @override
+  String get discFactArea => 'Area';
+
+  @override
+  String get discHintPlumbing => 'Leaks, bathrooms, water heaters';
+
+  @override
+  String get discHintElectricity => 'Wiring, faults, fuse boxes';
+
+  @override
+  String get discHintAirConditioning => 'Fitting, servicing, repairs';
+
+  @override
+  String get discHintMechanics => 'Vehicle repair and servicing';
+
+  @override
+  String get discHintPainting => 'Interior and exterior';
+
+  @override
+  String get discHintCarpentry => 'Wooden furniture, doors, windows';
+
+  @override
+  String get discHintCleaning => 'Homes, offices, after building work';
+
+  @override
+  String get discHintAppliance => 'Washing machines, fridges, ovens';
+
+  @override
+  String get discHintConstruction => 'Masonry, tiling, renovation';
+
+  @override
+  String get discHintGardening => 'Gardens and green spaces';
+
+  @override
+  String get discHintMoving => 'Transport and house moves';
+
+  @override
+  String get discHintMaintenance => 'Small jobs and home repairs';
 
   @override
   String get homeQuoteTitle => 'Need a job done?';
@@ -1013,6 +1085,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reqMineTitle => 'My requests';
+
+  @override
+  String flowRef(String code) {
+    return 'No. $code';
+  }
+
+  @override
+  String flowRequestCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count requests',
+      one: '1 request',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get flowSecService => 'Service';
+
+  @override
+  String get flowSecNeed => 'What you need';
+
+  @override
+  String get flowSecWhere => 'Where';
+
+  @override
+  String get flowSecWhen => 'When';
+
+  @override
+  String get flowSecPhotos => 'Photos';
+
+  @override
+  String get flowFactPlace => 'Location';
+
+  @override
+  String get flowFactBudget => 'Rough budget';
+
+  @override
+  String get flowFactNeededBy => 'Wanted by';
+
+  @override
+  String get flowFactExpires => 'Expires on';
 
   @override
   String get reqEmptyCta => 'Ask for a quote';

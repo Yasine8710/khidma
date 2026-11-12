@@ -38,6 +38,39 @@ String gapText(AppLocalizations l10n, ProfileGap g) => switch (g) {
   ProfileGap.phone => l10n.gapPhone,
 };
 
+/// The wizard's ruled progress: one segment per step, inked up to the
+/// current one. Decoration: the "Step x of y" text above says it.
+class _StepRule extends StatelessWidget {
+  const _StepRule({required this.current, required this.total});
+
+  final int current;
+  final int total;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return ExcludeSemantics(
+      child: SizedBox(
+        height: 3,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            for (var i = 0; i < total; i++) ...[
+              if (i > 0) const SizedBox(width: AppSpacing.xs),
+              Expanded(
+                child: Container(
+                  height: i == current ? 3 : (i < current ? 2 : 1),
+                  color: i <= current ? scheme.onSurface : scheme.outline,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// Multi-step professional profile. Each step is saved when the person
 /// continues, so leaving half-way keeps the draft and the next visit resumes.
 class RegistrationScreen extends ConsumerWidget {
@@ -296,15 +329,38 @@ class _WizardState extends ConsumerState<_Wizard> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xs),
-                    LinearProgressIndicator(
-                      value: (_step.index + 1) / _Step.values.length,
+                    const SizedBox(height: AppSpacing.sm),
+                    _StepRule(current: _step.index, total: _Step.values.length),
+                    const SizedBox(height: AppSpacing.xl),
+                    // A numbered form section: the folio number, then the
+                    // step's title.
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ExcludeSemantics(
+                          child: Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: Text(
+                              (_step.index + 1).toString().padLeft(2, '0'),
+                              style: text.headlineSmall?.copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: Semantics(
+                            header: true,
+                            child: Text(title, style: text.headlineSmall),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: AppSpacing.lg),
-                    Semantics(
-                      header: true,
-                      child: Text(title, style: text.headlineSmall),
-                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    const Divider(),
                     const SizedBox(height: AppSpacing.lg),
                     ..._fields(context),
                     if (_error != null) ...[
@@ -324,10 +380,12 @@ class _WizardState extends ConsumerState<_Wizard> {
               ),
             ),
           ),
+          // The footer sits below a hairline, like the foot of a form.
+          const Divider(),
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(
               AppSpacing.gutter,
-              AppSpacing.sm,
+              AppSpacing.md,
               AppSpacing.gutter,
               AppSpacing.lg,
             ),

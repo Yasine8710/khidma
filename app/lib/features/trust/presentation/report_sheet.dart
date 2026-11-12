@@ -146,21 +146,37 @@ class _ReportSheetState extends ConsumerState<_ReportSheet> {
             style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
           ),
           const SizedBox(height: AppSpacing.md),
-          RadioGroup<ReportReason>(
-            groupValue: _reason,
-            onChanged: (v) => setState(() {
-              _reason = v;
-              _reasonError = false;
-            }),
-            child: Column(
-              children: [
-                for (final r in ReportReason.values)
-                  RadioListTile<ReportReason>(
-                    value: r,
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(reportReasonLabel(l10n, r)),
-                  ),
-              ],
+          const Divider(),
+          // Reasons as ruled form lines, ticked in ink: the send button is the
+          // sheet's one terracotta action.
+          Theme(
+            data: Theme.of(context).copyWith(
+              radioTheme: RadioThemeData(
+                fillColor: WidgetStateProperty.resolveWith(
+                  (s) => s.contains(WidgetState.selected)
+                      ? scheme.onSurface
+                      : scheme.outline,
+                ),
+              ),
+            ),
+            child: RadioGroup<ReportReason>(
+              groupValue: _reason,
+              onChanged: (v) => setState(() {
+                _reason = v;
+                _reasonError = false;
+              }),
+              child: Column(
+                children: [
+                  for (final r in ReportReason.values) ...[
+                    RadioListTile<ReportReason>(
+                      value: r,
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(reportReasonLabel(l10n, r)),
+                    ),
+                    const Divider(),
+                  ],
+                ],
+              ),
             ),
           ),
           if (_reasonError)

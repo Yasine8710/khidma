@@ -75,7 +75,7 @@ class _Option extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
-    final fg = selected ? scheme.onPrimaryContainer : scheme.onSurface;
+    final fg = scheme.onSurface;
     return Semantics(
       inMutuallyExclusiveGroup: true,
       enabled: onTap != null,
@@ -84,13 +84,14 @@ class _Option extends StatelessWidget {
       label: '$title. $body',
       excludeSemantics: true,
       onTap: onTap,
+      // A form box to tick: ink frame and a check when chosen, flat paper.
       child: Material(
-        color: selected ? scheme.primaryContainer : scheme.surface,
+        color: scheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
           side: BorderSide(
-            color: selected ? scheme.primary : scheme.outline,
-            width: selected ? 1.6 : 1,
+            color: selected ? scheme.onSurface : scheme.outline,
+            width: selected ? 2 : 1,
           ),
         ),
         child: InkWell(
@@ -112,16 +113,32 @@ class _Option extends StatelessWidget {
                       Text(
                         body,
                         style: text.bodySmall?.copyWith(
-                          color: selected
-                              ? scheme.onPrimaryContainer
-                              : scheme.onSurfaceVariant,
+                          color: scheme.onSurfaceVariant,
                         ),
                       ),
                     ],
                   ),
                 ),
-                if (selected)
-                  Icon(Icons.check_circle_rounded, color: scheme.primary),
+                const SizedBox(width: AppSpacing.sm),
+                // A square tick box, empty until chosen.
+                Container(
+                  width: 22,
+                  height: 22,
+                  decoration: BoxDecoration(
+                    color: selected ? scheme.onSurface : scheme.surface,
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                    border: Border.all(
+                      color: selected ? scheme.onSurface : scheme.outline,
+                    ),
+                  ),
+                  child: selected
+                      ? Icon(
+                          Icons.check_rounded,
+                          size: 16,
+                          color: scheme.surface,
+                        )
+                      : null,
+                ),
               ],
             ),
           ),

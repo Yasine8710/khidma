@@ -7,8 +7,9 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/error_state.dart';
+import '../../../shared/widgets/register_row.dart';
+import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
@@ -110,134 +111,161 @@ class _BodyState extends ConsumerState<_Body> {
       messenger.showSnackBar(SnackBar(content: Text(l10n.dashSaveFailed)));
     }
 
+    Widget tool(IconData icon, String label, String route) =>
+        RegisterRow(icon: icon, title: label, onTap: () => context.push(route));
+    const section = SizedBox(height: AppSpacing.xxl);
+
     return ListView(
-      padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
+      padding: const EdgeInsetsDirectional.fromSTEB(
+        AppSpacing.gutter,
+        AppSpacing.md,
+        AppSpacing.gutter,
+        AppSpacing.xl,
+      ),
+      // One short page: built whole, so every section (and its data) loads
+      // when the board opens, not when it is scrolled to.
       children: [
-        Row(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const AvatarEditor(size: 72),
-            const SizedBox(width: AppSpacing.lg),
-            Expanded(
-              child: Text(draft.businessName ?? '', style: text.headlineSmall),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.xs,
-          children: [
-            AppBadge(
-              label: draft.isPublished
-                  ? l10n.proStatusPublished
-                  : l10n.proStatusDraft,
-              tone: draft.isPublished ? BadgeTone.success : BadgeTone.warning,
-            ),
-            // Only a real verification is ever shown.
-            if (draft.verification == Verification.verified)
-              AppBadge.verified(context),
-          ],
-        ),
-        if (gaps.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.lg),
-          Semantics(
-            liveRegion: true,
-            child: Text(
-              l10n.regMissing(gaps.map((g) => gapText(l10n, g)).join(', ')),
-              style: text.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.error,
-              ),
-            ),
-          ),
-        ],
-        const SizedBox(height: AppSpacing.lg),
-        AppButton(
-          label: gaps.isEmpty && draft.isPublished
-              ? l10n.proEditCta
-              : l10n.proCompleteCta,
-          onPressed: () => context.push(AppRoutes.proRegistration),
-        ),
-        if (draft.isPublished && uid != null) ...[
-          const SizedBox(height: AppSpacing.sm),
-          AppButton(
-            label: l10n.dashViewPublic,
-            variant: AppButtonVariant.secondary,
-            onPressed: () => context.push(AppRoutes.professionalPath(uid)),
-          ),
-        ],
-        const SizedBox(height: AppSpacing.xl),
-        // Everything a professional does, as a grid of tiles.
-        LayoutBuilder(
-          builder: (context, box) {
-            final gap = AppSpacing.md;
-            final width = (box.maxWidth - gap) / 2;
-            Widget tile(IconData icon, String label, String route) => SizedBox(
-              width: width,
-              child: _ActionTile(
-                icon: icon,
-                label: label,
-                onTap: () => context.push(route),
-              ),
-            );
-            return Wrap(
-              spacing: gap,
-              runSpacing: gap,
+            // The workshop's name plate.
+            SectionKicker(l10n.acctWorkshop),
+            const SizedBox(height: AppSpacing.sm),
+            Row(
               children: [
-                tile(
+                const AvatarEditor(size: 64),
+                const SizedBox(width: AppSpacing.lg),
+                Expanded(
+                  child: Text(
+                    draft.businessName ?? '',
+                    style: text.headlineSmall,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            // Status as a definition row with its stamps, like a licence.
+            const Divider(),
+            Padding(
+              padding: const EdgeInsetsDirectional.symmetric(
+                vertical: AppSpacing.md,
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    l10n.acctStatus,
+                    style: text.bodyMedium?.copyWith(color: muted),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Wrap(
+                      alignment: WrapAlignment.end,
+                      spacing: AppSpacing.xs,
+                      runSpacing: AppSpacing.xs,
+                      children: [
+                        AppBadge(
+                          label: draft.isPublished
+                              ? l10n.proStatusPublished
+                              : l10n.proStatusDraft,
+                          tone: draft.isPublished
+                              ? BadgeTone.success
+                              : BadgeTone.warning,
+                        ),
+                        // Only a real verification is ever shown.
+                        if (draft.verification == Verification.verified)
+                          AppBadge.verified(context),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(),
+            if (gaps.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.md),
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  l10n.regMissing(gaps.map((g) => gapText(l10n, g)).join(', ')),
+                  style: text.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(height: AppSpacing.lg),
+            AppButton(
+              label: gaps.isEmpty && draft.isPublished
+                  ? l10n.proEditCta
+                  : l10n.proCompleteCta,
+              onPressed: () => context.push(AppRoutes.proRegistration),
+            ),
+            if (draft.isPublished && uid != null) ...[
+              const SizedBox(height: AppSpacing.sm),
+              AppButton(
+                label: l10n.dashViewPublic,
+                variant: AppButtonVariant.secondary,
+                onPressed: () => context.push(AppRoutes.professionalPath(uid)),
+              ),
+            ],
+            section,
+            // Everything a professional does, as register rows.
+            SectionHeader(kicker: '01', title: l10n.acctTools),
+            const SizedBox(height: AppSpacing.xs),
+            RegisterGroup(
+              children: [
+                tool(
                   Icons.inbox_outlined,
                   l10n.proInboxTitle,
                   AppRoutes.proInbox,
                 ),
-                tile(
+                tool(
                   Icons.local_offer_outlined,
                   l10n.offersTitle,
                   AppRoutes.proOffers,
                 ),
-                tile(
+                tool(
                   Icons.handyman_outlined,
                   l10n.jobsTitle,
                   AppRoutes.proJobs,
                 ),
-                tile(
+                tool(
                   Icons.photo_library_outlined,
                   l10n.portfolioTitle,
                   AppRoutes.proPortfolio,
                 ),
-                tile(
+                tool(
                   Icons.verified_outlined,
                   l10n.verifCta,
                   AppRoutes.proVerification,
                 ),
               ],
-            );
-          },
-        ),
-        const SizedBox(height: AppSpacing.xl),
-        Semantics(
-          header: true,
-          child: Text(l10n.dashAvailability, style: text.titleMedium),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        SegmentedButton<Availability>(
-          showSelectedIcon: false,
-          segments: [
-            for (final a in Availability.values)
-              ButtonSegment(value: a, label: Text(availabilityLabel(l10n, a))),
+            ),
+            section,
+            SectionHeader(kicker: '02', title: l10n.dashAvailability),
+            const SizedBox(height: AppSpacing.sm),
+            SegmentedButton<Availability>(
+              showSelectedIcon: false,
+              segments: [
+                for (final a in Availability.values)
+                  ButtonSegment(
+                    value: a,
+                    label: Text(availabilityLabel(l10n, a)),
+                  ),
+              ],
+              selected: {_saved ?? draft.availability},
+              onSelectionChanged: busy ? null : (s) => setAvailability(s.first),
+            ),
+            section,
+            SectionHeader(kicker: '03', title: l10n.dashActivity),
+            const SizedBox(height: AppSpacing.sm),
+            const _Activity(),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              l10n.dashActivityNote,
+              style: text.bodySmall?.copyWith(color: muted),
+            ),
           ],
-          selected: {_saved ?? draft.availability},
-          onSelectionChanged: busy ? null : (s) => setAvailability(s.first),
-        ),
-        const SizedBox(height: AppSpacing.xl),
-        Semantics(
-          header: true,
-          child: Text(l10n.dashActivity, style: text.titleMedium),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        const _Activity(),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          l10n.dashActivityNote,
-          style: text.bodySmall?.copyWith(color: muted),
         ),
       ],
     );
@@ -266,28 +294,40 @@ class _Activity extends ConsumerWidget {
       ),
       data: (a) {
         final stats = a ?? const ProfessionalActivity();
-        return IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: _Stat(
-                  label: l10n.dashViews30d,
-                  value: stats.contactViews30d,
+        final rule = Theme.of(context).colorScheme.outlineVariant;
+        // A ruled tally: three columns in one frame, split by hairlines.
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            border: Border.all(color: rule),
+          ),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: _Stat(
+                    label: l10n.dashViews30d,
+                    value: stats.contactViews30d,
+                  ),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: _Stat(
-                  label: l10n.dashViewsTotal,
-                  value: stats.contactViewsTotal,
+                VerticalDivider(width: 1, thickness: 1, color: rule),
+                Expanded(
+                  child: _Stat(
+                    label: l10n.dashViewsTotal,
+                    value: stats.contactViewsTotal,
+                  ),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: _Stat(label: l10n.dashFavorites, value: stats.favorites),
-              ),
-            ],
+                VerticalDivider(width: 1, thickness: 1, color: rule),
+                Expanded(
+                  child: _Stat(
+                    label: l10n.dashFavorites,
+                    value: stats.favorites,
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -304,69 +344,29 @@ class _Stat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
-    return AppCard(
-      semanticLabel: '$label: $value',
-      padding: const EdgeInsetsDirectional.all(AppSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Digits always read left to right and are Western.
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: Text('$value', style: text.headlineSmall),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            label,
-            style: text.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+    return Semantics(
+      container: true,
+      label: '$label: $value',
+      excludeSemantics: true,
+      child: Padding(
+        padding: const EdgeInsetsDirectional.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Digits always read left to right and are Western.
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: Text('$value', style: text.headlineMedium),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// A square-ish tile: tinted icon on top, label below.
-class _ActionTile extends StatelessWidget {
-  const _ActionTile({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return AppCard(
-      onTap: onTap,
-      semanticLabel: label,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: scheme.primaryContainer,
-              shape: BoxShape.circle,
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              label,
+              style: text.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Icon(icon, size: 22, color: scheme.onPrimaryContainer),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.titleSmall,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

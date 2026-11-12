@@ -19,6 +19,30 @@ class AppLocalizationsFr extends AppLocalizations {
   String get chooseLanguage => 'Choisir la langue';
 
   @override
+  String get acctMemberCard => 'Carte de membre';
+
+  @override
+  String get acctAccountType => 'Type de compte';
+
+  @override
+  String get acctCustomer => 'Client';
+
+  @override
+  String get acctSettings => 'Réglages';
+
+  @override
+  String get acctAccount => 'Compte';
+
+  @override
+  String get acctWorkshop => 'Atelier';
+
+  @override
+  String get acctStatus => 'Statut';
+
+  @override
+  String get acctTools => 'Outils';
+
+  @override
   String get languageFrench => 'Français';
 
   @override
@@ -422,6 +446,54 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get homeSubtitle => 'De quel service avez-vous besoin ?';
+
+  @override
+  String get discLicenceKicker => 'Fiche professionnelle';
+
+  @override
+  String get discFactExperience => 'Expérience';
+
+  @override
+  String get discFactAvailability => 'Disponibilité';
+
+  @override
+  String get discFactArea => 'Zone';
+
+  @override
+  String get discHintPlumbing => 'Fuites, sanitaires, chauffe-eau';
+
+  @override
+  String get discHintElectricity => 'Installations, pannes, tableaux';
+
+  @override
+  String get discHintAirConditioning => 'Pose, entretien, réparation';
+
+  @override
+  String get discHintMechanics => 'Réparation et entretien de véhicules';
+
+  @override
+  String get discHintPainting => 'Intérieur et extérieur';
+
+  @override
+  String get discHintCarpentry => 'Meubles, portes, fenêtres en bois';
+
+  @override
+  String get discHintCleaning => 'Maisons, bureaux, fin de chantier';
+
+  @override
+  String get discHintAppliance => 'Lave-linge, réfrigérateurs, fours';
+
+  @override
+  String get discHintConstruction => 'Maçonnerie, carrelage, rénovation';
+
+  @override
+  String get discHintGardening => 'Jardins et espaces verts';
+
+  @override
+  String get discHintMoving => 'Transport et déménagement';
+
+  @override
+  String get discHintMaintenance => 'Petits travaux et dépannage';
 
   @override
   String get homeQuoteTitle => 'Besoin d’un service ?';
@@ -1027,6 +1099,49 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get reqMineTitle => 'Mes demandes';
+
+  @override
+  String flowRef(String code) {
+    return 'N° $code';
+  }
+
+  @override
+  String flowRequestCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count demandes',
+      one: '1 demande',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get flowSecService => 'Service';
+
+  @override
+  String get flowSecNeed => 'Le besoin';
+
+  @override
+  String get flowSecWhere => 'Où';
+
+  @override
+  String get flowSecWhen => 'Quand';
+
+  @override
+  String get flowSecPhotos => 'Photos';
+
+  @override
+  String get flowFactPlace => 'Lieu';
+
+  @override
+  String get flowFactBudget => 'Budget indicatif';
+
+  @override
+  String get flowFactNeededBy => 'Souhaité pour le';
+
+  @override
+  String get flowFactExpires => 'Expire le';
 
   @override
   String get reqEmptyCta => 'Demander un devis';

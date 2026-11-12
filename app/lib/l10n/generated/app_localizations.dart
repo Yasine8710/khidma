@@ -118,6 +118,54 @@ abstract class AppLocalizations {
   /// **'Choisir la langue'**
   String get chooseLanguage;
 
+  /// No description provided for @acctMemberCard.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carte de membre'**
+  String get acctMemberCard;
+
+  /// No description provided for @acctAccountType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de compte'**
+  String get acctAccountType;
+
+  /// No description provided for @acctCustomer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get acctCustomer;
+
+  /// No description provided for @acctSettings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réglages'**
+  String get acctSettings;
+
+  /// No description provided for @acctAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte'**
+  String get acctAccount;
+
+  /// No description provided for @acctWorkshop.
+  ///
+  /// In fr, this message translates to:
+  /// **'Atelier'**
+  String get acctWorkshop;
+
+  /// No description provided for @acctStatus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get acctStatus;
+
+  /// No description provided for @acctTools.
+  ///
+  /// In fr, this message translates to:
+  /// **'Outils'**
+  String get acctTools;
+
   /// No description provided for @languageFrench.
   ///
   /// In fr, this message translates to:
@@ -825,6 +873,102 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'De quel service avez-vous besoin ?'**
   String get homeSubtitle;
+
+  /// No description provided for @discLicenceKicker.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche professionnelle'**
+  String get discLicenceKicker;
+
+  /// No description provided for @discFactExperience.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expérience'**
+  String get discFactExperience;
+
+  /// No description provided for @discFactAvailability.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponibilité'**
+  String get discFactAvailability;
+
+  /// No description provided for @discFactArea.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zone'**
+  String get discFactArea;
+
+  /// No description provided for @discHintPlumbing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fuites, sanitaires, chauffe-eau'**
+  String get discHintPlumbing;
+
+  /// No description provided for @discHintElectricity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Installations, pannes, tableaux'**
+  String get discHintElectricity;
+
+  /// No description provided for @discHintAirConditioning.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pose, entretien, réparation'**
+  String get discHintAirConditioning;
+
+  /// No description provided for @discHintMechanics.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réparation et entretien de véhicules'**
+  String get discHintMechanics;
+
+  /// No description provided for @discHintPainting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Intérieur et extérieur'**
+  String get discHintPainting;
+
+  /// No description provided for @discHintCarpentry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Meubles, portes, fenêtres en bois'**
+  String get discHintCarpentry;
+
+  /// No description provided for @discHintCleaning.
+  ///
+  /// In fr, this message translates to:
+  /// **'Maisons, bureaux, fin de chantier'**
+  String get discHintCleaning;
+
+  /// No description provided for @discHintAppliance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lave-linge, réfrigérateurs, fours'**
+  String get discHintAppliance;
+
+  /// No description provided for @discHintConstruction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Maçonnerie, carrelage, rénovation'**
+  String get discHintConstruction;
+
+  /// No description provided for @discHintGardening.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jardins et espaces verts'**
+  String get discHintGardening;
+
+  /// No description provided for @discHintMoving.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transport et déménagement'**
+  String get discHintMoving;
+
+  /// No description provided for @discHintMaintenance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Petits travaux et dépannage'**
+  String get discHintMaintenance;
 
   /// No description provided for @homeQuoteTitle.
   ///
@@ -1899,6 +2043,72 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Mes demandes'**
   String get reqMineTitle;
+
+  /// No description provided for @flowRef.
+  ///
+  /// In fr, this message translates to:
+  /// **'N° {code}'**
+  String flowRef(String code);
+
+  /// No description provided for @flowRequestCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 demande} other{{count} demandes}}'**
+  String flowRequestCount(int count);
+
+  /// No description provided for @flowSecService.
+  ///
+  /// In fr, this message translates to:
+  /// **'Service'**
+  String get flowSecService;
+
+  /// No description provided for @flowSecNeed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le besoin'**
+  String get flowSecNeed;
+
+  /// No description provided for @flowSecWhere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Où'**
+  String get flowSecWhere;
+
+  /// No description provided for @flowSecWhen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quand'**
+  String get flowSecWhen;
+
+  /// No description provided for @flowSecPhotos.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photos'**
+  String get flowSecPhotos;
+
+  /// No description provided for @flowFactPlace.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lieu'**
+  String get flowFactPlace;
+
+  /// No description provided for @flowFactBudget.
+  ///
+  /// In fr, this message translates to:
+  /// **'Budget indicatif'**
+  String get flowFactBudget;
+
+  /// No description provided for @flowFactNeededBy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Souhaité pour le'**
+  String get flowFactNeededBy;
+
+  /// No description provided for @flowFactExpires.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expire le'**
+  String get flowFactExpires;
 
   /// No description provided for @reqEmptyCta.
   ///

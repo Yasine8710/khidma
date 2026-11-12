@@ -93,6 +93,12 @@ Future<void> loadAppFonts() async {
   await icons.load();
 
   await load('Inter', ['Inter.ttf']);
+  await load('ZillaSlab', [
+    'ZillaSlab-Medium.ttf',
+    'ZillaSlab-SemiBold.ttf',
+    'ZillaSlab-Bold.ttf',
+  ]);
+  await load('Lato', ['Lato-Regular.ttf', 'Lato-Bold.ttf', 'Lato-Black.ttf']);
   await load('IBMPlexSansArabic', [
     'IBMPlexSansArabic-Regular.ttf',
     'IBMPlexSansArabic-Medium.ttf',

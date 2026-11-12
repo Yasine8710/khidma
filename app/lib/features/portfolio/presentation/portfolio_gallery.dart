@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../marketplace/presentation/professional_card.dart';
 import '../application/portfolio_providers.dart';
 import '../domain/portfolio_domain.dart';
 import 'portfolio_image.dart';
@@ -19,27 +20,41 @@ class PortfolioGallery extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final items = ref.watch(portfolioProvider(professionalId)).value;
     if (items == null || items.isEmpty) return const SizedBox.shrink();
-    final text = Theme.of(context).textTheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: AppSpacing.xl),
-        Semantics(
-          header: true,
-          child: Text(l10n.portfolioSection, style: text.titleMedium),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        SizedBox(
-          height: 120,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: items.length,
-            separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.sm),
-            itemBuilder: (context, i) =>
-                _Tile(item: items[i], index: i + 1, total: items.length),
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(top: AppSpacing.xxl),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          RegisterHeading(
+            title: l10n.portfolioSection,
+            figure: items.length.toString().padLeft(2, '0'),
           ),
-        ),
-      ],
+          const SizedBox(height: AppSpacing.sm),
+          // A contact sheet: framed squares, three across (four when wide).
+          LayoutBuilder(
+            builder: (context, box) {
+              final columns = box.maxWidth >= 520 ? 4 : 3;
+              const gap = AppSpacing.sm;
+              final side = (box.maxWidth - gap * (columns - 1)) / columns;
+              return Wrap(
+                spacing: gap,
+                runSpacing: gap,
+                children: [
+                  for (var i = 0; i < items.length; i++)
+                    SizedBox.square(
+                      dimension: side,
+                      child: _Tile(
+                        item: items[i],
+                        index: i + 1,
+                        total: items.length,
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
@@ -61,12 +76,17 @@ class _Tile extends StatelessWidget {
       excludeSemantics: true,
       onTap: () => _open(context, label),
       child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.md),
         onTap: () => _open(context, label),
-        child: AspectRatio(
-          aspectRatio: 1,
+        child: DecoratedBox(
+          position: DecorationPosition.foreground,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+          ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadius.md),
+            borderRadius: BorderRadius.circular(AppRadius.sm),
             child: PortfolioImage(
               url: item.url,
               semanticLabel: label,
@@ -98,7 +118,7 @@ class _Tile extends StatelessWidget {
               top: AppSpacing.md,
               end: AppSpacing.md,
               child: SafeArea(
-                child: IconButton.filledTonal(
+                child: IconButton.outlined(
                   tooltip: l10n.close,
                   icon: const Icon(Icons.close_rounded),
                   onPressed: () => Navigator.of(ctx).pop(),

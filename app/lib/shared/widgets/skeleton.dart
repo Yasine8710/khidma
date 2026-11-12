@@ -4,7 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../l10n/generated/app_localizations.dart';
 
-/// Loading placeholder block with a soft shimmer. The shimmer is dropped
+/// Loading placeholder block in sunken paper with a faint shimmer. The shimmer is dropped
 /// when the system asks to reduce motion. Hidden from screen readers; wrap a
 /// group in [SkeletonGroup] to announce "Loading" once.
 class Skeleton extends StatelessWidget {
@@ -25,7 +25,8 @@ class Skeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final dark = scheme.brightness == Brightness.dark;
-    final base = dark ? const Color(0xFF222833) : const Color(0xFFECE9E2);
+    // Sunken paper, the same block colour the rest of the app uses.
+    final base = scheme.surfaceContainerHighest;
     final box = Container(
       width: circle ? height : width,
       height: height,
@@ -39,8 +40,9 @@ class Skeleton extends StatelessWidget {
     return box
         .animate(onPlay: (c) => c.repeat())
         .shimmer(
-          duration: 1400.ms,
-          color: dark ? const Color(0x22FFFFFF) : const Color(0x99FFFFFF),
+          duration: 1600.ms,
+          // A faint pass of lighter paper, not a glow.
+          color: dark ? const Color(0x14FFFFFF) : const Color(0x66FFFCF6),
         );
   }
 }

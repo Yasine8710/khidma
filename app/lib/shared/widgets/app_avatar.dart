@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// Round avatar: network image when available, otherwise initials. A failed
+/// Round avatar with a hairline ring: network image when available,
+/// otherwise slab initials on sunken paper. A failed
 /// or not-yet-loaded image shows initials, never a blank or broken-image
 /// icon. Set [decorative] when the name is already shown next to it, so
 /// screen readers do not read it twice.
@@ -35,21 +36,33 @@ class AppAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    // A monogram: slab initials in ink on sunken paper.
     final initials = Container(
-      color: scheme.primaryContainer,
+      color: scheme.surfaceContainerHighest,
       alignment: Alignment.center,
       child: Text(
         initialsOf(name),
-        style: Theme.of(context).textTheme.titleSmall
-            ?.copyWith(color: scheme.onPrimaryContainer, fontSize: size * 0.36),
+        maxLines: 1,
+        // The circle does not grow with the text size; keep the monogram in.
+        textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2),
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+          color: scheme.onSurface,
+          fontSize: size * 0.38,
+          height: 1,
+        ),
       ),
     );
 
     final url = imageUrl;
     final px = size * MediaQuery.devicePixelRatioOf(context);
-    final avatar = SizedBox(
+    final avatar = Container(
       width: size,
       height: size,
+      // A thin rule ring, drawn over the picture's edge.
+      foregroundDecoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: scheme.outlineVariant),
+      ),
       child: ClipOval(
         child: url == null || url.isEmpty
             ? initials

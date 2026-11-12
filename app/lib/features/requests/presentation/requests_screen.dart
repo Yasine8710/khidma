@@ -6,9 +6,7 @@ import '../../../core/format/dates.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/category_photo.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
@@ -18,9 +16,11 @@ import '../../auth/presentation/signed_out_prompt.dart';
 import '../../marketplace/application/marketplace_providers.dart';
 import '../application/requests_providers.dart';
 import '../domain/requests_domain.dart';
+import 'ledger_widgets.dart';
 import 'requests_texts.dart';
 
-/// The customer's requests with their status. Needs an account.
+/// The customer's requests as a register of work orders, newest first, with
+/// the one action of the tab on top: start a new request. Needs an account.
 class RequestsScreen extends ConsumerWidget {
   const RequestsScreen({super.key});
 
@@ -40,18 +40,18 @@ class RequestsScreen extends ConsumerWidget {
     }
     final async = ref.watch(myRequestsProvider);
     final text = Theme.of(context).textTheme;
+    final list = async.value;
+    final empty = list != null && list.isEmpty;
 
     final Widget body;
-    final list = async.value;
     if (list != null) {
       body = list.isEmpty
+          // The button above already offers to ask for a quote.
           ? EmptyState(
               icon: Icons.assignment_outlined,
               photo: 'assets/photos/onb-compare.jpg',
               title: l10n.requestsEmptyTitle,
               body: l10n.requestsEmptyBody,
-              actionLabel: l10n.reqEmptyCta,
-              onAction: () => context.push(AppRoutes.newRequest),
             )
           : RefreshIndicator(
               onRefresh: () async {
@@ -60,17 +60,28 @@ class RequestsScreen extends ConsumerWidget {
                   await ref.read(myRequestsProvider.future);
                 } catch (_) {}
               },
-              child: ListView.separated(
+              child: ListView.builder(
                 padding: const EdgeInsetsDirectional.fromSTEB(
                   AppSpacing.gutter,
-                  AppSpacing.sm,
+                  0,
                   AppSpacing.gutter,
-                  120,
+                  AppSpacing.lg,
                 ),
-                itemCount: list.length,
-                separatorBuilder: (_, _) =>
-                    const SizedBox(height: AppSpacing.md),
-                itemBuilder: (context, i) => _RequestCard(request: list[i]),
+                itemCount: list.length + 1,
+                itemBuilder: (context, i) {
+                  if (i == 0) {
+                    // The register's count over its ink head rule.
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        LedgerKicker(l10n.flowRequestCount(list.length)),
+                        const SizedBox(height: AppSpacing.sm),
+                        const LedgerRule(strong: true),
+                      ],
+                    );
+                  }
+                  return _RequestRow(request: list[i - 1]);
+                },
               ),
             );
     } else if (async.hasError) {
@@ -79,37 +90,34 @@ class RequestsScreen extends ConsumerWidget {
       body = const SkeletonGroup(
         child: Padding(
           padding: EdgeInsetsDirectional.all(AppSpacing.gutter),
-          child: Skeleton(height: 96, radius: AppRadius.lg),
+          child: Skeleton(height: 96, radius: AppRadius.md),
         ),
       );
     }
 
     return SafeArea(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(
               AppSpacing.gutter,
               AppSpacing.lg,
               AppSpacing.gutter,
-              AppSpacing.sm,
+              AppSpacing.lg,
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: Semantics(
-                    header: true,
-                    child: Text(l10n.reqMineTitle, style: text.headlineMedium),
-                  ),
+                Semantics(
+                  header: true,
+                  child: Text(l10n.reqMineTitle, style: text.headlineMedium),
                 ),
-                const SizedBox(width: AppSpacing.md),
-                Flexible(
-                  child: AppButton(
-                    label: l10n.reqNew,
-                    icon: Icons.add_rounded,
-                    expand: false,
-                    onPressed: () => context.push(AppRoutes.newRequest),
-                  ),
+                const SizedBox(height: AppSpacing.lg),
+                AppButton(
+                  label: empty ? l10n.reqEmptyCta : l10n.reqNew,
+                  icon: Icons.add_rounded,
+                  onPressed: () => context.push(AppRoutes.newRequest),
                 ),
               ],
             ),
@@ -121,84 +129,77 @@ class RequestsScreen extends ConsumerWidget {
   }
 }
 
-class _RequestCard extends ConsumerWidget {
-  const _RequestCard({required this.request});
+/// One work order in the register: reference and date over the title, the
+/// status stamp, the offer count; a rule under it.
+class _RequestRow extends ConsumerWidget {
+  const _RequestRow({required this.request});
 
   final QuoteRequest request;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locale = Localizations.localeOf(context);
-    final cat = (ref.watch(categoriesProvider).value ?? const [])
-        .where((c) => c.id == request.categoryId)
-        .firstOrNull;
-    final category = cat?.nameFor(locale);
-    return AppCard(
-      semanticLabel: request.title,
-      onTap: () => context.push(AppRoutes.requestPath(request.id)),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CategoryPhoto(
-            slug: cat?.slug,
-            icon: cat?.icon,
-            width: 72,
-            height: 72,
-            radius: AppRadius.md,
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: _RequestText(request: request, category: category),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Title, status and counts of a request card.
-class _RequestText extends StatelessWidget {
-  const _RequestText({required this.request, required this.category});
-
-  final QuoteRequest request;
-  final String? category;
-
-  @override
-  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context);
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          request.title,
-          style: text.titleSmall,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
+    final scheme = Theme.of(context).colorScheme;
+    final cat = (ref.watch(categoriesProvider).value ?? const [])
+        .where((c) => c.id == request.categoryId)
+        .firstOrNull;
+    final kicker = [
+      ledgerRef(l10n, request.id),
+      formatDate(request.createdAt, locale),
+      ?cat?.nameFor(locale),
+    ].join(' · ');
+    final offers = request.offerCount;
+
+    return LedgerRow(
+      semanticLabel: request.title,
+      onTap: () => context.push(AppRoutes.requestPath(request.id)),
+      leading: DecoratedBox(
+        position: DecorationPosition.foreground,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppRadius.sm),
+          border: Border.all(color: scheme.outlineVariant),
         ),
-        if (category != null)
-          Text(category!, style: text.bodySmall?.copyWith(color: muted)),
-        const SizedBox(height: AppSpacing.sm),
-        Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.xs,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            AppBadge(
-              label: statusLabel(l10n, request.status),
-              tone: statusTone(request.status),
-              icon: statusIcon(request.status),
-            ),
-            Text(l10n.reqOffers(request.offerCount), style: text.bodySmall),
-            Text(
-              formatDate(request.createdAt, locale),
-              style: text.bodySmall?.copyWith(color: muted),
-            ),
-          ],
+        child: CategoryPhoto(
+          slug: cat?.slug,
+          icon: cat?.icon,
+          width: 52,
+          height: 52,
+          radius: AppRadius.sm,
         ),
-      ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LedgerKicker(kicker),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            request.title,
+            style: text.titleMedium,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Wrap(
+            spacing: AppSpacing.md,
+            runSpacing: AppSpacing.xs,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              LedgerStamp(
+                label: statusLabel(l10n, request.status),
+                tone: statusTone(request.status),
+              ),
+              Text(
+                l10n.reqOffers(offers),
+                style: offers > 0
+                    ? text.labelLarge
+                    : text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

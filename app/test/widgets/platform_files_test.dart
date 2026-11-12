@@ -102,13 +102,13 @@ void main() {
       await tester.runAsync(() async {
         for (final n in [192, 512]) {
           final i = await _decode('web/icons/Icon-maskable-$n.png');
-          // Background is brand blue 1F5AA6; anything else is the mark.
+          // Background is brand terracotta B0432A; anything else is the mark.
           final r = _maxRadius(
             i,
             (r, g, b, a) =>
-                (r - 0x1F).abs() < 6 &&
-                (g - 0x5A).abs() < 6 &&
-                (b - 0xA6).abs() < 6,
+                (r - 0xB0).abs() < 6 &&
+                (g - 0x43).abs() < 6 &&
+                (b - 0x2A).abs() < 6,
           );
           expect(r, lessThanOrEqualTo(0.40), reason: 'Icon-maskable-$n');
         }

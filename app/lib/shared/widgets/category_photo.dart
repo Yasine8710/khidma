@@ -24,9 +24,10 @@ String? categoryPhotoAsset(String? slug) {
   return f == null ? null : 'assets/photos/$f.jpg';
 }
 
-/// A category photo with rounded corners; without a photo (or if it fails to
-/// load) a tinted block with the category icon, never a broken image. It is
-/// decoration: the name is always shown next to it.
+/// A category photo, cut square-cornered (radius 4-6) like a print pasted in
+/// a ledger. Without a photo (or if it fails to load) a sunken paper block
+/// with the category icon in ink, never a broken image. It is decoration:
+/// the name is always shown next to it.
 class CategoryPhoto extends StatelessWidget {
   const CategoryPhoto({
     super.key,
@@ -34,7 +35,7 @@ class CategoryPhoto extends StatelessWidget {
     this.icon,
     this.width,
     this.height,
-    this.radius = AppRadius.lg,
+    this.radius = AppRadius.md,
     this.alignment = Alignment.center,
   });
 
@@ -52,12 +53,12 @@ class CategoryPhoto extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final asset = categoryPhotoAsset(slug);
     final fallback = ColoredBox(
-      color: scheme.primaryContainer,
+      color: scheme.surfaceContainerHighest,
       child: Center(
         child: Icon(
           categoryIcon(icon ?? ''),
-          size: ((height ?? width ?? 64) * 0.4).clamp(20, 56).toDouble(),
-          color: scheme.onPrimaryContainer,
+          size: ((height ?? width ?? 64) * 0.42).clamp(18, 56).toDouble(),
+          color: scheme.onSurfaceVariant,
         ),
       ),
     );
@@ -84,9 +85,10 @@ class CategoryPhoto extends StatelessWidget {
   }
 }
 
-/// A category as a photo tile with its name over a deep-blue fade. Used on
-/// Home (opens the search) and in the request form (picks the category:
-/// [selected] draws a blue ring and a check).
+/// A category as a small specimen card: the photo above, its name on a paper
+/// label strip below, inside a 1px rule. Used where a category is picked
+/// (the request form): [selected] draws an ink frame and inverts the label
+/// (ink strip, paper text, a check), like a selected chip.
 class CategoryTile extends StatelessWidget {
   const CategoryTile({
     super.key,
@@ -109,76 +111,59 @@ class CategoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final on = selected ?? false;
+    final ink = scheme.onSurface;
+    final labelColor = on ? scheme.surface : ink;
     return Semantics(
       button: true,
       selected: selected,
       label: name,
       excludeSemantics: true,
       onTap: onTap,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            CategoryPhoto(slug: slug, icon: icon, radius: 0),
-            const DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Color(0x00123D78), Color(0xE60E2F5E)],
-                  stops: [0.35, 1],
-                ),
+      child: Material(
+        color: scheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          side: on
+              ? BorderSide(color: ink, width: 2)
+              : BorderSide(color: scheme.outlineVariant),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          excludeFromSemantics: true,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: CategoryPhoto(slug: slug, icon: icon, radius: 0),
               ),
-            ),
-            PositionedDirectional(
-              start: AppSpacing.sm,
-              end: AppSpacing.sm,
-              bottom: AppSpacing.sm,
-              child: Text(
-                name,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 11,
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                color: on ? ink : scheme.surface,
+                padding: const EdgeInsetsDirectional.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs + 1,
                 ),
-              ),
-            ),
-            if (selected != null && on) ...[
-              Positioned.fill(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(AppRadius.lg),
-                    border: Border.all(color: scheme.primary, width: 3),
-                    color: scheme.primary.withValues(alpha: 0.18),
-                  ),
-                ),
-              ),
-              PositionedDirectional(
-                top: AppSpacing.sm,
-                end: AppSpacing.sm,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: scheme.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.check_rounded,
-                    size: 18,
-                    color: scheme.onPrimary,
-                  ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.labelSmall
+                            ?.copyWith(color: labelColor),
+                      ),
+                    ),
+                    if (on) ...[
+                      const SizedBox(width: AppSpacing.xs),
+                      Icon(Icons.check_rounded, size: 14, color: labelColor),
+                    ],
+                  ],
                 ),
               ),
             ],
-            Positioned.fill(
-              child: Material(
-                type: MaterialType.transparency,
-                child: InkWell(onTap: onTap),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

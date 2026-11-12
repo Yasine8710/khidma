@@ -58,7 +58,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    final scheme = Theme.of(context).colorScheme;
+    final muted = scheme.onSurfaceVariant;
+    String two(int n) => n.toString().padLeft(2, '0');
 
     final titles = [
       l10n.chooseLanguage,
@@ -69,7 +71,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final pages = <Widget>[
       OnboardingPage(
-        leading: const KhidmaLogo(markSize: 56),
+        leading: const KhidmaLogo(markSize: 48),
         title: l10n.chooseLanguage,
         body: l10n.languageStepBody,
         extra: const LanguageSelector(),
@@ -114,7 +116,38 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           tooltip: l10n.back,
                           icon: const Icon(Icons.arrow_back_rounded),
                           onPressed: () => _goTo(_index - 1),
+                        )
+                      else
+                        const SizedBox(width: AppSpacing.gutter - 4),
+                      // Folio, like a numbered leaflet. Screen readers get the
+                      // same information from the live region below.
+                      ExcludeSemantics(
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.only(
+                            start: AppSpacing.xs,
+                          ),
+                          child: Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: two(_index + 1),
+                                    style: text.titleSmall,
+                                  ),
+                                  TextSpan(
+                                    text: ' / ${two(_pageCount)}',
+                                    style: text.titleSmall?.copyWith(
+                                      color: muted,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
+                      ),
                       const Spacer(),
                       if (_index > 0 && !_isLast)
                         AppButton(
@@ -142,35 +175,38 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       '${l10n.pageOf(_index + 1, _pageCount)}, ${titles[_index]}',
                   liveRegion: true,
                   excludeSemantics: true,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      for (var i = 0; i < _pageCount; i++)
-                        AnimatedContainer(
-                          duration: reduce
-                              ? Duration.zero
-                              : const Duration(milliseconds: 200),
-                          margin: const EdgeInsetsDirectional.symmetric(
-                            horizontal: AppSpacing.xs,
+                  // Plain progress marks: one ruled segment per page, inked up
+                  // to the current one.
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      horizontal: AppSpacing.gutter,
+                    ),
+                    child: Row(
+                      children: [
+                        for (var i = 0; i < _pageCount; i++) ...[
+                          if (i > 0) const SizedBox(width: AppSpacing.xs),
+                          Expanded(
+                            child: AnimatedContainer(
+                              duration: reduce
+                                  ? Duration.zero
+                                  : const Duration(milliseconds: 180),
+                              height: i == _index ? 3 : 2,
+                              color: i <= _index
+                                  ? scheme.onSurface
+                                  : scheme.outlineVariant,
+                            ),
                           ),
-                          width: i == _index ? 24 : 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: i == _index
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.outline,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                    ],
+                        ],
+                      ],
+                    ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(
                     AppSpacing.gutter,
-                    AppSpacing.xl,
+                    AppSpacing.lg,
                     AppSpacing.gutter,
-                    AppSpacing.xl,
+                    AppSpacing.lg,
                   ),
                   child: AppButton(
                     label: _isLast ? l10n.start : l10n.next,

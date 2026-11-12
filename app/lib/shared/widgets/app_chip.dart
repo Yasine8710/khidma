@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../../core/haptics.dart';
 import '../../core/theme/app_spacing.dart';
 
-/// Selectable filter chip (category, price range, availability...).
+/// Selectable filter chip (category, price range, availability...): a
+/// rectangular tab with an ink outline; selected = ink fill, paper text.
 /// At least 40 high visually and 48x48 to hit; grows with text size. The
 /// border uses the control color (>= 3:1) so an unselected chip is visible.
 class AppChip extends StatelessWidget {
@@ -23,9 +24,9 @@ class AppChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final fg = selected ? scheme.onPrimaryContainer : scheme.onSurface;
+    final fg = selected ? scheme.surface : scheme.onSurface;
     return InkWell(
-      borderRadius: BorderRadius.circular(AppRadius.lg),
+      borderRadius: BorderRadius.circular(AppRadius.sm),
       onTap: () {
         AppHaptics.selection();
         onSelected(!selected);
@@ -48,10 +49,10 @@ class AppChip extends StatelessWidget {
                 vertical: AppSpacing.sm,
               ),
               decoration: BoxDecoration(
-                color: selected ? scheme.primaryContainer : scheme.surface,
-                borderRadius: BorderRadius.circular(AppRadius.lg),
+                color: selected ? scheme.onSurface : scheme.surface,
+                borderRadius: BorderRadius.circular(AppRadius.sm),
                 border: Border.all(
-                  color: selected ? scheme.primary : scheme.outline,
+                  color: selected ? scheme.onSurface : scheme.outline,
                 ),
               ),
               child: Row(

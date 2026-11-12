@@ -7,14 +7,14 @@ import '../../../core/format/money.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_chip.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/application/marketplace_providers.dart';
 import '../../professional/application/professional_providers.dart';
+import '../../requests/presentation/ledger_widgets.dart';
 import '../application/offers_providers.dart';
 import '../domain/offers_domain.dart';
 import 'offers_texts.dart';
@@ -81,8 +81,9 @@ class _ProInboxScreenState extends ConsumerState<ProInboxScreen> {
       body: SafeArea(
         child: Column(
           children: [
+            // Filters, then the register's ink head rule.
             SizedBox(
-              height: 56,
+              height: 64,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsetsDirectional.symmetric(
@@ -90,17 +91,18 @@ class _ProInboxScreenState extends ConsumerState<ProInboxScreen> {
                   vertical: AppSpacing.sm,
                 ),
                 children: [
-                  FilterChip(
-                    label: Text(l10n.proInboxMyArea),
+                  AppChip(
+                    label: l10n.proInboxMyArea,
+                    icon: Icons.place_outlined,
                     selected: _myArea,
                     onSelected: (v) => setState(() {
                       _myArea = v;
                       _pages = 1;
                     }),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
-                  ChoiceChip(
-                    label: Text(l10n.proInboxAllCategories),
+                  const SizedBox(width: AppSpacing.lg),
+                  AppChip(
+                    label: l10n.proInboxAllCategories,
                     selected: _category == null,
                     onSelected: (_) => setState(() {
                       _category = null;
@@ -109,8 +111,8 @@ class _ProInboxScreenState extends ConsumerState<ProInboxScreen> {
                   ),
                   for (final c in categories) ...[
                     const SizedBox(width: AppSpacing.sm),
-                    ChoiceChip(
-                      label: Text(c.nameFor(locale)),
+                    AppChip(
+                      label: c.nameFor(locale),
                       selected: _category == c.id,
                       onSelected: (_) => setState(() {
                         _category = c.id;
@@ -120,6 +122,12 @@ class _ProInboxScreenState extends ConsumerState<ProInboxScreen> {
                   ],
                 ],
               ),
+            ),
+            const Padding(
+              padding: EdgeInsetsDirectional.symmetric(
+                horizontal: AppSpacing.gutter,
+              ),
+              child: LedgerRule(strong: true),
             ),
             Expanded(child: body),
           ],
@@ -155,10 +163,13 @@ class _Pages extends ConsumerWidget {
           );
         }
         items.add(
-          AppButton(
-            label: l10n.retry,
-            variant: AppButtonVariant.secondary,
-            onPressed: () => ref.invalidate(openRequestsPageProvider(q)),
+          Padding(
+            padding: const EdgeInsetsDirectional.only(top: AppSpacing.lg),
+            child: AppButton(
+              label: l10n.retry,
+              variant: AppButtonVariant.secondary,
+              onPressed: () => ref.invalidate(openRequestsPageProvider(q)),
+            ),
           ),
         );
         break;
@@ -172,7 +183,12 @@ class _Pages extends ConsumerWidget {
             ),
           );
         }
-        items.add(const Skeleton(height: 96));
+        items.add(
+          const Padding(
+            padding: EdgeInsetsDirectional.only(top: AppSpacing.md),
+            child: Skeleton(height: 96),
+          ),
+        );
         break;
       }
       final list = async.requireValue;
@@ -190,19 +206,26 @@ class _Pages extends ConsumerWidget {
     }
     if (more) {
       items.add(
-        AppButton(
-          label: l10n.loadMore,
-          variant: AppButtonVariant.secondary,
-          onPressed: onMore,
+        Padding(
+          padding: const EdgeInsetsDirectional.only(top: AppSpacing.lg),
+          child: AppButton(
+            label: l10n.loadMore,
+            variant: AppButtonVariant.secondary,
+            onPressed: onMore,
+          ),
         ),
       );
     }
     return RefreshIndicator(
       onRefresh: () async => ref.invalidate(openRequestsPageProvider),
-      child: ListView.separated(
-        padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
+      child: ListView.builder(
+        padding: const EdgeInsetsDirectional.fromSTEB(
+          AppSpacing.gutter,
+          0,
+          AppSpacing.gutter,
+          AppSpacing.xl,
+        ),
         itemCount: items.length,
-        separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
         itemBuilder: (_, i) => items[i],
       ),
     );
@@ -229,43 +252,43 @@ class _RequestCard extends ConsumerWidget {
         .map((g) => g.nameFor(locale))
         .firstOrNull;
     final mineStatus = request.myOfferStatus;
-    return AppCard(
+    final kicker = [
+      ledgerRef(l10n, request.id),
+      formatDate(request.createdAt, locale),
+      ?category,
+      ?place,
+    ].join(' · ');
+    return LedgerRow(
       semanticLabel: request.title,
       onTap: () => context.push(AppRoutes.proRequestPath(request.id)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          LedgerKicker(kicker),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             request.title,
-            style: text.titleSmall,
+            style: text.titleMedium,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          Text(
-            [?category, ?place].join(' · '),
-            style: text.bodySmall?.copyWith(color: muted),
-          ),
           const SizedBox(height: AppSpacing.sm),
           Wrap(
-            spacing: AppSpacing.sm,
+            spacing: AppSpacing.md,
             runSpacing: AppSpacing.xs,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               if (mineStatus != null)
-                AppBadge(
+                LedgerStamp(
                   label: l10n.offerYours(offerStatusLabel(l10n, mineStatus)),
                   tone: offerStatusTone(mineStatus),
                 ),
-              Text(l10n.reqOffers(request.offersCount), style: text.bodySmall),
+              Text(l10n.reqOffers(request.offersCount), style: text.labelLarge),
               if (request.budgetTnd != null)
                 Text(
                   l10n.reqBudget(formatTnd(request.budgetTnd!, locale)),
-                  style: text.bodySmall,
+                  style: text.bodySmall?.copyWith(color: muted),
                 ),
-              Text(
-                formatDate(request.createdAt, locale),
-                style: text.bodySmall?.copyWith(color: muted),
-              ),
             ],
           ),
         ],

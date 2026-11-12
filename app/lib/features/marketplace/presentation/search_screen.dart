@@ -8,6 +8,7 @@ import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_chip.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../location/application/location_providers.dart';
@@ -180,6 +181,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         place == null &&
         where == null;
 
+    final scheme = Theme.of(context).colorScheme;
+    OutlineInputBorder outline(double width) => OutlineInputBorder(
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      borderSide: BorderSide(color: scheme.onSurface, width: width),
+    );
+
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -204,7 +211,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           decoration: InputDecoration(
             hintText: l10n.searchHint,
             isDense: true,
-            prefixIcon: const Icon(Icons.search_rounded),
+            prefixIcon: Icon(Icons.search_rounded, color: scheme.onSurface),
+            border: outline(1.2),
+            enabledBorder: outline(1.2),
+            focusedBorder: outline(2),
           ),
           onChanged: _changed,
         ),
@@ -227,44 +237,43 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      ActionChip(
-                        avatar: const Icon(Icons.place_rounded, size: 18),
-                        label: Text(
-                          placeLabel(l10n, locale, place, govs, cities),
-                        ),
-                        onPressed: () async {
-                          await showPlaceSheet(context);
-                          if (mounted) setState(() => _pages = 1);
-                        },
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      FilterChip(
-                        avatar: const Icon(Icons.my_location_rounded, size: 18),
-                        label: Text(l10n.nearMe),
-                        selected: where != null,
-                        onSelected: (on) => _toggleNearMe(on),
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
                       Semantics(
                         label: l10n.filtersActive(_filters.activeCount),
                         excludeSemantics: true,
                         button: true,
                         onTap: _openFilters,
-                        child: ActionChip(
-                          avatar: const Icon(Icons.tune_rounded, size: 18),
-                          label: Text(
-                            _filters.activeCount == 0
-                                ? l10n.filtersAction
-                                : '${l10n.filtersAction} (${_filters.activeCount})',
-                          ),
-                          onPressed: _openFilters,
+                        child: AppChip(
+                          icon: Icons.tune_rounded,
+                          label: _filters.activeCount == 0
+                              ? l10n.filtersAction
+                              : '${l10n.filtersAction} (${_filters.activeCount})',
+                          selected: _filters.activeCount > 0,
+                          onSelected: (_) => _openFilters(),
                         ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      AppChip(
+                        icon: Icons.place_outlined,
+                        label: placeLabel(l10n, locale, place, govs, cities),
+                        selected: place != null,
+                        onSelected: (_) async {
+                          await showPlaceSheet(context);
+                          if (mounted) setState(() => _pages = 1);
+                        },
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      AppChip(
+                        icon: Icons.my_location_rounded,
+                        label: l10n.nearMe,
+                        selected: where != null,
+                        onSelected: _toggleNearMe,
                       ),
                     ],
                   ),
                 ),
               ),
             ),
+            Divider(color: scheme.outlineVariant),
             Expanded(
               child: browsing
                   ? EmptyState(
@@ -332,7 +341,7 @@ class _Results extends ConsumerWidget {
       }
       if (!async.hasValue) {
         if (page == 0) return const _ResultsSkeleton();
-        items.add(const _PageNotice(child: Skeleton(height: 112)));
+        items.add(const _PageNotice(child: Skeleton(height: 92)));
         break;
       }
       final list = async.requireValue;
@@ -345,12 +354,9 @@ class _Results extends ConsumerWidget {
       }
       for (final p in list) {
         items.add(
-          Padding(
-            padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.md),
-            child: ProfessionalCard(
-              professional: p,
-              onTap: () => context.push(AppRoutes.professionalPath(p.id)),
-            ),
+          ProfessionalCard(
+            professional: p,
+            onTap: () => context.push(AppRoutes.professionalPath(p.id)),
           ),
         );
       }
@@ -372,7 +378,12 @@ class _Results extends ConsumerWidget {
     }
 
     return ListView.builder(
-      padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
+      padding: const EdgeInsetsDirectional.fromSTEB(
+        AppSpacing.gutter,
+        0,
+        AppSpacing.gutter,
+        AppSpacing.gutter,
+      ),
       itemCount: items.length,
       itemBuilder: (_, i) => items[i],
     );
@@ -386,7 +397,7 @@ class _PageNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.md),
+    padding: const EdgeInsetsDirectional.only(top: AppSpacing.lg),
     child: child,
   );
 }
@@ -400,10 +411,26 @@ class _ResultsSkeleton extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
       children: [
-        for (var i = 0; i < 4; i++) ...[
-          const Skeleton(height: 112, radius: AppRadius.lg),
-          const SizedBox(height: AppSpacing.md),
-        ],
+        for (var i = 0; i < 5; i++)
+          const Padding(
+            padding: EdgeInsetsDirectional.symmetric(vertical: AppSpacing.md),
+            child: Row(
+              children: [
+                Skeleton(width: 64, height: 64),
+                SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Skeleton(width: 160, height: 14),
+                      SizedBox(height: AppSpacing.sm),
+                      Skeleton(width: 100, height: 12),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
       ],
     ),
   );

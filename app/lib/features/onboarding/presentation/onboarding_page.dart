@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_spacing.dart';
 
-/// One onboarding page: tinted icon, title, body and optional extra content
-/// (the language list). Scrolls on small screens or large text.
+/// One onboarding page, set like a printed leaflet: a framed photo (never
+/// full-bleed), a slab headline and a short body, all aligned to the start
+/// edge, plus optional extra content (the language list). Scrolls on small
+/// screens or large text.
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({
     super.key,
@@ -18,10 +20,10 @@ class OnboardingPage extends StatelessWidget {
 
   final IconData? icon;
 
-  /// Bundled photo shown instead of the icon badge (value pages).
+  /// Bundled photo shown (framed) instead of the icon (value pages).
   final String? photo;
 
-  /// Replaces the icon badge (e.g. the brand logo on the first page).
+  /// Replaces the icon (e.g. the brand logo on the first page).
   final Widget? leading;
   final String title;
   final String body;
@@ -40,9 +42,23 @@ class OnboardingPage extends StatelessWidget {
     // Only drop decoration when space is really tight (very short screen or
     // large text); the brand logo should survive on ordinary small screens.
     final tight = media.size.height < 560 || media.textScaler.scale(10) > 13;
-    final iconBox = compact ? 72.0 : 120.0;
-    // The group sits in the middle of the page instead of hugging the top
-    // with a dead zone below; it still scrolls when space is tight.
+
+    Widget? visual;
+    if (photo != null) {
+      visual = _FramedPhoto(
+        asset: photo!,
+        height: compact ? 176 : 260,
+        icon: icon,
+      );
+    } else if (leading != null) {
+      visual = Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: leading,
+      );
+    } else if (icon != null) {
+      visual = _RuledIcon(icon: icon!);
+    }
+
     return LayoutBuilder(
       builder: (context, box) => SingleChildScrollView(
         padding: const EdgeInsetsDirectional.symmetric(
@@ -53,42 +69,15 @@ class OnboardingPage extends StatelessWidget {
           constraints: BoxConstraints(
             minHeight: box.maxHeight - AppSpacing.lg * 2,
           ),
+          // The group sits in the middle of the page instead of hugging the
+          // top with a dead zone below; it still scrolls when space is tight.
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (!(tight && hideIconWhenCompact)) ...[
-                  if (photo != null)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(AppRadius.xl),
-                      child: Image.asset(
-                        photo!,
-                        height: compact ? 200 : 320,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        // Decoration only: the title says everything.
-                        excludeFromSemantics: true,
-                        errorBuilder: (_, _, _) => const SizedBox(height: 120),
-                      ),
-                    )
-                  else if (leading != null)
-                    leading!
-                  else
-                    Container(
-                      width: iconBox,
-                      height: iconBox,
-                      decoration: BoxDecoration(
-                        color: scheme.primaryContainer,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        icon,
-                        size: iconBox * 0.46,
-                        color: scheme.brightness == Brightness.light
-                            ? scheme.primary
-                            : scheme.onPrimaryContainer,
-                      ),
-                    ),
+                if (visual != null && !(tight && hideIconWhenCompact)) ...[
+                  visual,
                   SizedBox(height: compact ? AppSpacing.lg : AppSpacing.xl),
                 ],
                 Semantics(
@@ -96,7 +85,7 @@ class OnboardingPage extends StatelessWidget {
                   child: Text(
                     title,
                     style: text.headlineMedium,
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.start,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -105,7 +94,7 @@ class OnboardingPage extends StatelessWidget {
                   style: text.bodyLarge?.copyWith(
                     color: scheme.onSurfaceVariant,
                   ),
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.start,
                 ),
                 if (extra != null) ...[
                   const SizedBox(height: AppSpacing.xl),
@@ -115,6 +104,66 @@ class OnboardingPage extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// A photo in a 1px rule frame, like a print pasted into a ledger.
+class _FramedPhoto extends StatelessWidget {
+  const _FramedPhoto({required this.asset, required this.height, this.icon});
+
+  final String asset;
+  final double height;
+  final IconData? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return DecoratedBox(
+      position: DecorationPosition.foreground,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: scheme.outlineVariant),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: Image.asset(
+          asset,
+          height: height,
+          width: double.infinity,
+          fit: BoxFit.cover,
+          // Decoration only: the title says everything.
+          excludeFromSemantics: true,
+          errorBuilder: (_, _, _) => SizedBox(
+            height: height,
+            child: icon == null ? null : Center(child: _RuledIcon(icon: icon!)),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RuledIcon extends StatelessWidget {
+  const _RuledIcon({required this.icon});
+
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Container(
+        width: 64,
+        height: 64,
+        decoration: BoxDecoration(
+          color: scheme.surface,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          border: Border.all(color: scheme.outlineVariant),
+        ),
+        child: Icon(icon, size: 30, color: scheme.onSurfaceVariant),
       ),
     );
   }

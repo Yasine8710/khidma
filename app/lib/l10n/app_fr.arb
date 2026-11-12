@@ -3,6 +3,14 @@
   "appName": "Khidma",
   "tagline": "Des professionnels de confiance, près de chez vous.",
   "chooseLanguage": "Choisir la langue",
+  "acctMemberCard": "Carte de membre",
+  "acctAccountType": "Type de compte",
+  "acctCustomer": "Client",
+  "acctSettings": "Réglages",
+  "acctAccount": "Compte",
+  "acctWorkshop": "Atelier",
+  "acctStatus": "Statut",
+  "acctTools": "Outils",
   "languageFrench": "Français",
   "languageArabic": "العربية",
   "languageEnglish": "English",
@@ -176,6 +184,22 @@
   "homeGreeting": "Bonjour",
   "homeGreetingNamed": "Bonjour, {name}",
   "homeSubtitle": "De quel service avez-vous besoin ?",
+  "discLicenceKicker": "Fiche professionnelle",
+  "discFactExperience": "Expérience",
+  "discFactAvailability": "Disponibilité",
+  "discFactArea": "Zone",
+  "discHintPlumbing": "Fuites, sanitaires, chauffe-eau",
+  "discHintElectricity": "Installations, pannes, tableaux",
+  "discHintAirConditioning": "Pose, entretien, réparation",
+  "discHintMechanics": "Réparation et entretien de véhicules",
+  "discHintPainting": "Intérieur et extérieur",
+  "discHintCarpentry": "Meubles, portes, fenêtres en bois",
+  "discHintCleaning": "Maisons, bureaux, fin de chantier",
+  "discHintAppliance": "Lave-linge, réfrigérateurs, fours",
+  "discHintConstruction": "Maçonnerie, carrelage, rénovation",
+  "discHintGardening": "Jardins et espaces verts",
+  "discHintMoving": "Transport et déménagement",
+  "discHintMaintenance": "Petits travaux et dépannage",
   "homeQuoteTitle": "Besoin d’un service ?",
   "homeQuoteBody": "Décrivez-le une fois et recevez des offres de professionnels.",
   "avatarChange": "Changer la photo",
@@ -448,6 +472,31 @@
   },
   "reqNew": "Nouvelle demande",
   "reqMineTitle": "Mes demandes",
+  "flowRef": "N° {code}",
+  "@flowRef": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "flowRequestCount": "{count, plural, =1{1 demande} other{{count} demandes}}",
+  "@flowRequestCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "flowSecService": "Service",
+  "flowSecNeed": "Le besoin",
+  "flowSecWhere": "Où",
+  "flowSecWhen": "Quand",
+  "flowSecPhotos": "Photos",
+  "flowFactPlace": "Lieu",
+  "flowFactBudget": "Budget indicatif",
+  "flowFactNeededBy": "Souhaité pour le",
+  "flowFactExpires": "Expire le",
   "reqEmptyCta": "Demander un devis",
   "reqStatusOpen": "Ouverte",
   "reqStatusAwarded": "Attribuée",

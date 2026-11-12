@@ -11,6 +11,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/skeleton.dart';
+import '../../marketplace/presentation/professional_card.dart';
 import '../../requests/domain/requests_domain.dart';
 import '../application/reviews_providers.dart';
 import '../domain/reviews_domain.dart';
@@ -265,75 +266,91 @@ class _ReviewsListState extends ConsumerState<ReviewsList> {
     }
     if (reviews.isEmpty && footer == null) return const SizedBox.shrink();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: AppSpacing.xl),
-        Semantics(
-          header: true,
-          child: Text(l10n.reviewsTitle, style: text.titleMedium),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        for (final r in reviews)
-          Padding(
-            padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.md),
-            child: Semantics(
-              container: true,
-              label:
-                  '${l10n.reviewStar(r.rating)}, ${formatMonthYear(r.month, locale)}',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Wrap(
-                    spacing: AppSpacing.sm,
-                    crossAxisAlignment: WrapCrossAlignment.center,
+    final rule = Theme.of(context).colorScheme.outlineVariant;
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(top: AppSpacing.xxl),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          RegisterHeading(title: l10n.reviewsTitle),
+          for (final r in reviews)
+            DecoratedBox(
+              decoration: BoxDecoration(
+                border: BorderDirectional(bottom: BorderSide(color: rule)),
+              ),
+              child: Padding(
+                padding: const EdgeInsetsDirectional.symmetric(
+                  vertical: AppSpacing.sm,
+                ),
+                child: Semantics(
+                  container: true,
+                  label:
+                      '${l10n.reviewStar(r.rating)}, ${formatMonthYear(r.month, locale)}',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            for (var i = 1; i <= 5; i++)
-                              Icon(
-                                Icons.star_rounded,
-                                size: 16,
-                                color: i <= r.rating
-                                    ? AppColors.saffron
-                                    : Theme.of(context).colorScheme.outline,
-                              ),
-                          ],
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Wrap(
+                              spacing: AppSpacing.md,
+                              runSpacing: AppSpacing.xs,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                Directionality(
+                                  textDirection: TextDirection.ltr,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      for (var i = 1; i <= 5; i++)
+                                        Icon(
+                                          Icons.star_rounded,
+                                          size: 15,
+                                          color: i <= r.rating
+                                              ? AppColors.saffron
+                                              : Theme.of(context)
+                                                    .colorScheme
+                                                    .outline,
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                  '${l10n.reviewAuthorAnon} · ${formatMonthYear(r.month, locale)}',
+                                  style: text.bodySmall?.copyWith(color: muted),
+                                ),
+                              ],
+                            ),
+                          ),
+                          ReportButton(
+                            target: ReportTarget.review,
+                            targetId: r.id,
+                            compact: true,
+                          ),
+                        ],
+                      ),
+                      if (r.comment != null && r.comment!.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(
+                            bottom: AppSpacing.sm,
+                          ),
+                          child: Text(r.comment!, style: text.bodyLarge),
                         ),
-                      ),
-                      Text(
-                        '${l10n.reviewAuthorAnon} · ${formatMonthYear(r.month, locale)}',
-                        style: text.bodySmall?.copyWith(color: muted),
-                      ),
-                      ReportButton(
-                        target: ReportTarget.review,
-                        targetId: r.id,
-                        compact: true,
-                      ),
                     ],
                   ),
-                  if (r.comment != null && r.comment!.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(
-                        top: AppSpacing.xs,
-                      ),
-                      child: Text(r.comment!, style: text.bodyMedium),
-                    ),
-                ],
+                ),
               ),
             ),
-          ),
-        ?footer,
-        if (footer == null && more)
-          AppButton(
-            label: l10n.reviewsMore,
-            variant: AppButtonVariant.secondary,
-            onPressed: () => setState(() => _pages++),
-          ),
-      ],
+          if (footer != null || more) const SizedBox(height: AppSpacing.md),
+          ?footer,
+          if (footer == null && more)
+            AppButton(
+              label: l10n.reviewsMore,
+              variant: AppButtonVariant.secondary,
+              onPressed: () => setState(() => _pages++),
+            ),
+        ],
+      ),
     );
   }
 }

@@ -19,6 +19,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chooseLanguage => 'اختر اللغة';
 
   @override
+  String get acctMemberCard => 'بطاقة العضو';
+
+  @override
+  String get acctAccountType => 'نوع الحساب';
+
+  @override
+  String get acctCustomer => 'زبون';
+
+  @override
+  String get acctSettings => 'الإعدادات';
+
+  @override
+  String get acctAccount => 'الحساب';
+
+  @override
+  String get acctWorkshop => 'الورشة';
+
+  @override
+  String get acctStatus => 'الحالة';
+
+  @override
+  String get acctTools => 'الأدوات';
+
+  @override
   String get languageFrench => 'Français';
 
   @override
@@ -419,6 +443,54 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get homeSubtitle => 'ما الخدمة التي تحتاجها؟';
+
+  @override
+  String get discLicenceKicker => 'البطاقة المهنية';
+
+  @override
+  String get discFactExperience => 'الخبرة';
+
+  @override
+  String get discFactAvailability => 'التوفّر';
+
+  @override
+  String get discFactArea => 'المنطقة';
+
+  @override
+  String get discHintPlumbing => 'تسربات، تركيبات صحية، سخانات';
+
+  @override
+  String get discHintElectricity => 'تركيبات، أعطال، لوحات كهربائية';
+
+  @override
+  String get discHintAirConditioning => 'تركيب وصيانة وإصلاح';
+
+  @override
+  String get discHintMechanics => 'إصلاح وصيانة السيارات';
+
+  @override
+  String get discHintPainting => 'دهن داخلي وخارجي';
+
+  @override
+  String get discHintCarpentry => 'أثاث وأبواب ونوافذ خشبية';
+
+  @override
+  String get discHintCleaning => 'منازل ومكاتب وما بعد الأشغال';
+
+  @override
+  String get discHintAppliance => 'غسالات وثلاجات وأفران';
+
+  @override
+  String get discHintConstruction => 'بناء، تبليط، ترميم';
+
+  @override
+  String get discHintGardening => 'الحدائق والمساحات الخضراء';
+
+  @override
+  String get discHintMoving => 'نقل الأثاث والأمتعة';
+
+  @override
+  String get discHintMaintenance => 'أعمال صغيرة وإصلاحات منزلية';
 
   @override
   String get homeQuoteTitle => 'تحتاج إلى خدمة؟';
@@ -1007,6 +1079,52 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reqMineTitle => 'طلباتي';
+
+  @override
+  String flowRef(String code) {
+    return 'رقم $code';
+  }
+
+  @override
+  String flowRequestCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طلب',
+      many: '$count طلبًا',
+      few: '$count طلبات',
+      two: 'طلبان',
+      one: 'طلب واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get flowSecService => 'الخدمة';
+
+  @override
+  String get flowSecNeed => 'ما تحتاجه';
+
+  @override
+  String get flowSecWhere => 'المكان';
+
+  @override
+  String get flowSecWhen => 'الموعد';
+
+  @override
+  String get flowSecPhotos => 'الصور';
+
+  @override
+  String get flowFactPlace => 'المكان';
+
+  @override
+  String get flowFactBudget => 'ميزانية تقريبية';
+
+  @override
+  String get flowFactNeededBy => 'مطلوب قبل';
+
+  @override
+  String get flowFactExpires => 'ينتهي في';
 
   @override
   String get reqEmptyCta => 'اطلب عرض سعر';

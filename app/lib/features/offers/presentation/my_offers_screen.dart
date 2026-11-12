@@ -9,16 +9,25 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
+import '../../requests/presentation/ledger_widgets.dart';
 import '../../requests/presentation/requests_texts.dart';
 import '../../reviews/application/reviews_providers.dart';
 import '../../reviews/presentation/review_widgets.dart';
 import '../application/offers_providers.dart';
 import '../domain/offers_domain.dart';
+import 'job_timeline.dart';
 import 'offers_texts.dart';
+
+/// Registers start under the app bar and end clear of the screen edge.
+const _listPadding = EdgeInsetsDirectional.fromSTEB(
+  AppSpacing.gutter,
+  AppSpacing.sm,
+  AppSpacing.gutter,
+  AppSpacing.xl,
+);
 
 /// The professional's offers with their status; opens the request.
 class MyOffersScreen extends ConsumerWidget {
@@ -41,43 +50,46 @@ class MyOffersScreen extends ConsumerWidget {
             )
           : RefreshIndicator(
               onRefresh: () async => ref.invalidate(myOffersProvider),
-              child: ListView.separated(
-                padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
-                itemCount: list.length,
-                separatorBuilder: (_, _) =>
-                    const SizedBox(height: AppSpacing.md),
+              child: ListView.builder(
+                padding: _listPadding,
+                itemCount: list.length + 1,
                 itemBuilder: (context, i) {
-                  final o = list[i];
-                  return AppCard(
+                  if (i == 0) return const LedgerRule(strong: true);
+                  final o = list[i - 1];
+                  return LedgerRow(
                     semanticLabel: o.requestTitle,
                     onTap: () =>
                         context.push(AppRoutes.proRequestPath(o.requestId)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        LedgerKicker(
+                          '${ledgerRef(l10n, o.id)} · '
+                          '${formatDate(o.createdAt, locale)}',
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           o.requestTitle,
-                          style: text.titleSmall,
+                          style: text.titleMedium,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: AppSpacing.sm),
                         Wrap(
-                          spacing: AppSpacing.sm,
+                          spacing: AppSpacing.md,
                           runSpacing: AppSpacing.xs,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            AppBadge(
+                            Directionality(
+                              textDirection: TextDirection.ltr,
+                              child: Text(
+                                formatTnd(o.priceTnd, locale),
+                                style: text.titleLarge,
+                              ),
+                            ),
+                            LedgerStamp(
                               label: offerStatusLabel(l10n, o.status),
                               tone: offerStatusTone(o.status),
-                            ),
-                            Text(
-                              formatTnd(o.priceTnd, locale),
-                              style: text.titleSmall,
-                            ),
-                            Text(
-                              formatDate(o.createdAt, locale),
-                              style: text.bodySmall,
                             ),
                           ],
                         ),
@@ -169,41 +181,39 @@ class JobsScreen extends ConsumerWidget {
             )
           : RefreshIndicator(
               onRefresh: () async => ref.invalidate(myJobsProvider),
-              child: ListView.separated(
-                padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
-                itemCount: list.length,
-                separatorBuilder: (_, _) =>
-                    const SizedBox(height: AppSpacing.md),
+              child: ListView.builder(
+                padding: _listPadding,
+                itemCount: list.length + 1,
                 itemBuilder: (context, i) {
-                  final j = list[i];
-                  return AppCard(
+                  if (i == 0) return const LedgerRule(strong: true);
+                  final j = list[i - 1];
+                  return LedgerRow(
+                    onTap: null,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        LedgerKicker(
+                          '${ledgerRef(l10n, j.id)} · '
+                          '${formatDate(j.createdAt, locale)}',
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           j.requestTitle,
-                          style: text.titleSmall,
+                          style: text.titleMedium,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: AppSpacing.sm),
-                        Wrap(
-                          spacing: AppSpacing.sm,
-                          runSpacing: AppSpacing.xs,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            AppBadge(
-                              label: jobStatusLabel(l10n, j.status),
-                              tone: jobStatusTone(j.status),
-                            ),
-                            Text(
-                              l10n.jobAgreedPrice(
-                                formatTnd(j.priceTnd, locale),
-                              ),
-                              style: text.bodySmall,
-                            ),
-                          ],
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          l10n.jobAgreedPrice(formatTnd(j.priceTnd, locale)),
+                          style: text.bodyMedium?.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant,
+                          ),
                         ),
+                        const SizedBox(height: AppSpacing.sm),
+                        JobTrack(status: j.status),
                         if (j.status == BookingStatus.completed)
                           _JobReview(bookingId: j.id),
                         if (j.canStart || j.canMarkDone || j.canCancel) ...[
@@ -292,7 +302,11 @@ class _JobReview extends ConsumerWidget {
     if (reviewed.contains(bookingId)) {
       return Padding(
         padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
-        child: AppBadge(label: l10n.reviewDone, tone: BadgeTone.success),
+        child: LedgerStamp(
+          label: l10n.reviewDone,
+          tone: BadgeTone.success,
+          icon: Icons.check_rounded,
+        ),
       );
     }
     return Padding(

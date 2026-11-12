@@ -38,3 +38,6 @@ Thumbs.db
 
 # Local Google Maps key for iOS builds (see docs/MAPS.md)
 app/ios/Flutter/Maps.xcconfig
+
+# Claude Code agent worktrees
+.claude/

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_avatar.dart';
 import '../application/profile_providers.dart';
@@ -14,8 +13,8 @@ class AvatarEditor extends ConsumerWidget {
 
   final double size;
 
-  /// Draws a white ring so the picture stands out on a blue or photo
-  /// background (headers).
+  /// Draws a paper-coloured ring so the picture stands out over a photo
+  /// (cover headers).
   final bool onPhoto;
 
   Future<void> _open(BuildContext context, WidgetRef ref) async {
@@ -80,9 +79,8 @@ class AvatarEditor extends ConsumerWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: onPhoto
-                      ? Border.all(color: Colors.white, width: 4)
+                      ? Border.all(color: scheme.surface, width: 3)
                       : null,
-                  boxShadow: AppColors.softShadow,
                 ),
                 child: AppAvatar(
                   name: profile?.fullName ?? '',
@@ -115,18 +113,20 @@ class AvatarEditor extends ConsumerWidget {
               PositionedDirectional(
                 end: 0,
                 bottom: 0,
+                // A small ink stamp on paper: says "you can change this"
+                // without competing with the screen's one terracotta action.
                 child: Container(
                   width: badge,
                   height: badge,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: scheme.primary,
+                    color: scheme.onSurface,
                     border: Border.all(color: scheme.surface, width: 2),
                   ),
                   child: Icon(
-                    Icons.photo_camera_rounded,
+                    Icons.photo_camera_outlined,
                     size: badge * 0.5,
-                    color: scheme.onPrimary,
+                    color: scheme.surface,
                   ),
                 ),
               ),

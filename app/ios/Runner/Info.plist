@@ -88,5 +88,5 @@
 		<false/>
 		<key>GMSApiKey</key>
 		<string>$(GOOGLE_MAPS_API_KEY)</string>
-</dict>
+	</dict>
 </plist>

@@ -22,9 +22,10 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
-PRIMARY = (0x1F, 0x5A, 0xA6, 255)
+PRIMARY = (0xB0, 0x43, 0x2A, 255)  # terracotta
 WHITE = (255, 255, 255, 255)
-SAFFRON = (0xE8, 0xA3, 0x3D, 255)
+BONE = (0xF4, 0xEF, 0xE6, 255)
+SAFFRON = (0xC9, 0x8E, 0x1F, 255)  # ochre
 CLEAR = (0, 0, 0, 0)
 
 # Geometry in a 120x120 grid. Radius of an arch = (x1 - x0) / 2.
@@ -76,17 +77,17 @@ def write_sources():
     OUT.mkdir(parents=True, exist_ok=True)
     unit = 1024 / 120
     # iOS / web icon: opaque, mark fills ~69% of the height.
-    render(1024, PRIMARY, unit * 1.3).convert('RGB').save(OUT / 'icon-1024.png')
+    render(1024, PRIMARY, unit * 1.3, BONE).convert('RGB').save(OUT / 'icon-1024.png')
     # Android adaptive foreground: transparent; fits the 66% safe zone.
-    render(1024, CLEAR, unit * 1.15).save(OUT / 'icon-foreground.png')
+    render(1024, CLEAR, unit * 1.15, BONE).save(OUT / 'icon-foreground.png')
     # Android 13+ themed icon: single-color silhouette (arch + dot), same padding.
     render(1024, CLEAR, unit * 1.15, WHITE, WHITE).save(OUT / 'icon-monochrome.png')
     # Splash mark: transparent, smaller on the canvas.
-    render(768, CLEAR, 768 / 120 * 0.9).save(OUT / 'mark-splash.png')
+    render(768, CLEAR, 768 / 120 * 0.9, PRIMARY).save(OUT / 'mark-splash.png')
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
   <title>Khidma</title>
-  <path fill="#1F5AA6" fill-rule="evenodd" d="{svg_path(OUTER)}{svg_path(INNER)}"/>
-  <circle cx="{DOT['cx']}" cy="{DOT['cy']}" r="{DOT['r']}" fill="#E8A33D"/>
+  <path fill="#B0432A" fill-rule="evenodd" d="{svg_path(OUTER)}{svg_path(INNER)}"/>
+  <circle cx="{DOT['cx']}" cy="{DOT['cy']}" r="{DOT['r']}" fill="#C98E1F"/>
 </svg>
 '''
     (OUT / 'logo-mark.svg').write_text(svg, encoding='utf-8')

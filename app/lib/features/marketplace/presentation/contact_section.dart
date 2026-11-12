@@ -11,6 +11,7 @@ import '../../auth/application/auth_providers.dart';
 import '../application/contact_providers.dart';
 import '../application/marketplace_providers.dart';
 import '../domain/marketplace_domain.dart';
+import 'professional_card.dart';
 
 /// Contact: the number is fetched only when a signed-in person asks, and only
 /// kept while this screen is open.
@@ -39,6 +40,7 @@ class ContactSection extends ConsumerWidget {
           const SizedBox(height: AppSpacing.md),
           AppButton(
             label: l10n.contactSignIn,
+            variant: AppButtonVariant.secondary,
             onPressed: () => context.push(AppRoutes.login),
           ),
         ],
@@ -48,6 +50,7 @@ class ContactSection extends ConsumerWidget {
         ContactRevealed(:final phone) => _Revealed(phone: phone),
         ContactLoading() => AppButton(
           label: l10n.contactShow,
+          variant: AppButtonVariant.secondary,
           isLoading: true,
           onPressed: null,
         ),
@@ -73,6 +76,7 @@ class ContactSection extends ConsumerWidget {
         ),
         ContactHidden() => AppButton(
           label: l10n.contactShow,
+          variant: AppButtonVariant.secondary,
           onPressed: () =>
               ref.read(contactProvider(professionalId).notifier).reveal(),
         ),
@@ -80,12 +84,9 @@ class ContactSection extends ConsumerWidget {
     }
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Semantics(
-          header: true,
-          child: Text(l10n.contactTitle, style: text.titleMedium),
-        ),
+        RegisterHeading(title: l10n.contactTitle),
         const SizedBox(height: AppSpacing.sm),
         body,
       ],
@@ -137,7 +138,8 @@ class _Revealed extends ConsumerWidget {
           textDirection: TextDirection.ltr,
           child: SelectableText(
             shown,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.headlineSmall
+                ?.copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
           ),
         ),
         const SizedBox(height: AppSpacing.md),

@@ -148,7 +148,7 @@ void main() {
       expect(find.text('Recherche'), findsNothing); // title is the field
       expect(find.byType(TextField), findsOneWidget);
       expect(find.text(_pro), findsNothing, reason: 'a plumber, not electric');
-      expect(find.byType(Card), findsWidgets);
+      expect(find.byType(ProfessionalCard), findsWidgets);
     });
 
     testWidgets('typing in search finds by name; nonsense shows empty', (

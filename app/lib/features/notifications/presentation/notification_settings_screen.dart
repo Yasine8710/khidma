@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/error_state.dart';
+import '../../../shared/widgets/register_row.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../auth/presentation/signed_out_prompt.dart';
@@ -35,7 +36,8 @@ class NotificationSettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    final scheme = Theme.of(context).colorScheme;
+    final muted = scheme.onSurfaceVariant;
     final signedIn = ref.watch(currentUserProvider) != null;
     final pushAvailable = ref.watch(pushServiceProvider).isAvailable;
     final async = ref.watch(notificationPrefsProvider);
@@ -51,6 +53,16 @@ class NotificationSettingsScreen extends ConsumerWidget {
         body: l10n.notifIntro,
       );
     } else if (prefs != null) {
+      Widget toggle(String title, bool value, ValueChanged<bool> onChanged) =>
+          SwitchListTile(
+            contentPadding: const EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.xs,
+            ),
+            minTileHeight: 56,
+            title: Text(title),
+            value: value,
+            onChanged: onChanged,
+          );
       body = ListView(
         padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
         children: [
@@ -63,24 +75,30 @@ class NotificationSettingsScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.md),
           ],
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.notifOffers),
-            value: prefs.offers,
-            onChanged: (v) => _change(context, ref, prefs.copyWith(offers: v)),
-          ),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.notifMessages),
-            value: prefs.messages,
-            onChanged: (v) =>
-                _change(context, ref, prefs.copyWith(messages: v)),
-          ),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.notifJobs),
-            value: prefs.jobs,
-            onChanged: (v) => _change(context, ref, prefs.copyWith(jobs: v)),
+          const SizedBox(height: AppSpacing.sm),
+          // Ink switches on ruled rows: "on" is not the screen's action, so
+          // it is not terracotta.
+          Theme(
+            data: Theme.of(context).copyWith(switchTheme: _inkSwitch(scheme)),
+            child: RegisterGroup(
+              children: [
+                toggle(
+                  l10n.notifOffers,
+                  prefs.offers,
+                  (v) => _change(context, ref, prefs.copyWith(offers: v)),
+                ),
+                toggle(
+                  l10n.notifMessages,
+                  prefs.messages,
+                  (v) => _change(context, ref, prefs.copyWith(messages: v)),
+                ),
+                toggle(
+                  l10n.notifJobs,
+                  prefs.jobs,
+                  (v) => _change(context, ref, prefs.copyWith(jobs: v)),
+                ),
+              ],
+            ),
           ),
         ],
       );
@@ -101,4 +119,18 @@ class NotificationSettingsScreen extends ConsumerWidget {
       body: SafeArea(child: body),
     );
   }
+
+  static SwitchThemeData _inkSwitch(ColorScheme cs) => SwitchThemeData(
+    thumbColor: WidgetStateProperty.resolveWith(
+      (s) => s.contains(WidgetState.selected) ? cs.surface : cs.outline,
+    ),
+    trackColor: WidgetStateProperty.resolveWith(
+      (s) => s.contains(WidgetState.selected)
+          ? cs.onSurface
+          : cs.surfaceContainerHighest,
+    ),
+    trackOutlineColor: WidgetStateProperty.resolveWith(
+      (s) => s.contains(WidgetState.selected) ? cs.onSurface : cs.outline,
+    ),
+  );
 }
