@@ -92,20 +92,26 @@ Future<void> loadAppFonts() async {
     ..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'));
   await icons.load();
 
-  await load('Anton', ['Anton-Regular.ttf']);
-  await load('Barlow', [
-    'Barlow-Regular.ttf',
-    'Barlow-Medium.ttf',
-    'Barlow-SemiBold.ttf',
-    'Barlow-Bold.ttf',
-  ]);
-  await load('Lalezar', ['Lalezar-Regular.ttf']);
-  await load('Tajawal', [
+  // Latin text uses the platform font on devices; in tests Tajawal (which
+  // has Latin glyphs too) stands in for it under the platform family names.
+  const tajawal = [
     'Tajawal-Regular.ttf',
     'Tajawal-Medium.ttf',
     'Tajawal-Bold.ttf',
     'Tajawal-ExtraBold.ttf',
-  ]);
+  ];
+  for (final family in [
+    'Tajawal',
+    'Roboto',
+    'CupertinoSystemText',
+    'CupertinoSystemDisplay',
+    '.SF Pro Text',
+    '.SF Pro Display',
+    '.SF UI Text',
+    '.SF UI Display',
+  ]) {
+    await load(family, tajawal);
+  }
 }
 
 /// Scrolls the Profile list (lazy) until [target] is built and visible.

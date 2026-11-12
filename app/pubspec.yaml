@@ -75,21 +75,6 @@ flutter:
   generate: true
 
   fonts:
-    - family: Anton
-      fonts:
-        - asset: assets/fonts/Anton-Regular.ttf
-    - family: Barlow
-      fonts:
-        - asset: assets/fonts/Barlow-Regular.ttf
-        - asset: assets/fonts/Barlow-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/Barlow-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/Barlow-Bold.ttf
-          weight: 700
-    - family: Lalezar
-      fonts:
-        - asset: assets/fonts/Lalezar-Regular.ttf
     - family: Tajawal
       fonts:
         - asset: assets/fonts/Tajawal-Regular.ttf

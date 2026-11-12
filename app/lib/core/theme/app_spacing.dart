@@ -9,16 +9,18 @@ abstract final class AppSpacing {
   static const double gutter = 20;
 }
 
-/// Almost-square corners: blocks, not bubbles.
+/// Soft, friendly corners.
 abstract final class AppRadius {
-  static const double sm = 2;
-  static const double md = 3;
-  static const double lg = 4;
-  static const double xl = 6;
+  static const double sm = 10; // chips, small tiles
+  static const double md = 14; // inputs, buttons
+  static const double lg = 18; // cards
+  static const double xl = 24; // sheets, hero cards
+  static const double pill = 999;
 }
 
-/// Heavy ink outline and the hard offset "sticker" shadow of cards and buttons.
+/// Card outline. Kept under its old name for older call sites: a 1 px
+/// hairline and no hard shadow ([offset] is 0).
 abstract final class AppInk {
-  static const double border = 2;
-  static const double offset = 4; // shadow offset
+  static const double border = 1;
+  static const double offset = 0;
 }

@@ -25,6 +25,7 @@
   },
   "phoneInvalid": "Numéro tunisien invalide. Exemple : +216 20 123 456",
   "navHome": "Accueil",
+  "navExplore": "Explorer",
   "navRequests": "Demandes",
   "navMessages": "Messages",
   "navProfile": "Profil",

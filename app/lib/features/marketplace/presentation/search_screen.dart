@@ -29,10 +29,18 @@ const _maxOffset = 5000;
 /// Search: text, category, minimum rating, availability, place, sorting and
 /// paging. Pages load one at a time; each can fail and retry on its own.
 class SearchScreen extends ConsumerStatefulWidget {
-  const SearchScreen({super.key, this.categoryId, this.initialText = ''});
+  const SearchScreen({
+    super.key,
+    this.categoryId,
+    this.initialText = '',
+    this.asTab = false,
+  });
 
   final int? categoryId;
   final String initialText;
+
+  /// Root of the Explore tab: no back button, no keyboard on open.
+  final bool asTab;
 
   @override
   ConsumerState<SearchScreen> createState() => _SearchScreenState();
@@ -189,6 +197,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: !widget.asTab,
         actions: [
           if (mapAvailable)
             IconButton(
@@ -199,7 +208,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         ],
         title: TextField(
           controller: _controller,
-          autofocus: widget.categoryId == null && widget.initialText.isEmpty,
+          autofocus: !widget.asTab &&
+              widget.categoryId == null &&
+              widget.initialText.isEmpty,
           textInputAction: TextInputAction.search,
           maxLength: 100,
           buildCounter: (

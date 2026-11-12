@@ -208,6 +208,12 @@ abstract class AppLocalizations {
   /// **'Accueil'**
   String get navHome;
 
+  /// No description provided for @navExplore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Explorer'**
+  String get navExplore;
+
   /// No description provided for @navRequests.
   ///
   /// In fr, this message translates to:

@@ -194,6 +194,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state, shell) => AppShell(navigationShell: shell),
         branches: [
           _branch(AppRoutes.home, (_) => const HomeScreen()),
+          _branch(AppRoutes.explore, (_) => const SearchScreen(asTab: true)),
           _branch(AppRoutes.requests, (_) => const RequestsScreen()),
           _branch(AppRoutes.messages, (_) => const MessagesScreen()),
           _branch(AppRoutes.profile, (_) => const ProfileScreen()),

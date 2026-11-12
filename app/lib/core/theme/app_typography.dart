@@ -1,65 +1,55 @@
 import 'package:flutter/material.dart';
 
-/// Poster type. Latin: Anton (tall condensed capitals, like a shop sign) for
-/// display, Barlow (a signage grotesque) for reading. Arabic: Lalezar (heavy
-/// display) and Tajawal. Display styles are set in capitals in Latin; Arabic
-/// has no case so it relies on weight and size. Arabic gets extra line height.
+/// Type: the phone's own font for Latin text (San Francisco on iOS, Roboto on
+/// Android), so the app feels native. Arabic uses Tajawal on every platform
+/// for a consistent, modern Arabic. Weights do the hierarchy, not exotic
+/// faces. Arabic gets extra line height.
 abstract final class AppTypography {
-  static const displayFamily = 'Anton';
-  static const latinFamily = 'Barlow';
-  static const arabicDisplayFamily = 'Lalezar';
   static const arabicFamily = 'Tajawal';
 
-  // Kept for older call sites.
-  static const headingFamily = displayFamily;
+  // Kept for older call sites (null = the platform font).
+  static const String? latinFamily = null;
+  static const String? displayFamily = null;
+  static const arabicDisplayFamily = arabicFamily;
 
-  static String familyFor(Locale locale) =>
-      locale.languageCode == 'ar' ? arabicFamily : latinFamily;
+  /// null = the platform font.
+  static String? familyFor(Locale locale) =>
+      locale.languageCode == 'ar' ? arabicFamily : null;
 
-  static String displayFor(Locale locale) =>
-      locale.languageCode == 'ar' ? arabicDisplayFamily : displayFamily;
-
-  static String headingFor(Locale locale) => displayFor(locale);
+  // Kept for older call sites: headings use the same family as body text.
+  static String? displayFor(Locale locale) => familyFor(locale);
+  static String? headingFor(Locale locale) => familyFor(locale);
 
   static TextTheme textTheme(Locale locale, Color color) {
     final ar = locale.languageCode == 'ar';
-    final body = familyFor(locale);
-    final display = displayFor(locale);
-    TextStyle s(
-      String family,
-      double size,
-      FontWeight w,
-      double h, {
-      double tracking = 0,
-    }) => TextStyle(
-      fontFamily: family,
-      fontSize: size,
-      fontWeight: w,
-      height: ar ? h + 0.15 : h,
-      letterSpacing: ar ? 0 : tracking,
-      color: color,
-    );
-    // Display faces have a single weight: never ask for bold (it would be
-    // synthesised and blurry).
+    final family = familyFor(locale);
+    TextStyle s(double size, FontWeight w, double h, {double tracking = 0}) =>
+        TextStyle(
+          fontFamily: family,
+          fontSize: size,
+          fontWeight: w,
+          height: ar ? h + 0.15 : h,
+          letterSpacing: ar ? 0 : tracking,
+          color: color,
+        );
     return TextTheme(
-      displayLarge: s(display, 64, FontWeight.w400, 0.95, tracking: 0.5),
-      displayMedium: s(display, 48, FontWeight.w400, 1.0, tracking: 0.5),
-      displaySmall: s(display, 38, FontWeight.w400, 1.0, tracking: 0.5),
-      headlineMedium: s(display, 30, FontWeight.w400, 1.05, tracking: 0.4),
-      headlineSmall: s(display, 24, FontWeight.w400, 1.1, tracking: 0.3),
-      titleLarge: s(display, 20, FontWeight.w400, 1.15, tracking: 0.3),
-      titleMedium: s(body, 17, FontWeight.w700, 1.3),
-      titleSmall: s(body, 15, FontWeight.w700, 1.3),
-      bodyLarge: s(body, 17, FontWeight.w400, 1.45),
-      bodyMedium: s(body, 15, FontWeight.w400, 1.45),
-      bodySmall: s(body, 13, FontWeight.w500, 1.35),
-      labelLarge: s(body, 16, FontWeight.w700, 1.2, tracking: 0.6),
-      labelMedium: s(body, 14, FontWeight.w700, 1.2, tracking: 0.5),
-      labelSmall: s(body, 12, FontWeight.w700, 1.2, tracking: 0.6),
+      displayLarge: s(40, FontWeight.w700, 1.1, tracking: -0.8),
+      displayMedium: s(34, FontWeight.w700, 1.12, tracking: -0.6),
+      displaySmall: s(28, FontWeight.w700, 1.15, tracking: -0.4),
+      headlineMedium: s(24, FontWeight.w700, 1.2, tracking: -0.3),
+      headlineSmall: s(22, FontWeight.w700, 1.22, tracking: -0.2),
+      titleLarge: s(19, FontWeight.w700, 1.25, tracking: -0.2),
+      titleMedium: s(16, FontWeight.w600, 1.3),
+      titleSmall: s(14, FontWeight.w600, 1.3),
+      bodyLarge: s(16, FontWeight.w400, 1.45),
+      bodyMedium: s(14, FontWeight.w400, 1.45),
+      bodySmall: s(12.5, FontWeight.w400, 1.4),
+      labelLarge: s(15, FontWeight.w600, 1.2),
+      labelMedium: s(13, FontWeight.w600, 1.2),
+      labelSmall: s(11, FontWeight.w500, 1.2),
     );
   }
 
-  /// Display text is set in capitals in Latin, as is on signage.
-  static String display(Locale locale, String s) =>
-      locale.languageCode == 'ar' ? s : s.toUpperCase();
+  /// Kept for older call sites: text is no longer forced to capitals.
+  static String display(Locale locale, String s) => s;
 }

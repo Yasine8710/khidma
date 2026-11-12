@@ -1,85 +1,89 @@
-# Khidma design: "Signal"
+# Khidma design
 
-Full replacement of every earlier look (blue/white photo app, "Atelier" paper
-and terracotta). Read this before touching any screen.
+Approved by the owner on 2026-11-12 from rendered mockups ("violet", Home +
+pro profile). Replaces the earlier "Atelier" and "Signal" looks, which were
+rejected as over-designed. Read this before touching any screen.
 
 ## Idea
-Khidma is a street full of workshops and studios. The look is **workshop
-signage**: tall condensed capitals, flat colour fields, hard black ink, chunky
-blocks with a hard offset "sticker" shadow. It is loud, physical and in
-constant, springy motion. It must not look AI-generated: no gradients, no
-blur or glow, no pastel, no soft rounded cards, no glassmorphism, no stock
-photos, no emoji. Placeholder imagery is typographic or geometric (big
-glyph tiles, flat shapes); the owner will supply real photos later.
+Khidma should feel like the service apps people already trust (TaskRabbit,
+Fiverr, Upwork, Yassir): calm, clean, familiar, well structured. Nothing
+exotic: no poster type, no thick black outlines, no hard shadows, no
+gradients, no glow, no emoji. The content (people, their work, prices,
+ratings) is the visual interest. Motion is quiet and quick, like a native
+app. Real photos of pros' work come later; until then placeholders are soft
+tinted tiles with a line icon (never AI images).
 
-Pinterest research (Nov 2026) confirmed the direction: the best structural
-references were bold, hard-outlined "sticker" UIs (yellow and black), poster
-typography, swipe-card hiring flows, and apps where every control is a chunky
-physical block that reacts to the finger.
-
-## Two worlds
-The app has two sections, each with its own loud colour; switching recolours
-everything (a colour flood from the tapped switch, see `AppShell`).
-- **Métiers / Trades** (plumber, electrician...): signage **yellow** `#F5C400`
-  with ink text.
-- **Digital** (web, mobile, design, video, marketing...): **zellij green**
-  `#0B6B4D` with white text.
-Everything else is ink `#0E0E0E`, paper white, ground `#EDEDE8`. Dark mode
-exists (near-black ground, light ink, green lifts to `#30C48D`).
-Colours come from `Theme.of(context).colorScheme` only:
-`primaryContainer`/`onPrimaryContainer` = the world colour and its text,
-`primary` = ink, `surface` = paper, `onSurface` = ink, `outlineVariant` =
-hairline grey, `secondary` = the other world's colour. Never hard-code a
-colour (except ink/white on a photo). Yellow is never used as text.
+## Colour (lib/core/theme/app_colors.dart)
+One brand colour, violet `#5B3CC4` (dark mode: `#A493F0`). Background
+`#FAF9FC`, cards white, text `#1B1530`, secondary text `#6E6A80`, hairlines
+`#ECE9F3`. Soft violet `#EEE9FB` for chips, selected rows, profile header.
+Stars `#F5A524`. Category / placeholder tiles use `AppColors.tint(i, b)`,
+initials avatars `AppColors.avatar(i)` (white text).
+Use `Theme.of(context).colorScheme` roles: `primary` (violet), `onPrimary`,
+`primaryContainer`/`onPrimaryContainer` (soft violet + its text), `surface`
+(cards), `onSurface`, `onSurfaceVariant` (secondary text), `outlineVariant`
+(hairlines/card borders), `surfaceContainerHighest` (inputs, inset blocks),
+`tertiary` (stars), `error`. Never hard-code a colour.
 
 ## Type (lib/core/theme/app_typography.dart)
-Latin: **Anton** (single weight, tall condensed capitals) for display and
-headings, **Barlow** for reading and controls. Arabic: **Lalezar** (display,
-single weight) and **Tajawal**. Use the `textTheme` styles; never set a
-fontFamily by hand. Anton has one weight: do not bold it. In Latin, set
-display text in capitals with `AppTypography.display(locale, text)`.
-Western digits everywhere. Make headlines BIG (30-64 px) and short.
+The phone's own font for Latin (SF on iPhone, Roboto on Android); Tajawal for
+Arabic. Hierarchy comes from size and weight: screen titles `headlineSmall`
+or `titleLarge` (bold), section titles `titleMedium`/`titleLarge`, body
+`bodyMedium`, meta `bodySmall` in `onSurfaceVariant`. Sentence case; never
+force capitals. Western digits everywhere. Prices: "dès 40 DT".
 
-## Blocks
-- Radii are tiny (`AppRadius` 2-6). Borders are heavy: `AppInk.border` = 2 px
-  in ink. The signature block is `StickerBox` (`lib/core/motion/motion.dart`):
-  ink border + hard offset shadow (4 px, falls to the end side, flips in RTL).
-- Buttons: `AppButton` (already sticker + press-sink). One loud primary per
-  screen. Chips are rectangular with ink borders; selected = world colour.
-- Separate with ink rules and flat colour fields, never soft shadows.
-- Key facts as ruled rows or big stat blocks (Anton numerals with `CountUp`).
+## Shapes
+Radii (`AppRadius`): 10 chips/small tiles, 14 inputs/buttons, 18 cards, 24
+sheets and hero cards, pill for chips/badges. Cards: white, 1 px
+`outlineVariant` border, no shadow (`StickerBox`, `AppCard`); an optional
+very soft shadow (`StickerBox(elevated: true)`) only for floating things.
+Buttons: filled violet 52 px high, radius 14; secondary = white with hairline.
+Avatars are circles. Icons: Material rounded/outlined line icons.
 
-## Motion (lib/core/motion/motion.dart) - one vocabulary
-- **Slam**: elements arrive fast with a springy overshoot (`Motion.slam`,
-  140-420 ms). They do not drift or fade slowly.
-- **Press-sink**: every tappable block sinks into its shadow while pressed
-  (`Pressable`, built into `AppButton`), with a light haptic.
-- **Stagger**: lists/grids enter once as a quick cascade (`StaggerIn(index:)`).
-- **Count-up** for numbers (`CountUp`), **SlamSwitcher** for swapping content,
-  `SpringTo` for gesture release (swipe cards, sheets).
-- **World flood**: switching world floods the screen with the new colour.
-- Page transitions are the platform ones (iOS swipe-back must keep working).
-- **Reduce Motion**: every animation must check `Motion.reduced(context)` and
-  show the final state at once. Motion never blocks input and never carries
-  information alone.
+## Layout (from the approved mockup)
+- Screen gutter 20. Section title row: title left, "Tout voir" link right.
+- **Tab bar** (`AppBottomNav`): 5 tabs, icon + label, active in violet with
+  filled icon: Accueil, Explorer, Demandes, Messages, Profil.
+- **Home**: location row (label "Votre position" + city with pin, bell button
+  on the end), segmented toggle **Artisans | Freelance digital** (violet
+  filled thumb that slides), search field with a violet filter button, a
+  promo/hero card carousel (violet card, white text, one action, page dots),
+  "Catégories" as 4 tinted icon tiles per row, "Pros près de vous" as a
+  horizontal list of cards (image area on top with a heart button, initials
+  avatar + name + verified badge + trade/years, star rating with count and
+  "dès N DT").
+- **Pro / freelancer profile**: soft violet header band with back / share /
+  heart round buttons, large circular avatar overlapping it, name + verified
+  badge, trade · city, pills (Documents vérifiés / Identité vérifiée, response
+  time), a 3-column stats card (Note, Avis, Expérience), tabs (Services,
+  Réalisations, Avis, À propos), service rows (tinted icon tile, title,
+  detail, "dès N DT"), review cards; sticky bottom bar: message button +
+  "Demander un devis".
+- Lists: cards or grouped rows with hairline separators; settings-style
+  grouped lists on Profile.
+- Forms: one column, labels above fields, a progress bar for multi-step.
+- Empty states: a soft tinted circle with a line icon, a short title, one
+  line of help, one button.
+- Trades vs digital: trades show documents/experience ("Documents vérifiés",
+  "8 ans"); digital freelancers show identity verification only ("Identité
+  vérifiée"), skills chips and portfolio.
 
-## Structure
-- Tab bar = the **dock** (`AppBottomNav`): four blocks, the active one grows
-  and is flooded with the world colour. 4 tabs: Accueil, Demandes, Messages,
-  Profil. No floating buttons.
-- **Home** is a launcher: the world switch on top (two huge blocks MÉTIERS /
-  DIGITAL), a giant question, the search block, one loud "quote" block, then
-  chunky category tiles and pro/freelancer cards.
-- Detail pages open with a **colour header block** with the name in giant
-  Anton and a sticker avatar overlapping its edge, with a sticky action bar.
-- Forms are stepped: a big step number (01/05), one question per block.
-- Empty states are typographic: a giant word and a glyph tile, no photos.
+## Motion (lib/core/motion/motion.dart)
+Quiet, quick (150-380 ms), never blocking:
+- `StaggerIn(index:)`: content fades and rises 12 px once; lists cascade.
+- `Pressable`: tappable cards shrink to 0.97 while pressed, light haptic.
+- `CountUp` for stats; `SoftSwitcher` cross-fade + slide for swapped content
+  (e.g. Home when the Artisans/Digital toggle changes).
+- Toggle thumb slides (`AnimatedAlign`, `Motion.settle`); heart pops on tap;
+  hero carousel auto-advances every 5 s (pauses while touched); skeleton
+  shimmer while loading; platform page transitions (iOS swipe-back works).
+- Every animation checks `Motion.reduced(context)` and shows the final state
+  at once. Motion never carries information alone.
 
 ## Non-negotiables
-- Keep every feature, provider, route, text key and semantics label working.
+- Keep every feature, provider, route, l10n key and semantics label working.
   Existing widget tests must still pass; edit a test only when a layout
-  change genuinely moves something (needs scrolling, finder by type).
+  change genuinely moves something.
 - RTL: Directional insets/alignments only. Text at 1.5-2x on a 320 px phone
-  must not overflow (Anton is condensed: leave room for Arabic).
-- Contrast: text >= 4.5:1, controls >= 3:1 (the tokens satisfy this; yellow
-  only ever carries ink).
+  must not overflow.
+- Contrast: text >= 4.5:1, controls >= 3:1 (the tokens satisfy this).

@@ -5,18 +5,17 @@ import 'app_colors.dart';
 import 'app_spacing.dart';
 import 'app_typography.dart';
 
-/// The "Signal" theme. [world] picks the loud colour of the section the
-/// person is in (yellow trades / green digital); everything else is ink and
-/// paper. Cards and buttons get a heavy ink outline and, through the shared
-/// widgets, a hard offset shadow that collapses when pressed.
+/// The Khidma theme: calm light surfaces, one violet brand colour, soft
+/// rounded cards with hairline borders, the platform font. [world] is kept
+/// for API compatibility; both worlds share the brand colour.
 abstract final class AppTheme {
   static ThemeData light(Locale locale, {AppWorld world = AppWorld.trades}) =>
-      _build(locale, Brightness.light, world);
+      _build(locale, Brightness.light);
 
   static ThemeData dark(Locale locale, {AppWorld world = AppWorld.trades}) =>
-      _build(locale, Brightness.dark, world);
+      _build(locale, Brightness.dark);
 
-  static ThemeData _build(Locale locale, Brightness b, AppWorld world) {
+  static ThemeData _build(Locale locale, Brightness b) {
     final dark = b == Brightness.dark;
     final ink = dark ? AppColors.darkInk : AppColors.ink;
     final paper = dark ? AppColors.darkPaper : AppColors.paper;
@@ -25,26 +24,29 @@ abstract final class AppTheme {
     final muted = dark ? AppColors.darkMuted : AppColors.muted;
     final rule = dark ? AppColors.darkRule : AppColors.rule;
     final control = dark ? AppColors.darkControl : AppColors.control;
-    final accent = world.accent(b);
-    final onAccent = world.onAccent(b);
-    final other = world == AppWorld.trades ? AppWorld.digital : AppWorld.trades;
+    final brand = dark ? AppColors.violetLight : AppColors.violet;
+    final onBrand = dark ? AppColors.ink : Colors.white;
+    final soft = dark ? AppColors.darkVioletSoft : AppColors.violetSoft;
+    final onSoft = dark ? AppColors.darkInk : AppColors.violetDark;
 
     final cs = ColorScheme(
       brightness: b,
-      primary: ink,
-      onPrimary: dark ? AppColors.ink : AppColors.paper,
-      primaryContainer: accent,
-      onPrimaryContainer: onAccent,
-      secondary: other.accent(b),
-      onSecondary: other.onAccent(b),
+      primary: brand,
+      onPrimary: onBrand,
+      primaryContainer: soft,
+      onPrimaryContainer: onSoft,
+      secondary: brand,
+      onSecondary: onBrand,
       secondaryContainer: sunken,
       onSecondaryContainer: ink,
-      tertiary: AppColors.yellow,
+      tertiary: AppColors.star,
       onTertiary: AppColors.ink,
-      tertiaryContainer: sunken,
-      onTertiaryContainer: ink,
+      tertiaryContainer: dark ? const Color(0xFF3A2E10) : const Color(0xFFFFF4D6),
+      onTertiaryContainer: dark ? AppColors.darkWarning : AppColors.warning,
       error: dark ? AppColors.darkError : AppColors.error,
       onError: dark ? AppColors.ink : Colors.white,
+      errorContainer: dark ? const Color(0xFF3B1D1D) : const Color(0xFFFDECEC),
+      onErrorContainer: dark ? AppColors.darkError : AppColors.error,
       surface: paper,
       onSurface: ink,
       onSurfaceVariant: muted,
@@ -55,30 +57,31 @@ abstract final class AppTheme {
       surfaceContainerLowest: paper,
       outline: control,
       outlineVariant: rule,
-      inverseSurface: ink,
+      shadow: Colors.black,
+      inverseSurface: dark ? AppColors.darkInk : AppColors.ink,
       onInverseSurface: dark ? AppColors.ink : AppColors.paper,
+      inversePrimary: dark ? AppColors.violet : AppColors.violetLight,
     );
 
     final text = AppTypography.textTheme(locale, ink);
-    final shape = RoundedRectangleBorder(
+    final buttonShape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(AppRadius.md),
-      side: BorderSide(color: ink, width: AppInk.border),
     );
-    OutlineInputBorder border(Color c, [double w = AppInk.border]) =>
-        OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: BorderSide(color: c, width: w),
-        );
+    OutlineInputBorder border(Color c, [double w = 1]) => OutlineInputBorder(
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      borderSide: BorderSide(color: c, width: w),
+    );
 
     return ThemeData(
       useMaterial3: true,
+      brightness: b,
       colorScheme: cs,
       scaffoldBackgroundColor: ground,
       fontFamily: AppTypography.familyFor(locale),
       textTheme: text,
       dividerColor: rule,
       dividerTheme: DividerThemeData(color: rule, thickness: 1, space: 1),
-      splashFactory: NoSplash.splashFactory,
+      splashFactory: InkSparkle.splashFactory,
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
@@ -89,12 +92,11 @@ abstract final class AppTheme {
         backgroundColor: ground,
         foregroundColor: ink,
         elevation: 0,
-        scrolledUnderElevation: 0,
+        scrolledUnderElevation: 0.5,
+        surfaceTintColor: Colors.transparent,
+        shadowColor: rule,
         centerTitle: false,
         titleTextStyle: text.titleLarge,
-        shape: Border(
-          bottom: BorderSide(color: ink, width: AppInk.border),
-        ),
       ),
       cardTheme: CardThemeData(
         color: paper,
@@ -102,119 +104,152 @@ abstract final class AppTheme {
         margin: EdgeInsets.zero,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          side: BorderSide(color: ink, width: AppInk.border),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          side: BorderSide(color: rule),
         ),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: paper,
-        selectedColor: accent,
-        secondarySelectedColor: accent,
-        side: BorderSide(color: ink, width: AppInk.border),
+        selectedColor: soft,
+        secondarySelectedColor: soft,
+        side: BorderSide(color: rule),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.sm),
+          borderRadius: BorderRadius.circular(AppRadius.pill),
         ),
-        labelStyle: text.labelLarge,
-        secondaryLabelStyle: text.labelLarge?.copyWith(color: onAccent),
-        checkmarkColor: onAccent,
+        labelStyle: text.labelMedium?.copyWith(color: ink),
+        secondaryLabelStyle: text.labelMedium?.copyWith(color: onSoft),
+        checkmarkColor: onSoft,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          minimumSize: const Size.fromHeight(54),
-          backgroundColor: accent,
-          foregroundColor: onAccent,
+          minimumSize: const Size.fromHeight(52),
+          backgroundColor: brand,
+          foregroundColor: onBrand,
           disabledBackgroundColor: sunken,
           disabledForegroundColor: muted,
-          shape: shape,
+          shape: buttonShape,
+          textStyle: text.labelLarge,
+          elevation: 0,
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          minimumSize: const Size.fromHeight(52),
+          backgroundColor: brand,
+          foregroundColor: onBrand,
+          shape: buttonShape,
           textStyle: text.labelLarge,
           elevation: 0,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          minimumSize: const Size.fromHeight(54),
+          minimumSize: const Size.fromHeight(52),
           backgroundColor: paper,
           foregroundColor: ink,
-          shape: shape,
-          side: BorderSide(color: ink, width: AppInk.border),
+          shape: buttonShape,
+          side: BorderSide(color: rule),
           textStyle: text.labelLarge,
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: ink,
-          textStyle: text.labelLarge?.copyWith(
-            decoration: TextDecoration.underline,
-            decorationThickness: 2,
-          ),
+          foregroundColor: brand,
+          textStyle: text.labelLarge,
         ),
+      ),
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(foregroundColor: ink),
       ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: SegmentedButton.styleFrom(
           backgroundColor: paper,
-          foregroundColor: ink,
-          selectedBackgroundColor: accent,
-          selectedForegroundColor: onAccent,
-          side: BorderSide(color: ink, width: AppInk.border),
+          foregroundColor: muted,
+          selectedBackgroundColor: brand,
+          selectedForegroundColor: onBrand,
+          side: BorderSide(color: rule),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.md),
           ),
-          textStyle: text.labelLarge,
-          minimumSize: const Size(0, 46),
+          textStyle: text.labelMedium,
+          minimumSize: const Size(0, 44),
         ),
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: WidgetStatePropertyAll(ink),
-        trackColor: WidgetStateProperty.resolveWith(
-          (s) => s.contains(WidgetState.selected) ? accent : sunken,
+        thumbColor: WidgetStateProperty.resolveWith(
+          (s) => s.contains(WidgetState.selected) ? onBrand : control,
         ),
-        trackOutlineColor: WidgetStatePropertyAll(ink),
-        trackOutlineWidth: const WidgetStatePropertyAll(2),
+        trackColor: WidgetStateProperty.resolveWith(
+          (s) => s.contains(WidgetState.selected) ? brand : sunken,
+        ),
+        trackOutlineColor: WidgetStateProperty.resolveWith(
+          (s) => s.contains(WidgetState.selected) ? brand : control,
+        ),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
       listTileTheme: ListTileThemeData(
         iconColor: ink,
         titleTextStyle: text.bodyLarge,
         subtitleTextStyle: text.bodySmall?.copyWith(color: muted),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
+      ),
+      tabBarTheme: TabBarThemeData(
+        labelColor: ink,
+        unselectedLabelColor: muted,
+        labelStyle: text.titleSmall,
+        unselectedLabelStyle: text.titleSmall,
+        indicatorColor: brand,
+        indicatorSize: TabBarIndicatorSize.label,
+        dividerColor: rule,
       ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: paper,
         surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: const BorderRadius.vertical(
+        showDragHandle: true,
+        dragHandleColor: rule,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
             top: Radius.circular(AppRadius.xl),
           ),
-          side: BorderSide(color: ink, width: AppInk.border),
         ),
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: paper,
         surfaceTintColor: Colors.transparent,
-        shape: shape,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.xl),
+        ),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        backgroundColor: ink,
+        backgroundColor: cs.inverseSurface,
         contentTextStyle: text.bodyMedium?.copyWith(color: cs.onInverseSurface),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
         ),
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: ink,
+        color: brand,
         linearTrackColor: sunken,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: paper,
+        hintStyle: text.bodyLarge?.copyWith(color: muted),
         contentPadding: const EdgeInsetsDirectional.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.md + 2,
         ),
-        border: border(ink),
-        enabledBorder: border(ink),
-        focusedBorder: border(ink, 3),
+        border: border(rule),
+        enabledBorder: border(rule),
+        focusedBorder: border(brand, 1.5),
         errorBorder: border(cs.error),
-        focusedErrorBorder: border(cs.error, 3),
+        focusedErrorBorder: border(cs.error, 1.5),
       ),
     );
   }

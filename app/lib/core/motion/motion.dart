@@ -5,83 +5,87 @@ import 'package:flutter/scheduler.dart';
 import '../haptics.dart';
 import '../theme/app_spacing.dart';
 
-/// The motion system of Khidma ("Signal"). One vocabulary used everywhere:
-///  - things SLAM into place (short, springy), they do not drift;
-///  - pressed blocks sink into their own hard shadow;
-///  - lists arrive in a quick stagger, once;
-///  - numbers count up;
-///  - the world switch floods the screen with the new colour.
+/// The motion system of Khidma. Quiet and quick, like the apps people use
+/// every day:
+///  - content fades and rises into place once (lists cascade a little);
+///  - tappable cards and buttons shrink slightly while pressed;
+///  - numbers count up the first time they appear;
+///  - swapped content cross-fades with a small slide.
 /// Everything respects the system "Reduce Motion" setting: the final state is
 /// shown at once and nothing waits for an animation.
 abstract final class Motion {
-  static const fast = Duration(milliseconds: 140);
-  static const base = Duration(milliseconds: 240);
-  static const slow = Duration(milliseconds: 420);
+  static const fast = Duration(milliseconds: 150);
+  static const base = Duration(milliseconds: 250);
+  static const slow = Duration(milliseconds: 380);
 
   /// Decelerating entrance.
   static const enter = Curves.easeOutCubic;
 
-  /// The signature overshoot used for slams and toggles.
-  static const slam = Cubic(0.2, 1.4, 0.4, 1.0);
+  /// Gentle settle with a hint of overshoot (toggles, hearts, selections).
+  static const settle = Cubic(0.25, 1.15, 0.4, 1.0);
 
-  /// A tight spring for gesture release (mass, stiffness, damping).
-  static const spring = SpringDescription(mass: 1, stiffness: 420, damping: 24);
+  /// Kept for older call sites (same as [settle]).
+  static const slam = settle;
+
+  /// A soft spring for gesture release (mass, stiffness, damping).
+  static const spring = SpringDescription(mass: 1, stiffness: 380, damping: 30);
 
   static bool reduced(BuildContext context) =>
       MediaQuery.maybeDisableAnimationsOf(context) ?? false;
 }
 
-/// A block with a heavy ink outline and a hard offset "sticker" shadow. The
-/// shadow offset flips for RTL so it always falls toward the end side.
+/// A soft card: rounded corners, a hairline border and an optional very soft
+/// shadow ([elevated]). Kept under its old name so existing call sites build;
+/// [offset] and [shadowColor] are ignored.
 class StickerBox extends StatelessWidget {
   const StickerBox({
     super.key,
     required this.child,
     this.color,
     this.padding,
-    this.radius = AppRadius.md,
-    this.offset = AppInk.offset,
+    this.radius = AppRadius.lg,
+    this.offset = 0,
     this.border = AppInk.border,
     this.borderColor,
     this.shadowColor,
+    this.elevated = false,
   });
 
   final Widget child;
   final Color? color;
   final EdgeInsetsGeometry? padding;
   final double radius;
-
-  /// Shadow offset in px; 0 draws no shadow (a pressed or flat block).
   final double offset;
   final double border;
   final Color? borderColor;
   final Color? shadowColor;
+  final bool elevated;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final ink = borderColor ?? scheme.onSurface;
-    final rtl = Directionality.of(context) == TextDirection.rtl;
-    final dx = rtl ? -offset : offset;
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(radius + 1),
-        boxShadow: offset == 0
+        color: color ?? scheme.surface,
+        borderRadius: BorderRadius.circular(radius),
+        border: border == 0
             ? null
-            : [
+            : Border.all(
+                color: borderColor ?? scheme.outlineVariant,
+                width: border,
+              ),
+        boxShadow: elevated
+            ? [
                 BoxShadow(
-                  color: shadowColor ?? scheme.onSurface,
-                  offset: Offset(dx, offset),
-                  blurRadius: 0,
+                  color: scheme.shadow.withValues(alpha: 0.06),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
                 ),
-              ],
+              ]
+            : null,
       ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: color ?? scheme.surface,
-          borderRadius: BorderRadius.circular(radius),
-          border: Border.all(color: ink, width: border),
-        ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
         child: padding == null
             ? child
             : Padding(padding: padding!, child: child),
@@ -90,15 +94,15 @@ class StickerBox extends StatelessWidget {
   }
 }
 
-/// Makes any child tappable with the signature press: it sinks into its
-/// shadow (translate by the shadow offset), springs back on release, with a
-/// light haptic. [onTap] null = disabled (no animation).
+/// Makes any child tappable with a soft press: it shrinks slightly while held
+/// and springs back on release, with a light haptic. [onTap] null = disabled.
 class Pressable extends StatefulWidget {
   const Pressable({
     super.key,
     required this.child,
     required this.onTap,
-    this.depth = AppInk.offset,
+    this.depth = 0,
+    this.scale = 0.97,
     this.haptic = true,
     this.semanticLabel,
     this.button = true,
@@ -107,8 +111,11 @@ class Pressable extends StatefulWidget {
   final Widget child;
   final VoidCallback? onTap;
 
-  /// How far the block sinks: match the child's shadow offset.
+  /// Kept for older call sites; ignored.
   final double depth;
+
+  /// Scale while pressed.
+  final double scale;
   final bool haptic;
   final String? semanticLabel;
   final bool button;
@@ -127,13 +134,11 @@ class _PressableState extends State<Pressable> {
   @override
   Widget build(BuildContext context) {
     final enabled = widget.onTap != null;
-    final rtl = Directionality.of(context) == TextDirection.rtl;
     final reduce = Motion.reduced(context);
-    final d = _down && enabled ? widget.depth : 0.0;
-    Widget body = AnimatedContainer(
-      duration: reduce ? Duration.zero : Motion.fast,
-      curve: Motion.slam,
-      transform: Matrix4.translationValues(rtl ? -d : d, d, 0),
+    Widget body = AnimatedScale(
+      scale: _down && enabled && !reduce ? widget.scale : 1,
+      duration: Motion.fast,
+      curve: Curves.easeOut,
       child: widget.child,
     );
     if (!enabled) return body;
@@ -157,17 +162,17 @@ class _PressableState extends State<Pressable> {
   }
 }
 
-/// Plays an entrance once when first built: fade + rise, delayed by [index]
-/// (capped) so a list arrives as a quick cascade. Nothing animates again on
-/// rebuild or scroll-back. With Reduce Motion it appears immediately.
+/// Plays an entrance once when first built: fade + small rise, delayed by
+/// [index] (capped) so a list arrives as a gentle cascade. Nothing animates
+/// again on rebuild or scroll-back. With Reduce Motion it appears at once.
 class StaggerIn extends StatefulWidget {
   const StaggerIn({
     super.key,
     required this.child,
     this.index = 0,
-    this.rise = 18,
-    this.stepMs = 45,
-    this.maxSteps = 8,
+    this.rise = 12,
+    this.stepMs = 40,
+    this.maxSteps = 6,
   });
 
   final Widget child;
@@ -251,7 +256,7 @@ class CountUp extends StatelessWidget {
     }
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: v),
-      duration: Motion.slow * 1.6,
+      duration: const Duration(milliseconds: 700),
       curve: Motion.enter,
       builder: (context, x, _) =>
           Text('${x.toStringAsFixed(fractionDigits)}$suffix', style: style),
@@ -259,9 +264,10 @@ class CountUp extends StatelessWidget {
   }
 }
 
-/// Switches between children with a quick slam (scale + fade).
-class SlamSwitcher extends StatelessWidget {
-  const SlamSwitcher({super.key, required this.child});
+/// Cross-fades between children with a small slide up. Give each child a
+/// distinct key.
+class SoftSwitcher extends StatelessWidget {
+  const SoftSwitcher({super.key, required this.child});
 
   final Widget child;
 
@@ -270,17 +276,30 @@ class SlamSwitcher extends StatelessWidget {
     if (Motion.reduced(context)) return child;
     return AnimatedSwitcher(
       duration: Motion.base,
-      switchInCurve: Motion.slam,
+      switchInCurve: Motion.enter,
+      switchOutCurve: Curves.easeIn,
+      layoutBuilder: (current, previous) => Stack(
+        alignment: Alignment.topCenter,
+        children: [...previous, ?current],
+      ),
       transitionBuilder: (c, a) => FadeTransition(
         opacity: a,
-        child: ScaleTransition(
-          scale: Tween<double>(begin: 0.88, end: 1).animate(a),
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 0.03),
+            end: Offset.zero,
+          ).animate(a),
           child: c,
         ),
       ),
       child: child,
     );
   }
+}
+
+/// Kept for older call sites (same as [SoftSwitcher]).
+class SlamSwitcher extends SoftSwitcher {
+  const SlamSwitcher({super.key, required super.child});
 }
 
 /// Drives a value with a spring toward [target] (used by gesture-released

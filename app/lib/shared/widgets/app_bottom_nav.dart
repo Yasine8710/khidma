@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 
 import '../../core/haptics.dart';
 import '../../core/motion/motion.dart';
-import '../../core/theme/app_spacing.dart';
 
 class NavItem {
-  const NavItem(this.icon, this.selectedIcon, this.label);
+  const NavItem(this.icon, this.selectedIcon, this.label, {this.badge = 0});
   final IconData icon;
   final IconData selectedIcon;
   final String label;
+
+  /// Unread count shown as a small dot/number on the icon (0 = none).
+  final int badge;
 }
 
-/// The dock: a row of blocks with a heavy ink top edge. The active block
-/// grows (it takes more of the width) and floods with the world colour, the
-/// others shrink to icon + small label. The change is a springy slam. Items
-/// are laid out with a Row, so the order mirrors automatically in RTL.
+/// The tab bar: icon + label for every tab, the active one in the brand
+/// colour with a filled icon and a small pop. A hairline separates it from
+/// the content. Items are laid out with a Row, so the order mirrors in RTL.
 class AppBottomNav extends StatelessWidget {
   const AppBottomNav({
     super.key,
@@ -34,9 +35,7 @@ class AppBottomNav extends StatelessWidget {
       color: scheme.surface,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: scheme.onSurface, width: AppInk.border),
-          ),
+          border: Border(top: BorderSide(color: scheme.outlineVariant)),
         ),
         child: SafeArea(
           top: false,
@@ -44,14 +43,13 @@ class AppBottomNav extends StatelessWidget {
           child: MediaQuery.withClampedTextScaling(
             maxScaleFactor: 1.3,
             child: SizedBox(
-              height: 64,
+              height: 62,
               child: Row(
                 children: [
                   for (var i = 0; i < items.length; i++)
-                    _DockSlot(
+                    _Tab(
                       item: items[i],
                       selected: i == currentIndex,
-                      last: i == items.length - 1,
                       onTap: () {
                         AppHaptics.selection();
                         onSelected(i);
@@ -67,27 +65,32 @@ class AppBottomNav extends StatelessWidget {
   }
 }
 
-class _DockSlot extends StatelessWidget {
-  const _DockSlot({
-    required this.item,
-    required this.selected,
-    required this.last,
-    required this.onTap,
-  });
+class _Tab extends StatelessWidget {
+  const _Tab({required this.item, required this.selected, required this.onTap});
 
   final NavItem item;
   final bool selected;
-  final bool last;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final reduce = Motion.reduced(context);
-    final bg = selected ? scheme.primaryContainer : Colors.transparent;
-    final fg = selected ? scheme.onPrimaryContainer : scheme.onSurface;
+    final fg = selected ? scheme.primary : scheme.onSurfaceVariant;
+    Widget icon = Icon(
+      selected ? item.selectedIcon : item.icon,
+      size: 24,
+      color: fg,
+    );
+    if (item.badge > 0) {
+      icon = Badge(
+        label: Text(item.badge > 9 ? '9+' : '${item.badge}'),
+        backgroundColor: scheme.error,
+        textColor: scheme.onError,
+        child: icon,
+      );
+    }
     return Expanded(
-      flex: selected ? 5 : 3,
       // InkWell provides tap and focus semantics; the inner node names it.
       child: InkWell(
         splashFactory: NoSplash.splashFactory,
@@ -98,42 +101,29 @@ class _DockSlot extends StatelessWidget {
           selected: selected,
           label: item.label,
           excludeSemantics: true,
-          child: AnimatedContainer(
-            duration: reduce ? Duration.zero : Motion.base,
-            curve: Motion.slam,
-            decoration: BoxDecoration(
-              color: bg,
-              border: BorderDirectional(
-                end: last
-                    ? BorderSide.none
-                    : BorderSide(color: scheme.onSurface, width: AppInk.border),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedScale(
+                scale: selected && !reduce ? 1.08 : 1,
+                duration: reduce ? Duration.zero : Motion.base,
+                curve: Motion.settle,
+                child: icon,
               ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AnimatedScale(
-                  scale: selected ? 1.15 : 1,
-                  duration: reduce ? Duration.zero : Motion.base,
-                  curve: Motion.slam,
-                  child: Icon(
-                    selected ? item.selectedIcon : item.icon,
-                    size: 24,
-                    color: fg,
-                  ),
+              const SizedBox(height: 4),
+              AnimatedDefaultTextStyle(
+                duration: reduce ? Duration.zero : Motion.fast,
+                style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                  color: fg,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 ),
-                const SizedBox(height: 2),
-                Text(
+                child: Text(
                   item.label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: fg,
-                    fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
