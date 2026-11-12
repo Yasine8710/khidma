@@ -144,6 +144,14 @@ describe('structural security guards', () => {
       'authenticated:request_photos:INSERT',
       'authenticated:request_photos:DELETE',
       'authenticated:notification_preferences:SELECT',
+      // freelance (column-level grants are checked in the column matrix)
+      'anon:digital_categories:SELECT',
+      'authenticated:digital_categories:SELECT',
+      'anon:freelancer_portfolio_items:SELECT',
+      'authenticated:freelancer_portfolio_items:SELECT',
+      'authenticated:freelancer_portfolio_items:INSERT',
+      'authenticated:freelancer_portfolio_items:DELETE',
+      'authenticated:freelancer_invites:DELETE',
     ];
     assert.deepEqual([...got].sort(), [...expected].sort());
   });
