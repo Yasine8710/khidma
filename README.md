@@ -5,15 +5,16 @@ A trusted local services marketplace built for Tunisia. Discover professionals, 
 > **Proprietary — All Rights Reserved.** This repository is public for visibility and portfolio purposes only. It is **not** open-source. No permission is granted to copy, modify, redistribute or commercially use the code, the Khidma name, or its branding. See [LICENSE](LICENSE). Third-party assets keep their own licenses ([THIRD_PARTY.md](THIRD_PARTY.md)).
 
 ## Status
-**Phase 1 (design system) and Phase 2 (accounts) are implemented and tested; acceptance is pending** because GitHub Actions is blocked by a billing lock and nothing has run against a real Supabase project yet. All checks pass locally. Nothing here is production-ready. Roadmap and open work: [GitHub issues](https://github.com/Yasine8710/khidma/issues) and [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md).
+Pre-release, tested on the owner's own iPhone (sideloaded; no App Store yet). Work is tracked in [GitHub issues](https://github.com/Yasine8710/khidma/issues). Everything below is covered by automated tests (fakes, recorded HTTP and a real Postgres engine); the live Supabase project is exercised by hand.
 
-What works today (verified with fakes, recorded HTTP and a real Postgres engine, not against a live project):
-- French (default), Arabic (real RTL) and English; Western digits; TND, Tunisian phone and date formatting; light/dark/system theme; onboarding; four-tab navigation; component library; brand mark, icons, splash.
-- Accounts: email sign-up and sign-in, in-app password reset through a deep link, Sign in with Apple (iOS), sign-out, in-app account deletion, secure token storage. Account type choice (customer / professional; no admin path), profile editing, "become a professional".
-- Database (`backend/`): profiles with capability flags, admin table with no client path, 24 governorates + Greater Tunis, 12 service categories, professional profiles with publish rules, rate-limited phone reveal, verification rules; Row Level Security everywhere, tested on real Postgres (PGlite) and mutation-checked.
-- Without Supabase keys the app still runs and says honestly that accounts are unavailable.
+- **Local trades marketplace:** search with filters and map, professional profiles with portfolio, reviews tied to completed jobs, favorites, quote requests with photos, offers and comparison, bookings, chat, notifications settings.
+- **Digital freelance section:** freelancer profiles, portfolio (photos, short clips, video links), invite-link client testimonials, one shared identity verification.
+- **Merchant subscription:** plans in TND, D17 and bank transfer confirmed by an admin; Flouci integration written but not live.
+- **Trust and safety:** identity verification review, reports, suspension, account deletion with file cleanup, Row Level Security everywhere.
+- **Languages:** French (default), Arabic (RTL), English; Western digits; TND formatting.
+- **Admin:** separate web app (`admin/`) behind a TOTP second factor.
 
-Not built yet: marketplace (search, profiles, favorites, maps), requests/offers, messaging, notifications, reviews, verification workflow, admin dashboard. Placeholder screens say so and show no fake data.
+Not done: Sign in with Apple, push notifications and the App Store release (they need a paid Apple Developer account), Flouci go-live, invoices.
 
 ## Stack
 Flutter (iOS first) · Riverpod · GoRouter · Supabase (Postgres, Auth, Storage, RLS) · FCM.
@@ -21,9 +22,11 @@ Flutter (iOS first) · Riverpod · GoRouter · Supabase (Postgres, Auth, Storage
 ## Layout
 - `app/` Flutter application
 - `backend/` Supabase migrations and their tests (`cd backend && npm install && npm test`)
-- `admin/` admin dashboard (Phase 7)
-- `docs/` architecture, plan, schema, security, AI collaboration log
+- `admin/` admin dashboard (React)
+- `web-testimonial/` public page where past clients leave a testimonial
+- `docs/` architecture, schema, security, design brief, iPhone test guide
 - `scripts/` tooling (brand asset generator)
+- `codemagic.yaml` cloud build of an unsigned iPhone test build
 
 ## Develop
 ```bash
