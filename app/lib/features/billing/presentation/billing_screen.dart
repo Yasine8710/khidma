@@ -3,16 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/format/dates.dart';
+import '../../../core/motion/motion.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
-import '../../../shared/widgets/register_row.dart';
-import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/skeleton.dart';
+import '../../requests/presentation/ledger_widgets.dart';
 import '../application/billing_providers.dart';
 import '../domain/billing_domain.dart';
 import 'billing_text.dart';
@@ -94,7 +93,7 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
     final plans = ref.watch(subscriptionPlansProvider);
     final Widget body;
     if (_notProfessional) {
-      body = EmptyState(
+      body = TypeEmpty(
         icon: Icons.storefront_outlined,
         title: l10n.billNotProTitle,
         body: l10n.billNotProBody,
@@ -138,33 +137,16 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
       required bool selected,
       required String title,
       String? subtitle,
-      String? value,
+      PriceTag? price,
       required VoidCallback onTap,
-    }) => Semantics(
+      int index = 0,
+    }) => _ChoiceBlock(
       selected: selected,
-      inMutuallyExclusiveGroup: true,
-      child: RegisterRow(
-        title: title,
-        subtitle: subtitle,
-        onTap: onTap,
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (value != null) ...[
-              Text(value, style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(width: AppSpacing.sm),
-            ],
-            Icon(
-              selected
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_unchecked,
-              color: selected
-                  ? Theme.of(context).colorScheme.onSurface
-                  : Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ],
-        ),
-      ),
+      title: title,
+      subtitle: subtitle,
+      price: price,
+      onTap: onTap,
+      index: index,
     );
 
     String methodHint(PaymentMethod m) => switch (m) {
@@ -181,49 +163,153 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
         AppSpacing.xl,
       ),
       children: [
-        SectionHeader(kicker: '01', title: l10n.billCurrent),
-        const SizedBox(height: AppSpacing.sm),
+        WorkOrderHeading(number: 1, title: l10n.billCurrent),
         const _CurrentSubscription(),
         gap,
-        SectionHeader(kicker: '02', title: l10n.billChoosePlan),
-        const SizedBox(height: AppSpacing.xs),
-        RegisterGroup(
-          children: [
-            for (final p in plans)
-              choice(
-                selected: p.code == chosen?.code,
-                title: p.name(lang),
-                subtitle: l10n.billPeriod(p.periodDays),
-                value: formatTndAmount(p.amountMillimes, languageCode: lang),
-                onTap: () => setState(() => _plan = p.code),
-              ),
-          ],
-        ),
+        WorkOrderHeading(number: 2, title: l10n.billChoosePlan),
+        for (var i = 0; i < plans.length; i++)
+          choice(
+            index: i,
+            selected: plans[i].code == chosen?.code,
+            title: plans[i].name(lang),
+            subtitle: l10n.billPeriod(plans[i].periodDays),
+            price: PriceTag(plans[i].amountMillimes, lang),
+            onTap: () => setState(() => _plan = plans[i].code),
+          ),
         gap,
-        SectionHeader(kicker: '03', title: l10n.billChooseMethod),
-        const SizedBox(height: AppSpacing.xs),
-        RegisterGroup(
-          children: [
-            for (final m in PaymentMethod.values)
-              choice(
-                selected: m == _method,
-                title: paymentMethodText(l10n, m),
-                subtitle: methodHint(m),
-                onTap: () => setState(() => _method = m),
-              ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.xl),
+        WorkOrderHeading(number: 3, title: l10n.billChooseMethod),
+        for (final m in PaymentMethod.values)
+          choice(
+            index: m.index,
+            selected: m == _method,
+            title: paymentMethodText(l10n, m),
+            subtitle: methodHint(m),
+            onTap: () => setState(() => _method = m),
+          ),
+        const SizedBox(height: AppSpacing.md),
         AppButton(
           label: l10n.billPay,
           isLoading: busy,
           onPressed: chosen == null ? null : () => _pay(chosen.code),
         ),
         gap,
-        SectionHeader(kicker: '04', title: l10n.billMyPayments),
-        const SizedBox(height: AppSpacing.xs),
+        WorkOrderHeading(number: 4, title: l10n.billMyPayments),
         const _Orders(),
       ],
+    );
+  }
+}
+
+/// A price to show big: whole TND counts up, other amounts print as is.
+class PriceTag {
+  const PriceTag(this.millimes, this.lang);
+
+  final int millimes;
+  final String lang;
+}
+
+/// A chunky choice (plan or payment method): a sticker block that sinks when
+/// pressed; the chosen one is flooded with the world colour. Plans carry a big
+/// ruled price block under the name.
+class _ChoiceBlock extends StatelessWidget {
+  const _ChoiceBlock({
+    required this.selected,
+    required this.title,
+    required this.onTap,
+    this.subtitle,
+    this.price,
+    this.index = 0,
+  });
+
+  final bool selected;
+  final String title;
+  final String? subtitle;
+  final PriceTag? price;
+  final VoidCallback onTap;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    final fg = selected ? scheme.onPrimaryContainer : scheme.onSurface;
+    final p = price;
+    Widget? amount;
+    if (p != null) {
+      final style = text.displaySmall?.copyWith(color: fg);
+      final whole = p.millimes % 1000 == 0;
+      // Prices read left to right with Western digits in every language.
+      amount = Directionality(
+        textDirection: TextDirection.ltr,
+        child: whole
+            ? CountUp(value: p.millimes ~/ 1000, suffix: ' TND', style: style)
+            : Text(
+                formatTndAmount(p.millimes, languageCode: p.lang),
+                style: style,
+              ),
+      );
+    }
+    return StaggerIn(
+      index: index,
+      child: Semantics(
+        selected: selected,
+        inMutuallyExclusiveGroup: true,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(
+            end: AppInk.offset,
+            bottom: AppInk.offset + AppSpacing.md,
+          ),
+          child: Pressable(
+            onTap: onTap,
+            child: StickerBox(
+              color: selected ? scheme.primaryContainer : scheme.surface,
+              padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: text.headlineSmall?.copyWith(color: fg),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Icon(
+                        selected
+                            ? Icons.check_box_rounded
+                            : Icons.check_box_outline_blank_rounded,
+                        color: fg,
+                      ),
+                    ],
+                  ),
+                  if (amount != null) ...[
+                    const SizedBox(height: AppSpacing.sm),
+                    Container(height: 3, color: fg),
+                    const SizedBox(height: AppSpacing.sm),
+                    Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: AlignmentDirectional.centerStart,
+                        child: amount,
+                      ),
+                    ),
+                  ],
+                  if (subtitle != null) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      subtitle!,
+                      style: text.bodyMedium?.copyWith(color: fg),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -279,27 +365,68 @@ class _CurrentSubscription extends ConsumerWidget {
       ),
       data: (sub) {
         if (sub == null) return Text(l10n.billNone);
+        final scheme = Theme.of(context).colorScheme;
+        final text = Theme.of(context).textTheme;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Divider(),
+            if (sub.state == SubscriptionState.active)
+              Padding(
+                padding: const EdgeInsetsDirectional.only(
+                  end: AppInk.offset,
+                  bottom: AppInk.offset + AppSpacing.md,
+                ),
+                child: StickerBox(
+                  color: scheme.primaryContainer,
+                  padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: CountUp(
+                          value: sub.daysLeft,
+                          style: text.displayLarge?.copyWith(
+                            color: scheme.onPrimaryContainer,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.only(
+                            bottom: AppSpacing.sm,
+                          ),
+                          child: Text(
+                            l10n.billDaysLeftLabel,
+                            style: text.titleMedium?.copyWith(
+                              color: scheme.onPrimaryContainer,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            const LedgerRule(strong: true),
             fact(
               l10n.billStatusLabel,
-              AppBadge(
+              LedgerStamp(
+                big: true,
                 label: subscriptionStateText(l10n, sub.state),
                 tone: subscriptionTone(sub.state),
               ),
             ),
-            const Divider(),
+            const LedgerRule(),
             fact(
               l10n.billValidUntil,
-              Text(formatDate(sub.currentPeriodEnd, locale)),
+              Text(
+                formatDate(sub.currentPeriodEnd, locale),
+                style: text.titleSmall,
+              ),
             ),
-            if (sub.state == SubscriptionState.active) ...[
-              const Divider(),
-              fact(l10n.billDaysLeftLabel, Text('${sub.daysLeft}')),
-            ],
-            const Divider(),
+            const LedgerRule(strong: true),
           ],
         );
       },
@@ -336,28 +463,49 @@ class _Orders extends ConsumerWidget {
       ),
       data: (orders) {
         if (orders == null || orders.isEmpty) return Text(l10n.billNoPayments);
-        return RegisterGroup(
+        final text = Theme.of(context).textTheme;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            for (final o in orders)
-              RegisterRow(
-                title:
-                    '${o.reference} · ${formatTndAmount(o.amountMillimes, languageCode: locale.languageCode)}',
-                subtitle: [
-                  paymentMethodText(l10n, o.method),
-                  if (o.createdAt != null) formatDate(o.createdAt!, locale),
-                ].join(' · '),
-                trailing: AppBadge(
-                  label: orderStatusText(l10n, o.status),
-                  tone: orderTone(o.status),
-                ),
+            const SizedBox(height: AppSpacing.sm),
+            for (var i = 0; i < orders.length; i++)
+              LedgerRow(
+                index: i,
                 // An unpaid manual order can be reopened to pay or cancel it.
-                onTap: o.status.isOpen && o.method.isManual
+                onTap: orders[i].status.isOpen && orders[i].method.isManual
                     ? () => Navigator.of(context).push<void>(
                         MaterialPageRoute(
-                          builder: (_) => PaymentInstructionsScreen(order: o),
+                          builder: (_) =>
+                              PaymentInstructionsScreen(order: orders[i]),
                         ),
                       )
                     : null,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${orders[i].reference} · ${formatTndAmount(orders[i].amountMillimes, languageCode: locale.languageCode)}',
+                      style: text.titleMedium,
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      [
+                        paymentMethodText(l10n, orders[i].method),
+                        if (orders[i].createdAt != null)
+                          formatDate(orders[i].createdAt!, locale),
+                      ].join(' · '),
+                      style: text.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    LedgerStamp(
+                      big: true,
+                      label: orderStatusText(l10n, orders[i].status),
+                      tone: orderTone(orders[i].status),
+                    ),
+                  ],
+                ),
               ),
           ],
         );

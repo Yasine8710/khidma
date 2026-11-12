@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/error_state.dart';
-import '../../../shared/widgets/register_row.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../auth/presentation/signed_out_prompt.dart';
@@ -53,20 +53,44 @@ class NotificationSettingsScreen extends ConsumerWidget {
         body: l10n.notifIntro,
       );
     } else if (prefs != null) {
-      Widget toggle(String title, bool value, ValueChanged<bool> onChanged) =>
-          SwitchListTile(
-            contentPadding: const EdgeInsetsDirectional.symmetric(
-              horizontal: AppSpacing.xs,
+      Widget toggle(
+        int index,
+        String title,
+        bool value,
+        ValueChanged<bool> onChanged,
+      ) => StaggerIn(
+        index: index,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(
+            end: AppInk.offset,
+            bottom: AppInk.offset + AppSpacing.md,
+          ),
+          child: StickerBox(
+            color: value ? scheme.primaryContainer : scheme.surface,
+            child: Material(
+              type: MaterialType.transparency,
+              child: SwitchListTile(
+                contentPadding: const EdgeInsetsDirectional.symmetric(
+                  horizontal: AppSpacing.md,
+                ),
+                minTileHeight: 64,
+                title: Text(
+                  title,
+                  style: text.titleMedium?.copyWith(
+                    color: value ? scheme.onPrimaryContainer : scheme.onSurface,
+                  ),
+                ),
+                value: value,
+                onChanged: onChanged,
+              ),
             ),
-            minTileHeight: 56,
-            title: Text(title),
-            value: value,
-            onChanged: onChanged,
-          );
+          ),
+        ),
+      );
       body = ListView(
         padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
         children: [
-          Text(l10n.notifIntro, style: text.bodyMedium?.copyWith(color: muted)),
+          Text(l10n.notifIntro, style: text.bodyLarge?.copyWith(color: muted)),
           const SizedBox(height: AppSpacing.md),
           if (!pushAvailable) ...[
             Text(
@@ -80,19 +104,23 @@ class NotificationSettingsScreen extends ConsumerWidget {
           // it is not terracotta.
           Theme(
             data: Theme.of(context).copyWith(switchTheme: _inkSwitch(scheme)),
-            child: RegisterGroup(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 toggle(
+                  0,
                   l10n.notifOffers,
                   prefs.offers,
                   (v) => _change(context, ref, prefs.copyWith(offers: v)),
                 ),
                 toggle(
+                  1,
                   l10n.notifMessages,
                   prefs.messages,
                   (v) => _change(context, ref, prefs.copyWith(messages: v)),
                 ),
                 toggle(
+                  2,
                   l10n.notifJobs,
                   prefs.jobs,
                   (v) => _change(context, ref, prefs.copyWith(jobs: v)),
@@ -122,15 +150,13 @@ class NotificationSettingsScreen extends ConsumerWidget {
 
   static SwitchThemeData _inkSwitch(ColorScheme cs) => SwitchThemeData(
     thumbColor: WidgetStateProperty.resolveWith(
-      (s) => s.contains(WidgetState.selected) ? cs.surface : cs.outline,
+      (s) => s.contains(WidgetState.selected) ? cs.surface : cs.onSurface,
     ),
     trackColor: WidgetStateProperty.resolveWith(
       (s) => s.contains(WidgetState.selected)
           ? cs.onSurface
           : cs.surfaceContainerHighest,
     ),
-    trackOutlineColor: WidgetStateProperty.resolveWith(
-      (s) => s.contains(WidgetState.selected) ? cs.onSurface : cs.outline,
-    ),
+    trackOutlineColor: WidgetStateProperty.all(cs.onSurface),
   );
 }

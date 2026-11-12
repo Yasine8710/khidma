@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -103,16 +104,14 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
           // olive once verified, plain ink otherwise.
           Semantics(
             liveRegion: true,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: scheme.surface,
-                borderRadius: BorderRadius.circular(AppRadius.md),
-                border: Border.all(
-                  color: approved ? scheme.secondary : scheme.outlineVariant,
-                ),
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(
+                end: AppInk.offset,
+                bottom: AppInk.offset,
               ),
-              child: Padding(
-                padding: const EdgeInsetsDirectional.all(AppSpacing.md),
+              child: StickerBox(
+                color: approved ? scheme.primaryContainer : scheme.surface,
+                padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
                 child: Row(
                   children: [
                     Icon(
@@ -121,26 +120,37 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                           : pending
                           ? Icons.hourglass_top_rounded
                           : Icons.shield_outlined,
+                      size: 32,
                       color: approved
-                          ? scheme.secondary
-                          : scheme.onSurfaceVariant,
+                          ? scheme.onPrimaryContainer
+                          : scheme.onSurface,
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
-                      child: Text(switch (info.status) {
-                        VerificationStatus.none => l10n.verifStatusNone,
-                        VerificationStatus.pending => l10n.verifStatusPending,
-                        VerificationStatus.approved => l10n.verifStatusApproved,
-                        VerificationStatus.rejected => l10n.verifStatusRejected,
-                        VerificationStatus.cancelled =>
-                          l10n.verifStatusCancelled,
-                      }, style: text.titleMedium),
+                      child: Text(
+                        switch (info.status) {
+                          VerificationStatus.none => l10n.verifStatusNone,
+                          VerificationStatus.pending => l10n.verifStatusPending,
+                          VerificationStatus.approved =>
+                            l10n.verifStatusApproved,
+                          VerificationStatus.rejected =>
+                            l10n.verifStatusRejected,
+                          VerificationStatus.cancelled =>
+                            l10n.verifStatusCancelled,
+                        },
+                        style: text.headlineSmall?.copyWith(
+                          color: approved
+                              ? scheme.onPrimaryContainer
+                              : scheme.onSurface,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
           ),
+          const SizedBox(height: AppSpacing.sm),
           if (info.status == VerificationStatus.rejected &&
               info.rejectReason != null) ...[
             const SizedBox(height: AppSpacing.xs),
@@ -152,7 +162,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
           const SizedBox(height: AppSpacing.md),
           Text(
             pending ? l10n.verifPendingBody : l10n.verifIntro,
-            style: text.bodyMedium,
+            style: text.bodyLarge,
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
@@ -178,7 +188,10 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                       position: DecorationPosition.foreground,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(AppRadius.sm),
-                        border: Border.all(color: scheme.outlineVariant),
+                        border: Border.all(
+                          color: scheme.onSurface,
+                          width: AppInk.border,
+                        ),
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(AppRadius.sm),

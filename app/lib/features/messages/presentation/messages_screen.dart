@@ -6,7 +6,6 @@ import '../../../core/format/dates.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../auth/application/auth_providers.dart';
@@ -27,7 +26,6 @@ class MessagesScreen extends ConsumerWidget {
       return SafeArea(
         child: SignedOutPrompt(
           icon: Icons.chat_bubble_outline_rounded,
-          photo: 'assets/photos/onb-trust.jpg',
           title: l10n.messagesSignedOutTitle,
           body: l10n.messagesSignedOutBody,
         ),
@@ -38,7 +36,7 @@ class MessagesScreen extends ConsumerWidget {
     final Widget body;
     if (list != null) {
       body = list.isEmpty
-          ? EmptyState(
+          ? TypeEmpty(
               icon: Icons.chat_bubble_outline_rounded,
               title: l10n.messagesEmptyTitle,
               body: l10n.messagesEmptyBody,
@@ -59,8 +57,8 @@ class MessagesScreen extends ConsumerWidget {
                 ),
                 itemCount: list.length + 1,
                 itemBuilder: (context, i) => i == 0
-                    ? const LedgerRule(strong: true)
-                    : _Row(conversation: list[i - 1]),
+                    ? const SizedBox(height: AppSpacing.sm)
+                    : _Row(conversation: list[i - 1], index: i - 1),
               ),
             );
     } else if (async.hasError) {
@@ -89,7 +87,7 @@ class MessagesScreen extends ConsumerWidget {
                 header: true,
                 child: Text(
                   l10n.navMessages,
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: Theme.of(context).textTheme.displaySmall,
                 ),
               ),
             ),
@@ -119,9 +117,10 @@ String _when(DateTime at, Locale locale) {
 }
 
 class _Row extends StatelessWidget {
-  const _Row({required this.conversation});
+  const _Row({required this.conversation, this.index = 0});
 
   final ConversationSummary conversation;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +139,7 @@ class _Row extends StatelessWidget {
       semanticLabel:
           '$title, ${c.requestTitle}'
           '${unread ? ', ${l10n.chatUnread(c.unread)}' : ''}',
+      index: index,
       onTap: () => context.push(AppRoutes.chatPath(c.id)),
       leading: InitialsBlock(name: title, size: 44),
       child: Column(
@@ -152,8 +152,8 @@ class _Row extends StatelessWidget {
                 child: Text(
                   title,
                   style: unread
-                      ? text.titleMedium
-                      : text.titleMedium?.copyWith(fontWeight: FontWeight.w400),
+                      ? text.titleMedium?.copyWith(fontWeight: FontWeight.w800)
+                      : text.titleMedium?.copyWith(fontWeight: FontWeight.w500),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

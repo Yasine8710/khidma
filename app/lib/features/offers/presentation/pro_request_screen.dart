@@ -4,13 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/format/digits.dart';
+import '../../../core/motion/motion.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
-import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../messages/application/messages_providers.dart';
@@ -47,7 +47,7 @@ class ProRequestScreen extends ConsumerWidget {
         ),
       );
     } else {
-      body = EmptyState(
+      body = TypeEmpty(
         icon: Icons.assignment_late_outlined,
         title: l10n.reqNotFound,
         body: '',
@@ -105,20 +105,19 @@ class _Body extends ConsumerWidget {
           RequestPhotoStrip(requestId: request.id),
           const SizedBox(height: AppSpacing.xl),
           // The quote being written, on its own framed slip.
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: scheme.surface,
-              borderRadius: BorderRadius.circular(AppRadius.md),
-              border: Border.all(color: scheme.outlineVariant),
+          Padding(
+            padding: const EdgeInsetsDirectional.only(
+              end: AppInk.offset,
+              bottom: AppInk.offset,
             ),
-            child: Padding(
+            child: StickerBox(
               padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Semantics(
                     header: true,
-                    child: Text(l10n.offerTitle, style: text.titleLarge),
+                    child: Text(l10n.offerTitle, style: text.headlineSmall),
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   const LedgerRule(strong: true),
@@ -293,6 +292,7 @@ class _OfferSectionState extends ConsumerState<_OfferSection> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           LedgerStamp(
+            big: true,
             label: offerStatusLabel(l10n, OfferStatus.accepted),
             tone: BadgeTone.success,
             icon: Icons.check_rounded,
@@ -313,6 +313,7 @@ class _OfferSectionState extends ConsumerState<_OfferSection> {
             Align(
               alignment: AlignmentDirectional.centerStart,
               child: LedgerStamp(
+                big: true,
                 label: l10n.offerYours(offerStatusLabel(l10n, status)),
                 tone: offerStatusTone(status),
               ),

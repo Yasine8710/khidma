@@ -154,6 +154,8 @@ void main() {
           ],
         );
         await _open(tester, repo);
+        await tester.ensureVisible(find.text('Accepter').first);
+        await tester.pumpAndSettle();
         await tester.tap(find.text('Accepter').first);
         await tester.pumpAndSettle();
         expect(find.text('Accepter cette offre ?'), findsOneWidget);
@@ -164,6 +166,8 @@ void main() {
         await tester.tap(find.text('Annuler'));
         await tester.pumpAndSettle();
         expect(repo.calls, isEmpty);
+        await tester.ensureVisible(find.text('Accepter').first);
+        await tester.pumpAndSettle();
         await tester.tap(find.text('Accepter').first);
         await tester.pumpAndSettle();
         await tester.tap(find.widgetWithText(TextButton, 'Accepter'));

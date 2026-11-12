@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/format/dates.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/empty_state.dart';
 import '../../portfolio/presentation/portfolio_image.dart';
 import '../../requests/domain/requests_domain.dart';
+import '../../requests/presentation/ledger_widgets.dart' show TypeEmpty;
 import '../application/messages_providers.dart';
 import '../domain/messages_domain.dart';
 import 'messages_screen.dart' show conversationTitle;
@@ -110,7 +110,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       // The banner above says what is wrong and offers a retry.
       list = const SizedBox.shrink();
     } else if (messages.isEmpty && !async.isLoading) {
-      list = EmptyState(
+      list = TypeEmpty(
         icon: Icons.chat_bubble_outline_rounded,
         title: l10n.chatEmpty,
         body: '',
@@ -151,7 +151,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     border: BorderDirectional(
-                      bottom: BorderSide(color: scheme.outlineVariant),
+                      bottom: BorderSide(
+                        color: scheme.onSurface,
+                        width: AppInk.border,
+                      ),
                     ),
                   ),
                   child: Padding(
@@ -225,7 +228,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 decoration: BoxDecoration(
                   color: scheme.surfaceContainerHighest,
                   border: BorderDirectional(
-                    top: BorderSide(color: scheme.outlineVariant),
+                    top: BorderSide(
+                      color: scheme.onSurface,
+                      width: AppInk.border,
+                    ),
                   ),
                 ),
                 child: Padding(
@@ -251,12 +257,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
               )
             else
-              // The composer: a band of card paper under a rule.
+              // The composer: a hard-edged paper band under a heavy ink rule.
               DecoratedBox(
                 decoration: BoxDecoration(
                   color: scheme.surface,
                   border: BorderDirectional(
-                    top: BorderSide(color: scheme.outlineVariant),
+                    top: BorderSide(
+                      color: scheme.onSurface,
+                      width: AppInk.border + 1,
+                    ),
                   ),
                 ),
                 child: Padding(
@@ -297,8 +306,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         tooltip: l10n.chatSend,
                         style: IconButton.styleFrom(
                           minimumSize: const Size(48, 48),
+                          backgroundColor: scheme.primaryContainer,
+                          foregroundColor: scheme.onPrimaryContainer,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppRadius.md),
+                            borderRadius: BorderRadius.circular(AppRadius.sm),
+                            side: BorderSide(
+                              color: scheme.onSurface,
+                              width: AppInk.border,
+                            ),
                           ),
                         ),
                         icon: const Icon(Icons.arrow_upward_rounded),
@@ -331,10 +346,13 @@ class _Bubble extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    // Mine in ink with paper text; theirs on card paper with a rule.
-    final bg = mine ? scheme.inverseSurface : scheme.surface;
-    final fg = mine ? scheme.onInverseSurface : scheme.onSurface;
-    const r = Radius.circular(AppRadius.md);
+    // Mine in the world colour, theirs on paper; both with a heavy ink border
+    // and a hard shadow toward the sender's side.
+    final bg = mine ? scheme.primaryContainer : scheme.surface;
+    final fg = mine ? scheme.onPrimaryContainer : scheme.onSurface;
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    final dx = (mine != rtl) ? 3.0 : -3.0;
+    const r = Radius.circular(AppRadius.xl);
     final who = mine ? l10n.chatYouSent : l10n.chatThem;
     final body = message.body;
     final image = message.imagePath;
@@ -351,8 +369,11 @@ class _Bubble extends ConsumerWidget {
           container: true,
           label: '$who, ${formatTime(message.createdAt, locale)}',
           child: Container(
-            margin: const EdgeInsetsDirectional.symmetric(
-              vertical: AppSpacing.xs,
+            margin: const EdgeInsetsDirectional.fromSTEB(
+              4,
+              AppSpacing.xs,
+              4,
+              AppSpacing.xs + 3,
             ),
             padding: const EdgeInsetsDirectional.fromSTEB(
               AppSpacing.md,
@@ -369,7 +390,14 @@ class _Bubble extends ConsumerWidget {
                 bottomStart: mine ? r : Radius.zero,
                 bottomEnd: mine ? Radius.zero : r,
               ),
-              border: mine ? null : Border.all(color: scheme.outlineVariant),
+              border: Border.all(color: scheme.onSurface, width: AppInk.border),
+              boxShadow: [
+                BoxShadow(
+                  color: scheme.onSurface,
+                  offset: Offset(dx, 3),
+                  blurRadius: 0,
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -380,17 +408,15 @@ class _Bubble extends ConsumerWidget {
                   if (image != null) const SizedBox(height: AppSpacing.sm),
                   SelectableText(
                     body,
-                    style: text.bodyMedium?.copyWith(color: fg),
+                    style: text.bodyLarge?.copyWith(color: fg),
                   ),
                 ],
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   formatTime(message.createdAt, locale),
                   style: text.labelSmall?.copyWith(
-                    color: mine
-                        ? fg.withValues(alpha: 0.75)
-                        : scheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w400,
+                    color: mine ? fg : scheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
@@ -415,7 +441,7 @@ class _ChatImage extends ConsumerWidget {
       width: 220,
       height: 160,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
         child: url.when(
           data: (u) => PortfolioImage(
             url: u,

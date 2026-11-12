@@ -165,10 +165,15 @@ void main() {
       expect(find.text('Ouverte'), findsOneWidget);
       expect(find.text('Attribuée'), findsOneWidget);
       expect(find.text('Annulée'), findsOneWidget);
+      // Cards are taller now: bring the last one into the built range.
+      await tester.drag(find.byType(ListView), const Offset(0, -600));
+      await tester.pumpAndSettle();
       expect(find.text('Expirée'), findsOneWidget);
       expect(find.text('3 offres'), findsOneWidget);
       expect(find.text('1 offre'), findsOneWidget);
       expect(find.text('Aucune offre'), findsNWidgets(2));
+      await tester.drag(find.byType(ListView), const Offset(0, 600));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Fuite sous évier'));
       await tester.pumpAndSettle();
       expect(find.text('Demande'), findsOneWidget);

@@ -6,12 +6,12 @@ import 'package:go_router/go_router.dart';
 import '../../../core/format/dates.dart';
 import '../../../core/format/digits.dart';
 import '../../../core/haptics.dart';
+import '../../../core/motion/motion.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
-import '../../../shared/widgets/category_photo.dart';
 import '../../marketplace/application/home_providers.dart';
 import '../../marketplace/application/marketplace_providers.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
@@ -376,7 +376,10 @@ class _NewRequestScreenState extends ConsumerState<NewRequestScreen> {
                 decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
                   border: BorderDirectional(
-                    top: BorderSide(color: scheme.outlineVariant),
+                    top: BorderSide(
+                      color: scheme.onSurface,
+                      width: AppInk.border + 1,
+                    ),
                   ),
                 ),
                 child: Padding(
@@ -430,12 +433,16 @@ class _PrivacyNote extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return DecoratedBox(
       decoration: BoxDecoration(
+        color: scheme.surface,
         border: BorderDirectional(
-          start: BorderSide(color: scheme.onSurface, width: 2),
+          start: BorderSide(color: scheme.onSurface, width: 8),
+          top: BorderSide(color: scheme.onSurface, width: AppInk.border),
+          end: BorderSide(color: scheme.onSurface, width: AppInk.border),
+          bottom: BorderSide(color: scheme.onSurface, width: AppInk.border),
         ),
       ),
       child: Padding(
-        padding: const EdgeInsetsDirectional.only(start: AppSpacing.md),
+        padding: const EdgeInsetsDirectional.all(AppSpacing.md),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -528,51 +535,49 @@ class _CategoryBox extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context);
     final name = category.nameFor(locale);
-    final fg = selected ? scheme.surface : scheme.onSurface;
+    final fg = selected ? scheme.onPrimaryContainer : scheme.onSurface;
     return Semantics(
       button: true,
       selected: selected,
       label: name,
       excludeSemantics: true,
       onTap: onTap,
-      child: Material(
-        color: selected ? scheme.onSurface : scheme.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.sm),
-          side: BorderSide(color: selected ? scheme.onSurface : scheme.outline),
+      child: Padding(
+        padding: const EdgeInsetsDirectional.only(
+          end: AppInk.offset,
+          bottom: AppInk.offset,
         ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
+        child: Pressable(
+          haptic: false,
+          button: false,
           onTap: () {
             AppHaptics.selection();
             onTap();
           },
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 52),
-            child: Padding(
-              padding: const EdgeInsetsDirectional.all(AppSpacing.sm),
-              child: Row(
-                children: [
-                  CategoryPhoto(
-                    slug: category.slug,
-                    icon: category.icon,
-                    width: 34,
-                    height: 34,
-                    radius: 2,
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: Text(
-                      name,
-                      style: Theme.of(context).textTheme.labelMedium
-                          ?.copyWith(color: fg),
+          child: StickerBox(
+            color: selected ? scheme.primaryContainer : scheme.surface,
+            radius: AppRadius.sm,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 52),
+              child: Padding(
+                padding: const EdgeInsetsDirectional.all(AppSpacing.sm),
+                child: Row(
+                  children: [
+                    InitialsBlock(name: name, size: 34),
+                    const SizedBox(width: AppSpacing.sm),
+                    Expanded(
+                      child: Text(
+                        name,
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(color: fg),
+                      ),
                     ),
-                  ),
-                  if (selected) ...[
-                    const SizedBox(width: AppSpacing.xs),
-                    Icon(Icons.check_rounded, size: 18, color: fg),
+                    if (selected) ...[
+                      const SizedBox(width: AppSpacing.xs),
+                      Icon(Icons.check_rounded, size: 18, color: fg),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           ),
@@ -607,7 +612,7 @@ class _PhotoTile extends StatelessWidget {
             position: DecorationPosition.foreground,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppRadius.sm),
-              border: Border.all(color: scheme.outlineVariant),
+              border: Border.all(color: scheme.onSurface, width: AppInk.border),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.sm),

@@ -256,7 +256,7 @@ class _ReceivedOffersSectionState extends ConsumerState<ReceivedOffersSection> {
                 ),
               ],
             ),
-            style: text.titleLarge,
+            style: text.headlineSmall,
           ),
         ),
         const SizedBox(height: AppSpacing.md),
@@ -307,7 +307,7 @@ class _OfferCard extends StatelessWidget {
       textDirection: TextDirection.ltr,
       child: Text(
         formatTnd(offer.priceTnd, locale),
-        style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+        style: text.headlineMedium,
       ),
     );
 
@@ -375,9 +375,14 @@ class _OfferCard extends StatelessWidget {
                   icon: Icons.check_rounded,
                 ),
               if (isLowest)
-                LedgerStamp(label: l10n.offerLowest, tone: BadgeTone.success),
+                LedgerStamp(
+                  big: true,
+                  label: l10n.offerLowest,
+                  tone: BadgeTone.success,
+                ),
               if (!offer.isPending)
                 LedgerStamp(
+                  big: true,
                   label: offerStatusLabel(l10n, offer.status),
                   tone: offerStatusTone(offer.status),
                 ),
@@ -397,7 +402,7 @@ class _OfferCard extends StatelessWidget {
             DecoratedBox(
               decoration: BoxDecoration(
                 border: BorderDirectional(
-                  start: BorderSide(color: scheme.outlineVariant, width: 2),
+                  start: BorderSide(color: scheme.onSurface, width: 4),
                 ),
               ),
               child: Padding(
@@ -458,7 +463,7 @@ class _OfferCard extends StatelessWidget {
       position: DecorationPosition.foreground,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: scheme.onSurface, width: 1.5),
+        border: Border.all(color: scheme.onSurface, width: 3),
       ),
       child: card,
     );
@@ -561,7 +566,7 @@ class BookingSection extends ConsumerWidget {
         const SizedBox(height: AppSpacing.md),
         Semantics(
           header: true,
-          child: Text(l10n.bookingTitle, style: text.titleLarge),
+          child: Text(l10n.bookingTitle, style: text.headlineSmall),
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
@@ -573,6 +578,7 @@ class BookingSection extends ConsumerWidget {
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: LedgerStamp(
+              big: true,
               label: jobStatusLabel(l10n, booking.status),
               tone: jobStatusTone(booking.status),
             ),

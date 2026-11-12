@@ -9,7 +9,6 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_chip.dart';
-import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/application/marketplace_providers.dart';
@@ -61,7 +60,7 @@ class _ProInboxScreenState extends ConsumerState<ProInboxScreen> {
               ),
             );
     } else if (!published) {
-      body = EmptyState(
+      body = TypeEmpty(
         icon: Icons.visibility_off_outlined,
         title: l10n.proInboxTitle,
         body: l10n.proInboxNeedsPublished,
@@ -193,14 +192,14 @@ class _Pages extends ConsumerWidget {
       }
       final list = async.requireValue;
       if (page == 0 && list.isEmpty) {
-        return EmptyState(
+        return TypeEmpty(
           icon: Icons.inbox_outlined,
           title: l10n.proInboxEmptyTitle,
           body: l10n.proInboxEmptyBody,
         );
       }
       for (final r in list) {
-        items.add(_RequestCard(request: r));
+        items.add(_RequestCard(request: r, index: items.length));
       }
       more = page == pages - 1 && list.length == openRequestsPageSize;
     }
@@ -233,9 +232,10 @@ class _Pages extends ConsumerWidget {
 }
 
 class _RequestCard extends ConsumerWidget {
-  const _RequestCard({required this.request});
+  const _RequestCard({required this.request, this.index = 0});
 
   final OpenRequest request;
+  final int index;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -259,6 +259,7 @@ class _RequestCard extends ConsumerWidget {
       ?place,
     ].join(' · ');
     return LedgerRow(
+      index: index,
       semanticLabel: request.title,
       onTap: () => context.push(AppRoutes.proRequestPath(request.id)),
       child: Column(
@@ -280,14 +281,15 @@ class _RequestCard extends ConsumerWidget {
             children: [
               if (mineStatus != null)
                 LedgerStamp(
+                  big: true,
                   label: l10n.offerYours(offerStatusLabel(l10n, mineStatus)),
                   tone: offerStatusTone(mineStatus),
                 ),
-              Text(l10n.reqOffers(request.offersCount), style: text.labelLarge),
+              Text(l10n.reqOffers(request.offersCount), style: text.titleSmall),
               if (request.budgetTnd != null)
                 Text(
                   l10n.reqBudget(formatTnd(request.budgetTnd!, locale)),
-                  style: text.bodySmall?.copyWith(color: muted),
+                  style: text.bodyMedium?.copyWith(color: muted),
                 ),
             ],
           ),

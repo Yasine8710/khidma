@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/app_badge.dart';
+import '../../../core/motion/motion.dart';
+import '../../requests/presentation/ledger_widgets.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/section_header.dart';
 import '../application/billing_providers.dart';
 import '../domain/billing_domain.dart';
 import 'billing_screen.dart' show orderTone;
@@ -75,7 +75,7 @@ class PaymentInstructionsScreen extends ConsumerWidget {
               alignment: AlignmentDirectional.centerEnd,
               child: Directionality(
                 textDirection: TextDirection.ltr,
-                child: SelectableText(value, style: text.bodyLarge),
+                child: SelectableText(value, style: text.titleMedium),
               ),
             ),
           ),
@@ -104,20 +104,20 @@ class PaymentInstructionsScreen extends ConsumerWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Divider(),
+            const LedgerRule(),
             if (bank != null) ...[
               if (bank.name != null) fact(l10n.billBankName, bank.name!),
-              if (bank.name != null) const Divider(),
+              if (bank.name != null) const LedgerRule(),
               if (bank.holder != null) fact(l10n.billHolder, bank.holder!),
-              if (bank.holder != null) const Divider(),
+              if (bank.holder != null) const LedgerRule(),
               fact(l10n.billRib, bank.rib, copy: true),
             ],
             if (d17 != null) ...[
               fact(l10n.billD17Number, d17.number, copy: true),
-              if (d17.holder != null) const Divider(),
+              if (d17.holder != null) const LedgerRule(),
               if (d17.holder != null) fact(l10n.billHolder, d17.holder!),
             ],
-            const Divider(),
+            const LedgerRule(),
           ],
         );
       },
@@ -142,22 +142,62 @@ class PaymentInstructionsScreen extends ConsumerWidget {
                     style: text.headlineSmall,
                   ),
                 ),
-                AppBadge(
+                LedgerStamp(
+                  big: true,
                   label: orderStatusText(l10n, current.status),
                   tone: orderTone(current.status),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacing.lg),
-            const Divider(),
-            fact(
-              l10n.billAmount,
-              formatTndAmount(current.amountMillimes, languageCode: lang),
+            // The sum due, as one big ruled price block.
+            Padding(
+              padding: const EdgeInsetsDirectional.only(
+                end: AppInk.offset,
+                bottom: AppInk.offset,
+              ),
+              child: StickerBox(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.billAmount,
+                      style: text.titleMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Container(
+                      height: 3,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          formatTndAmount(
+                            current.amountMillimes,
+                            languageCode: lang,
+                          ),
+                          style: text.displayMedium?.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimaryContainer,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const Divider(),
             const SizedBox(height: AppSpacing.xl),
-            SectionHeader(kicker: '01', title: l10n.billReference),
-            const SizedBox(height: AppSpacing.sm),
+            WorkOrderHeading(number: 1, title: l10n.billReference),
             Row(
               children: [
                 Expanded(
@@ -181,8 +221,7 @@ class PaymentInstructionsScreen extends ConsumerWidget {
               style: text.bodyMedium?.copyWith(color: muted),
             ),
             const SizedBox(height: AppSpacing.xl),
-            SectionHeader(kicker: '02', title: l10n.billPayTo),
-            const SizedBox(height: AppSpacing.sm),
+            WorkOrderHeading(number: 2, title: l10n.billPayTo),
             accounts,
             const SizedBox(height: AppSpacing.xl),
             if (awaiting)
@@ -222,6 +261,15 @@ class _CopyButton extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     return IconButton(
       tooltip: label,
+      style: IconButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.sm),
+          side: BorderSide(
+            color: Theme.of(context).colorScheme.onSurface,
+            width: AppInk.border,
+          ),
+        ),
+      ),
       icon: const Icon(Icons.copy_outlined),
       onPressed: () async {
         final messenger = ScaffoldMessenger.of(context);

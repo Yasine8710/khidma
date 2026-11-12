@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/format/dates.dart';
 import '../../../core/format/money.dart';
+import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/application/marketplace_providers.dart';
@@ -42,7 +42,7 @@ class RequestDetailScreen extends ConsumerWidget {
         ),
       );
     } else {
-      body = EmptyState(
+      body = TypeEmpty(
         icon: Icons.assignment_late_outlined,
         title: l10n.reqNotFound,
         body: '',
@@ -111,28 +111,57 @@ class WorkOrderHeader extends ConsumerWidget {
               .firstOrNull;
     final place = [?city, ?governorate].join(', ');
 
+    final scheme = Theme.of(context).colorScheme;
+    final onWorld = scheme.onPrimaryContainer;
+    final scaler = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.4);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: LedgerKicker(
-                '${ledgerRef(l10n, id)} · ${formatDate(createdAt, locale)}',
-              ),
+        // The colour header block: reference, stamp, the title in big type.
+        Padding(
+          padding: const EdgeInsetsDirectional.only(
+            end: AppInk.offset,
+            bottom: AppInk.offset + AppSpacing.lg,
+          ),
+          child: StickerBox(
+            color: scheme.primaryContainer,
+            padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: LedgerKicker(
+                        '${ledgerRef(l10n, id)} · ${formatDate(createdAt, locale)}',
+                        color: onWorld,
+                      ),
+                    ),
+                    if (stamp != null) ...[
+                      const SizedBox(width: AppSpacing.sm),
+                      Flexible(child: stamp!),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Semantics(
+                  header: true,
+                  child: Text(
+                    title,
+                    textScaler: scaler,
+                    style: text.headlineMedium?.copyWith(color: onWorld),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  description,
+                  style: text.bodyLarge?.copyWith(color: onWorld),
+                ),
+              ],
             ),
-            if (stamp != null) ...[
-              const SizedBox(width: AppSpacing.sm),
-              Flexible(child: stamp!),
-            ],
-          ],
+          ),
         ),
-        const SizedBox(height: AppSpacing.sm),
-        Semantics(header: true, child: Text(title, style: text.headlineSmall)),
-        const SizedBox(height: AppSpacing.sm),
-        Text(description, style: text.bodyLarge),
-        const SizedBox(height: AppSpacing.lg),
         FactTable(
           facts: [
             if (category != null) (l10n.flowSecService, category),
@@ -193,7 +222,10 @@ class RequestPhotoStrip extends ConsumerWidget {
               position: DecorationPosition.foreground,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(AppRadius.sm),
-                border: Border.all(color: scheme.outlineVariant),
+                border: Border.all(
+                  color: scheme.onSurface,
+                  width: AppInk.border,
+                ),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -282,6 +314,7 @@ class _Details extends ConsumerWidget {
             neededBy: request.neededBy,
             expiresAt: request.isOpen ? request.expiresAt : null,
             stamp: LedgerStamp(
+              big: true,
               label: statusLabel(l10n, request.status),
               tone: statusTone(request.status),
             ),
