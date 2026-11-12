@@ -152,6 +152,10 @@ describe('structural security guards', () => {
       'authenticated:freelancer_portfolio_items:INSERT',
       'authenticated:freelancer_portfolio_items:DELETE',
       'authenticated:freelancer_invites:DELETE',
+      // payments (payment_orders is column-level)
+      'anon:subscription_plans:SELECT',
+      'authenticated:subscription_plans:SELECT',
+      'authenticated:subscriptions:SELECT',
     ];
     assert.deepEqual([...got].sort(), [...expected].sort());
   });

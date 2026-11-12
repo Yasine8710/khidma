@@ -242,6 +242,9 @@ describe('sequence and function exposure', () => {
       // freelance
       'admin_set_testimonial_status', 'become_freelancer', 'create_testimonial_invite', 'freelancer_is_visible',
       'my_freelance_file_count', 'reveal_freelancer_contact', 'submit_testimonial',
+      // payments
+      'admin_confirm_payment', 'admin_list_payment_orders', 'admin_reject_payment', 'admin_set_payment_setting',
+      'cancel_payment_order', 'create_payment_order', 'get_payment_instructions', 'mark_payment_sent', 'my_subscription',
     ].sort());
   });
 
