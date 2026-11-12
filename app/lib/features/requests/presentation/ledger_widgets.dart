@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_avatar.dart';
 import '../../../shared/widgets/app_badge.dart';
+import '../../../shared/widgets/app_button.dart';
 
 /// The printed-ledger vocabulary of the request -> offer -> job -> chat flow:
 /// reference kickers, rubber-stamp statuses, definition rows, rules and a
@@ -18,10 +20,11 @@ String ledgerRef(AppLocalizations l10n, String id) {
 
 /// Small upper-case line in muted ink above a title ("N° 3F2A9C · 9 NOV.").
 class LedgerKicker extends StatelessWidget {
-  const LedgerKicker(this.text, {super.key, this.maxLines = 2});
+  const LedgerKicker(this.text, {super.key, this.maxLines = 2, this.color});
 
   final String text;
   final int maxLines;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -30,66 +33,86 @@ class LedgerKicker extends StatelessWidget {
       maxLines: maxLines,
       overflow: TextOverflow.ellipsis,
       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
+        color: color ?? Theme.of(context).colorScheme.onSurfaceVariant,
         letterSpacing: 0.9,
       ),
     );
   }
 }
 
-/// A rectangular status stamp: coloured outline and text, no fill. Open and
-/// pending read in plain ink; terracotta stays reserved for actions.
+/// A rectangular status stamp: ink border, flat colour fill chosen from the
+/// scheme by tone, turned a few degrees like a rubber stamp. Text always says
+/// the status; colour never carries it alone.
 class LedgerStamp extends StatelessWidget {
   const LedgerStamp({
     super.key,
     required this.label,
     this.tone = BadgeTone.neutral,
     this.icon,
+    this.big = false,
   });
 
   final String label;
   final BadgeTone tone;
   final IconData? icon;
 
-  static Color colorFor(BadgeTone tone, ColorScheme scheme) => switch (tone) {
-    BadgeTone.info => scheme.onSurface,
-    BadgeTone.neutral => scheme.onSurfaceVariant,
-    _ => AppBadge.foreground(tone, scheme),
-  };
+  /// A larger stamp (list cards), slightly rotated.
+  final bool big;
+
+  /// (fill, text) of a tone, both from the colour scheme.
+  static (Color, Color) colorsFor(BadgeTone tone, ColorScheme scheme) =>
+      switch (tone) {
+        BadgeTone.info => (scheme.primaryContainer, scheme.onPrimaryContainer),
+        BadgeTone.success => (scheme.primary, scheme.onPrimary),
+        BadgeTone.warning => (scheme.tertiary, scheme.onTertiary),
+        BadgeTone.error => (scheme.error, scheme.onError),
+        BadgeTone.neutral => (scheme.surface, scheme.onSurface),
+      };
 
   @override
   Widget build(BuildContext context) {
-    final color = colorFor(tone, Theme.of(context).colorScheme);
-    return DecoratedBox(
+    final scheme = Theme.of(context).colorScheme;
+    final (fill, fg) = colorsFor(tone, scheme);
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    final stamp = DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(2),
-        border: Border.all(color: color, width: 1.2),
+        color: fill,
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+        border: Border.all(color: scheme.onSurface, width: AppInk.border),
       ),
       child: Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(6, 3, 6, 3),
+        padding: EdgeInsetsDirectional.symmetric(
+          horizontal: big ? 10 : 6,
+          vertical: big ? 5 : 3,
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              Icon(icon, size: 13, color: color),
+              Icon(icon, size: big ? 16 : 13, color: fg),
               const SizedBox(width: AppSpacing.xs),
             ],
             Flexible(
               child: Text(
                 label,
-                style: Theme.of(context).textTheme.labelSmall
-                    ?.copyWith(color: color, letterSpacing: 0.4),
+                style:
+                    (big
+                            ? Theme.of(context).textTheme.labelLarge
+                            : Theme.of(context).textTheme.labelSmall)
+                        ?.copyWith(color: fg, letterSpacing: 0.8),
               ),
             ),
           ],
         ),
       ),
     );
+    if (!big) return stamp;
+    return Transform.rotate(angle: rtl ? 0.035 : -0.035, child: stamp);
   }
 }
 
-/// A full-width rule: hairline by default, ink when [strong] (the head rule
-/// of a register or a work order).
+/// A full-width rule: hairline by default, heavy ink when [strong] (the head
+/// rule of a register or a work order).
 class LedgerRule extends StatelessWidget {
   const LedgerRule({super.key, this.strong = false});
 
@@ -99,14 +122,15 @@ class LedgerRule extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
-      height: strong ? 1.5 : 1,
+      height: strong ? 3 : 1,
       color: strong ? scheme.onSurface : scheme.outlineVariant,
     );
   }
 }
 
-/// One tappable row of a register: content, a trailing chevron, a rule
-/// under it. The whole row is one button for assistive tech.
+/// One tappable card of a register: a sticker block (ink border, hard shadow)
+/// that sinks when pressed, a chevron at the end. The whole card is one
+/// button for assistive tech. [index] staggers its first entrance.
 class LedgerRow extends StatelessWidget {
   const LedgerRow({
     super.key,
@@ -114,61 +138,57 @@ class LedgerRow extends StatelessWidget {
     required this.onTap,
     this.semanticLabel,
     this.leading,
+    this.index = 0,
   });
 
   final Widget child;
   final VoidCallback? onTap;
   final String? semanticLabel;
 
-  /// A small square at the start (thumbnail, initials).
+  /// A small square at the start (initials, glyph).
   final Widget? leading;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final rtl = Directionality.of(context) == TextDirection.rtl;
-    final body = DecoratedBox(
-      decoration: BoxDecoration(
-        border: BorderDirectional(
-          bottom: BorderSide(color: scheme.outlineVariant),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsetsDirectional.symmetric(
-          vertical: AppSpacing.md + 2,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (leading != null) ...[
-              leading!,
-              const SizedBox(width: AppSpacing.md),
-            ],
-            Expanded(child: child),
-            if (onTap != null) ...[
-              const SizedBox(width: AppSpacing.sm),
-              Padding(
-                padding: const EdgeInsetsDirectional.only(top: 14),
-                child: Icon(
-                  rtl
-                      ? Icons.chevron_left_rounded
-                      : Icons.chevron_right_rounded,
-                  color: scheme.onSurfaceVariant,
-                ),
-              ),
-            ],
+    final card = StickerBox(
+      padding: const EdgeInsetsDirectional.all(AppSpacing.md + 2),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (leading != null) ...[
+            leading!,
+            const SizedBox(width: AppSpacing.md),
           ],
-        ),
+          Expanded(child: child),
+          if (onTap != null) ...[
+            const SizedBox(width: AppSpacing.sm),
+            Icon(
+              rtl ? Icons.arrow_back_rounded : Icons.arrow_forward_rounded,
+              color: scheme.onSurface,
+            ),
+          ],
+        ],
       ),
     );
-    if (onTap == null) return body;
-    return Semantics(
-      container: true,
-      button: true,
-      label: semanticLabel,
-      onTap: onTap,
-      child: InkWell(onTap: onTap, excludeFromSemantics: true, child: body),
+    final cell = Padding(
+      padding: const EdgeInsetsDirectional.only(
+        end: AppInk.offset,
+        bottom: AppInk.offset + AppSpacing.md,
+      ),
+      child: onTap == null
+          ? card
+          : Semantics(
+              container: true,
+              button: true,
+              label: semanticLabel,
+              onTap: onTap,
+              child: Pressable(onTap: onTap, button: false, child: card),
+            ),
     );
+    return StaggerIn(index: index, child: cell);
   }
 }
 
@@ -189,7 +209,7 @@ class FactTable extends StatelessWidget {
         const LedgerRule(strong: true),
         for (final (label, value) in facts) ...[
           Padding(
-            padding: const EdgeInsetsDirectional.symmetric(vertical: 7),
+            padding: const EdgeInsetsDirectional.symmetric(vertical: 10),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -205,9 +225,7 @@ class FactTable extends StatelessWidget {
                   child: Text(
                     value,
                     textAlign: TextAlign.end,
-                    style: text.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: text.titleSmall,
                   ),
                 ),
               ],
@@ -238,7 +256,8 @@ class WorkOrderHeading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    final scheme = Theme.of(context).colorScheme;
+    final muted = scheme.onSurfaceVariant;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -246,18 +265,35 @@ class WorkOrderHeading extends StatelessWidget {
         const SizedBox(height: AppSpacing.md),
         Semantics(
           header: true,
-          child: Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: '$number',
-                  style: text.titleLarge?.copyWith(color: muted),
+          child: Row(
+            children: [
+              ExcludeSemantics(
+                child: Container(
+                  constraints: const BoxConstraints(minWidth: 36),
+                  padding: const EdgeInsetsDirectional.symmetric(
+                    horizontal: 6,
+                    vertical: 4,
+                  ),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: scheme.primaryContainer,
+                    border: Border.all(
+                      color: scheme.onSurface,
+                      width: AppInk.border,
+                    ),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                  ),
+                  child: Text(
+                    '$number',
+                    style: text.titleLarge?.copyWith(
+                      color: scheme.onPrimaryContainer,
+                    ),
+                  ),
                 ),
-                const TextSpan(text: '  ·  '),
-                TextSpan(text: title),
-              ],
-            ),
-            style: text.titleLarge,
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(child: Text(title, style: text.headlineSmall)),
+            ],
           ),
         ),
         if (note != null) ...[
@@ -286,23 +322,26 @@ class InitialsBlock extends StatelessWidget {
         height: size,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: scheme.surfaceContainerHighest,
+          color: scheme.primaryContainer,
           borderRadius: BorderRadius.circular(AppRadius.sm),
-          border: Border.all(color: scheme.outlineVariant),
+          border: Border.all(color: scheme.onSurface, width: AppInk.border),
         ),
         child: Text(
           AppAvatar.initialsOf(name),
           maxLines: 1,
           textScaler: TextScaler.noScaling,
-          style: Theme.of(context).textTheme.titleLarge
-              ?.copyWith(fontSize: size * 0.4, height: 1),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontSize: size * 0.45,
+            height: 1,
+            color: scheme.onPrimaryContainer,
+          ),
         ),
       ),
     );
   }
 }
 
-/// An unread count as a small terracotta stamp.
+/// An unread count as a small ink block.
 class CountStamp extends StatelessWidget {
   const CountStamp({super.key, required this.count});
 
@@ -312,11 +351,12 @@ class CountStamp extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
-      constraints: const BoxConstraints(minWidth: 22),
-      padding: const EdgeInsetsDirectional.fromSTEB(5, 2, 5, 2),
+      constraints: const BoxConstraints(minWidth: 24),
+      padding: const EdgeInsetsDirectional.fromSTEB(6, 2, 6, 2),
       decoration: BoxDecoration(
         color: scheme.primary,
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+        border: Border.all(color: scheme.onSurface, width: AppInk.border),
       ),
       child: Text(
         '$count',
@@ -366,7 +406,7 @@ class StepTimeline extends StatelessWidget {
                     child: Column(
                       children: [
                         Container(
-                          width: 1,
+                          width: 3,
                           height: 6,
                           color: i == 0
                               ? Colors.transparent
@@ -380,7 +420,7 @@ class StepTimeline extends StatelessWidget {
                         ),
                         Expanded(
                           child: Container(
-                            width: 1,
+                            width: 3,
                             color: i == steps.length - 1
                                 ? Colors.transparent
                                 : (i < current
@@ -440,7 +480,7 @@ class StepTrack extends StatelessWidget {
             if (i > 0)
               Container(
                 width: 14,
-                height: 1,
+                height: 3,
                 color: i <= current ? scheme.onSurface : scheme.outlineVariant,
               ),
             _Marker(
@@ -465,13 +505,91 @@ class _Marker extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final ink = scheme.onSurface;
     return Container(
-      width: 10,
-      height: 10,
+      width: 16,
+      height: 16,
       decoration: BoxDecoration(
-        color: done ? ink : (now ? scheme.surface : Colors.transparent),
-        border: Border.all(
-          color: done || now ? ink : scheme.outline,
-          width: now ? 2.5 : 1.2,
+        color: done ? ink : (now ? scheme.primaryContainer : scheme.surface),
+        border: Border.all(color: ink, width: AppInk.border),
+      ),
+    );
+  }
+}
+
+/// A typographic empty state: the title set big in display type, a glyph tile
+/// (ink border, hard shadow, world colour) and the explanation. No photos.
+class TypeEmpty extends StatelessWidget {
+  const TypeEmpty({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.body,
+    this.actionLabel,
+    this.onAction,
+  });
+
+  final IconData icon;
+  final String title;
+  final String body;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    final scaler = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.3);
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsetsDirectional.fromSTEB(
+          AppSpacing.gutter,
+          AppSpacing.xl,
+          AppSpacing.gutter + AppInk.offset,
+          AppSpacing.xl,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            StaggerIn(
+              child: ExcludeSemantics(
+                child: StickerBox(
+                  color: scheme.primaryContainer,
+                  padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+                  child: Icon(icon, size: 44, color: scheme.onPrimaryContainer),
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            StaggerIn(
+              index: 1,
+              child: Semantics(
+                header: true,
+                child: Text(
+                  title,
+                  textScaler: scaler,
+                  style: text.displaySmall,
+                ),
+              ),
+            ),
+            if (body.isNotEmpty) const SizedBox(height: AppSpacing.md),
+            if (body.isNotEmpty)
+              StaggerIn(
+                index: 2,
+                child: Text(
+                  body,
+                  style: text.bodyLarge?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            if (actionLabel != null && onAction != null) ...[
+              const SizedBox(height: AppSpacing.xl),
+              StaggerIn(
+                index: 3,
+                child: AppButton(label: actionLabel!, onPressed: onAction),
+              ),
+            ],
+          ],
         ),
       ),
     );

@@ -7,8 +7,6 @@ import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/category_photo.dart';
-import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../auth/application/auth_providers.dart';
@@ -32,7 +30,6 @@ class RequestsScreen extends ConsumerWidget {
       return SafeArea(
         child: SignedOutPrompt(
           icon: Icons.assignment_outlined,
-          photo: 'assets/photos/onb-compare.jpg',
           title: l10n.requestsSignedOutTitle,
           body: l10n.requestsSignedOutBody,
         ),
@@ -47,9 +44,8 @@ class RequestsScreen extends ConsumerWidget {
     if (list != null) {
       body = list.isEmpty
           // The button above already offers to ask for a quote.
-          ? EmptyState(
+          ? TypeEmpty(
               icon: Icons.assignment_outlined,
-              photo: 'assets/photos/onb-compare.jpg',
               title: l10n.requestsEmptyTitle,
               body: l10n.requestsEmptyBody,
             )
@@ -80,7 +76,7 @@ class RequestsScreen extends ConsumerWidget {
                       ],
                     );
                   }
-                  return _RequestRow(request: list[i - 1]);
+                  return _RequestRow(request: list[i - 1], index: i - 1);
                 },
               ),
             );
@@ -111,7 +107,7 @@ class RequestsScreen extends ConsumerWidget {
               children: [
                 Semantics(
                   header: true,
-                  child: Text(l10n.reqMineTitle, style: text.headlineMedium),
+                  child: Text(l10n.reqMineTitle, style: text.displaySmall),
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 AppButton(
@@ -132,9 +128,10 @@ class RequestsScreen extends ConsumerWidget {
 /// One work order in the register: reference and date over the title, the
 /// status stamp, the offer count; a rule under it.
 class _RequestRow extends ConsumerWidget {
-  const _RequestRow({required this.request});
+  const _RequestRow({required this.request, this.index = 0});
 
   final QuoteRequest request;
+  final int index;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -155,19 +152,10 @@ class _RequestRow extends ConsumerWidget {
     return LedgerRow(
       semanticLabel: request.title,
       onTap: () => context.push(AppRoutes.requestPath(request.id)),
-      leading: DecoratedBox(
-        position: DecorationPosition.foreground,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppRadius.sm),
-          border: Border.all(color: scheme.outlineVariant),
-        ),
-        child: CategoryPhoto(
-          slug: cat?.slug,
-          icon: cat?.icon,
-          width: 52,
-          height: 52,
-          radius: AppRadius.sm,
-        ),
+      index: index,
+      leading: InitialsBlock(
+        name: cat?.nameFor(locale) ?? request.title,
+        size: 52,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,13 +168,14 @@ class _RequestRow extends ConsumerWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.md),
           Wrap(
-            spacing: AppSpacing.md,
+            spacing: AppSpacing.lg,
             runSpacing: AppSpacing.xs,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               LedgerStamp(
+                big: true,
                 label: statusLabel(l10n, request.status),
                 tone: statusTone(request.status),
               ),
@@ -194,7 +183,7 @@ class _RequestRow extends ConsumerWidget {
                 l10n.reqOffers(offers),
                 style: offers > 0
                     ? text.labelLarge
-                    : text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                    : text.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
               ),
             ],
           ),
