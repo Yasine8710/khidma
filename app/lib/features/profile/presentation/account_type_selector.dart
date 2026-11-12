@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/haptics.dart';
+import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../domain/profile_domain.dart';
@@ -75,7 +76,7 @@ class _Option extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
-    final fg = scheme.onSurface;
+    final fg = selected ? scheme.onPrimaryContainer : scheme.onSurface;
     return Semantics(
       inMutuallyExclusiveGroup: true,
       enabled: onTap != null,
@@ -84,63 +85,52 @@ class _Option extends StatelessWidget {
       label: '$title. $body',
       excludeSemantics: true,
       onTap: onTap,
-      // A form box to tick: ink frame and a check when chosen, flat paper.
-      child: Material(
-        color: scheme.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          side: BorderSide(
-            color: selected ? scheme.onSurface : scheme.outline,
-            width: selected ? 2 : 1,
-          ),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(icon, color: fg),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(title, style: text.titleSmall?.copyWith(color: fg)),
-                      const SizedBox(height: 2),
-                      Text(
-                        body,
-                        style: text.bodySmall?.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
+      // A sticker block: flooded with the world colour and a check when chosen.
+      child: Pressable(
+        onTap: onTap,
+        button: false,
+        child: StickerBox(
+          color: selected ? scheme.primaryContainer : scheme.surface,
+          offset: selected ? AppInk.offset : 3,
+          padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: fg),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: text.titleSmall?.copyWith(color: fg)),
+                    const SizedBox(height: 2),
+                    Text(
+                      body,
+                      style: text.bodySmall?.copyWith(
+                        color: selected ? fg : scheme.onSurfaceVariant,
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                // A square tick box, empty until chosen.
-                Container(
-                  width: 22,
-                  height: 22,
-                  decoration: BoxDecoration(
-                    color: selected ? scheme.onSurface : scheme.surface,
-                    borderRadius: BorderRadius.circular(AppRadius.sm),
-                    border: Border.all(
-                      color: selected ? scheme.onSurface : scheme.outline,
                     ),
-                  ),
-                  child: selected
-                      ? Icon(
-                          Icons.check_rounded,
-                          size: 16,
-                          color: scheme.surface,
-                        )
-                      : null,
+                  ],
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              // A square tick box, empty until chosen.
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: selected ? scheme.onSurface : scheme.surface,
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                  border: Border.all(
+                    color: scheme.onSurface,
+                    width: AppInk.border,
+                  ),
+                ),
+                child: selected
+                    ? Icon(Icons.check_rounded, size: 16, color: scheme.surface)
+                    : null,
+              ),
+            ],
           ),
         ),
       ),

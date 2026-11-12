@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../core/format/rating.dart';
-import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../l10n/generated/app_localizations.dart';
 
@@ -84,7 +83,10 @@ class _Star extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final empty = Theme.of(context).colorScheme.outline;
+    final scheme = Theme.of(context).colorScheme;
+    final empty = scheme.outline;
+    // A filled star is a yellow star on an ink star (visible on paper).
+    final inner = size * 0.72;
     return SizedBox(
       width: size,
       height: size,
@@ -93,10 +95,12 @@ class _Star extends StatelessWidget {
           Icon(Icons.star_rounded, size: size, color: empty),
           ClipRect(
             clipper: _FillClipper(fill),
-            child: Icon(
-              Icons.star_rounded,
-              size: size,
-              color: AppColors.saffron,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Icon(Icons.star_rounded, size: size, color: scheme.onSurface),
+                Icon(Icons.star_rounded, size: inner, color: scheme.tertiary),
+              ],
             ),
           ),
         ],

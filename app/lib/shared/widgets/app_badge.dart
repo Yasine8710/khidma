@@ -6,8 +6,8 @@ import '../../l10n/generated/app_localizations.dart';
 
 enum BadgeTone { neutral, info, success, warning, error }
 
-/// Small rectangular stamp, like the ink stamp on a trade licence: a 1px
-/// frame in the tone's colour around short text. Always carries text (and
+/// Small rectangular stamp, like the ink stamp on a trade licence: a heavy
+/// frame in the tone's colour around short text, flat on paper. Always carries text (and
 /// usually an icon): colour alone never conveys status. [filled] inks the
 /// whole stamp (used for "verified").
 class AppBadge extends StatelessWidget {
@@ -48,12 +48,8 @@ class AppBadge extends StatelessWidget {
     };
   }
 
-  /// Background: a faint wash of the foreground over the surface.
-  static Color background(BadgeTone tone, ColorScheme scheme) =>
-      Color.alphaBlend(
-        foreground(tone, scheme).withValues(alpha: 0.08),
-        scheme.surface,
-      );
+  /// Background: flat paper (no tint).
+  static Color background(BadgeTone tone, ColorScheme scheme) => scheme.surface;
 
   @override
   Widget build(BuildContext context) {
@@ -67,12 +63,12 @@ class AppBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(2),
-        border: Border.all(color: ink),
+        border: Border.all(color: ink, width: AppInk.border),
       ),
       child: Padding(
         padding: const EdgeInsetsDirectional.symmetric(
           horizontal: AppSpacing.sm - 2,
-          vertical: 3,
+          vertical: 2,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -85,7 +81,7 @@ class AppBadge extends StatelessWidget {
               child: Text(
                 label,
                 style: Theme.of(context).textTheme.labelSmall
-                    ?.copyWith(color: fg, letterSpacing: 0.4),
+                    ?.copyWith(color: fg, letterSpacing: 0.6),
               ),
             ),
           ],

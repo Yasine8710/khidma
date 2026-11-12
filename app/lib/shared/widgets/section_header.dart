@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_spacing.dart';
 import 'app_button.dart';
 
-/// Section title in Zilla Slab with an optional trailing text action ("See
+/// Section title in Anton (display) with an optional trailing text action ("See
 /// all"). An optional [kicker] prints a small uppercase line in muted ink
-/// above the title, like a register heading ("N° 01 · SERVICES"); set
+/// above the title, like a sign heading ("N° 01 · SERVICES"); set
 /// [rule] to draw a hairline under the heading.
 class SectionHeader extends StatelessWidget {
   const SectionHeader({
@@ -32,7 +32,7 @@ class SectionHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final heading = Semantics(
       header: true,
-      child: Text(title, style: theme.textTheme.titleLarge),
+      child: Text(title, style: theme.textTheme.headlineSmall),
     );
     final row = Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -72,7 +72,11 @@ class SectionHeader extends StatelessWidget {
               children: [
                 row,
                 const SizedBox(height: AppSpacing.sm),
-                const Divider(),
+                Divider(
+                  color: theme.colorScheme.onSurface,
+                  thickness: AppInk.border,
+                  height: AppInk.border,
+                ),
               ],
             )
           : row,

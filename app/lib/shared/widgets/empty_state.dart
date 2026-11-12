@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../core/motion/motion.dart';
 import '../../core/theme/app_spacing.dart';
+import 'app_button.dart';
 
-/// Centered empty state: a framed photo or a plain line icon, a slab title,
-/// an explanatory body and an optional action.
+/// Centered empty state, typographic: a glyph sticker, a big Anton title, an
+/// explanatory body and an optional loud action.
 class EmptyState extends StatelessWidget {
   const EmptyState({
     super.key,
@@ -15,7 +17,7 @@ class EmptyState extends StatelessWidget {
     this.photo,
   });
 
-  /// Bundled photo shown (framed) instead of the icon.
+  /// Ignored (photos are no longer shipped); kept for older call sites.
   final String? photo;
 
   final IconData icon;
@@ -41,7 +43,11 @@ class EmptyState extends StatelessWidget {
             children: [
               StateVisual(icon: icon, photo: photo),
               const SizedBox(height: AppSpacing.xl),
-              Text(title, style: text.titleLarge, textAlign: TextAlign.center),
+              Text(
+                title,
+                style: text.headlineMedium,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 body,
@@ -52,12 +58,10 @@ class EmptyState extends StatelessWidget {
               ),
               if (actionLabel != null && onAction != null) ...[
                 const SizedBox(height: AppSpacing.xl),
-                FilledButton(
+                AppButton(
+                  label: actionLabel!,
                   onPressed: onAction,
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size(160, 48),
-                  ),
-                  child: Text(actionLabel!),
+                  expand: false,
                 ),
               ],
             ],
@@ -68,48 +72,36 @@ class EmptyState extends StatelessWidget {
   }
 }
 
-/// The picture above a state's title: a photo in a 1px rule frame when one
-/// is given (and loads), otherwise a plain line icon in a small ruled
-/// square. Never full-bleed, never tinted. Decoration only.
+/// The picture above a state's title: a glyph on a world-colour sticker
+/// block (ink frame, hard shadow) that slams in once. Photos are no longer
+/// shipped, so a given [photo] is ignored. Decoration only.
 class StateVisual extends StatelessWidget {
   const StateVisual({super.key, required this.icon, this.photo});
 
   final IconData icon;
+
+  /// Ignored (kept so older call sites compile).
   final String? photo;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final mark = Container(
-      width: 64,
-      height: 64,
-      decoration: BoxDecoration(
-        color: scheme.surface,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: scheme.outlineVariant),
-      ),
-      child: Icon(icon, size: 30, color: scheme.onSurfaceVariant),
+    final block = StickerBox(
+      color: scheme.primaryContainer,
+      padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+      child: Icon(icon, size: 44, color: scheme.onPrimaryContainer),
     );
-    if (photo == null) return ExcludeSemantics(child: mark);
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 320),
-      child: DecoratedBox(
-        position: DecorationPosition.foreground,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(color: scheme.outlineVariant),
+    if (Motion.reduced(context)) return ExcludeSemantics(child: block);
+    return ExcludeSemantics(
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0.6, end: 1),
+        duration: Motion.slow,
+        curve: Motion.slam,
+        builder: (context, t, child) => Transform.rotate(
+          angle: (1 - t) * -0.2,
+          child: Transform.scale(scale: t, child: child),
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          child: Image.asset(
-            photo!,
-            width: double.infinity,
-            height: 168,
-            fit: BoxFit.cover,
-            excludeFromSemantics: true,
-            errorBuilder: (_, _, _) => Center(child: mark),
-          ),
-        ),
+        child: block,
       ),
     );
   }

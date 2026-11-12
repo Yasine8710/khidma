@@ -88,15 +88,16 @@ class _DockSlot extends StatelessWidget {
     final fg = selected ? scheme.onPrimaryContainer : scheme.onSurface;
     return Expanded(
       flex: selected ? 5 : 3,
-      child: Semantics(
-        button: true,
-        selected: selected,
-        label: item.label,
-        excludeSemantics: true,
+      // InkWell provides tap and focus semantics; the inner node names it.
+      child: InkWell(
+        splashFactory: NoSplash.splashFactory,
+        highlightColor: Colors.transparent,
         onTap: onTap,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: onTap,
+        child: Semantics(
+          button: true,
+          selected: selected,
+          label: item.label,
+          excludeSemantics: true,
           child: AnimatedContainer(
             duration: reduce ? Duration.zero : Motion.base,
             curve: Motion.slam,

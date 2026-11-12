@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// Round avatar with a hairline ring: network image when available,
-/// otherwise slab initials on sunken paper. A failed
+import '../../core/theme/app_spacing.dart';
+
+/// Sticker avatar: a round face inside a heavy ink ring, network image when
+/// available, otherwise Anton initials on the world colour. A failed
 /// or not-yet-loaded image shows initials, never a blank or broken-image
 /// icon. Set [decorative] when the name is already shown next to it, so
 /// screen readers do not read it twice.
@@ -36,9 +38,9 @@ class AppAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    // A monogram: slab initials in ink on sunken paper.
+    // A monogram: display initials on the world colour.
     final initials = Container(
-      color: scheme.surfaceContainerHighest,
+      color: scheme.primaryContainer,
       alignment: Alignment.center,
       child: Text(
         initialsOf(name),
@@ -46,7 +48,7 @@ class AppAvatar extends StatelessWidget {
         // The circle does not grow with the text size; keep the monogram in.
         textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2),
         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          color: scheme.onSurface,
+          color: scheme.onPrimaryContainer,
           fontSize: size * 0.38,
           height: 1,
         ),
@@ -58,10 +60,13 @@ class AppAvatar extends StatelessWidget {
     final avatar = Container(
       width: size,
       height: size,
-      // A thin rule ring, drawn over the picture's edge.
+      // A heavy ink ring, drawn over the picture's edge.
       foregroundDecoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: scheme.outlineVariant),
+        border: Border.all(
+          color: scheme.onSurface,
+          width: size >= 64 ? AppInk.border + 1 : AppInk.border,
+        ),
       ),
       child: ClipOval(
         child: url == null || url.isEmpty

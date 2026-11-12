@@ -193,7 +193,11 @@ void main() {
       };
       for (final e in expected.entries) {
         fake.failNext = e.key;
-        await tester.tap(find.widgetWithText(FilledButton, 'Se connecter'));
+        // The notice above the button pushes it down: scroll it into view.
+        final signIn = find.widgetWithText(FilledButton, 'Se connecter');
+        await tester.ensureVisible(signIn);
+        await tester.pumpAndSettle();
+        await tester.tap(signIn);
         await tester.pumpAndSettle();
         expect(find.text(e.value), findsOneWidget, reason: '${e.key}');
       }
@@ -263,6 +267,8 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Réinitialiser le mot de passe'), findsOneWidget);
       c.read(routerProvider).pop();
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Créer un compte').last);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Créer un compte').last);
       await tester.pumpAndSettle();

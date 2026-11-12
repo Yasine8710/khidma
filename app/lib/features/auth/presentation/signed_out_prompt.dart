@@ -17,6 +17,7 @@ class SignedOutPrompt extends StatelessWidget {
     this.photo,
   });
 
+  /// Ignored (photos are no longer shipped); kept for older call sites.
   final String? photo;
   final IconData icon;
   final String title;
@@ -40,7 +41,11 @@ class SignedOutPrompt extends StatelessWidget {
             children: [
               StateVisual(icon: icon, photo: photo),
               const SizedBox(height: AppSpacing.xl),
-              Text(title, style: text.titleLarge, textAlign: TextAlign.center),
+              Text(
+                title,
+                style: text.headlineMedium,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 body,

@@ -4,7 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../l10n/generated/app_localizations.dart';
 
-/// Loading placeholder block in sunken paper with a faint shimmer. The shimmer is dropped
+/// Loading placeholder block in sunken paper with a flat blink (no glow). It is dropped
 /// when the system asks to reduce motion. Hidden from screen readers; wrap a
 /// group in [SkeletonGroup] to announce "Loading" once.
 class Skeleton extends StatelessWidget {
@@ -37,12 +37,13 @@ class Skeleton extends StatelessWidget {
       ),
     );
     if (MediaQuery.disableAnimationsOf(context)) return box;
+    // A hard on/off blink in two flat paper tones, no gradient sweep.
     return box
-        .animate(onPlay: (c) => c.repeat())
-        .shimmer(
-          duration: 1600.ms,
-          // A faint pass of lighter paper, not a glow.
-          color: dark ? const Color(0x14FFFFFF) : const Color(0x66FFFCF6),
+        .animate(onPlay: (c) => c.repeat(reverse: true))
+        .tint(
+          color: dark ? const Color(0x1FFFFFFF) : const Color(0x14000000),
+          duration: 700.ms,
+          curve: Curves.easeInOut,
         );
   }
 }

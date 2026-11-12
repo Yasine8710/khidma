@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_spacing.dart';
 
-/// A block of [RegisterRow]s between hairline rules, like a page of a trade
-/// register: a rule above, one between each row and one below.
+/// A block of [RegisterRow]s between ink rules: a heavy rule above and
+/// below, a thin one between rows.
 class RegisterGroup extends StatelessWidget {
   const RegisterGroup({super.key, required this.children});
 
@@ -12,7 +12,8 @@ class RegisterGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rule = BorderSide(
-      color: Theme.of(context).colorScheme.outlineVariant,
+      color: Theme.of(context).colorScheme.onSurface,
+      width: AppInk.border,
     );
     return DecoratedBox(
       decoration: BoxDecoration(

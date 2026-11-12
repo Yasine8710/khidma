@@ -62,7 +62,7 @@ class ProfileScreen extends ConsumerWidget {
                   children: [
                     Semantics(
                       header: true,
-                      child: Text(l10n.navProfile, style: text.headlineMedium),
+                      child: Text(l10n.navProfile, style: text.displayMedium),
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     const _AccountCard(),
@@ -190,7 +190,7 @@ class _AccountCard extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l10n.signedOutProfileTitle, style: text.titleLarge),
+            Text(l10n.signedOutProfileTitle, style: text.headlineSmall),
             const SizedBox(height: AppSpacing.xs),
             Text(
               l10n.signedOutProfileBody,
@@ -216,109 +216,133 @@ class _AccountCard extends ConsumerWidget {
     // shows up here right away.
     final name = myProfile?.fullName ?? user.fullName;
     const inset = EdgeInsetsDirectional.symmetric(horizontal: AppSpacing.lg);
+    final scheme = Theme.of(context).colorScheme;
     return AppCard(
       padding: EdgeInsets.zero,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(
-              AppSpacing.lg,
-              AppSpacing.md,
-              AppSpacing.lg,
-              AppSpacing.md,
-            ),
-            child: Row(
-              children: [
-                Expanded(child: SectionKicker(l10n.acctMemberCard)),
-                const KhidmaMark(size: 18),
-              ],
-            ),
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
-            child: Row(
-              children: [
-                const AvatarEditor(size: 72),
-                const SizedBox(width: AppSpacing.lg),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (name?.isNotEmpty ?? false)
-                        Text(name!, style: text.titleLarge),
-                      const SizedBox(height: 2),
-                      Text(
-                        l10n.signedInAs(user.email),
-                        style: text.bodySmall?.copyWith(color: muted),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.md - 1),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ColoredBox(
+              color: scheme.primaryContainer,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                  AppSpacing.lg,
+                  AppSpacing.md,
+                  AppSpacing.lg,
+                  AppSpacing.md,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: DefaultTextStyle.merge(
+                        style: TextStyle(color: scheme.onPrimaryContainer),
+                        child: SectionKicker(l10n.acctMemberCard),
                       ),
-                    ],
+                    ),
+                    const KhidmaMark(size: 22),
+                  ],
+                ),
+              ),
+            ),
+            _inkRule(scheme),
+            Padding(
+              padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+              child: Row(
+                children: [
+                  const AvatarEditor(size: 72),
+                  const SizedBox(width: AppSpacing.lg),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (name?.isNotEmpty ?? false)
+                          Text(name!, style: text.headlineSmall),
+                        const SizedBox(height: 2),
+                        Text(
+                          l10n.signedInAs(user.email),
+                          style: text.bodySmall?.copyWith(color: muted),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Account type, as a definition row. Hidden while the profile
+            // loads or cannot load, so nothing of another account shows.
+            if (myProfile != null) ...[
+              _inkRule(scheme),
+              Padding(
+                padding: inset.add(
+                  const EdgeInsetsDirectional.symmetric(
+                    vertical: AppSpacing.md,
                   ),
                 ),
-              ],
-            ),
-          ),
-          // Account type, as a definition row. Hidden while the profile
-          // loads or cannot load, so nothing of another account shows.
-          if (myProfile != null) ...[
-            const Divider(),
-            Padding(
-              padding: inset.add(
-                const EdgeInsetsDirectional.symmetric(vertical: AppSpacing.md),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.acctAccountType,
+                        style: text.bodyMedium?.copyWith(color: muted),
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Flexible(
+                      child: _MemberType(isPro: myProfile.isProfessional),
+                    ),
+                  ],
+                ),
               ),
+            ],
+            _inkRule(scheme),
+            Padding(
+              padding: const EdgeInsetsDirectional.all(AppSpacing.md),
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      l10n.acctAccountType,
-                      style: text.bodyMedium?.copyWith(color: muted),
+                    child: AppButton(
+                      label: l10n.editProfile,
+                      variant: AppButtonVariant.secondary,
+                      onPressed: () => context.push(AppRoutes.editProfile),
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.md),
-                  Flexible(child: _MemberType(isPro: myProfile.isProfessional)),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: AppButton(
+                      label: l10n.signOut,
+                      variant: AppButtonVariant.secondary,
+                      isLoading: busy,
+                      onPressed: () async {
+                        final r = await ref
+                            .read(authActionsProvider.notifier)
+                            .signOut();
+                        if (!r.isOk && context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(l10n.failureText(r.failure!)),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
           ],
-          const Divider(),
-          Padding(
-            padding: const EdgeInsetsDirectional.all(AppSpacing.md),
-            child: Row(
-              children: [
-                Expanded(
-                  child: AppButton(
-                    label: l10n.editProfile,
-                    variant: AppButtonVariant.secondary,
-                    onPressed: () => context.push(AppRoutes.editProfile),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: AppButton(
-                    label: l10n.signOut,
-                    variant: AppButtonVariant.secondary,
-                    isLoading: busy,
-                    onPressed: () async {
-                      final r = await ref
-                          .read(authActionsProvider.notifier)
-                          .signOut();
-                      if (!r.isOk && context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(l10n.failureText(r.failure!))),
-                        );
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 }
+
+Widget _inkRule(ColorScheme scheme) => Divider(
+  color: scheme.onSurface,
+  thickness: AppInk.border,
+  height: AppInk.border,
+);
 
 /// "Customer", or the professional stamps (and the pro profile's state).
 class _MemberType extends ConsumerWidget {
@@ -372,15 +396,21 @@ class _BecomeProfessional extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsetsDirectional.only(top: AppSpacing.xl),
       child: AppCard(
+        color: Theme.of(context).colorScheme.primaryContainer,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l10n.becomeProfessionalTitle, style: text.titleLarge),
+            Text(
+              l10n.becomeProfessionalTitle,
+              style: text.headlineSmall?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
+            ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               l10n.becomeProfessionalBody,
               style: text.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
               ),
             ),
             const SizedBox(height: AppSpacing.md),

@@ -1,68 +1,86 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_spacing.dart';
+import '../../core/motion/motion.dart';
 import '../../core/theme/app_typography.dart';
 
-/// The Khidma mark: a terracotta doorway arch (Sidi Bou Said doors) with an
-/// ochre lantern dot. Geometry matches `scripts/make_brand_assets.py` (120-unit
-/// grid) so the in-app mark and the app icon are the same drawing.
+/// The Khidma mark: a hard ink block carrying a yellow Anton "K", like a
+/// workshop sign. The same drawing as the app icon
+/// (`scripts/make_brand_assets.py`). The brand colours are fixed (not themed)
+/// so the mark never changes with the world; in dark mode a light ring keeps
+/// the ink block visible.
 class KhidmaMark extends StatelessWidget {
   const KhidmaMark({super.key, this.size = 48, this.color});
 
   final double size;
 
-  /// Arch color; defaults to the theme's primary.
+  /// Block colour; defaults to brand ink.
   final Color? color;
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final dark = scheme.brightness == Brightness.dark;
+    final ring = (size / 24).clamp(1.5, 4).toDouble();
     return ExcludeSemantics(
-      child: CustomPaint(
-        size: Size.square(size),
-        painter: _MarkPainter(color ?? Theme.of(context).colorScheme.primary),
+      child: SizedBox.square(
+        dimension: size,
+        child: CustomPaint(
+          painter: _MarkPainter(
+            block: color ?? AppColors.ink,
+            ring: dark ? scheme.onSurface : (color ?? AppColors.ink),
+            ringWidth: ring,
+          ),
+          child: Center(
+            child: Text(
+              'K',
+              textDirection: TextDirection.ltr,
+              textScaler: TextScaler.noScaling,
+              style: TextStyle(
+                fontFamily: AppTypography.displayFamily,
+                fontWeight: FontWeight.w400,
+                fontSize: size * 0.74,
+                height: 1.0,
+                color: AppColors.yellow,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
 class _MarkPainter extends CustomPainter {
-  const _MarkPainter(this.color);
+  const _MarkPainter({
+    required this.block,
+    required this.ring,
+    required this.ringWidth,
+  });
 
-  final Color color;
+  final Color block;
+  final Color ring;
+  final double ringWidth;
 
   @override
   void paint(Canvas canvas, Size size) {
-    // The arch only fills ~53% of the 120 grid (room for the app-icon
-    // margin). In-app we zoom about the center so it fills its box.
-    const zoom = 1.45;
-    final s = size.width / 120 * zoom;
-    canvas.translate(size.width / 2 * (1 - zoom), size.height / 2 * (1 - zoom));
-    Path arch(double x0, double x1, double spring, double bottom) {
-      final r = (x1 - x0) / 2;
-      return Path()
-        ..moveTo(x0 * s, bottom * s)
-        ..lineTo(x0 * s, spring * s)
-        ..arcToPoint(Offset(x1 * s, spring * s), radius: Radius.circular(r * s))
-        ..lineTo(x1 * s, bottom * s)
-        ..close();
-    }
-
-    final path = Path.combine(
-      PathOperation.difference,
-      arch(36, 84, 52, 92),
-      arch(48, 72, 52, 92),
+    final r = RRect.fromRectAndRadius(
+      Offset.zero & size,
+      Radius.circular(size.width * 0.08),
     );
-    canvas.drawPath(path, Paint()..color = color);
-    canvas.drawCircle(
-      Offset(60 * s, 70 * s),
-      5.5 * s,
-      Paint()..color = AppColors.saffron,
+    canvas.drawRRect(r, Paint()..color = block);
+    canvas.drawRRect(
+      r.deflate(ringWidth / 2),
+      Paint()
+        ..color = ring
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = ringWidth,
     );
   }
 
   @override
-  bool shouldRepaint(_MarkPainter old) => old.color != color;
+  bool shouldRepaint(_MarkPainter old) =>
+      old.block != block || old.ring != ring || old.ringWidth != ringWidth;
 }
 
 /// Mark plus the "Khidma" wordmark and the Arabic name. Brand names are not
@@ -91,15 +109,15 @@ class KhidmaLogo extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // The wordmark is set in the heading slab, like a shop sign.
+                // The wordmark is set in Anton, like a shop sign.
                 Text(
                   'Khidma',
                   textDirection: TextDirection.ltr,
                   style: TextStyle(
-                    fontFamily: AppTypography.headingFamily,
-                    fontSize: markSize * 0.68,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0,
+                    fontFamily: AppTypography.displayFamily,
+                    fontSize: markSize * 0.74,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 1,
                     height: 1.0,
                     color: scheme.onSurface,
                   ),
@@ -108,11 +126,11 @@ class KhidmaLogo extends StatelessWidget {
                   'خدمة',
                   textDirection: TextDirection.rtl,
                   style: TextStyle(
-                    fontFamily: AppTypography.arabicFamily,
-                    fontSize: markSize * 0.34,
-                    fontWeight: FontWeight.w500,
+                    fontFamily: AppTypography.arabicDisplayFamily,
+                    fontSize: markSize * 0.36,
+                    fontWeight: FontWeight.w400,
                     height: 1.2,
-                    color: scheme.onSurfaceVariant,
+                    color: scheme.onSurface,
                   ),
                 ),
               ],
@@ -124,8 +142,8 @@ class KhidmaLogo extends StatelessWidget {
   }
 }
 
-/// Mark printed in a small ruled square on card paper, matching the framed
-/// icons of [EmptyState].
+/// Mark on a yellow sticker block (heavy ink frame + hard shadow), matching
+/// the framed glyphs of [EmptyState].
 class KhidmaMarkBadge extends StatelessWidget {
   const KhidmaMarkBadge({super.key, this.size = 96});
 
@@ -134,17 +152,12 @@ class KhidmaMarkBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: scheme.surface,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: scheme.outlineVariant),
+    return SizedBox.square(
+      dimension: size,
+      child: StickerBox(
+        color: scheme.primaryContainer,
+        child: Center(child: KhidmaMark(size: size * 0.6)),
       ),
-      alignment: Alignment.center,
-      padding: const EdgeInsets.all(AppSpacing.md),
-      child: KhidmaMark(size: size * 0.6),
     );
   }
 }

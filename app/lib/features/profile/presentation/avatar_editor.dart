@@ -96,15 +96,15 @@ class AvatarEditor extends ConsumerWidget {
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.black.withValues(alpha: 0.35),
+                      color: scheme.onSurface.withValues(alpha: 0.6),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: SizedBox(
                         width: 24,
                         height: 24,
                         child: CircularProgressIndicator(
                           strokeWidth: 2.5,
-                          color: Colors.white,
+                          color: scheme.surface,
                         ),
                       ),
                     ),
@@ -113,8 +113,8 @@ class AvatarEditor extends ConsumerWidget {
               PositionedDirectional(
                 end: 0,
                 bottom: 0,
-                // A small ink stamp on paper: says "you can change this"
-                // without competing with the screen's one terracotta action.
+                // A small ink stamp: says "you can change this" without
+                // competing with the screen's one loud action.
                 child: Container(
                   width: badge,
                   height: badge,
