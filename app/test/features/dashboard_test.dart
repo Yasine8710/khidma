@@ -261,7 +261,12 @@ void main() {
       );
       await tester.tap(find.text('Profil'));
       await tester.pumpAndSettle();
-      await tester.ensureVisible(find.text('Mon espace pro'));
+      // Centre the row so it sits clear of the dock.
+      await Scrollable.ensureVisible(
+        tester.element(find.text('Mon espace pro')),
+        alignment: 0.4,
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Mon espace pro'));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(

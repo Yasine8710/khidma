@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:khidma/core/motion/motion.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:khidma/features/auth/application/auth_providers.dart';
@@ -428,15 +429,15 @@ void main() {
           await tester.pumpAndSettle();
           await tester.ensureVisible(find.text('Continuer avec Apple'));
           await tester.pumpAndSettle();
-          final material = tester.widget<Material>(
+          final box = tester.widget<StickerBox>(
             find
                 .ancestor(
                   of: find.text('Continuer avec Apple'),
-                  matching: find.byType(Material),
+                  matching: find.byType(StickerBox),
                 )
                 .first,
           );
-          expect(material.color, dark ? Colors.white : Colors.black);
+          expect(box.color, dark ? Colors.white : Colors.black);
         },
       );
     }
