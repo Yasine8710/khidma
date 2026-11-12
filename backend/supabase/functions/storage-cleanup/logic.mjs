@@ -12,7 +12,7 @@ export function isAuthorized(header, secret) {
 }
 
 /** Buckets this worker may empty. Anything else in the queue is ignored. */
-export const BUCKETS = ['portfolio', 'verification-docs', 'request-photos', 'chat-images', 'avatars'];
+export const BUCKETS = ['portfolio', 'verification-docs', 'request-photos', 'chat-images', 'avatars', 'freelance-media'];
 
 /** Groups queue rows `{id, bucket_id, name}` by bucket, at most [max] rows
  * in total, skipping unknown buckets and empty or path-escaping names.

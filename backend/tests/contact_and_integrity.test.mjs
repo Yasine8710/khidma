@@ -222,7 +222,7 @@ describe('sequence and function exposure', () => {
     assert.deepEqual(r.rows.filter((x) => x.public_x || x.default_acl).map((x) => x.proname), [], 'PUBLIC / default ACL');
     const anonCan = r.rows.filter((x) => x.anon_x).map((x) => x.proname).sort();
     const authCan = r.rows.filter((x) => x.auth_x).map((x) => x.proname).sort();
-    assert.deepEqual(anonCan, ['is_admin', 'search_normalize', 'search_professionals']);
+    assert.deepEqual(anonCan, ['freelancer_is_visible', 'is_admin', 'search_normalize', 'search_professionals', 'submit_testimonial']);
     assert.deepEqual(authCan, [
       'accept_offer', 'admin_set_review_status', 'become_professional', 'can_view_request_photos', 'cancel_booking',
       'cancel_quote_request', 'chat_file_unsent', 'chat_folder_member', 'chat_folder_writable', 'chat_image_count', 'confirm_booking_completed',
@@ -239,6 +239,12 @@ describe('sequence and function exposure', () => {
       'admin_audit_log_page', 'admin_handle_report', 'admin_list_reports', 'admin_list_verifications', 'admin_report_context',
       'admin_review_verification', 'admin_set_suspended', 'admin_verification_documents', 'cancel_verification', 'my_verification',
       'my_verification_file_count', 'report_content', 'submit_verification', 'verification_file_unsubmitted',
+      // freelance
+      'admin_set_testimonial_status', 'become_freelancer', 'create_testimonial_invite', 'freelancer_is_visible',
+      'my_freelance_file_count', 'reveal_freelancer_contact', 'submit_testimonial',
+      // payments
+      'admin_confirm_payment', 'admin_list_payment_orders', 'admin_reject_payment', 'admin_set_payment_setting',
+      'cancel_payment_order', 'create_payment_order', 'get_payment_instructions', 'mark_payment_sent', 'my_subscription',
     ].sort());
   });
 

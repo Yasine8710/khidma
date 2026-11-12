@@ -129,6 +129,23 @@ export type ReportRow = {
   created_at: string;
   reports_on_target: number;
 };
+export type PaymentOrderRow = {
+  id: string;
+  reference: string;
+  method: string;
+  status: string;
+  plan_code: string;
+  amount_millimes: number;
+  payer_note: string | null;
+  business_name: string | null;
+  full_name: string | null;
+  created_at: string;
+};
+export type PaymentSettingKey = 'bank_name' | 'bank_holder' | 'bank_rib' | 'd17_number' | 'd17_holder';
+
+/** 20000 millimes -> "20 TND", 25500 -> "25.5 TND". */
+export const formatTnd = (millimes: number): string => `${Number((millimes / 1000).toFixed(3))} TND`;
+
 export type AuditRow = {
   id: number;
   admin_id: string;
@@ -181,7 +198,15 @@ export function createApi(rpc: Rpc) {
     reports: (status: string, offset: number) =>
       call<ReportRow[]>('admin_list_reports', { p_status: status, ...page(offset) }),
     reportContext: (id: string) => call<Record<string, unknown>>('admin_report_context', { p_report: id }),
+    paymentOrders: (status: string, offset: number) =>
+      call<PaymentOrderRow[]>('admin_list_payment_orders', { p_status: status, ...page(offset) }),
     audit: (offset: number) => call<AuditRow[]>('admin_audit_log_page', page(offset)),
+
+    confirmPayment: (id: string) => call<void>('admin_confirm_payment', { p_order: id }),
+    rejectPayment: (id: string, note?: string) =>
+      call<void>('admin_reject_payment', { p_order: id, p_note: note?.trim() || null }),
+    setPaymentSetting: (key: PaymentSettingKey, value: string) =>
+      call<void>('admin_set_payment_setting', { p_key: key, p_value: value.trim() }),
 
     reviewVerification: (id: string, approve: boolean, reason?: string) =>
       call<void>('admin_review_verification', { p_request: id, p_approve: approve, p_reason: reason?.trim() || null }),

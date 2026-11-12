@@ -13,6 +13,8 @@ import 'features/auth/data/supabase_auth_repository.dart';
 import 'features/auth/domain/auth_domain.dart';
 import 'features/favorites/application/favorites_providers.dart';
 import 'features/favorites/data/supabase_favorites_repository.dart';
+import 'features/freelance/application/freelance_providers.dart';
+import 'features/freelance/data/supabase_freelance_repository.dart';
 import 'features/marketplace/application/marketplace_providers.dart';
 import 'features/marketplace/data/supabase_marketplace_repository.dart';
 import 'features/messages/application/messages_providers.dart';
@@ -31,6 +33,8 @@ import 'features/requests/application/requests_providers.dart';
 import 'features/requests/data/supabase_customer_offers_repository.dart';
 import 'features/requests/data/supabase_requests_repository.dart';
 import 'features/portfolio/data/supabase_portfolio_repository.dart';
+import 'features/billing/application/billing_providers.dart';
+import 'features/billing/data/supabase_billing_repository.dart';
 import 'features/professional/application/professional_providers.dart';
 import 'features/professional/data/supabase_professional_repository.dart';
 import 'features/profile/application/profile_providers.dart';
@@ -91,12 +95,20 @@ Future<void> main() async {
             SupabaseProfessionalRepository(Supabase.instance.client),
           ),
         if (auth.isAvailable)
+          billingRepositoryProvider.overrideWithValue(
+            SupabaseBillingRepository(Supabase.instance.client),
+          ),
+        if (auth.isAvailable)
           favoritesRepositoryProvider.overrideWithValue(
             SupabaseFavoritesRepository(Supabase.instance.client),
           ),
         if (auth.isAvailable)
           marketplaceRepositoryProvider.overrideWithValue(
             SupabaseMarketplaceRepository(Supabase.instance.client),
+          ),
+        if (auth.isAvailable)
+          freelanceRepositoryProvider.overrideWithValue(
+            SupabaseFreelanceRepository(Supabase.instance.client),
           ),
       ],
       child: const KhidmaApp(),

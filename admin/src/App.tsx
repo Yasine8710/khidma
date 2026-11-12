@@ -5,10 +5,12 @@ import { Verification } from './pages/Verification';
 import { Reports } from './pages/Reports';
 import { Audit, Professionals, Requests, Reviews, Users } from './pages/Lists';
 import { Categories } from './pages/Categories';
+import { Payments } from './pages/Payments';
 
 const PAGES: { id: string; label: string; render: () => ReactElement }[] = [
   { id: 'overview', label: 'Overview', render: () => <Overview /> },
   { id: 'verification', label: 'Verification', render: () => <Verification /> },
+  { id: 'payments', label: 'Paiements', render: () => <Payments /> },
   { id: 'reports', label: 'Reports', render: () => <Reports /> },
   { id: 'professionals', label: 'Professionals', render: () => <Professionals /> },
   { id: 'users', label: 'Users', render: () => <Users /> },

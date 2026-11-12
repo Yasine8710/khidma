@@ -7,9 +7,13 @@ import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/new_password_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
 import '../../features/favorites/presentation/favorites_screen.dart';
+import '../../features/freelance/presentation/digital_screen.dart';
+import '../../features/freelance/presentation/freelance_manage_screen.dart';
+import '../../features/freelance/presentation/freelancer_screen.dart';
 import '../../features/gallery/gallery_config.dart';
 import '../../features/gallery/gallery_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/billing/presentation/billing_screen.dart';
 import '../../features/marketplace/presentation/professional_screen.dart';
 import '../../features/marketplace/presentation/search_screen.dart';
 import '../../features/messages/presentation/chat_screen.dart';
@@ -141,6 +145,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const VerificationScreen(),
       ),
       GoRoute(
+        path: AppRoutes.proBilling,
+        builder: (context, state) => const BillingScreen(),
+      ),
+      GoRoute(
         path: AppRoutes.proDashboard,
         builder: (context, state) => const DashboardScreen(),
       ),
@@ -163,6 +171,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.professional,
         builder: (context, state) =>
             ProfessionalScreen(id: state.pathParameters['id'] ?? ''),
+      ),
+      GoRoute(
+        path: AppRoutes.digital,
+        builder: (context, state) => const DigitalScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.freelancer,
+        builder: (context, state) =>
+            FreelancerScreen(id: state.pathParameters['id'] ?? ''),
+      ),
+      GoRoute(
+        path: AppRoutes.proFreelance,
+        builder: (context, state) => const FreelanceManageScreen(),
       ),
       if (kShowGallery)
         GoRoute(

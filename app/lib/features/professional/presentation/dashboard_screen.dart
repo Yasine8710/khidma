@@ -12,6 +12,7 @@ import '../../../shared/widgets/register_row.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../billing/presentation/billing_tile.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
 import '../../marketplace/presentation/professional_card.dart';
 import '../../profile/presentation/avatar_editor.dart';
@@ -230,6 +231,11 @@ class _BodyState extends ConsumerState<_Body> {
                   AppRoutes.proJobs,
                 ),
                 tool(
+                  Icons.laptop_mac_outlined,
+                  l10n.flDashRow,
+                  AppRoutes.proFreelance,
+                ),
+                tool(
                   Icons.photo_library_outlined,
                   l10n.portfolioTitle,
                   AppRoutes.proPortfolio,
@@ -239,6 +245,7 @@ class _BodyState extends ConsumerState<_Body> {
                   l10n.verifCta,
                   AppRoutes.proVerification,
                 ),
+                const BillingTile(),
               ],
             ),
             section,

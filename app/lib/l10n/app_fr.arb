@@ -210,6 +210,258 @@
   "statRating": "Note",
   "statReviews": "Avis",
   "statYears": "Années",
+  "billTitle": "Abonnement",
+  "billCurrent": "Mon abonnement",
+  "billNone": "Aucun abonnement pour le moment.",
+  "billStatusLabel": "Statut",
+  "billStatusActive": "Actif",
+  "billStatusPastDue": "En retard",
+  "billStatusExpired": "Expiré",
+  "billStatusCancelled": "Résilié",
+  "billValidUntil": "Valable jusqu'au",
+  "billDaysLeftLabel": "Jours restants",
+  "billDaysLeft": "{count, plural, =0{Expire aujourd'hui} =1{1 jour restant} other{{count} jours restants}}",
+  "@billDaysLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "billChoosePlan": "Choisir une formule",
+  "billPeriod": "{count, plural, =1{1 jour} other{{count} jours}}",
+  "@billPeriod": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "billChooseMethod": "Mode de paiement",
+  "billMethodFlouci": "Flouci",
+  "billMethodFlouciHint": "Paiement en ligne, confirmé automatiquement",
+  "billMethodD17": "D17",
+  "billMethodD17Hint": "Envoi depuis votre portefeuille La Poste, confirmé par notre équipe",
+  "billMethodBank": "Virement bancaire",
+  "billMethodBankHint": "Virement vers notre compte, confirmé par notre équipe",
+  "billPay": "Payer",
+  "billFlouciOpened": "Le paiement s'est ouvert dans votre navigateur. Revenez ici ensuite.",
+  "billMyPayments": "Mes paiements",
+  "billNoPayments": "Aucun paiement pour le moment.",
+  "billOrderPending": "En attente",
+  "billOrderAwaiting": "À confirmer",
+  "billOrderPaid": "Payé",
+  "billOrderFailed": "Échoué",
+  "billOrderCancelled": "Annulé",
+  "billOrderRejected": "Refusé",
+  "billInstructionsTitle": "Instructions de paiement",
+  "billAmount": "Montant",
+  "billReference": "Référence",
+  "billReferenceHint": "Écrivez cette référence dans le motif du virement ou la note D17.",
+  "billCopy": "Copier",
+  "billCopied": "Copié",
+  "billPayTo": "Payer à",
+  "billBankName": "Banque",
+  "billHolder": "Titulaire",
+  "billRib": "RIB",
+  "billD17Number": "Numéro D17",
+  "billNoDetails": "Les coordonnées de paiement ne sont pas encore disponibles.",
+  "billIPaid": "J'ai payé",
+  "billPaidTitle": "Votre paiement",
+  "billNoteLabel": "Note (facultatif)",
+  "billSend": "Envoyer",
+  "billCancelOrder": "Annuler la commande",
+  "billAwaitingBody": "Merci. Notre équipe vérifie votre paiement, votre abonnement démarre dès sa confirmation.",
+  "billNotProTitle": "Devenez professionnel d'abord",
+  "billNotProBody": "L'abonnement est réservé aux professionnels. Créez d'abord votre profil.",
+  "billNotProCta": "Créer mon profil",
+  "billErrNetwork": "Pas de connexion. Réessayez.",
+  "billErrSignedIn": "Reconnectez-vous puis réessayez.",
+  "billErrRate": "Trop de commandes aujourd'hui. Réessayez demain.",
+  "billErrInvalid": "Cette demande n'est pas valide.",
+  "billErrNotFound": "Cette commande n'existe plus.",
+  "billErrNotConfigured": "Les paiements ne sont pas encore disponibles.",
+  "billFlouciUnavailable": "Flouci n'est pas encore disponible, utilisez D17 ou le virement.",
+  "billCannotOpen": "Impossible d'ouvrir le lien de paiement.",
+  "billErrUnknown": "Une erreur est survenue. Réessayez.",
+  "flTitle": "Services digitaux",
+  "flHomeSubtitle": "Développeurs, designers, monteurs, rédacteurs…",
+  "flSearchHint": "Rechercher un freelance ou une compétence…",
+  "flCategories": "Catégories",
+  "flAllCategories": "Toutes",
+  "flResultsTitle": "Freelances",
+  "flEmptyTitle": "Aucun freelance trouvé",
+  "flEmptyBody": "Essayez un autre mot ou une autre catégorie.",
+  "flLoadFailed": "Impossible de charger les freelances.",
+  "flPriceFrom": "à partir de {price} / {unit}",
+  "flUnitProject": "projet",
+  "flUnitHour": "heure",
+  "flUnitDay": "jour",
+  "flNotFoundTitle": "Freelance introuvable",
+  "flNotFoundBody": "Cette page n’existe plus ou n’est pas publiée.",
+  "flFactPrice": "Tarif",
+  "flFactLanguages": "Langues",
+  "flSkills": "Compétences",
+  "flPortfolio": "Réalisations",
+  "flOpenItem": "Ouvrir : {title}",
+  "flKindImage": "Photo",
+  "flKindClip": "Clip vidéo",
+  "flKindVideoLink": "Vidéo en ligne",
+  "flKindLink": "Lien",
+  "flTestimonials": "Témoignages clients",
+  "flTestimonialLabel": "Témoignage client",
+  "flTestimonialsNote": "Ces témoignages viennent d’anciens clients invités par le freelance. Ils sont différents des avis vérifiés laissés après un travail réalisé via Khidma.",
+  "flTestimonialsEmpty": "Pas encore de témoignage.",
+  "flTestimonialProject": "Projet : {title}",
+  "flStars": "{count} sur 5",
+  "flDashRow": "Activité freelance",
+  "flManageTitle": "Mon activité freelance",
+  "flIntroTitle": "Proposez vos services digitaux",
+  "flIntroBody": "Développement, design, montage, marketing, rédaction… Créez une page publique avec vos réalisations et des témoignages clients. Votre identité vérifiée est la même que pour votre profil de métier : une seule vérification suffit.",
+  "flBecome": "Devenir freelance",
+  "flSectionProfile": "Ma page",
+  "flFieldName": "Nom affiché",
+  "flFieldHeadline": "Titre professionnel",
+  "flFieldHeadlineHint": "Ex. Développeur Flutter",
+  "flFieldCategory": "Catégorie",
+  "flFieldBio": "Présentation",
+  "flFieldBioHelp": "20 caractères minimum pour publier, 2000 au maximum.",
+  "flFieldSkills": "Compétences",
+  "flFieldSkillsHelp": "Séparées par des virgules, 12 au maximum.",
+  "flFieldLanguages": "Langues",
+  "flFieldLanguagesHelp": "Séparées par des virgules, 6 au maximum.",
+  "flFieldYears": "Années d’expérience",
+  "flFieldPrice": "Tarif de départ (DT)",
+  "flFieldUnit": "Par",
+  "flFieldAvailability": "Disponibilité",
+  "flErrName": "2 à 80 caractères.",
+  "flErrHeadline": "5 à 100 caractères.",
+  "flErrBio": "2000 caractères au maximum.",
+  "flErrYears": "Entre 0 et 60.",
+  "flErrPrice": "Montant invalide.",
+  "flErrTags": "30 caractères par élément, {max} éléments au plus.",
+  "flSaved": "Page enregistrée.",
+  "flIdentityTitle": "Identité",
+  "flIdentityVerified": "Identité vérifiée.",
+  "flIdentityNotVerified": "Identité pas encore vérifiée.",
+  "flIdentityShared": "Une seule vérification sert à votre profil de métier et à votre page freelance.",
+  "flPublish": "Publier ma page",
+  "flPublishedHint": "Votre page est visible dans Services digitaux.",
+  "flUnpublishedHint": "Votre page n’est pas visible pour le moment.",
+  "flPublishBlocked": "La publication est bloquée tant que votre identité n’est pas vérifiée.",
+  "flErrNotVerified": "Votre identité n’est pas encore vérifiée. Faites-la vérifier pour publier.",
+  "flErrIncomplete": "Page incomplète : ajoutez un numéro de téléphone de contact dans votre profil de métier, puis renseignez nom, titre, catégorie et présentation (20 caractères minimum).",
+  "flErrSuspended": "Votre compte est suspendu : la publication est impossible.",
+  "flErrGeneric": "L’opération a échoué. Vérifiez votre connexion et réessayez.",
+  "flErrNotConfigured": "Le service n’est pas disponible pour le moment.",
+  "flErrInvalid": "Certaines informations sont refusées. Vérifiez-les et réessayez.",
+  "flErrRate": "Trop de demandes. Réessayez plus tard.",
+  "flPortCount": "{count} sur {max} réalisations",
+  "flPortEmpty": "Aucune réalisation pour le moment.",
+  "flPortAddPhoto": "Ajouter une photo",
+  "flPortAddClip": "Ajouter un clip (30 s max)",
+  "flPortAddVideoLink": "Ajouter une vidéo en ligne",
+  "flPortAddLink": "Ajouter un lien",
+  "flPortLimit": "Limite de 24 réalisations atteinte.",
+  "flPortTooLarge": "Fichier trop lourd (25 Mo au maximum).",
+  "flPortBadFormat": "Format non pris en charge : utilisez un clip mp4 ou webm, ou ajoutez un lien vidéo.",
+  "flFieldTitle": "Titre",
+  "flFieldDescription": "Description (facultatif)",
+  "flFieldUrl": "Adresse du lien",
+  "flErrTitle": "2 à 100 caractères.",
+  "flErrDescription": "500 caractères au maximum.",
+  "flErrUrlVideo": "Lien https YouTube ou Vimeo uniquement.",
+  "flErrUrlLink": "Entrez une adresse https valide.",
+  "flSheetAdd": "Ajouter",
+  "flSheetChooseFile": "Choisir le fichier",
+  "flItemEdit": "Modifier",
+  "flItemDelete": "Supprimer",
+  "flItemDeleteTitle": "Supprimer cette réalisation ?",
+  "flItemDeleteBody": "Elle ne sera plus visible sur votre page.",
+  "flUploading": "Envoi en cours…",
+  "flInvTitle": "Invitations de témoignage",
+  "flInvHint": "Envoyez un lien personnel à un ancien client : il écrit son témoignage sur une page web, sans compte. Le lien est valable 30 jours et ne sert qu’une fois.",
+  "flInvCreate": "Créer un lien d’invitation",
+  "flInvLabelField": "Pour qui ? (facultatif)",
+  "flInvNotConfigured": "Les liens de témoignage ne sont pas encore configurés dans cette version de l’application.",
+  "flInvLinkTitle": "Lien créé",
+  "flInvLinkWarn": "Copiez-le maintenant : il ne sera plus affiché.",
+  "flInvCopy": "Copier le lien",
+  "flInvCopied": "Lien copié.",
+  "flInvShare": "Partager par WhatsApp",
+  "flInvShareText": "Bonjour, pourriez-vous laisser un témoignage sur notre collaboration ? {url}",
+  "flInvEmpty": "Aucune invitation pour le moment.",
+  "flInvStatusOpen": "En attente",
+  "flInvStatusUsed": "Utilisée",
+  "flInvStatusExpired": "Expirée",
+  "flInvExpires": "Expire le {date}",
+  "flInvNoLabel": "Sans nom",
+  "flInvRevoke": "Révoquer",
+  "flInvRevokeTitle": "Révoquer cette invitation ?",
+  "flInvRevokeBody": "Le lien ne fonctionnera plus.",
+  "flInvLimit": "20 invitations en attente au maximum.",
+  "@flPriceFrom": {
+    "placeholders": {
+        "price": {
+          "type": "String"
+        },
+        "unit": {
+          "type": "String"
+        }
+    }
+  },
+  "@flOpenItem": {
+    "placeholders": {
+        "title": {
+          "type": "String"
+        }
+    }
+  },
+  "@flTestimonialProject": {
+    "placeholders": {
+        "title": {
+          "type": "String"
+        }
+    }
+  },
+  "@flStars": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        }
+    }
+  },
+  "@flErrTags": {
+    "placeholders": {
+        "max": {
+          "type": "int"
+        }
+    }
+  },
+  "@flPortCount": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        },
+        "max": {
+          "type": "int"
+        }
+    }
+  },
+  "@flInvShareText": {
+    "placeholders": {
+        "url": {
+          "type": "String"
+        }
+    }
+  },
+  "@flInvExpires": {
+    "placeholders": {
+        "date": {
+          "type": "String"
+        }
+    }
+  },
   "searchHint": "Rechercher un métier, un nom, une ville…",
   "placeAll": "Toute la Tunisie",
   "placeChoose": "Choisir une zone",

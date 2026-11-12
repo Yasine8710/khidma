@@ -528,6 +528,593 @@ class AppLocalizationsFr extends AppLocalizations {
   String get statYears => 'Années';
 
   @override
+  String get billTitle => 'Abonnement';
+
+  @override
+  String get billCurrent => 'Mon abonnement';
+
+  @override
+  String get billNone => 'Aucun abonnement pour le moment.';
+
+  @override
+  String get billStatusLabel => 'Statut';
+
+  @override
+  String get billStatusActive => 'Actif';
+
+  @override
+  String get billStatusPastDue => 'En retard';
+
+  @override
+  String get billStatusExpired => 'Expiré';
+
+  @override
+  String get billStatusCancelled => 'Résilié';
+
+  @override
+  String get billValidUntil => 'Valable jusqu\'au';
+
+  @override
+  String get billDaysLeftLabel => 'Jours restants';
+
+  @override
+  String billDaysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jours restants',
+      one: '1 jour restant',
+      zero: 'Expire aujourd\'hui',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get billChoosePlan => 'Choisir une formule';
+
+  @override
+  String billPeriod(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jours',
+      one: '1 jour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get billChooseMethod => 'Mode de paiement';
+
+  @override
+  String get billMethodFlouci => 'Flouci';
+
+  @override
+  String get billMethodFlouciHint =>
+      'Paiement en ligne, confirmé automatiquement';
+
+  @override
+  String get billMethodD17 => 'D17';
+
+  @override
+  String get billMethodD17Hint =>
+      'Envoi depuis votre portefeuille La Poste, confirmé par notre équipe';
+
+  @override
+  String get billMethodBank => 'Virement bancaire';
+
+  @override
+  String get billMethodBankHint =>
+      'Virement vers notre compte, confirmé par notre équipe';
+
+  @override
+  String get billPay => 'Payer';
+
+  @override
+  String get billFlouciOpened =>
+      'Le paiement s\'est ouvert dans votre navigateur. Revenez ici ensuite.';
+
+  @override
+  String get billMyPayments => 'Mes paiements';
+
+  @override
+  String get billNoPayments => 'Aucun paiement pour le moment.';
+
+  @override
+  String get billOrderPending => 'En attente';
+
+  @override
+  String get billOrderAwaiting => 'À confirmer';
+
+  @override
+  String get billOrderPaid => 'Payé';
+
+  @override
+  String get billOrderFailed => 'Échoué';
+
+  @override
+  String get billOrderCancelled => 'Annulé';
+
+  @override
+  String get billOrderRejected => 'Refusé';
+
+  @override
+  String get billInstructionsTitle => 'Instructions de paiement';
+
+  @override
+  String get billAmount => 'Montant';
+
+  @override
+  String get billReference => 'Référence';
+
+  @override
+  String get billReferenceHint =>
+      'Écrivez cette référence dans le motif du virement ou la note D17.';
+
+  @override
+  String get billCopy => 'Copier';
+
+  @override
+  String get billCopied => 'Copié';
+
+  @override
+  String get billPayTo => 'Payer à';
+
+  @override
+  String get billBankName => 'Banque';
+
+  @override
+  String get billHolder => 'Titulaire';
+
+  @override
+  String get billRib => 'RIB';
+
+  @override
+  String get billD17Number => 'Numéro D17';
+
+  @override
+  String get billNoDetails =>
+      'Les coordonnées de paiement ne sont pas encore disponibles.';
+
+  @override
+  String get billIPaid => 'J\'ai payé';
+
+  @override
+  String get billPaidTitle => 'Votre paiement';
+
+  @override
+  String get billNoteLabel => 'Note (facultatif)';
+
+  @override
+  String get billSend => 'Envoyer';
+
+  @override
+  String get billCancelOrder => 'Annuler la commande';
+
+  @override
+  String get billAwaitingBody =>
+      'Merci. Notre équipe vérifie votre paiement, votre abonnement démarre dès sa confirmation.';
+
+  @override
+  String get billNotProTitle => 'Devenez professionnel d\'abord';
+
+  @override
+  String get billNotProBody =>
+      'L\'abonnement est réservé aux professionnels. Créez d\'abord votre profil.';
+
+  @override
+  String get billNotProCta => 'Créer mon profil';
+
+  @override
+  String get billErrNetwork => 'Pas de connexion. Réessayez.';
+
+  @override
+  String get billErrSignedIn => 'Reconnectez-vous puis réessayez.';
+
+  @override
+  String get billErrRate => 'Trop de commandes aujourd\'hui. Réessayez demain.';
+
+  @override
+  String get billErrInvalid => 'Cette demande n\'est pas valide.';
+
+  @override
+  String get billErrNotFound => 'Cette commande n\'existe plus.';
+
+  @override
+  String get billErrNotConfigured =>
+      'Les paiements ne sont pas encore disponibles.';
+
+  @override
+  String get billFlouciUnavailable =>
+      'Flouci n\'est pas encore disponible, utilisez D17 ou le virement.';
+
+  @override
+  String get billCannotOpen => 'Impossible d\'ouvrir le lien de paiement.';
+
+  @override
+  String get billErrUnknown => 'Une erreur est survenue. Réessayez.';
+
+  @override
+  String get flTitle => 'Services digitaux';
+
+  @override
+  String get flHomeSubtitle => 'Développeurs, designers, monteurs, rédacteurs…';
+
+  @override
+  String get flSearchHint => 'Rechercher un freelance ou une compétence…';
+
+  @override
+  String get flCategories => 'Catégories';
+
+  @override
+  String get flAllCategories => 'Toutes';
+
+  @override
+  String get flResultsTitle => 'Freelances';
+
+  @override
+  String get flEmptyTitle => 'Aucun freelance trouvé';
+
+  @override
+  String get flEmptyBody => 'Essayez un autre mot ou une autre catégorie.';
+
+  @override
+  String get flLoadFailed => 'Impossible de charger les freelances.';
+
+  @override
+  String flPriceFrom(String price, String unit) {
+    return 'à partir de $price / $unit';
+  }
+
+  @override
+  String get flUnitProject => 'projet';
+
+  @override
+  String get flUnitHour => 'heure';
+
+  @override
+  String get flUnitDay => 'jour';
+
+  @override
+  String get flNotFoundTitle => 'Freelance introuvable';
+
+  @override
+  String get flNotFoundBody => 'Cette page n’existe plus ou n’est pas publiée.';
+
+  @override
+  String get flFactPrice => 'Tarif';
+
+  @override
+  String get flFactLanguages => 'Langues';
+
+  @override
+  String get flSkills => 'Compétences';
+
+  @override
+  String get flPortfolio => 'Réalisations';
+
+  @override
+  String flOpenItem(String title) {
+    return 'Ouvrir : $title';
+  }
+
+  @override
+  String get flKindImage => 'Photo';
+
+  @override
+  String get flKindClip => 'Clip vidéo';
+
+  @override
+  String get flKindVideoLink => 'Vidéo en ligne';
+
+  @override
+  String get flKindLink => 'Lien';
+
+  @override
+  String get flTestimonials => 'Témoignages clients';
+
+  @override
+  String get flTestimonialLabel => 'Témoignage client';
+
+  @override
+  String get flTestimonialsNote =>
+      'Ces témoignages viennent d’anciens clients invités par le freelance. Ils sont différents des avis vérifiés laissés après un travail réalisé via Khidma.';
+
+  @override
+  String get flTestimonialsEmpty => 'Pas encore de témoignage.';
+
+  @override
+  String flTestimonialProject(String title) {
+    return 'Projet : $title';
+  }
+
+  @override
+  String flStars(int count) {
+    return '$count sur 5';
+  }
+
+  @override
+  String get flDashRow => 'Activité freelance';
+
+  @override
+  String get flManageTitle => 'Mon activité freelance';
+
+  @override
+  String get flIntroTitle => 'Proposez vos services digitaux';
+
+  @override
+  String get flIntroBody =>
+      'Développement, design, montage, marketing, rédaction… Créez une page publique avec vos réalisations et des témoignages clients. Votre identité vérifiée est la même que pour votre profil de métier : une seule vérification suffit.';
+
+  @override
+  String get flBecome => 'Devenir freelance';
+
+  @override
+  String get flSectionProfile => 'Ma page';
+
+  @override
+  String get flFieldName => 'Nom affiché';
+
+  @override
+  String get flFieldHeadline => 'Titre professionnel';
+
+  @override
+  String get flFieldHeadlineHint => 'Ex. Développeur Flutter';
+
+  @override
+  String get flFieldCategory => 'Catégorie';
+
+  @override
+  String get flFieldBio => 'Présentation';
+
+  @override
+  String get flFieldBioHelp =>
+      '20 caractères minimum pour publier, 2000 au maximum.';
+
+  @override
+  String get flFieldSkills => 'Compétences';
+
+  @override
+  String get flFieldSkillsHelp => 'Séparées par des virgules, 12 au maximum.';
+
+  @override
+  String get flFieldLanguages => 'Langues';
+
+  @override
+  String get flFieldLanguagesHelp => 'Séparées par des virgules, 6 au maximum.';
+
+  @override
+  String get flFieldYears => 'Années d’expérience';
+
+  @override
+  String get flFieldPrice => 'Tarif de départ (DT)';
+
+  @override
+  String get flFieldUnit => 'Par';
+
+  @override
+  String get flFieldAvailability => 'Disponibilité';
+
+  @override
+  String get flErrName => '2 à 80 caractères.';
+
+  @override
+  String get flErrHeadline => '5 à 100 caractères.';
+
+  @override
+  String get flErrBio => '2000 caractères au maximum.';
+
+  @override
+  String get flErrYears => 'Entre 0 et 60.';
+
+  @override
+  String get flErrPrice => 'Montant invalide.';
+
+  @override
+  String flErrTags(int max) {
+    return '30 caractères par élément, $max éléments au plus.';
+  }
+
+  @override
+  String get flSaved => 'Page enregistrée.';
+
+  @override
+  String get flIdentityTitle => 'Identité';
+
+  @override
+  String get flIdentityVerified => 'Identité vérifiée.';
+
+  @override
+  String get flIdentityNotVerified => 'Identité pas encore vérifiée.';
+
+  @override
+  String get flIdentityShared =>
+      'Une seule vérification sert à votre profil de métier et à votre page freelance.';
+
+  @override
+  String get flPublish => 'Publier ma page';
+
+  @override
+  String get flPublishedHint =>
+      'Votre page est visible dans Services digitaux.';
+
+  @override
+  String get flUnpublishedHint =>
+      'Votre page n’est pas visible pour le moment.';
+
+  @override
+  String get flPublishBlocked =>
+      'La publication est bloquée tant que votre identité n’est pas vérifiée.';
+
+  @override
+  String get flErrNotVerified =>
+      'Votre identité n’est pas encore vérifiée. Faites-la vérifier pour publier.';
+
+  @override
+  String get flErrIncomplete =>
+      'Page incomplète : ajoutez un numéro de téléphone de contact dans votre profil de métier, puis renseignez nom, titre, catégorie et présentation (20 caractères minimum).';
+
+  @override
+  String get flErrSuspended =>
+      'Votre compte est suspendu : la publication est impossible.';
+
+  @override
+  String get flErrGeneric =>
+      'L’opération a échoué. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get flErrNotConfigured =>
+      'Le service n’est pas disponible pour le moment.';
+
+  @override
+  String get flErrInvalid =>
+      'Certaines informations sont refusées. Vérifiez-les et réessayez.';
+
+  @override
+  String get flErrRate => 'Trop de demandes. Réessayez plus tard.';
+
+  @override
+  String flPortCount(int count, int max) {
+    return '$count sur $max réalisations';
+  }
+
+  @override
+  String get flPortEmpty => 'Aucune réalisation pour le moment.';
+
+  @override
+  String get flPortAddPhoto => 'Ajouter une photo';
+
+  @override
+  String get flPortAddClip => 'Ajouter un clip (30 s max)';
+
+  @override
+  String get flPortAddVideoLink => 'Ajouter une vidéo en ligne';
+
+  @override
+  String get flPortAddLink => 'Ajouter un lien';
+
+  @override
+  String get flPortLimit => 'Limite de 24 réalisations atteinte.';
+
+  @override
+  String get flPortTooLarge => 'Fichier trop lourd (25 Mo au maximum).';
+
+  @override
+  String get flPortBadFormat =>
+      'Format non pris en charge : utilisez un clip mp4 ou webm, ou ajoutez un lien vidéo.';
+
+  @override
+  String get flFieldTitle => 'Titre';
+
+  @override
+  String get flFieldDescription => 'Description (facultatif)';
+
+  @override
+  String get flFieldUrl => 'Adresse du lien';
+
+  @override
+  String get flErrTitle => '2 à 100 caractères.';
+
+  @override
+  String get flErrDescription => '500 caractères au maximum.';
+
+  @override
+  String get flErrUrlVideo => 'Lien https YouTube ou Vimeo uniquement.';
+
+  @override
+  String get flErrUrlLink => 'Entrez une adresse https valide.';
+
+  @override
+  String get flSheetAdd => 'Ajouter';
+
+  @override
+  String get flSheetChooseFile => 'Choisir le fichier';
+
+  @override
+  String get flItemEdit => 'Modifier';
+
+  @override
+  String get flItemDelete => 'Supprimer';
+
+  @override
+  String get flItemDeleteTitle => 'Supprimer cette réalisation ?';
+
+  @override
+  String get flItemDeleteBody => 'Elle ne sera plus visible sur votre page.';
+
+  @override
+  String get flUploading => 'Envoi en cours…';
+
+  @override
+  String get flInvTitle => 'Invitations de témoignage';
+
+  @override
+  String get flInvHint =>
+      'Envoyez un lien personnel à un ancien client : il écrit son témoignage sur une page web, sans compte. Le lien est valable 30 jours et ne sert qu’une fois.';
+
+  @override
+  String get flInvCreate => 'Créer un lien d’invitation';
+
+  @override
+  String get flInvLabelField => 'Pour qui ? (facultatif)';
+
+  @override
+  String get flInvNotConfigured =>
+      'Les liens de témoignage ne sont pas encore configurés dans cette version de l’application.';
+
+  @override
+  String get flInvLinkTitle => 'Lien créé';
+
+  @override
+  String get flInvLinkWarn => 'Copiez-le maintenant : il ne sera plus affiché.';
+
+  @override
+  String get flInvCopy => 'Copier le lien';
+
+  @override
+  String get flInvCopied => 'Lien copié.';
+
+  @override
+  String get flInvShare => 'Partager par WhatsApp';
+
+  @override
+  String flInvShareText(String url) {
+    return 'Bonjour, pourriez-vous laisser un témoignage sur notre collaboration ? $url';
+  }
+
+  @override
+  String get flInvEmpty => 'Aucune invitation pour le moment.';
+
+  @override
+  String get flInvStatusOpen => 'En attente';
+
+  @override
+  String get flInvStatusUsed => 'Utilisée';
+
+  @override
+  String get flInvStatusExpired => 'Expirée';
+
+  @override
+  String flInvExpires(String date) {
+    return 'Expire le $date';
+  }
+
+  @override
+  String get flInvNoLabel => 'Sans nom';
+
+  @override
+  String get flInvRevoke => 'Révoquer';
+
+  @override
+  String get flInvRevokeTitle => 'Révoquer cette invitation ?';
+
+  @override
+  String get flInvRevokeBody => 'Le lien ne fonctionnera plus.';
+
+  @override
+  String get flInvLimit => '20 invitations en attente au maximum.';
+
+  @override
   String get searchHint => 'Rechercher un métier, un nom, une ville…';
 
   @override

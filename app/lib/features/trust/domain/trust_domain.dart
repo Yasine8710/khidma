@@ -6,8 +6,15 @@ import '../../requests/domain/requests_domain.dart';
 const maxVerificationDocuments = 3;
 
 /// Where a report is about. Reports on a review or a conversation are only
-/// possible for what the reporter can see.
-enum ReportTarget { professional, review, conversation }
+/// possible for what the reporter can see. The names are the values the
+/// database function `report_content` takes.
+enum ReportTarget {
+  professional,
+  review,
+  conversation,
+  freelancer,
+  testimonial,
+}
 
 enum ReportReason { spam, fake, abuse, scam, inappropriate, other }
 

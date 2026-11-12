@@ -155,6 +155,244 @@
   "statRating": "Rating",
   "statReviews": "Reviews",
   "statYears": "Years",
+  "billTitle": "Subscription",
+  "billCurrent": "My subscription",
+  "billNone": "No subscription yet.",
+  "billStatusLabel": "Status",
+  "billStatusActive": "Active",
+  "billStatusPastDue": "Past due",
+  "billStatusExpired": "Expired",
+  "billStatusCancelled": "Cancelled",
+  "billValidUntil": "Valid until",
+  "billDaysLeftLabel": "Days left",
+  "billDaysLeft": "{count, plural, =0{Expires today} =1{1 day left} other{{count} days left}}",
+  "billChoosePlan": "Choose a plan",
+  "billPeriod": "{count, plural, =1{1 day} other{{count} days}}",
+  "billChooseMethod": "Payment method",
+  "billMethodFlouci": "Flouci",
+  "billMethodFlouciHint": "Online payment, confirmed automatically",
+  "billMethodD17": "D17",
+  "billMethodD17Hint": "Sent from your La Poste wallet, confirmed by our team",
+  "billMethodBank": "Bank transfer",
+  "billMethodBankHint": "Transfer to our account, confirmed by our team",
+  "billPay": "Pay",
+  "billFlouciOpened": "The payment opened in your browser. Come back here afterwards.",
+  "billMyPayments": "My payments",
+  "billNoPayments": "No payments yet.",
+  "billOrderPending": "Pending",
+  "billOrderAwaiting": "To confirm",
+  "billOrderPaid": "Paid",
+  "billOrderFailed": "Failed",
+  "billOrderCancelled": "Cancelled",
+  "billOrderRejected": "Rejected",
+  "billInstructionsTitle": "Payment instructions",
+  "billAmount": "Amount",
+  "billReference": "Reference",
+  "billReferenceHint": "Write this reference in the transfer reason or the D17 note.",
+  "billCopy": "Copy",
+  "billCopied": "Copied",
+  "billPayTo": "Pay to",
+  "billBankName": "Bank",
+  "billHolder": "Account holder",
+  "billRib": "RIB",
+  "billD17Number": "D17 number",
+  "billNoDetails": "The payment details are not available yet.",
+  "billIPaid": "I have paid",
+  "billPaidTitle": "Your payment",
+  "billNoteLabel": "Note (optional)",
+  "billSend": "Send",
+  "billCancelOrder": "Cancel the order",
+  "billAwaitingBody": "Thank you. Our team is checking your payment; your subscription starts once it is confirmed.",
+  "billNotProTitle": "Become a professional first",
+  "billNotProBody": "Subscriptions are for professionals. Create your profile first.",
+  "billNotProCta": "Create my profile",
+  "billErrNetwork": "No connection. Try again.",
+  "billErrSignedIn": "Sign in again, then try again.",
+  "billErrRate": "Too many orders today. Try again tomorrow.",
+  "billErrInvalid": "This request is not valid.",
+  "billErrNotFound": "This order no longer exists.",
+  "billErrNotConfigured": "Payments are not available yet.",
+  "billFlouciUnavailable": "Flouci is not available yet, use D17 or a bank transfer.",
+  "billCannotOpen": "The payment link could not be opened.",
+  "billErrUnknown": "Something went wrong. Try again.",
+  "flTitle": "Digital services",
+  "flHomeSubtitle": "Developers, designers, editors, writers…",
+  "flSearchHint": "Search for a freelancer or a skill…",
+  "flCategories": "Categories",
+  "flAllCategories": "All",
+  "flResultsTitle": "Freelancers",
+  "flEmptyTitle": "No freelancers found",
+  "flEmptyBody": "Try another word or category.",
+  "flLoadFailed": "Could not load the freelancers.",
+  "flPriceFrom": "from {price} / {unit}",
+  "flUnitProject": "project",
+  "flUnitHour": "hour",
+  "flUnitDay": "day",
+  "flNotFoundTitle": "Freelancer not found",
+  "flNotFoundBody": "This page no longer exists or is not published.",
+  "flFactPrice": "Rate",
+  "flFactLanguages": "Languages",
+  "flSkills": "Skills",
+  "flPortfolio": "Work",
+  "flOpenItem": "Open: {title}",
+  "flKindImage": "Photo",
+  "flKindClip": "Video clip",
+  "flKindVideoLink": "Online video",
+  "flKindLink": "Link",
+  "flTestimonials": "Client testimonials",
+  "flTestimonialLabel": "Client testimonial",
+  "flTestimonialsNote": "These testimonials come from past clients invited by the freelancer. They are different from the verified reviews left after a job done through Khidma.",
+  "flTestimonialsEmpty": "No testimonials yet.",
+  "flTestimonialProject": "Project: {title}",
+  "flStars": "{count} out of 5",
+  "flDashRow": "Freelance activity",
+  "flManageTitle": "My freelance activity",
+  "flIntroTitle": "Offer your digital services",
+  "flIntroBody": "Development, design, editing, marketing, writing… Create a public page with your work and client testimonials. Your identity check is the same as for your trade profile: one check is enough.",
+  "flBecome": "Become a freelancer",
+  "flSectionProfile": "My page",
+  "flFieldName": "Display name",
+  "flFieldHeadline": "Professional headline",
+  "flFieldHeadlineHint": "e.g. Flutter developer",
+  "flFieldCategory": "Category",
+  "flFieldBio": "About you",
+  "flFieldBioHelp": "At least 20 characters to publish, 2000 at most.",
+  "flFieldSkills": "Skills",
+  "flFieldSkillsHelp": "Separated by commas, 12 at most.",
+  "flFieldLanguages": "Languages",
+  "flFieldLanguagesHelp": "Separated by commas, 6 at most.",
+  "flFieldYears": "Years of experience",
+  "flFieldPrice": "Starting price (TND)",
+  "flFieldUnit": "Per",
+  "flFieldAvailability": "Availability",
+  "flErrName": "2 to 80 characters.",
+  "flErrHeadline": "5 to 100 characters.",
+  "flErrBio": "2000 characters at most.",
+  "flErrYears": "Between 0 and 60.",
+  "flErrPrice": "Invalid amount.",
+  "flErrTags": "30 characters per item, {max} items at most.",
+  "flSaved": "Page saved.",
+  "flIdentityTitle": "Identity",
+  "flIdentityVerified": "Identity verified.",
+  "flIdentityNotVerified": "Identity not verified yet.",
+  "flIdentityShared": "One check covers both your trade profile and your freelance page.",
+  "flPublish": "Publish my page",
+  "flPublishedHint": "Your page is visible in Digital services.",
+  "flUnpublishedHint": "Your page is not visible right now.",
+  "flPublishBlocked": "Publishing is blocked until your identity is verified.",
+  "flErrNotVerified": "Your identity is not verified yet. Get it verified to publish.",
+  "flErrIncomplete": "Page incomplete: add a contact phone number in your trade profile, then fill in name, headline, category and about text (20 characters minimum).",
+  "flErrSuspended": "Your account is suspended: publishing is not possible.",
+  "flErrGeneric": "The action failed. Check your connection and try again.",
+  "flErrNotConfigured": "The service is not available right now.",
+  "flErrInvalid": "Some details were refused. Check them and try again.",
+  "flErrRate": "Too many requests. Try again later.",
+  "flPortCount": "{count} of {max} items",
+  "flPortEmpty": "No work added yet.",
+  "flPortAddPhoto": "Add a photo",
+  "flPortAddClip": "Add a clip (30 s max)",
+  "flPortAddVideoLink": "Add an online video",
+  "flPortAddLink": "Add a link",
+  "flPortLimit": "You reached the limit of 24 items.",
+  "flPortTooLarge": "File too large (25 MB at most).",
+  "flPortBadFormat": "Unsupported format: use an mp4 or webm clip, or add a video link.",
+  "flFieldTitle": "Title",
+  "flFieldDescription": "Description (optional)",
+  "flFieldUrl": "Link address",
+  "flErrTitle": "2 to 100 characters.",
+  "flErrDescription": "500 characters at most.",
+  "flErrUrlVideo": "Only https YouTube or Vimeo links.",
+  "flErrUrlLink": "Enter a valid https address.",
+  "flSheetAdd": "Add",
+  "flSheetChooseFile": "Choose the file",
+  "flItemEdit": "Edit",
+  "flItemDelete": "Delete",
+  "flItemDeleteTitle": "Delete this item?",
+  "flItemDeleteBody": "It will no longer show on your page.",
+  "flUploading": "Uploading…",
+  "flInvTitle": "Testimonial invitations",
+  "flInvHint": "Send a personal link to a past client: they write their testimonial on a web page, no account needed. The link is valid for 30 days and works once.",
+  "flInvCreate": "Create an invitation link",
+  "flInvLabelField": "Who is it for? (optional)",
+  "flInvNotConfigured": "Testimonial links are not configured yet in this version of the app.",
+  "flInvLinkTitle": "Link created",
+  "flInvLinkWarn": "Copy it now: it will not be shown again.",
+  "flInvCopy": "Copy the link",
+  "flInvCopied": "Link copied.",
+  "flInvShare": "Share on WhatsApp",
+  "flInvShareText": "Hello, could you leave a testimonial about our work together? {url}",
+  "flInvEmpty": "No invitations yet.",
+  "flInvStatusOpen": "Waiting",
+  "flInvStatusUsed": "Used",
+  "flInvStatusExpired": "Expired",
+  "flInvExpires": "Expires on {date}",
+  "flInvNoLabel": "No name",
+  "flInvRevoke": "Revoke",
+  "flInvRevokeTitle": "Revoke this invitation?",
+  "flInvRevokeBody": "The link will stop working.",
+  "flInvLimit": "20 open invitations at most.",
+  "@flPriceFrom": {
+    "placeholders": {
+        "price": {
+          "type": "String"
+        },
+        "unit": {
+          "type": "String"
+        }
+    }
+  },
+  "@flOpenItem": {
+    "placeholders": {
+        "title": {
+          "type": "String"
+        }
+    }
+  },
+  "@flTestimonialProject": {
+    "placeholders": {
+        "title": {
+          "type": "String"
+        }
+    }
+  },
+  "@flStars": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        }
+    }
+  },
+  "@flErrTags": {
+    "placeholders": {
+        "max": {
+          "type": "int"
+        }
+    }
+  },
+  "@flPortCount": {
+    "placeholders": {
+        "count": {
+          "type": "int"
+        },
+        "max": {
+          "type": "int"
+        }
+    }
+  },
+  "@flInvShareText": {
+    "placeholders": {
+        "url": {
+          "type": "String"
+        }
+    }
+  },
+  "@flInvExpires": {
+    "placeholders": {
+        "date": {
+          "type": "String"
+        }
+    }
+  },
   "searchHint": "Search a trade, a name, a city…",
   "placeAll": "All of Tunisia",
   "placeChoose": "Choose an area",

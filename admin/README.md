@@ -1,6 +1,6 @@
 # Khidma admin
 
-Web dashboard for the people who run Khidma: verification requests, reports, professionals, users, reviews, requests, categories, and the audit log. English only (internal tool).
+Web dashboard for the people who run Khidma: verification requests, payments, reports, professionals, users, reviews, requests, categories, and the audit log. English only (internal tool).
 
 It has **no table access**. Every screen calls an `admin_*` database function that checks the caller is an admin (with a TOTP second factor) on every call. Identity documents and reported chat images are never read through Storage: a signer Edge Function (`backend/supabase/functions/admin-media`) first calls the audited function as the caller, then returns links that expire after 2 minutes.
 
@@ -11,7 +11,7 @@ cd admin
 npm ci
 cp .env.example .env.local   # fill in the two public values
 npm run dev                  # http://localhost:5173
-npm test                     # 39 tests, no network needed
+npm test                     # 50 tests, no network needed
 npm run build                # type check + production build in dist/
 ```
 

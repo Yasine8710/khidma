@@ -523,6 +523,584 @@ class AppLocalizationsAr extends AppLocalizations {
   String get statYears => 'السنوات';
 
   @override
+  String get billTitle => 'الاشتراك';
+
+  @override
+  String get billCurrent => 'اشتراكي';
+
+  @override
+  String get billNone => 'لا يوجد اشتراك حاليا.';
+
+  @override
+  String get billStatusLabel => 'الحالة';
+
+  @override
+  String get billStatusActive => 'ساري';
+
+  @override
+  String get billStatusPastDue => 'متأخر';
+
+  @override
+  String get billStatusExpired => 'منتهي';
+
+  @override
+  String get billStatusCancelled => 'ملغى';
+
+  @override
+  String get billValidUntil => 'ساري حتى';
+
+  @override
+  String get billDaysLeftLabel => 'الأيام المتبقية';
+
+  @override
+  String billDaysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count يوم متبقي',
+      many: '$count يوما متبقيا',
+      few: '$count أيام متبقية',
+      two: 'يومان متبقيان',
+      one: 'يوم واحد متبقي',
+      zero: 'ينتهي اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get billChoosePlan => 'اختر الباقة';
+
+  @override
+  String billPeriod(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count يوم',
+      many: '$count يوما',
+      few: '$count أيام',
+      two: 'يومان',
+      one: 'يوم واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get billChooseMethod => 'طريقة الدفع';
+
+  @override
+  String get billMethodFlouci => 'فلوسي';
+
+  @override
+  String get billMethodFlouciHint => 'دفع عبر الإنترنت، يتم تأكيده تلقائيا';
+
+  @override
+  String get billMethodD17 => 'D17';
+
+  @override
+  String get billMethodD17Hint => 'إرسال من محفظة البريد التونسي، يؤكده فريقنا';
+
+  @override
+  String get billMethodBank => 'تحويل بنكي';
+
+  @override
+  String get billMethodBankHint => 'تحويل إلى حسابنا، يؤكده فريقنا';
+
+  @override
+  String get billPay => 'ادفع';
+
+  @override
+  String get billFlouciOpened =>
+      'فُتحت صفحة الدفع في المتصفح. عد إلى هنا بعد ذلك.';
+
+  @override
+  String get billMyPayments => 'مدفوعاتي';
+
+  @override
+  String get billNoPayments => 'لا توجد مدفوعات بعد.';
+
+  @override
+  String get billOrderPending => 'في الانتظار';
+
+  @override
+  String get billOrderAwaiting => 'بانتظار التأكيد';
+
+  @override
+  String get billOrderPaid => 'مدفوع';
+
+  @override
+  String get billOrderFailed => 'فشل';
+
+  @override
+  String get billOrderCancelled => 'ملغى';
+
+  @override
+  String get billOrderRejected => 'مرفوض';
+
+  @override
+  String get billInstructionsTitle => 'تعليمات الدفع';
+
+  @override
+  String get billAmount => 'المبلغ';
+
+  @override
+  String get billReference => 'المرجع';
+
+  @override
+  String get billReferenceHint =>
+      'اكتب هذا المرجع في سبب التحويل أو في ملاحظة D17.';
+
+  @override
+  String get billCopy => 'نسخ';
+
+  @override
+  String get billCopied => 'تم النسخ';
+
+  @override
+  String get billPayTo => 'الدفع إلى';
+
+  @override
+  String get billBankName => 'البنك';
+
+  @override
+  String get billHolder => 'صاحب الحساب';
+
+  @override
+  String get billRib => 'RIB';
+
+  @override
+  String get billD17Number => 'رقم D17';
+
+  @override
+  String get billNoDetails => 'بيانات الدفع غير متوفرة بعد.';
+
+  @override
+  String get billIPaid => 'لقد دفعت';
+
+  @override
+  String get billPaidTitle => 'دفعتك';
+
+  @override
+  String get billNoteLabel => 'ملاحظة (اختياري)';
+
+  @override
+  String get billSend => 'إرسال';
+
+  @override
+  String get billCancelOrder => 'إلغاء الطلب';
+
+  @override
+  String get billAwaitingBody =>
+      'شكرا. يتحقق فريقنا من دفعتك، ويبدأ اشتراكك فور تأكيدها.';
+
+  @override
+  String get billNotProTitle => 'كن مهنيا أولا';
+
+  @override
+  String get billNotProBody => 'الاشتراك مخصص للمهنيين. أنشئ ملفك الشخصي أولا.';
+
+  @override
+  String get billNotProCta => 'إنشاء ملفي';
+
+  @override
+  String get billErrNetwork => 'لا يوجد اتصال. حاول مرة أخرى.';
+
+  @override
+  String get billErrSignedIn => 'سجّل الدخول من جديد ثم حاول مرة أخرى.';
+
+  @override
+  String get billErrRate => 'طلبات كثيرة اليوم. حاول غدا.';
+
+  @override
+  String get billErrInvalid => 'هذا الطلب غير صالح.';
+
+  @override
+  String get billErrNotFound => 'هذا الطلب لم يعد موجودا.';
+
+  @override
+  String get billErrNotConfigured => 'الدفع غير متاح بعد.';
+
+  @override
+  String get billFlouciUnavailable =>
+      'فلوسي غير متاح بعد، استعمل D17 أو التحويل البنكي.';
+
+  @override
+  String get billCannotOpen => 'تعذر فتح رابط الدفع.';
+
+  @override
+  String get billErrUnknown => 'حدث خطأ. حاول مرة أخرى.';
+
+  @override
+  String get flTitle => 'الخدمات الرقمية';
+
+  @override
+  String get flHomeSubtitle => 'مطورون ومصممون ومونتيرون وكتّاب…';
+
+  @override
+  String get flSearchHint => 'ابحث عن مستقل أو مهارة…';
+
+  @override
+  String get flCategories => 'الفئات';
+
+  @override
+  String get flAllCategories => 'الكل';
+
+  @override
+  String get flResultsTitle => 'المستقلون';
+
+  @override
+  String get flEmptyTitle => 'لم يتم العثور على مستقلين';
+
+  @override
+  String get flEmptyBody => 'جرّب كلمة أخرى أو فئة أخرى.';
+
+  @override
+  String get flLoadFailed => 'تعذّر تحميل المستقلين.';
+
+  @override
+  String flPriceFrom(String price, String unit) {
+    return 'ابتداءً من $price / $unit';
+  }
+
+  @override
+  String get flUnitProject => 'مشروع';
+
+  @override
+  String get flUnitHour => 'ساعة';
+
+  @override
+  String get flUnitDay => 'يوم';
+
+  @override
+  String get flNotFoundTitle => 'المستقل غير موجود';
+
+  @override
+  String get flNotFoundBody => 'هذه الصفحة غير موجودة أو غير منشورة.';
+
+  @override
+  String get flFactPrice => 'السعر';
+
+  @override
+  String get flFactLanguages => 'اللغات';
+
+  @override
+  String get flSkills => 'المهارات';
+
+  @override
+  String get flPortfolio => 'الأعمال';
+
+  @override
+  String flOpenItem(String title) {
+    return 'فتح: $title';
+  }
+
+  @override
+  String get flKindImage => 'صورة';
+
+  @override
+  String get flKindClip => 'مقطع فيديو';
+
+  @override
+  String get flKindVideoLink => 'فيديو على الإنترنت';
+
+  @override
+  String get flKindLink => 'رابط';
+
+  @override
+  String get flTestimonials => 'شهادات العملاء';
+
+  @override
+  String get flTestimonialLabel => 'شهادة عميل';
+
+  @override
+  String get flTestimonialsNote =>
+      'تأتي هذه الشهادات من عملاء سابقين دعاهم المستقل. وهي تختلف عن التقييمات الموثّقة التي تُترك بعد عمل أُنجز عبر خدمة.';
+
+  @override
+  String get flTestimonialsEmpty => 'لا توجد شهادات بعد.';
+
+  @override
+  String flTestimonialProject(String title) {
+    return 'المشروع: $title';
+  }
+
+  @override
+  String flStars(int count) {
+    return '$count من 5';
+  }
+
+  @override
+  String get flDashRow => 'النشاط كمستقل';
+
+  @override
+  String get flManageTitle => 'نشاطي كمستقل';
+
+  @override
+  String get flIntroTitle => 'اعرض خدماتك الرقمية';
+
+  @override
+  String get flIntroBody =>
+      'تطوير وتصميم ومونتاج وتسويق وكتابة… أنشئ صفحة عامة تعرض أعمالك وشهادات عملائك. التحقق من هويتك هو نفسه الخاص بملفك المهني: يكفي تحقق واحد.';
+
+  @override
+  String get flBecome => 'أصبح مستقلًا';
+
+  @override
+  String get flSectionProfile => 'صفحتي';
+
+  @override
+  String get flFieldName => 'الاسم المعروض';
+
+  @override
+  String get flFieldHeadline => 'العنوان المهني';
+
+  @override
+  String get flFieldHeadlineHint => 'مثال: مطوّر Flutter';
+
+  @override
+  String get flFieldCategory => 'الفئة';
+
+  @override
+  String get flFieldBio => 'نبذة عنك';
+
+  @override
+  String get flFieldBioHelp => '20 حرفًا على الأقل للنشر و2000 كحد أقصى.';
+
+  @override
+  String get flFieldSkills => 'المهارات';
+
+  @override
+  String get flFieldSkillsHelp => 'مفصولة بفواصل، 12 كحد أقصى.';
+
+  @override
+  String get flFieldLanguages => 'اللغات';
+
+  @override
+  String get flFieldLanguagesHelp => 'مفصولة بفواصل، 6 كحد أقصى.';
+
+  @override
+  String get flFieldYears => 'سنوات الخبرة';
+
+  @override
+  String get flFieldPrice => 'السعر الابتدائي (د.ت)';
+
+  @override
+  String get flFieldUnit => 'لكل';
+
+  @override
+  String get flFieldAvailability => 'التوفر';
+
+  @override
+  String get flErrName => 'من 2 إلى 80 حرفًا.';
+
+  @override
+  String get flErrHeadline => 'من 5 إلى 100 حرف.';
+
+  @override
+  String get flErrBio => '2000 حرف كحد أقصى.';
+
+  @override
+  String get flErrYears => 'بين 0 و60.';
+
+  @override
+  String get flErrPrice => 'مبلغ غير صالح.';
+
+  @override
+  String flErrTags(int max) {
+    return '30 حرفًا لكل عنصر و$max عناصر كحد أقصى.';
+  }
+
+  @override
+  String get flSaved => 'تم حفظ الصفحة.';
+
+  @override
+  String get flIdentityTitle => 'الهوية';
+
+  @override
+  String get flIdentityVerified => 'تم التحقق من الهوية.';
+
+  @override
+  String get flIdentityNotVerified => 'لم يتم التحقق من الهوية بعد.';
+
+  @override
+  String get flIdentityShared => 'يكفي تحقق واحد لملفك المهني وصفحتك كمستقل.';
+
+  @override
+  String get flPublish => 'نشر صفحتي';
+
+  @override
+  String get flPublishedHint => 'صفحتك ظاهرة في الخدمات الرقمية.';
+
+  @override
+  String get flUnpublishedHint => 'صفحتك غير ظاهرة حاليًا.';
+
+  @override
+  String get flPublishBlocked => 'النشر متوقف حتى يتم التحقق من هويتك.';
+
+  @override
+  String get flErrNotVerified =>
+      'لم يتم التحقق من هويتك بعد. اطلب التحقق لتتمكن من النشر.';
+
+  @override
+  String get flErrIncomplete =>
+      'الصفحة غير مكتملة: أضف رقم هاتف للتواصل في ملفك المهني، ثم أدخل الاسم والعنوان والفئة والنبذة (20 حرفًا على الأقل).';
+
+  @override
+  String get flErrSuspended => 'حسابك موقوف: لا يمكن النشر.';
+
+  @override
+  String get flErrGeneric => 'فشلت العملية. تحقق من اتصالك وحاول مجددًا.';
+
+  @override
+  String get flErrNotConfigured => 'الخدمة غير متاحة حاليًا.';
+
+  @override
+  String get flErrInvalid => 'تم رفض بعض البيانات. تحقق منها وحاول مجددًا.';
+
+  @override
+  String get flErrRate => 'طلبات كثيرة. حاول لاحقًا.';
+
+  @override
+  String flPortCount(int count, int max) {
+    return '$count من $max أعمال';
+  }
+
+  @override
+  String get flPortEmpty => 'لا توجد أعمال بعد.';
+
+  @override
+  String get flPortAddPhoto => 'إضافة صورة';
+
+  @override
+  String get flPortAddClip => 'إضافة مقطع (30 ثانية كحد أقصى)';
+
+  @override
+  String get flPortAddVideoLink => 'إضافة فيديو من الإنترنت';
+
+  @override
+  String get flPortAddLink => 'إضافة رابط';
+
+  @override
+  String get flPortLimit => 'بلغت الحد الأقصى وهو 24 عملًا.';
+
+  @override
+  String get flPortTooLarge => 'الملف كبير جدًا (25 ميغابايت كحد أقصى).';
+
+  @override
+  String get flPortBadFormat =>
+      'صيغة غير مدعومة: استخدم مقطع mp4 أو webm، أو أضف رابط فيديو.';
+
+  @override
+  String get flFieldTitle => 'العنوان';
+
+  @override
+  String get flFieldDescription => 'الوصف (اختياري)';
+
+  @override
+  String get flFieldUrl => 'عنوان الرابط';
+
+  @override
+  String get flErrTitle => 'من 2 إلى 100 حرف.';
+
+  @override
+  String get flErrDescription => '500 حرف كحد أقصى.';
+
+  @override
+  String get flErrUrlVideo => 'روابط https من YouTube أو Vimeo فقط.';
+
+  @override
+  String get flErrUrlLink => 'أدخل عنوان https صالحًا.';
+
+  @override
+  String get flSheetAdd => 'إضافة';
+
+  @override
+  String get flSheetChooseFile => 'اختيار الملف';
+
+  @override
+  String get flItemEdit => 'تعديل';
+
+  @override
+  String get flItemDelete => 'حذف';
+
+  @override
+  String get flItemDeleteTitle => 'حذف هذا العمل؟';
+
+  @override
+  String get flItemDeleteBody => 'لن يظهر بعد الآن في صفحتك.';
+
+  @override
+  String get flUploading => 'جارٍ الإرسال…';
+
+  @override
+  String get flInvTitle => 'دعوات الشهادات';
+
+  @override
+  String get flInvHint =>
+      'أرسل رابطًا شخصيًا إلى عميل سابق: يكتب شهادته في صفحة ويب دون حساب. الرابط صالح 30 يومًا ويُستخدم مرة واحدة.';
+
+  @override
+  String get flInvCreate => 'إنشاء رابط دعوة';
+
+  @override
+  String get flInvLabelField => 'لمن؟ (اختياري)';
+
+  @override
+  String get flInvNotConfigured =>
+      'روابط الشهادات غير مفعّلة بعد في هذا الإصدار من التطبيق.';
+
+  @override
+  String get flInvLinkTitle => 'تم إنشاء الرابط';
+
+  @override
+  String get flInvLinkWarn => 'انسخه الآن: لن يظهر مرة أخرى.';
+
+  @override
+  String get flInvCopy => 'نسخ الرابط';
+
+  @override
+  String get flInvCopied => 'تم نسخ الرابط.';
+
+  @override
+  String get flInvShare => 'مشاركة عبر واتساب';
+
+  @override
+  String flInvShareText(String url) {
+    return 'مرحبًا، هل يمكنك ترك شهادة عن تعاوننا؟ $url';
+  }
+
+  @override
+  String get flInvEmpty => 'لا توجد دعوات بعد.';
+
+  @override
+  String get flInvStatusOpen => 'في الانتظار';
+
+  @override
+  String get flInvStatusUsed => 'مستخدمة';
+
+  @override
+  String get flInvStatusExpired => 'منتهية';
+
+  @override
+  String flInvExpires(String date) {
+    return 'تنتهي في $date';
+  }
+
+  @override
+  String get flInvNoLabel => 'بدون اسم';
+
+  @override
+  String get flInvRevoke => 'إلغاء';
+
+  @override
+  String get flInvRevokeTitle => 'إلغاء هذه الدعوة؟';
+
+  @override
+  String get flInvRevokeBody => 'سيتوقف الرابط عن العمل.';
+
+  @override
+  String get flInvLimit => '20 دعوة معلّقة كحد أقصى.';
+
+  @override
   String get searchHint => 'ابحث عن مهنة أو اسم أو مدينة…';
 
   @override

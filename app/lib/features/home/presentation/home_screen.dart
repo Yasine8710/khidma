@@ -10,6 +10,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/category_photo.dart';
 import '../../../shared/widgets/khidma_logo.dart';
+import '../../../shared/widgets/register_row.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/application/home_providers.dart';
 import '../../marketplace/application/marketplace_providers.dart';
@@ -87,6 +88,8 @@ class HomeScreen extends ConsumerWidget {
                 const _QuoteBlock(),
                 const SizedBox(height: AppSpacing.xxl + AppSpacing.sm),
                 const _Categories(),
+                const SizedBox(height: AppSpacing.lg),
+                const _DigitalLink(),
                 const SizedBox(height: AppSpacing.xxl),
                 const _Professionals(kind: _Kind.topRated),
                 const SizedBox(height: AppSpacing.xxl),
@@ -567,6 +570,26 @@ class _CategoryRow extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The way into the second section: digital freelancers.
+class _DigitalLink extends StatelessWidget {
+  const _DigitalLink();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return RegisterGroup(
+      children: [
+        RegisterRow(
+          icon: Icons.laptop_mac_outlined,
+          title: l10n.flTitle,
+          subtitle: l10n.flHomeSubtitle,
+          onTap: () => context.push(AppRoutes.digital),
+        ),
+      ],
     );
   }
 }

@@ -28,6 +28,7 @@ abstract final class AppRoutes {
   static const proDashboard = '/pro';
   static const proPortfolio = '/pro/portfolio';
   static const proVerification = '/pro/verification';
+  static const proBilling = '/pro/billing';
   static const search = '/search';
   static const professional = '/professional/:id';
   static String professionalPath(String id) =>
@@ -36,5 +37,10 @@ abstract final class AppRoutes {
     path: search,
     queryParameters: categoryId == null ? null : {'category': '$categoryId'},
   ).toString();
+  static const digital = '/digital';
+  static const freelancer = '/freelancer/:id';
+  static String freelancerPath(String id) =>
+      '/freelancer/${Uri.encodeComponent(id)}';
+  static const proFreelance = '/pro/freelance';
   static const gallery = '/gallery'; // debug / GALLERY builds only
 }
