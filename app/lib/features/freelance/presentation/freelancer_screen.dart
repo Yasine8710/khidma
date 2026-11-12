@@ -4,13 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/format/dates.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/app_avatar.dart';
+import '../../../core/motion/motion.dart';
 import '../../../shared/widgets/empty_state.dart';
-import '../../../shared/widgets/rating_stars.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/application/contact_providers.dart'
     show urlOpenerProvider;
 import '../../marketplace/presentation/professional_card.dart';
+import '../../marketplace/presentation/signal_blocks.dart';
 import '../../portfolio/presentation/portfolio_image.dart';
 import '../../trust/domain/trust_domain.dart';
 import '../../trust/presentation/report_sheet.dart';
@@ -21,23 +21,63 @@ import 'freelance_widgets.dart';
 
 /// A freelancer's public page: header, key facts, skills, about, work,
 /// client testimonials and contact.
-class FreelancerScreen extends ConsumerWidget {
+class FreelancerScreen extends ConsumerStatefulWidget {
   const FreelancerScreen({super.key, required this.id});
 
   final String id;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<FreelancerScreen> createState() => _FreelancerScreenState();
+}
+
+class _FreelancerScreenState extends ConsumerState<FreelancerScreen> {
+  final _scroll = ScrollController();
+
+  String get id => widget.id;
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  /// Contact is the last section: the sticky bar takes the person to it.
+  void _toContact() {
+    if (!_scroll.hasClients) return;
+    final end = _scroll.position.maxScrollExtent;
+    if (Motion.reduced(context)) {
+      _scroll.jumpTo(end);
+    } else {
+      _scroll.animateTo(end, duration: Motion.slow, curve: Motion.enter);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final async = ref.watch(freelancerProvider(id));
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: scheme.primaryContainer,
+        foregroundColor: scheme.onPrimaryContainer,
+        shape: const Border(),
         actions: [
           ReportButton(target: ReportTarget.freelancer, targetId: id),
           const SizedBox(width: AppSpacing.xs),
         ],
       ),
+      bottomNavigationBar: async.value == null
+          ? null
+          : ActionBar(
+              child: FilledButton.icon(
+                onPressed: _toContact,
+                icon: const Icon(Icons.phone_outlined),
+                label: Text(l10n.contactTitle),
+              ),
+            ),
       body: SafeArea(
+        top: false,
         child: async.when(
           loading: () => const SkeletonGroup(
             child: Padding(
@@ -58,7 +98,7 @@ class FreelancerScreen extends ConsumerWidget {
                   title: l10n.flNotFoundTitle,
                   body: l10n.flNotFoundBody,
                 )
-              : _Page(f: f),
+              : _Page(f: f, controller: _scroll),
         ),
       ),
     );
@@ -66,9 +106,10 @@ class FreelancerScreen extends ConsumerWidget {
 }
 
 class _Page extends ConsumerWidget {
-  const _Page({required this.f});
+  const _Page({required this.f, required this.controller});
 
   final FreelancerSummary f;
+  final ScrollController controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -89,169 +130,131 @@ class _Page extends ConsumerWidget {
         final side = box.maxWidth > 720 + AppSpacing.gutter * 2
             ? (box.maxWidth - 720) / 2
             : AppSpacing.gutter;
-        return ListView(
-          padding: EdgeInsetsDirectional.fromSTEB(
-            side,
-            AppSpacing.xs,
-            side,
-            AppSpacing.xl,
+        final rated = f.reviewCount > 0;
+        final stars = f.rating.isNaN ? 0.0 : f.rating.clamp(0.0, 5.0);
+        Widget stat(Widget child) => Expanded(
+          child: Padding(
+            padding: const EdgeInsetsDirectional.only(
+              end: AppInk.offset,
+              bottom: AppInk.offset,
+            ),
+            child: child,
           ),
+        );
+        return ListView(
+          controller: controller,
+          padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.xl),
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppAvatar(
-                  name: f.name,
-                  imageUrl: f.avatarUrl,
-                  size: 72,
-                  decorative: true,
-                ),
-                const SizedBox(width: AppSpacing.lg),
-                Expanded(
-                  child: Column(
+            ColorHeader(
+              name: f.name,
+              kicker: f.headline.isEmpty ? category : f.headline,
+              side: side,
+              avatar: SignalAvatar(
+                name: f.name,
+                imageUrl: f.avatarUrl,
+                size: 84,
+              ),
+              below: Wrap(
+                spacing: AppSpacing.md,
+                runSpacing: AppSpacing.xs,
+                alignment: WrapAlignment.end,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  if (f.isVerified) const VerifiedStamp(),
+                  AvailabilityMark(availability: f.availability),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.symmetric(horizontal: side),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: AppSpacing.lg),
+                  if (f.headline.isNotEmpty && category != null)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(
+                        bottom: AppSpacing.md,
+                      ),
+                      child: Text(
+                        category,
+                        style: text.titleMedium?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Semantics(
-                        header: true,
-                        child: Text(f.name, style: text.headlineMedium),
-                      ),
-                      if (f.headline.isNotEmpty)
-                        Text(f.headline, style: text.bodyLarge),
-                      if (category != null)
-                        Padding(
-                          padding: const EdgeInsetsDirectional.only(
-                            top: AppSpacing.xs,
-                          ),
-                          child: Text(
-                            category,
-                            style: text.titleSmall?.copyWith(
-                              color: scheme.onSurfaceVariant,
-                            ),
-                          ),
+                      stat(
+                        StatBlock(
+                          value: stars,
+                          fractionDigits: 1,
+                          empty: !rated,
+                          label: rated ? l10n.statRating : l10n.ratingNone,
+                          color: scheme.primaryContainer,
                         ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Wrap(
-                        spacing: AppSpacing.md,
-                        runSpacing: AppSpacing.xs,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          if (f.isVerified) const VerifiedStamp(),
-                          AvailabilityMark(availability: f.availability),
-                        ],
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      stat(
+                        StatBlock(
+                          value: f.reviewCount,
+                          label: l10n.statReviews,
+                        ),
                       ),
                     ],
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            const Divider(),
-            if (price != null) _Fact(label: l10n.flFactPrice, value: price),
-            _Fact(
-              label: l10n.discFactExperience,
-              value: years == null || years == 0
-                  ? '—'
-                  : l10n.yearsExperience(years),
-            ),
-            if (f.languages.isNotEmpty)
-              _Fact(label: l10n.flFactLanguages, value: f.languages.join(', ')),
-            _Fact(
-              label: l10n.statRating,
-              last: true,
-              child: RatingStars(
-                rating: f.rating,
-                reviewCount: f.reviewCount,
-                size: 14,
+                  const SizedBox(height: AppSpacing.lg),
+                  if (price != null)
+                    FactRow(
+                      label: l10n.flFactPrice,
+                      value: Text(price, style: text.titleSmall),
+                    ),
+                  FactRow(
+                    label: l10n.discFactExperience,
+                    value: Text(
+                      years == null || years == 0
+                          ? '—'
+                          : l10n.yearsExperience(years),
+                      style: text.titleSmall,
+                    ),
+                  ),
+                  if (f.languages.isNotEmpty)
+                    FactRow(
+                      label: l10n.flFactLanguages,
+                      value: Text(
+                        f.languages.join(', '),
+                        style: text.titleSmall,
+                      ),
+                    ),
+                  if (f.skills.isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.xxl),
+                    RegisterHeading(title: l10n.flSkills),
+                    const SizedBox(height: AppSpacing.sm),
+                    Wrap(
+                      spacing: AppSpacing.sm,
+                      runSpacing: AppSpacing.sm,
+                      children: [for (final s in f.skills) TagBlock(s)],
+                    ),
+                  ],
+                  if (f.bio.isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.xxl),
+                    RegisterHeading(title: l10n.aboutLabel),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(f.bio, style: text.bodyLarge),
+                  ],
+                  _PortfolioGrid(freelancerId: f.id),
+                  _Testimonials(freelancerId: f.id),
+                  const SizedBox(height: AppSpacing.xxl),
+                  FreelanceContactSection(freelancerId: f.id),
+                ],
               ),
             ),
-            if (f.skills.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.xxl),
-              RegisterHeading(title: l10n.flSkills),
-              const SizedBox(height: AppSpacing.sm),
-              Wrap(
-                spacing: AppSpacing.sm,
-                runSpacing: AppSpacing.sm,
-                children: [for (final s in f.skills) _Tag(s)],
-              ),
-            ],
-            if (f.bio.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.xxl),
-              RegisterHeading(title: l10n.aboutLabel),
-              const SizedBox(height: AppSpacing.xs),
-              Text(f.bio, style: text.bodyLarge),
-            ],
-            _PortfolioGrid(freelancerId: f.id),
-            _Testimonials(freelancerId: f.id),
-            const SizedBox(height: AppSpacing.xxl),
-            FreelanceContactSection(freelancerId: f.id),
           ],
         );
       },
     );
   }
-}
-
-class _Fact extends StatelessWidget {
-  const _Fact({required this.label, this.value, this.child, this.last = false});
-
-  final String label;
-  final String? value;
-  final Widget? child;
-  final bool last;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final text = Theme.of(context).textTheme;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: BorderDirectional(
-          bottom: BorderSide(
-            color: last ? scheme.onSurface : scheme.outlineVariant,
-          ),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsetsDirectional.symmetric(
-          vertical: AppSpacing.sm + 3,
-        ),
-        child: Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: AppSpacing.md,
-          runSpacing: AppSpacing.xs,
-          children: [
-            Text(
-              label,
-              style: text.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
-            ),
-            child ?? Text(value ?? '', style: text.titleSmall),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Tag extends StatelessWidget {
-  const _Tag(this.label);
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) => DecoratedBox(
-    decoration: BoxDecoration(
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(AppRadius.sm),
-    ),
-    child: Padding(
-      padding: const EdgeInsetsDirectional.symmetric(
-        horizontal: AppSpacing.md - 2,
-        vertical: AppSpacing.xs + 2,
-      ),
-      child: Text(label, style: Theme.of(context).textTheme.labelMedium),
-    ),
-  );
 }
 
 String kindLabel(AppLocalizations l10n, PortfolioKind k) => switch (k) {
@@ -392,22 +395,23 @@ class _Tile extends ConsumerWidget {
       label: label,
       excludeSemantics: true,
       onTap: () => _open(context, ref),
-      child: InkWell(
+      child: Pressable(
         onTap: () => _open(context, ref),
+        depth: 2,
+        button: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox.square(
               dimension: side,
-              child: DecoratedBox(
-                position: DecorationPosition.foreground,
-                decoration: BoxDecoration(
-                  border: Border.all(color: scheme.outlineVariant),
-                  borderRadius: BorderRadius.circular(AppRadius.sm),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(AppRadius.sm),
-                  child: visual,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(end: 2, bottom: 2),
+                child: StickerBox(
+                  offset: 2,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                    child: visual,
+                  ),
                 ),
               ),
             ),
@@ -458,17 +462,13 @@ class _Testimonials extends ConsumerWidget {
             Text(l10n.flTestimonialsEmpty, style: text.bodyMedium)
           else
             for (final t in list)
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  border: BorderDirectional(
-                    bottom: BorderSide(color: scheme.outlineVariant),
-                  ),
+              Padding(
+                padding: const EdgeInsetsDirectional.only(
+                  end: AppInk.offset,
+                  bottom: AppSpacing.lg,
                 ),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(
-                    top: AppSpacing.xs,
-                    bottom: AppSpacing.md,
-                  ),
+                child: StickerBox(
+                  padding: const EdgeInsetsDirectional.all(AppSpacing.md),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

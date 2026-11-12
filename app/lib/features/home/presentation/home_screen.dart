@@ -4,28 +4,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/motion/motion.dart';
 import '../../../core/router/app_routes.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/world_controller.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/app_badge.dart';
-import '../../../shared/widgets/category_photo.dart';
 import '../../../shared/widgets/khidma_logo.dart';
-import '../../../shared/widgets/register_row.dart';
 import '../../../shared/widgets/skeleton.dart';
+import '../../freelance/application/freelance_providers.dart';
+import '../../freelance/domain/freelance_domain.dart';
+import '../../freelance/presentation/freelance_widgets.dart';
 import '../../marketplace/application/home_providers.dart';
 import '../../marketplace/application/marketplace_providers.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
 import '../../marketplace/presentation/marketplace_failure_view.dart';
 import '../../marketplace/presentation/place_sheet.dart';
 import '../../marketplace/presentation/professional_card.dart';
+import '../../marketplace/presentation/signal_blocks.dart';
 import '../../profile/application/profile_providers.dart';
 
 /// Widest the page's text column grows on tablets.
 const _maxContentWidth = 760.0;
 
-/// Home, laid out like the front page of a trade register: a masthead with
-/// the area, one big question, the search field, the quote action, then the
-/// trades and the professionals as ruled lists.
+/// Home as a launcher: the world switch on top (two huge blocks), one giant
+/// question, the search block, the loud quote block, then the chunky
+/// category tiles and the professionals (or, in the digital world, the
+/// freelancers). Switching world swaps the content with a slam.
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -36,12 +41,15 @@ class HomeScreen extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
     final name = _firstName(ref.watch(visibleProfileProvider)?.fullName);
     final isDemo = ref.watch(isDemoDataProvider);
+    final world = ref.watch(worldProvider).world;
 
     Future<void> refresh() async {
       ref.invalidate(categoriesProvider);
       ref.invalidate(topRatedProvider);
       ref.invalidate(inYourAreaProvider);
       ref.invalidate(recentProfessionalsProvider);
+      ref.invalidate(digitalCategoriesProvider);
+      ref.invalidate(freelancerSearchProvider(_homeFreelancers));
       try {
         await ref.read(topRatedProvider.future);
       } catch (_) {}
@@ -62,11 +70,12 @@ class HomeScreen extends ConsumerWidget {
                 side,
                 AppSpacing.sm,
                 side,
-                AppSpacing.lg,
+                AppSpacing.xl,
               ),
               children: [
                 const _Masthead(),
-                const _DoubleRule(),
+                const SizedBox(height: AppSpacing.md),
+                _WorldSwitch(current: world),
                 if (isDemo) const _DemoStamp(),
                 const SizedBox(height: AppSpacing.xl),
                 Text(
@@ -80,21 +89,21 @@ class HomeScreen extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.xs),
                 Semantics(
                   header: true,
-                  child: Text(l10n.homeSubtitle, style: text.displaySmall),
+                  child: Text(l10n.homeSubtitle, style: text.displayMedium),
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 const _SearchField(),
-                const SizedBox(height: AppSpacing.md),
-                const _QuoteBlock(),
-                const SizedBox(height: AppSpacing.xxl + AppSpacing.sm),
-                const _Categories(),
                 const SizedBox(height: AppSpacing.lg),
-                const _DigitalLink(),
+                const _QuoteBlock(),
                 const SizedBox(height: AppSpacing.xxl),
-                const _Professionals(kind: _Kind.topRated),
-                const SizedBox(height: AppSpacing.xxl),
-                const _Professionals(kind: _Kind.area),
-                const _RecentSection(),
+                SlamSwitcher(
+                  child: KeyedSubtree(
+                    key: ValueKey(world),
+                    child: world == AppWorld.trades
+                        ? const _TradesWorld()
+                        : const _DigitalWorld(),
+                  ),
+                ),
               ],
             );
           },
@@ -109,7 +118,14 @@ String? _firstName(String? fullName) {
   return words.isEmpty || words.first.isEmpty ? null : words.first;
 }
 
-/// The wordmark on the start side, the area as an underlined link on the end.
+/// The short label of a world, as on a sign.
+String _worldLabel(Locale locale, AppWorld w) => switch (locale.languageCode) {
+  'ar' => w == AppWorld.trades ? 'حرف' : 'رقمي',
+  'en' => w == AppWorld.trades ? 'TRADES' : 'DIGITAL',
+  _ => w == AppWorld.trades ? 'MÉTIERS' : 'DIGITAL',
+};
+
+/// The wordmark on the start side, the area as a small sticker on the end.
 class _Masthead extends StatelessWidget {
   const _Masthead();
 
@@ -138,27 +154,134 @@ class _Masthead extends StatelessWidget {
   }
 }
 
-/// A heavy rule over a hairline: the masthead's printed underline.
-class _DoubleRule extends StatelessWidget {
-  const _DoubleRule();
+/// The two huge world blocks. Tapping one switches the world; the shell
+/// floods the screen with its colour from the tapped centre.
+class _WorldSwitch extends ConsumerWidget {
+  const _WorldSwitch({required this.current});
+
+  final AppWorld current;
 
   @override
-  Widget build(BuildContext context) {
-    final ink = Theme.of(context).colorScheme.onSurface;
-    return ExcludeSemantics(
-      child: Column(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return IntrinsicHeight(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: 2, child: ColoredBox(color: ink)),
-          const SizedBox(height: 2),
-          SizedBox(height: 1, child: ColoredBox(color: ink)),
+          for (final w in AppWorld.values) ...[
+            if (w != AppWorld.values.first) const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: _WorldBlock(world: w, selected: w == current),
+            ),
+          ],
         ],
       ),
     );
   }
 }
 
-/// The area picker: the chosen place as a terracotta text link.
+class _WorldBlock extends ConsumerWidget {
+  const _WorldBlock({required this.world, required this.selected});
+
+  final AppWorld world;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locale = Localizations.localeOf(context);
+    final scheme = Theme.of(context).colorScheme;
+    final b = Theme.of(context).brightness;
+    final color = world.accent(b);
+    final on = world.onAccent(b);
+    final label = _worldLabel(locale, world);
+    final icon = world == AppWorld.trades
+        ? Icons.handyman_rounded
+        : Icons.laptop_mac_rounded;
+
+    return Builder(
+      builder: (blockContext) {
+        void switchWorld() {
+          final box = blockContext.findRenderObject() as RenderBox?;
+          final origin = box != null && box.hasSize
+              ? box.localToGlobal(box.size.center(Offset.zero))
+              : null;
+          ref.read(worldProvider.notifier).switchTo(world, origin: origin);
+        }
+
+        return Semantics(
+          button: true,
+          selected: selected,
+          label: label,
+          excludeSemantics: true,
+          onTap: switchWorld,
+          child: Pressable(
+            onTap: switchWorld,
+            button: false,
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(
+                end: selected ? AppInk.offset : 0,
+                bottom: selected ? AppInk.offset : 0,
+              ),
+              child: StickerBox(
+                color: color,
+                // The chosen world sits sunk into the page.
+                offset: selected ? 0 : AppInk.offset,
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                  AppSpacing.md,
+                  AppSpacing.md,
+                  AppSpacing.md,
+                  AppSpacing.md,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(icon, color: on, size: 28),
+                        const Spacer(),
+                        if (selected)
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: scheme.onSurface,
+                              borderRadius: BorderRadius.circular(
+                                AppRadius.sm,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: Icon(
+                                Icons.check_rounded,
+                                size: 16,
+                                color: scheme.surface,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Text(
+                        label,
+                        maxLines: 1,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.headlineMedium?.copyWith(color: on),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// The area picker: the chosen place as a small sticker.
 class _PlaceLink extends ConsumerWidget {
   const _PlaceLink();
 
@@ -176,39 +299,40 @@ class _PlaceLink extends ConsumerWidget {
       label: '${l10n.placeChoose}: $label',
       excludeSemantics: true,
       onTap: () => showPlaceSheet(context),
-      child: InkWell(
+      child: Pressable(
         onTap: () => showPlaceSheet(context),
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 48),
-          child: Padding(
-            padding: const EdgeInsetsDirectional.symmetric(
-              horizontal: AppSpacing.xs,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.place_outlined, size: 18, color: scheme.primary),
-                const SizedBox(width: AppSpacing.xs),
-                Flexible(
-                  child: Text(
-                    label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: scheme.primary,
-                      decoration: TextDecoration.underline,
-                      decorationColor: scheme.primary,
-                      decorationThickness: 1.5,
+        depth: 2,
+        button: false,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(end: 2, bottom: 2),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 44),
+            child: StickerBox(
+              offset: 2,
+              padding: const EdgeInsetsDirectional.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xs,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.place_outlined, size: 18, color: scheme.onSurface),
+                  const SizedBox(width: AppSpacing.xs),
+                  Flexible(
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelLarge,
                     ),
                   ),
-                ),
-                Icon(
-                  Icons.arrow_drop_down_rounded,
-                  size: 22,
-                  color: scheme.primary,
-                ),
-              ],
+                  Icon(
+                    Icons.arrow_drop_down_rounded,
+                    size: 22,
+                    color: scheme.onSurface,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -217,7 +341,7 @@ class _PlaceLink extends ConsumerWidget {
   }
 }
 
-/// The demo-data notice, printed as an outlined stamp rather than a box.
+/// The demo-data notice, a flat outlined block.
 class _DemoStamp extends StatelessWidget {
   const _DemoStamp();
 
@@ -226,46 +350,38 @@ class _DemoStamp extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
-    final tone = AppBadge.foreground(BadgeTone.warning, scheme);
     return Padding(
       padding: const EdgeInsetsDirectional.only(top: AppSpacing.lg),
       child: Semantics(
         container: true,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(color: tone),
-            borderRadius: BorderRadius.circular(2),
+        child: StickerBox(
+          offset: 0,
+          color: scheme.surface,
+          padding: const EdgeInsetsDirectional.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm + 2,
           ),
-          child: Padding(
-            padding: const EdgeInsetsDirectional.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm + 2,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(Icons.science_outlined, size: 18, color: tone),
-                const SizedBox(width: AppSpacing.sm + 2),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.demoBannerTitle,
-                        style: text.labelLarge?.copyWith(color: tone),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.science_outlined, size: 18, color: scheme.onSurface),
+              const SizedBox(width: AppSpacing.sm + 2),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.demoBannerTitle, style: text.labelLarge),
+                    const SizedBox(height: 2),
+                    Text(
+                      l10n.demoBannerBody,
+                      style: text.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        l10n.demoBannerBody,
-                        style: text.bodySmall?.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -281,36 +397,38 @@ class _SearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
+    void open() => context.push(AppRoutes.search);
     return Semantics(
       button: true,
       label: l10n.searchHint,
       excludeSemantics: true,
-      onTap: () => context.push(AppRoutes.search),
-      child: Material(
-        color: scheme.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          side: BorderSide(color: scheme.onSurface, width: 1.2),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () => context.push(AppRoutes.search),
+      onTap: open,
+      child: Pressable(
+        onTap: open,
+        button: false,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(
+            end: AppInk.offset,
+            bottom: AppInk.offset,
+          ),
           child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 54),
-            child: Padding(
+            constraints: const BoxConstraints(minHeight: 60),
+            child: StickerBox(
+              color: scheme.surface,
               padding: const EdgeInsetsDirectional.symmetric(
-                horizontal: AppSpacing.md + 2,
-                vertical: AppSpacing.sm + 2,
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.md,
               ),
               child: Row(
                 children: [
-                  Icon(Icons.search_rounded, color: scheme.onSurface),
-                  const SizedBox(width: AppSpacing.sm + 2),
+                  Icon(Icons.search_rounded, color: scheme.onSurface, size: 28),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Text(
                       l10n.searchHint,
-                      style: Theme.of(context).textTheme.bodyMedium
-                          ?.copyWith(color: scheme.onSurfaceVariant),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
                 ],
@@ -323,7 +441,8 @@ class _SearchField extends StatelessWidget {
   }
 }
 
-/// The one terracotta block on Home: ask for quotes.
+/// The one loud block on Home: ask for quotes. Solid ink with a world-colour
+/// arrow block.
 class _QuoteBlock extends StatelessWidget {
   const _QuoteBlock();
 
@@ -333,24 +452,24 @@ class _QuoteBlock extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final on = scheme.onPrimary;
+    void open() => context.push(AppRoutes.newRequest);
     return Semantics(
       container: true,
       button: true,
-      onTap: () => context.push(AppRoutes.newRequest),
-      child: Material(
-        color: scheme.primary,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () => context.push(AppRoutes.newRequest),
-          excludeFromSemantics: true,
-          child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(
-              AppSpacing.lg + 2,
-              AppSpacing.lg,
-              AppSpacing.lg,
-              AppSpacing.lg + 2,
-            ),
+      onTap: open,
+      child: Pressable(
+        onTap: open,
+        button: false,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(
+            end: AppInk.offset,
+            bottom: AppInk.offset,
+          ),
+          child: StickerBox(
+            color: scheme.primary,
+            shadowColor: scheme.primaryContainer,
+            borderColor: scheme.onSurface,
+            padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -358,22 +477,34 @@ class _QuoteBlock extends StatelessWidget {
                   l10n.homeQuoteTitle,
                   style: text.labelLarge?.copyWith(color: on),
                 ),
-                const SizedBox(height: AppSpacing.xs),
+                const SizedBox(height: AppSpacing.sm),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                       child: Text(
                         l10n.reqEmptyCta,
-                        style: text.headlineSmall?.copyWith(color: on),
+                        style: text.headlineMedium?.copyWith(color: on),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.md),
-                    Icon(Icons.arrow_forward_rounded, color: on, size: 26),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: scheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.sm),
+                        child: Icon(
+                          Icons.arrow_forward_rounded,
+                          color: scheme.onPrimaryContainer,
+                          size: 28,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: AppSpacing.sm),
-                SizedBox(height: 1, child: ColoredBox(color: on)),
-                const SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: AppSpacing.md),
                 Text(
                   l10n.homeQuoteBody,
                   style: text.bodyMedium?.copyWith(color: on),
@@ -387,31 +518,31 @@ class _QuoteBlock extends StatelessWidget {
   }
 }
 
-/// A one-line description of what a trade covers: the server's own text when
-/// it has one, otherwise the bundled wording for the known trades.
-String? _categoryHint(AppLocalizations l10n, ServiceCategory c, Locale locale) {
-  final own = c.descriptionFor(locale).trim();
-  if (own.isNotEmpty) return own;
-  return switch (c.slug) {
-    'plumbing' => l10n.discHintPlumbing,
-    'electricity' => l10n.discHintElectricity,
-    'air-conditioning' => l10n.discHintAirConditioning,
-    'mechanics' => l10n.discHintMechanics,
-    'painting' => l10n.discHintPainting,
-    'carpentry' => l10n.discHintCarpentry,
-    'cleaning' => l10n.discHintCleaning,
-    'appliance-repair' => l10n.discHintAppliance,
-    'construction' => l10n.discHintConstruction,
-    'gardening' => l10n.discHintGardening,
-    'moving' => l10n.discHintMoving,
-    'maintenance' => l10n.discHintMaintenance,
-    _ => null,
-  };
-}
-
 String _two(int n) => n.toString().padLeft(2, '0');
 
-/// The trades as a numbered register (two columns on wide screens).
+// ---------------------------------------------------------------------------
+// Trades world
+
+class _TradesWorld extends StatelessWidget {
+  const _TradesWorld();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _Categories(),
+        SizedBox(height: AppSpacing.xxl),
+        _Professionals(kind: _Kind.topRated),
+        SizedBox(height: AppSpacing.xl),
+        _Professionals(kind: _Kind.area),
+        _RecentSection(),
+      ],
+    );
+  }
+}
+
+/// The trades as chunky glyph tiles, two to a row.
 class _Categories extends ConsumerWidget {
   const _Categories();
 
@@ -428,46 +559,24 @@ class _Categories extends ConsumerWidget {
           title: l10n.sectionCategories,
           figure: count == null || count == 0 ? null : _two(count),
         ),
+        const SizedBox(height: AppSpacing.sm),
         async.when(
-          loading: () => const _RowsSkeleton(thumb: 44, rows: 4),
+          loading: () => const _RowsSkeleton(thumb: 44, rows: 3),
           error: (e, _) => MarketplaceFailureView(
             error: e,
             onRetry: () => ref.invalidate(categoriesProvider),
           ),
-          data: (list) => LayoutBuilder(
-            builder: (context, box) {
-              Widget row(int i) => _CategoryRow(
-                number: i + 1,
-                category: list[i],
-                hint: _categoryHint(l10n, list[i], locale),
-                locale: locale,
-              );
-              if (box.maxWidth < 600) {
-                return Column(
-                  children: [for (var i = 0; i < list.length; i++) row(i)],
-                );
-              }
-              // Read down the first column, then the second, like a ledger.
-              final half = (list.length + 1) ~/ 2;
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [for (var i = 0; i < half; i++) row(i)],
-                    ),
+          data: (list) => _TileGrid(
+            tiles: [
+              for (var i = 0; i < list.length; i++)
+                _GlyphCategoryTile(
+                  number: i + 1,
+                  name: list[i].nameFor(locale),
+                  onTap: () => context.push(
+                    AppRoutes.searchPath(categoryId: list[i].id),
                   ),
-                  const SizedBox(width: AppSpacing.xl),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        for (var i = half; i < list.length; i++) row(i),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
+                ),
+            ],
           ),
         ),
       ],
@@ -475,95 +584,136 @@ class _Categories extends ConsumerWidget {
   }
 }
 
-class _CategoryRow extends StatelessWidget {
-  const _CategoryRow({
+/// Lays tiles out in rows of two (three when wide), equal height per row.
+class _TileGrid extends StatelessWidget {
+  const _TileGrid({required this.tiles});
+
+  final List<Widget> tiles;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, box) {
+        final cols = box.maxWidth >= 600 ? 3 : 2;
+        final rows = <Widget>[];
+        for (var i = 0; i < tiles.length; i += cols) {
+          rows.add(
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var j = 0; j < cols; j++) ...[
+                    if (j > 0) const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: i + j < tiles.length
+                          ? StaggerIn(index: i + j, child: tiles[i + j])
+                          : const SizedBox.shrink(),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          );
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: rows,
+        );
+      },
+    );
+  }
+}
+
+/// A chunky tile: small number, one giant letter, the name. Press-sinks.
+class _GlyphCategoryTile extends StatelessWidget {
+  const _GlyphCategoryTile({
     required this.number,
-    required this.category,
-    required this.hint,
-    required this.locale,
+    required this.name,
+    required this.onTap,
   });
 
   final int number;
-  final ServiceCategory category;
-  final String? hint;
-  final Locale locale;
+  final String name;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    final name = category.nameFor(locale);
-    void open() => context.push(AppRoutes.searchPath(categoryId: category.id));
     return Semantics(
       button: true,
       label: name,
       excludeSemantics: true,
-      onTap: open,
-      child: InkWell(
-        onTap: open,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            border: BorderDirectional(
-              bottom: BorderSide(color: scheme.outlineVariant),
-            ),
+      onTap: onTap,
+      child: Pressable(
+        onTap: onTap,
+        button: false,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(
+            end: AppInk.offset,
+            bottom: AppSpacing.md + AppInk.offset,
           ),
-          child: Padding(
-            padding: const EdgeInsetsDirectional.symmetric(
-              vertical: AppSpacing.sm + 2,
+          child: StickerBox(
+            color: scheme.surface,
+            padding: const EdgeInsetsDirectional.fromSTEB(
+              AppSpacing.md,
+              AppSpacing.sm,
+              AppSpacing.md,
+              AppSpacing.md,
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  width: 30,
-                  child: Text(
-                    _two(number),
-                    style: text.labelMedium?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                      fontFeatures: const [FontFeature.tabularFigures()],
+                Row(
+                  children: [
+                    Text(
+                      _two(number),
+                      style: text.labelMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                      ),
+                    ),
+                    const Spacer(),
+                    Icon(
+                      Icons.north_east_rounded,
+                      size: 18,
+                      color: scheme.onSurface,
+                    ),
+                  ],
+                ),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: scheme.primaryContainer,
+                    border: Border.all(
+                      color: scheme.onSurface,
+                      width: AppInk.border,
+                    ),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 64,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          glyphOf(name),
+                          style: text.displayLarge?.copyWith(
+                            color: scheme.onPrimaryContainer,
+                            height: 1.1,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                DecoratedBox(
-                  position: DecorationPosition.foreground,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: scheme.outlineVariant),
-                    borderRadius: BorderRadius.circular(AppRadius.sm),
-                  ),
-                  child: CategoryPhoto(
-                    slug: category.slug,
-                    icon: category.icon,
-                    width: 44,
-                    height: 44,
-                    radius: AppRadius.sm,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        name,
-                        style: text.titleSmall,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      if (hint != null)
-                        Text(
-                          hint!,
-                          style: text.bodySmall?.copyWith(
-                            color: scheme.onSurfaceVariant,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: scheme.onSurfaceVariant,
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  name,
+                  style: text.titleMedium,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -574,29 +724,9 @@ class _CategoryRow extends StatelessWidget {
   }
 }
 
-/// The way into the second section: digital freelancers.
-class _DigitalLink extends StatelessWidget {
-  const _DigitalLink();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return RegisterGroup(
-      children: [
-        RegisterRow(
-          icon: Icons.laptop_mac_outlined,
-          title: l10n.flTitle,
-          subtitle: l10n.flHomeSubtitle,
-          onTap: () => context.push(AppRoutes.digital),
-        ),
-      ],
-    );
-  }
-}
-
 enum _Kind { topRated, area }
 
-/// A ruled list of professionals under its heading.
+/// A list of professional cards under its heading.
 class _Professionals extends ConsumerWidget {
   const _Professionals({required this.kind});
 
@@ -642,6 +772,7 @@ class _Professionals extends ConsumerWidget {
           title: title,
           figure: count == null || count == 0 ? null : _two(count),
         ),
+        const SizedBox(height: AppSpacing.xs),
         body,
       ],
     );
@@ -657,14 +788,132 @@ class _RecentSection extends ConsumerWidget {
     final list = ref.watch(recentProfessionalsProvider).value ?? const [];
     if (list.isEmpty) return const SizedBox.shrink();
     return Padding(
-      padding: const EdgeInsetsDirectional.only(top: AppSpacing.xxl),
+      padding: const EdgeInsetsDirectional.only(top: AppSpacing.xl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           RegisterHeading(title: l10n.sectionRecent, figure: _two(list.length)),
+          const SizedBox(height: AppSpacing.xs),
           ProfessionalRegister(list: list),
         ],
       ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Digital world
+
+const _homeFreelancers = FreelanceQuery(limit: 6);
+
+class _DigitalWorld extends ConsumerWidget {
+  const _DigitalWorld();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context);
+    final text = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
+    final cats = ref.watch(digitalCategoriesProvider);
+    final list = ref.watch(freelancerSearchProvider(_homeFreelancers));
+    final catList = cats.value ?? const <DigitalCategory>[];
+    void open() => context.push(AppRoutes.digital);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Semantics(
+          button: true,
+          container: true,
+          onTap: open,
+          child: Pressable(
+            onTap: open,
+            button: false,
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(
+                end: AppInk.offset,
+                bottom: AppInk.offset,
+              ),
+              child: StickerBox(
+                color: scheme.surface,
+                padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(l10n.flTitle, style: text.headlineMedium),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            l10n.flHomeSubtitle,
+                            style: text.bodyMedium?.copyWith(
+                              color: scheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: scheme.primaryContainer,
+                        border: Border.all(
+                          color: scheme.onSurface,
+                          width: AppInk.border,
+                        ),
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.sm),
+                        child: Icon(
+                          Icons.arrow_forward_rounded,
+                          color: scheme.onPrimaryContainer,
+                          size: 28,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        if (catList.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.xl),
+          RegisterHeading(
+            title: l10n.flCategories,
+            figure: _two(catList.length),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          _TileGrid(
+            tiles: [
+              for (var i = 0; i < catList.length; i++)
+                _GlyphCategoryTile(
+                  number: i + 1,
+                  name: catList[i].nameFor(locale),
+                  onTap: open,
+                ),
+            ],
+          ),
+        ],
+        const SizedBox(height: AppSpacing.xl),
+        RegisterHeading(
+          title: l10n.flResultsTitle,
+          figure: list.value == null || list.value!.isEmpty
+              ? null
+              : _two(list.value!.length),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        list.when(
+          loading: () => const _RowsSkeleton(thumb: 64, rows: 2),
+          error: (e, _) => _Note(l10n.flLoadFailed),
+          data: (items) => items.isEmpty
+              ? _Note(l10n.flEmptyBody)
+              : FreelancerRegister(list: items, categories: catList),
+        ),
+      ],
     );
   }
 }
@@ -680,13 +929,14 @@ class _Note extends StatelessWidget {
     padding: const EdgeInsetsDirectional.symmetric(vertical: AppSpacing.md),
     child: Text(
       message,
-      style: Theme.of(context).textTheme.bodyMedium
-          ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
     ),
   );
 }
 
-/// Placeholder register rows while a list loads.
+/// Placeholder rows while a list loads.
 class _RowsSkeleton extends StatelessWidget {
   const _RowsSkeleton({required this.thumb, required this.rows});
 

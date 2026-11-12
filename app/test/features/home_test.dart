@@ -40,6 +40,12 @@ void main() {
     ) async {
       await pumpApp(tester);
       expect(find.text('Données de démonstration'), findsOneWidget);
+      // The launcher is taller now: the tiles sit below the fold.
+      await tester.scrollUntilVisible(
+        find.text('Plomberie'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('Plomberie'), findsWidgets);
       final top = (await DemoMarketplaceRepository().search(
         const SearchQuery(limit: 1),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/format/dates.dart';
+import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -266,7 +267,6 @@ class _ReviewsListState extends ConsumerState<ReviewsList> {
     }
     if (reviews.isEmpty && footer == null) return const SizedBox.shrink();
 
-    final rule = Theme.of(context).colorScheme.outlineVariant;
     return Padding(
       padding: const EdgeInsetsDirectional.only(top: AppSpacing.xxl),
       child: Column(
@@ -274,14 +274,13 @@ class _ReviewsListState extends ConsumerState<ReviewsList> {
         children: [
           RegisterHeading(title: l10n.reviewsTitle),
           for (final r in reviews)
-            DecoratedBox(
-              decoration: BoxDecoration(
-                border: BorderDirectional(bottom: BorderSide(color: rule)),
+            Padding(
+              padding: const EdgeInsetsDirectional.only(
+                end: AppInk.offset,
+                bottom: AppSpacing.lg,
               ),
-              child: Padding(
-                padding: const EdgeInsetsDirectional.symmetric(
-                  vertical: AppSpacing.sm,
-                ),
+              child: StickerBox(
+                padding: const EdgeInsetsDirectional.all(AppSpacing.md),
                 child: Semantics(
                   container: true,
                   label:

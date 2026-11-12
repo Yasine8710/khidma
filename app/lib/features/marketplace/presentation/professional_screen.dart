@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/format/rating.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
-import '../../../shared/widgets/khidma_logo.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../favorites/presentation/favorite_button.dart';
 import '../../portfolio/presentation/portfolio_gallery.dart';
@@ -20,11 +18,12 @@ import '../domain/marketplace_domain.dart';
 import 'contact_section.dart';
 import 'marketplace_failure_view.dart';
 import 'professional_card.dart';
+import 'signal_blocks.dart';
 
-/// A professional's page, set like a trade licence: a framed record with the
-/// portrait, name, trade and the key facts as ruled rows; then about,
-/// services, areas, work photos, reviews and contact. The Contact action
-/// stays in reach at the bottom.
+/// A professional's page: a colour header block with the name in giant Anton
+/// and a sticker avatar on its edge, the key facts as stat blocks and ruled
+/// rows; then about, services, areas, work photos, reviews and contact. The
+/// Contact action stays in a sticky bar at the bottom.
 class ProfessionalScreen extends ConsumerStatefulWidget {
   const ProfessionalScreen({super.key, required this.id});
 
@@ -49,13 +48,13 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
   void _toContact() {
     if (!_scroll.hasClients) return;
     final end = _scroll.position.maxScrollExtent;
-    if (MediaQuery.of(context).disableAnimations) {
+    if (Motion.reduced(context)) {
       _scroll.jumpTo(end);
     } else {
       _scroll.animateTo(
         end,
-        duration: const Duration(milliseconds: 350),
-        curve: Curves.easeOutCubic,
+        duration: Motion.slow,
+        curve: Motion.enter,
       );
     }
   }
@@ -80,6 +79,9 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
     final p = async.value;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: scheme.primaryContainer,
+        foregroundColor: scheme.onPrimaryContainer,
+        shape: const Border(),
         actions: [
           ReportButton(target: ReportTarget.professional, targetId: widget.id),
           FavoriteButton(professionalId: widget.id, professionalName: p?.name),
@@ -89,27 +91,11 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
       // The contact action stays within reach while reading the profile.
       bottomNavigationBar: p == null
           ? null
-          : DecoratedBox(
-              decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                border: BorderDirectional(
-                  top: BorderSide(color: scheme.outlineVariant),
-                ),
-              ),
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(
-                    AppSpacing.gutter,
-                    AppSpacing.sm + 2,
-                    AppSpacing.gutter,
-                    AppSpacing.sm + 2,
-                  ),
-                  child: FilledButton.icon(
-                    onPressed: _toContact,
-                    icon: const Icon(Icons.phone_outlined),
-                    label: Text(l10n.contactTitle),
-                  ),
-                ),
+          : ActionBar(
+              child: FilledButton.icon(
+                onPressed: _toContact,
+                icon: const Icon(Icons.phone_outlined),
+                label: Text(l10n.contactTitle),
               ),
             ),
       body: async.when(
@@ -144,25 +130,31 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
                   : AppSpacing.gutter;
               return ListView(
                 controller: _scroll,
-                padding: EdgeInsetsDirectional.fromSTEB(
-                  side,
-                  AppSpacing.xs,
-                  side,
-                  AppSpacing.xl,
+                padding: const EdgeInsetsDirectional.only(
+                  bottom: AppSpacing.xl,
                 ),
                 children: [
-                  _Licence(professional: p),
-                  if (p.description.isNotEmpty) ...[
-                    const SizedBox(height: AppSpacing.xxl),
-                    RegisterHeading(title: l10n.aboutLabel),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(p.description, style: text.bodyLarge),
-                  ],
-                  ..._detailSections(context, ref, p),
-                  PortfolioGallery(professionalId: p.id),
-                  ReviewsList(professionalId: p.id),
-                  const SizedBox(height: AppSpacing.xxl),
-                  ContactSection(professionalId: p.id),
+                  _Header(professional: p, side: side),
+                  Padding(
+                    padding: EdgeInsetsDirectional.symmetric(horizontal: side),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _Facts(professional: p),
+                        if (p.description.isNotEmpty) ...[
+                          const SizedBox(height: AppSpacing.xxl),
+                          RegisterHeading(title: l10n.aboutLabel),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(p.description, style: text.bodyLarge),
+                        ],
+                        ..._detailSections(context, ref, p),
+                        PortfolioGallery(professionalId: p.id),
+                        ReviewsList(professionalId: p.id),
+                        const SizedBox(height: AppSpacing.xxl),
+                        ContactSection(professionalId: p.id),
+                      ],
+                    ),
+                  ),
                 ],
               );
             },
@@ -173,10 +165,40 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
   }
 }
 
-/// The framed record: a double rule (ink outside, hairline inside) around
-/// the portrait, name, trade and the facts table.
-class _Licence extends ConsumerWidget {
-  const _Licence({required this.professional});
+/// The colour header block: trade as kicker, the name in giant Anton, the
+/// sticker avatar on the block's edge, the verified stamp below.
+class _Header extends ConsumerWidget {
+  const _Header({required this.professional, required this.side});
+
+  final ProfessionalSummary professional;
+  final double side;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locale = Localizations.localeOf(context);
+    final p = professional;
+    final cat = (ref.watch(categoriesProvider).value ?? const [])
+        .where((c) => c.id == p.categoryId)
+        .firstOrNull;
+    return ColorHeader(
+      name: p.name,
+      kicker: cat?.nameFor(locale),
+      side: side,
+      avatar: SignalAvatar(name: p.name, imageUrl: p.avatarUrl, size: 84),
+      below: p.isVerified
+          ? const Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: VerifiedStamp(),
+            )
+          : null,
+    );
+  }
+}
+
+/// Rating and review count as big count-up blocks, then experience,
+/// availability and area as ruled rows.
+class _Facts extends ConsumerWidget {
+  const _Facts({required this.professional});
 
   final ProfessionalSummary professional;
 
@@ -185,12 +207,7 @@ class _Licence extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context);
     final text = Theme.of(context).textTheme;
-    final scheme = Theme.of(context).colorScheme;
     final p = professional;
-    final cat = (ref.watch(categoriesProvider).value ?? const [])
-        .where((c) => c.id == p.categoryId)
-        .firstOrNull;
-    final category = cat?.nameFor(locale);
     final city = (ref.watch(citiesProvider(null)).value ?? const [])
         .where((c) => c.id == p.cityId)
         .map((c) => c.nameFor(locale))
@@ -202,255 +219,63 @@ class _Licence extends ConsumerWidget {
     final zone = [?city, if (gov != city) ?gov].join(', ');
     final years = p.yearsExperience;
     const none = '—';
-
-    final portrait = DecoratedBox(
-      decoration: BoxDecoration(border: Border.all(color: scheme.onSurface)),
-      child: Padding(
-        padding: const EdgeInsets.all(3),
-        child: ProfessionalPhoto(
-          avatarUrl: p.avatarUrl,
-          slug: cat?.slug,
-          icon: cat?.icon,
-          width: 96,
-          height: 96,
-          radius: 0,
-        ),
-      ),
-    );
-
-    final identity = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Semantics(
-          header: true,
-          child: Text(p.name, style: text.headlineMedium),
-        ),
-        if (category != null) ...[
-          const SizedBox(height: AppSpacing.xs + 2),
-          Text(
-            category,
-            style: text.titleMedium?.copyWith(
-              decoration: TextDecoration.underline,
-              decorationColor: scheme.primary,
-              decorationThickness: 2,
-            ),
-          ),
-        ],
-        if (p.isVerified) ...[
-          const SizedBox(height: AppSpacing.md),
-          const VerifiedStamp(),
-        ],
-      ],
-    );
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: scheme.surface,
-        border: Border.all(color: scheme.onSurface),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(3),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(color: scheme.outlineVariant),
-          ),
-          child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(
-              AppSpacing.lg,
-              AppSpacing.md,
-              AppSpacing.lg,
-              AppSpacing.xs,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        l10n.discLicenceKicker.toUpperCase(),
-                        style: text.labelSmall?.copyWith(
-                          color: scheme.onSurfaceVariant,
-                          letterSpacing: 1.4,
-                        ),
-                      ),
-                    ),
-                    KhidmaMark(size: 20, color: scheme.onSurfaceVariant),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Divider(color: scheme.outlineVariant),
-                const SizedBox(height: AppSpacing.lg),
-                LayoutBuilder(
-                  builder: (context, box) {
-                    final scale = MediaQuery.textScalerOf(context)
-                        .scale(1)
-                        .clamp(1.0, 2.0);
-                    // Side by side only while the name keeps a decent measure.
-                    if (box.maxWidth - 102 - AppSpacing.lg < 150 * scale) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          portrait,
-                          const SizedBox(height: AppSpacing.md),
-                          identity,
-                        ],
-                      );
-                    }
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        portrait,
-                        const SizedBox(width: AppSpacing.lg),
-                        Expanded(child: identity),
-                      ],
-                    );
-                  },
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                Divider(color: scheme.onSurface),
-                _Fact(
-                  label: l10n.statRating,
-                  semanticValue: p.reviewCount == 0
-                      ? l10n.ratingNone
-                      : l10n.ratingSummary(
-                          formatRating(p.rating, locale),
-                          p.reviewCount,
-                        ),
-                  value: _RatingValue(p: p),
-                ),
-                _Fact(
-                  label: l10n.statReviews,
-                  value: Text('${p.reviewCount}', style: text.titleSmall),
-                ),
-                _Fact(
-                  label: l10n.discFactExperience,
-                  value: Text(
-                    years == null || years == 0
-                        ? none
-                        : l10n.yearsExperience(years),
-                    style: text.titleSmall,
-                  ),
-                ),
-                _Fact(
-                  label: l10n.discFactAvailability,
-                  value: AvailabilityMark(availability: p.availability),
-                ),
-                _Fact(
-                  label: l10n.discFactArea,
-                  value: Text(
-                    zone.isEmpty ? none : zone,
-                    style: text.titleSmall,
-                  ),
-                  last: true,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// One definition row: the label in muted ink at the start, the value at the
-/// end (it drops below the label when both do not fit), a rule underneath.
-class _Fact extends StatelessWidget {
-  const _Fact({
-    required this.label,
-    required this.value,
-    this.semanticValue,
-    this.last = false,
-  });
-
-  final String label;
-  final Widget value;
-
-  /// Read instead of the value widget (for values drawn as marks).
-  final String? semanticValue;
-  final bool last;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final row = Padding(
-      padding: const EdgeInsetsDirectional.symmetric(
-        vertical: AppSpacing.sm + 3,
-      ),
-      child: Wrap(
-        alignment: WrapAlignment.spaceBetween,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: AppSpacing.md,
-        runSpacing: AppSpacing.xs,
-        children: [
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodyMedium
-                ?.copyWith(color: scheme.onSurfaceVariant),
-          ),
-          value,
-        ],
-      ),
-    );
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: last
-            ? null
-            : BorderDirectional(
-                bottom: BorderSide(color: scheme.outlineVariant),
-              ),
-      ),
-      child: semanticValue == null
-          ? Semantics(container: true, child: row)
-          : Semantics(
-              container: true,
-              label: '$label: $semanticValue',
-              excludeSemantics: true,
-              child: row,
-            ),
-    );
-  }
-}
-
-/// Five ochre stars and the average, or "no reviews yet".
-class _RatingValue extends StatelessWidget {
-  const _RatingValue({required this.p});
-
-  final ProfessionalSummary p;
-
-  @override
-  Widget build(BuildContext context) {
-    final text = Theme.of(context).textTheme;
-    final scheme = Theme.of(context).colorScheme;
-    if (p.reviewCount <= 0) {
-      return Text(
-        AppLocalizations.of(context).ratingNone,
-        style: text.bodyMedium,
-      );
-    }
+    final rated = p.reviewCount > 0;
     final stars = p.rating.isNaN ? 0.0 : p.rating.clamp(0.0, 5.0);
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var i = 0; i < 5; i++)
-            Icon(
-              stars - i >= 0.75
-                  ? Icons.star_rounded
-                  : stars - i >= 0.25
-                  ? Icons.star_half_rounded
-                  : Icons.star_outline_rounded,
-              size: 16,
-              color: stars - i >= 0.25 ? AppColors.saffron : scheme.outline,
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: AppSpacing.lg),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(
+                  end: AppInk.offset,
+                  bottom: AppInk.offset,
+                ),
+                child: StatBlock(
+                  value: stars,
+                  fractionDigits: 1,
+                  empty: !rated,
+                  label: rated ? l10n.statRating : l10n.ratingNone,
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                ),
+              ),
             ),
-          const SizedBox(width: AppSpacing.sm),
-          Text(
-            formatRating(p.rating, Localizations.localeOf(context)),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(
+                  end: AppInk.offset,
+                  bottom: AppInk.offset,
+                ),
+                child: StatBlock(
+                  value: p.reviewCount,
+                  label: l10n.statReviews,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        FactRow(
+          label: l10n.discFactExperience,
+          value: Text(
+            years == null || years == 0 ? none : l10n.yearsExperience(years),
             style: text.titleSmall,
           ),
-        ],
-      ),
+        ),
+        FactRow(
+          label: l10n.discFactAvailability,
+          value: AvailabilityMark(availability: p.availability),
+        ),
+        FactRow(
+          label: l10n.discFactArea,
+          value: Text(zone.isEmpty ? none : zone, style: text.titleSmall),
+        ),
+      ],
     );
   }
 }
@@ -495,7 +320,7 @@ List<Widget> _detailSections(
         Wrap(
           spacing: AppSpacing.sm,
           runSpacing: AppSpacing.sm,
-          children: [for (final s in items) _Tag(s)],
+          children: [for (final s in items) TagBlock(s)],
         ),
       ],
     ),
@@ -505,26 +330,4 @@ List<Widget> _detailSections(
     if (services.isNotEmpty) tags(l10n.servicesTitle, services),
     if (areas.isNotEmpty) tags(l10n.areasTitle, areas),
   ];
-}
-
-/// A printed label (not a control): sunken paper, small radius, no outline.
-class _Tag extends StatelessWidget {
-  const _Tag(this.label);
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) => DecoratedBox(
-    decoration: BoxDecoration(
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(AppRadius.sm),
-    ),
-    child: Padding(
-      padding: const EdgeInsetsDirectional.symmetric(
-        horizontal: AppSpacing.md - 2,
-        vertical: AppSpacing.xs + 2,
-      ),
-      child: Text(label, style: Theme.of(context).textTheme.labelMedium),
-    ),
-  );
 }

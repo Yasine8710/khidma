@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/format/money.dart';
+import '../../../core/motion/motion.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/app_avatar.dart';
 import '../../../shared/widgets/rating_stars.dart';
 import '../../marketplace/presentation/professional_card.dart';
+import '../../marketplace/presentation/signal_blocks.dart';
 import '../domain/freelance_domain.dart';
 
 String priceUnitLabel(AppLocalizations l10n, PriceUnit u) => switch (u) {
@@ -74,24 +75,22 @@ class FreelancerRow extends StatelessWidget {
     final f = freelancer;
     final price = startingPriceText(l10n, locale, f);
 
-    final row = DecoratedBox(
-      decoration: BoxDecoration(
-        border: BorderDirectional(
-          bottom: BorderSide(color: scheme.outlineVariant),
-        ),
+    final row = Padding(
+      padding: const EdgeInsetsDirectional.only(
+        end: AppInk.offset,
+        bottom: AppSpacing.lg,
       ),
-      child: Padding(
-        padding: const EdgeInsetsDirectional.symmetric(
-          vertical: AppSpacing.md + 2,
-        ),
+      child: StickerBox(
+        color: scheme.surface,
+        padding: const EdgeInsetsDirectional.all(AppSpacing.md),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppAvatar(
+            SignalAvatar(
               name: f.name,
               imageUrl: f.avatarUrl,
-              size: 56,
-              decorative: true,
+              size: 60,
+              offset: 0,
             ),
             const SizedBox(width: AppSpacing.md + 2),
             Expanded(
@@ -100,7 +99,7 @@ class FreelancerRow extends StatelessWidget {
                 children: [
                   Text(
                     f.name,
-                    style: text.titleMedium,
+                    style: text.titleLarge,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -158,7 +157,7 @@ class FreelancerRow extends StatelessWidget {
       onTap: onTap,
       child: Material(
         type: MaterialType.transparency,
-        child: InkWell(onTap: onTap, excludeFromSemantics: true, child: row),
+        child: Pressable(onTap: onTap, button: false, child: row),
       ),
     );
   }
@@ -181,14 +180,17 @@ class FreelancerRegister extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (final f in list)
-          FreelancerRow(
-            freelancer: f,
-            categoryName: categories
-                .where((c) => c.id == f.categoryId)
-                .map((c) => c.nameFor(locale))
-                .firstOrNull,
-            onTap: () => context.push(AppRoutes.freelancerPath(f.id)),
+        for (var i = 0; i < list.length; i++)
+          StaggerIn(
+            index: i,
+            child: FreelancerRow(
+              freelancer: list[i],
+              categoryName: categories
+                  .where((c) => c.id == list[i].categoryId)
+                  .map((c) => c.nameFor(locale))
+                  .firstOrNull,
+              onTap: () => context.push(AppRoutes.freelancerPath(list[i].id)),
+            ),
           ),
       ],
     );
