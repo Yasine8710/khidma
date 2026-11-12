@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/motion/motion.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_badge.dart';
-import '../../../shared/widgets/category_photo.dart';
 import '../../../shared/widgets/rating_stars.dart';
 import '../../favorites/presentation/favorite_button.dart';
 import '../application/marketplace_providers.dart';
 import '../domain/marketplace_domain.dart';
+import 'signal_blocks.dart';
 
 String availabilityLabel(AppLocalizations l10n, Availability a) => switch (a) {
   Availability.available => l10n.availabilityAvailable,
@@ -24,15 +25,14 @@ BadgeTone availabilityTone(Availability a) => switch (a) {
   Availability.offline => BadgeTone.neutral,
 };
 
-/// A register section title: a short ink rule above a slab-serif title, with
-/// an optional figure (a count) on the end side. The trade-register
-/// equivalent of a card header.
+/// A section title in Signal: a heavy ink bar, the title in Anton, and an
+/// optional figure (a count) in a small world-coloured block on the end side.
 class RegisterHeading extends StatelessWidget {
   const RegisterHeading({super.key, required this.title, this.figure});
 
   final String title;
 
-  /// A small number printed at the end of the rule, e.g. how many rows follow.
+  /// A small number printed in a block at the end, e.g. how many rows follow.
   final String? figure;
 
   @override
@@ -40,33 +40,46 @@ class RegisterHeading extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.xs),
+      padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          border: BorderDirectional(
-            top: BorderSide(color: scheme.onSurface, width: 1.5),
-          ),
+          border: Border(top: BorderSide(color: scheme.onSurface, width: 4)),
         ),
         child: Padding(
-          padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm + 2),
+          padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: Semantics(
                   header: true,
-                  child: Text(title, style: text.titleLarge),
+                  child: Text(title, style: text.headlineSmall),
                 ),
               ),
               if (figure != null) ...[
                 const SizedBox(width: AppSpacing.md),
                 ExcludeSemantics(
-                  child: Text(
-                    figure!,
-                    style: text.labelMedium?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                      fontFeatures: const [FontFeature.tabularFigures()],
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: scheme.primaryContainer,
+                      border: Border.all(
+                        color: scheme.onSurface,
+                        width: AppInk.border,
+                      ),
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: 1,
+                      ),
+                      child: Text(
+                        figure!,
+                        style: text.titleLarge?.copyWith(
+                          color: scheme.onPrimaryContainer,
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -79,7 +92,7 @@ class RegisterHeading extends StatelessWidget {
   }
 }
 
-/// A small rectangular stamp: outlined, never filled, always with text.
+/// A small rectangular stamp: paper block, ink outline, coloured text.
 class Stamp extends StatelessWidget {
   const Stamp({super.key, required this.label, required this.color, this.icon});
 
@@ -89,10 +102,12 @@ class Stamp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: Border.all(color: color),
-        borderRadius: BorderRadius.circular(2),
+        color: scheme.surface,
+        border: Border.all(color: scheme.onSurface, width: 1.5),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
       ),
       child: Padding(
         padding: const EdgeInsetsDirectional.symmetric(
@@ -120,7 +135,7 @@ class Stamp extends StatelessWidget {
   }
 }
 
-/// The olive "verified" stamp. Only for professionals an admin verified.
+/// The "verified" stamp. Only for professionals an admin verified.
 class VerifiedStamp extends StatelessWidget {
   const VerifiedStamp({super.key});
 
@@ -143,20 +158,25 @@ class AvailabilityMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = AppBadge.foreground(
-      availabilityTone(availability),
-      Theme.of(context).colorScheme,
-    );
+    final scheme = Theme.of(context).colorScheme;
+    final color = AppBadge.foreground(availabilityTone(availability), scheme);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox.square(dimension: 7, child: ColoredBox(color: color)),
+        SizedBox.square(
+          dimension: 10,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: color,
+              border: Border.all(color: scheme.onSurface, width: 1.5),
+            ),
+          ),
+        ),
         const SizedBox(width: 6),
         Flexible(
           child: Text(
             availabilityLabel(AppLocalizations.of(context), availability),
-            style: Theme.of(context).textTheme.labelSmall
-                ?.copyWith(color: color),
+            style: Theme.of(context).textTheme.labelMedium,
           ),
         ),
       ],
@@ -164,9 +184,9 @@ class AvailabilityMark extends StatelessWidget {
   }
 }
 
-/// One professional as a register row: framed square photo, name, trade and
-/// place, rating, stamps, and the heart; a hairline rule closes the row.
-/// The verified stamp appears only when the professional really is verified.
+/// One professional as a sticker card: glyph or picture tile, name in Anton,
+/// trade and place, rating, stamps, and the heart. The verified stamp
+/// appears only when the professional really is verified.
 class ProfessionalCard extends ConsumerWidget {
   const ProfessionalCard({
     super.key,
@@ -178,7 +198,7 @@ class ProfessionalCard extends ConsumerWidget {
   final ProfessionalSummary professional;
   final VoidCallback? onTap;
 
-  /// Draw the hairline under the row (off for the last row of a framed list).
+  /// Kept for older call sites; cards are separate blocks now.
   final bool rule;
 
   @override
@@ -203,83 +223,85 @@ class ProfessionalCard extends ConsumerWidget {
       if (km != null) l10n.distanceKm(km.toStringAsFixed(1)),
     ].join(' · ');
 
-    final row = DecoratedBox(
-      decoration: BoxDecoration(
-        border: rule
-            ? BorderDirectional(
-                bottom: BorderSide(color: scheme.outlineVariant),
-              )
-            : null,
+    final card = StickerBox(
+      color: scheme.surface,
+      padding: const EdgeInsetsDirectional.fromSTEB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.xs,
+        AppSpacing.md,
       ),
-      child: Padding(
-        padding: const EdgeInsetsDirectional.only(
-          top: AppSpacing.md + 2,
-          bottom: AppSpacing.md + 2,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // The category photo stands in until they add their own.
-            ProfessionalPhoto(
-              avatarUrl: p.avatarUrl,
-              slug: cat?.slug,
-              icon: cat?.icon,
-              width: 64,
-              height: 64,
-              radius: AppRadius.sm,
-              frame: scheme.outlineVariant,
-            ),
-            const SizedBox(width: AppSpacing.md + 2),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    p.name,
-                    style: text.titleMedium,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (subtitle.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(top: 2),
-                      child: Text(
-                        subtitle,
-                        style: text.bodySmall?.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ProfessionalPhoto(
+            avatarUrl: p.avatarUrl,
+            slug: cat?.slug,
+            icon: cat?.icon,
+            name: p.name,
+            width: 64,
+            height: 64,
+            radius: AppRadius.sm,
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  p.name,
+                  style: text.titleLarge,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (subtitle.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(top: 2),
+                    child: Text(
+                      subtitle,
+                      style: text.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  const SizedBox(height: AppSpacing.xs + 2),
-                  RatingStars(
-                    rating: p.rating,
-                    reviewCount: p.reviewCount,
-                    size: 13,
                   ),
-                  const SizedBox(height: AppSpacing.xs + 2),
-                  Wrap(
-                    spacing: AppSpacing.md,
-                    runSpacing: AppSpacing.xs,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      if (p.isVerified) const VerifiedStamp(),
-                      AvailabilityMark(availability: p.availability),
-                    ],
-                  ),
-                ],
-              ),
+                const SizedBox(height: AppSpacing.xs + 2),
+                RatingStars(
+                  rating: p.rating,
+                  reviewCount: p.reviewCount,
+                  size: 13,
+                ),
+                const SizedBox(height: AppSpacing.xs + 2),
+                Wrap(
+                  spacing: AppSpacing.md,
+                  runSpacing: AppSpacing.xs,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    if (p.isVerified) const VerifiedStamp(),
+                    AvailabilityMark(availability: p.availability),
+                  ],
+                ),
+              ],
             ),
-            FavoriteButton(professionalId: p.id, professionalName: p.name),
-          ],
-        ),
+          ),
+          FavoriteButton(professionalId: p.id, professionalName: p.name),
+        ],
       ),
+    );
+
+    // Room for the hard shadow, so neighbouring cards do not touch it.
+    final padded = Padding(
+      padding: const EdgeInsetsDirectional.only(
+        end: AppInk.offset,
+        bottom: AppSpacing.lg,
+      ),
+      child: card,
     );
 
     // The heart is an IconButton: it needs a Material even outside a page.
     if (onTap == null) {
-      return Material(type: MaterialType.transparency, child: row);
+      return Material(type: MaterialType.transparency, child: padded);
     }
     return Semantics(
       container: true,
@@ -288,13 +310,14 @@ class ProfessionalCard extends ConsumerWidget {
       onTap: onTap,
       child: Material(
         type: MaterialType.transparency,
-        child: InkWell(onTap: onTap, excludeFromSemantics: true, child: row),
+        child: Pressable(onTap: onTap, button: false, child: padded),
       ),
     );
   }
 }
 
-/// Professionals as consecutive register rows, each opening its profile.
+/// Professionals as consecutive sticker cards, each opening its profile and
+/// arriving in a quick stagger.
 class ProfessionalRegister extends StatelessWidget {
   const ProfessionalRegister({super.key, required this.list});
 
@@ -305,24 +328,29 @@ class ProfessionalRegister extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (final p in list)
-          ProfessionalCard(
-            professional: p,
-            onTap: () => context.push(AppRoutes.professionalPath(p.id)),
+        for (var i = 0; i < list.length; i++)
+          StaggerIn(
+            index: i,
+            child: ProfessionalCard(
+              professional: list[i],
+              onTap: () => context.push(AppRoutes.professionalPath(list[i].id)),
+            ),
           ),
       ],
     );
   }
 }
 
-/// The professional's own picture when they added one, otherwise the photo of
-/// their category (never a broken image). Decoration: the name sits next to it.
+/// The professional's own picture when they added one, otherwise a glyph tile
+/// (the first letter of their name). Never a broken image; decoration: the
+/// name sits next to it.
 class ProfessionalPhoto extends StatelessWidget {
   const ProfessionalPhoto({
     super.key,
     required this.avatarUrl,
     required this.slug,
     required this.icon,
+    this.name,
     this.width,
     this.height,
     this.radius = AppRadius.md,
@@ -332,52 +360,22 @@ class ProfessionalPhoto extends StatelessWidget {
   final String? avatarUrl;
   final String? slug;
   final String? icon;
+  final String? name;
   final double? width;
   final double? height;
   final double radius;
 
-  /// A 1px frame drawn over the picture's edge, when set.
+  /// Kept for older call sites; the avatar always has its own ink frame.
   final Color? frame;
 
   @override
   Widget build(BuildContext context) {
-    final fallback = CategoryPhoto(
-      slug: slug,
-      icon: icon,
-      width: width,
-      height: height,
-      radius: radius,
-    );
-    final url = avatarUrl;
-    final px =
-        (width ?? height ?? 120) * MediaQuery.devicePixelRatioOf(context);
-    final Widget picture = url == null || url.isEmpty
-        ? fallback
-        : ExcludeSemantics(
-            child: SizedBox(
-              width: width,
-              height: height,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(radius),
-                child: Image.network(
-                  url,
-                  fit: BoxFit.cover,
-                  cacheWidth: px.isFinite && px >= 1 ? px.round() : null,
-                  errorBuilder: (_, _, _) => fallback,
-                  loadingBuilder: (context, child, progress) =>
-                      progress == null ? child : fallback,
-                ),
-              ),
-            ),
-          );
-    if (frame == null) return picture;
-    return DecoratedBox(
-      position: DecorationPosition.foreground,
-      decoration: BoxDecoration(
-        border: Border.all(color: frame!),
-        borderRadius: BorderRadius.circular(radius),
-      ),
-      child: picture,
+    final size = width ?? height ?? 64;
+    return SignalAvatar(
+      name: name ?? slug ?? icon ?? '',
+      imageUrl: avatarUrl,
+      size: size,
+      offset: 0,
     );
   }
 }

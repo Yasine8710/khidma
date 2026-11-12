@@ -26,7 +26,6 @@ class FavoritesScreen extends ConsumerWidget {
     if (needSignIn) {
       body = SignedOutPrompt(
         icon: Icons.favorite_border_rounded,
-        photo: 'assets/photos/onb-find.jpg',
         title: l10n.favoritesSignInTitle,
         body: l10n.favoritesSignInBody,
       );
@@ -78,30 +77,13 @@ class FavoritesScreen extends ConsumerWidget {
                 if (i == 0) {
                   return Padding(
                     padding: const EdgeInsetsDirectional.only(
-                      bottom: AppSpacing.xs,
+                      bottom: AppSpacing.lg,
                     ),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        border: BorderDirectional(
-                          bottom: BorderSide(
-                            color: Theme.of(context).colorScheme.onSurface,
-                            width: 1.5,
-                          ),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                          bottom: AppSpacing.sm,
-                        ),
-                        child: Text(
-                          l10n.professionalsCount(shown.length),
-                          style: Theme.of(context).textTheme.labelMedium
-                              ?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
-                              ),
-                        ),
+                    child: Semantics(
+                      header: true,
+                      child: Text(
+                        l10n.professionalsCount(shown.length),
+                        style: Theme.of(context).textTheme.displaySmall,
                       ),
                     ),
                   );

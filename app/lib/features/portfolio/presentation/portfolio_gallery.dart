@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../marketplace/presentation/professional_card.dart';
@@ -75,22 +76,22 @@ class _Tile extends StatelessWidget {
       label: label,
       excludeSemantics: true,
       onTap: () => _open(context, label),
-      child: InkWell(
+      child: Pressable(
         onTap: () => _open(context, label),
-        child: DecoratedBox(
-          position: DecorationPosition.foreground,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Theme.of(context).colorScheme.outlineVariant,
-            ),
-            borderRadius: BorderRadius.circular(AppRadius.sm),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadius.sm),
-            child: PortfolioImage(
-              url: item.url,
-              semanticLabel: label,
-              cacheWidth: 360,
+        depth: 2,
+        button: false,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(end: 2, bottom: 2),
+          child: StickerBox(
+            offset: 2,
+            border: 2,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.sm),
+              child: PortfolioImage(
+                url: item.url,
+                semanticLabel: label,
+                cacheWidth: 360,
+              ),
             ),
           ),
         ),

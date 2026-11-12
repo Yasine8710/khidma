@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/motion/motion.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
@@ -58,8 +59,14 @@ class FavoriteButton extends ConsumerWidget {
         (false, _) => l10n.favoriteAdd,
       },
       isSelected: saved,
-      icon: Icon(Icons.favorite_border_rounded, color: scheme.onSurfaceVariant),
-      selectedIcon: Icon(Icons.favorite_rounded, color: scheme.error),
+      icon: Icon(Icons.favorite_border_rounded, color: scheme.onSurface),
+      selectedIcon: SlamSwitcher(
+        child: Icon(
+          Icons.favorite_rounded,
+          key: const ValueKey('saved'),
+          color: scheme.error,
+        ),
+      ),
       onPressed: onPressed,
     );
   }
