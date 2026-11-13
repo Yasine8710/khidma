@@ -46,6 +46,8 @@ dependencies:
   geolocator: ^14.1.2
   image_picker: ^1.2.4
   image: ^4.12.0
+  google_maps_flutter: ^2.19.0
+  sentry: 10.2.0
 
 dev_dependencies:
   flutter_test:
@@ -74,18 +76,15 @@ flutter:
   generate: true
 
   fonts:
-    - family: Inter
+    - family: Tajawal
       fonts:
-        - asset: assets/fonts/Inter.ttf
-    - family: IBMPlexSansArabic
-      fonts:
-        - asset: assets/fonts/IBMPlexSansArabic-Regular.ttf
-        - asset: assets/fonts/IBMPlexSansArabic-Medium.ttf
+        - asset: assets/fonts/Tajawal-Regular.ttf
+        - asset: assets/fonts/Tajawal-Medium.ttf
           weight: 500
-        - asset: assets/fonts/IBMPlexSansArabic-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/IBMPlexSansArabic-Bold.ttf
+        - asset: assets/fonts/Tajawal-Bold.ttf
           weight: 700
+        - asset: assets/fonts/Tajawal-ExtraBold.ttf
+          weight: 800
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -129,19 +128,19 @@ flutter_launcher_icons:
   ios: true
   image_path: assets/brand/icon-1024.png
   remove_alpha_ios: true
-  adaptive_icon_background: "#1F5AA6"
+  adaptive_icon_background: "#141414"
   adaptive_icon_foreground: assets/brand/icon-foreground.png
   adaptive_icon_monochrome: assets/brand/icon-monochrome.png
   web:
     generate: true
     image_path: assets/brand/icon-1024.png
-    background_color: "#1F5AA6"
-    theme_color: "#1F5AA6"
+    background_color: "#FFFFFF"
+    theme_color: "#141414"
 
 flutter_native_splash:
-  color: "#1F5AA6"
+  color: "#FFFFFF"
   image: assets/brand/mark-splash.png
   android_12:
-    color: "#1F5AA6"
+    color: "#FFFFFF"
     image: assets/brand/mark-splash.png
   web: true

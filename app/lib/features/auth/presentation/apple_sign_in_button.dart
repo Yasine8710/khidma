@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/haptics.dart';
+import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../application/auth_providers.dart';
@@ -40,7 +41,7 @@ class AppleSignInSection extends ConsumerWidget {
         const SizedBox(height: AppSpacing.xl),
         Row(
           children: [
-            Expanded(child: Divider(color: scheme.outlineVariant)),
+            const Expanded(child: Divider()),
             Padding(
               padding: const EdgeInsetsDirectional.symmetric(
                 horizontal: AppSpacing.md,
@@ -51,7 +52,7 @@ class AppleSignInSection extends ConsumerWidget {
                     ?.copyWith(color: scheme.onSurfaceVariant),
               ),
             ),
-            Expanded(child: Divider(color: scheme.outlineVariant)),
+            const Expanded(child: Divider()),
           ],
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -61,38 +62,44 @@ class AppleSignInSection extends ConsumerWidget {
           label: l10n.continueWithApple,
           excludeSemantics: true,
           onTap: busy ? null : onPressed,
-          child: Material(
+          // Apple's own style: solid black (white in dark mode), no border.
+          child: StickerBox(
             color: bg,
-            borderRadius: BorderRadius.circular(AppRadius.md),
-            child: InkWell(
+            border: 0,
+            radius: AppRadius.md,
+            child: Material(
+              color: Colors.transparent,
               borderRadius: BorderRadius.circular(AppRadius.md),
-              onTap: busy
-                  ? null
-                  : () {
-                      AppHaptics.light();
-                      onPressed();
-                    },
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 52),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.symmetric(
-                    horizontal: AppSpacing.lg,
-                    vertical: AppSpacing.md,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.apple, color: fg, size: 22),
-                      const SizedBox(width: AppSpacing.sm),
-                      Flexible(
-                        child: Text(
-                          l10n.continueWithApple,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.labelLarge
-                              ?.copyWith(color: fg),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                onTap: busy
+                    ? null
+                    : () {
+                        AppHaptics.light();
+                        onPressed();
+                      },
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 52),
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: AppSpacing.md,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.apple, color: fg, size: 22),
+                        const SizedBox(width: AppSpacing.sm),
+                        Flexible(
+                          child: Text(
+                            l10n.continueWithApple,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.labelLarge
+                                ?.copyWith(color: fg),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

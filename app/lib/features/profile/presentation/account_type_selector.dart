@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/haptics.dart';
+import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../domain/profile_domain.dart';
@@ -84,46 +85,66 @@ class _Option extends StatelessWidget {
       label: '$title. $body',
       excludeSemantics: true,
       onTap: onTap,
-      child: Material(
-        color: selected ? scheme.primaryContainer : scheme.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          side: BorderSide(
-            color: selected ? scheme.primary : scheme.outline,
-            width: selected ? 1.6 : 1,
-          ),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(icon, color: fg),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(title, style: text.titleSmall?.copyWith(color: fg)),
-                      const SizedBox(height: 2),
-                      Text(
-                        body,
-                        style: text.bodySmall?.copyWith(
-                          color: selected
-                              ? scheme.onPrimaryContainer
-                              : scheme.onSurfaceVariant,
-                        ),
+      // A soft card: soft grey with a brand edge and a filled radio when
+      // chosen.
+      child: Pressable(
+        onTap: onTap,
+        button: false,
+        child: StickerBox(
+          color: selected ? scheme.primaryContainer : scheme.surface,
+          borderColor: selected ? scheme.primary : null,
+          border: selected ? 1.5 : 1,
+          padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: selected ? scheme.surface : scheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                ),
+                child: Icon(icon, color: scheme.primary, size: 22),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: text.titleSmall?.copyWith(color: fg)),
+                    const SizedBox(height: 2),
+                    Text(
+                      body,
+                      style: text.bodySmall?.copyWith(
+                        color: selected ? fg : scheme.onSurfaceVariant,
                       ),
-                    ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              // A radio circle, filled with a check when chosen.
+              Container(
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  color: selected ? scheme.primary : scheme.surface,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: selected ? scheme.primary : scheme.outline,
+                    width: 1.5,
                   ),
                 ),
-                if (selected)
-                  Icon(Icons.check_circle_rounded, color: scheme.primary),
-              ],
-            ),
+                child: selected
+                    ? Icon(
+                        Icons.check_rounded,
+                        size: 15,
+                        color: scheme.onPrimary,
+                      )
+                    : null,
+              ),
+            ],
           ),
         ),
       ),

@@ -1,6 +1,7 @@
 /// Route paths. Tabs are top-level; detail screens nest under them later.
 abstract final class AppRoutes {
   static const home = '/home';
+  static const explore = '/explore';
   static const requests = '/requests';
   static const messages = '/messages';
   static const profile = '/profile';
@@ -28,6 +29,7 @@ abstract final class AppRoutes {
   static const proDashboard = '/pro';
   static const proPortfolio = '/pro/portfolio';
   static const proVerification = '/pro/verification';
+  static const proBilling = '/pro/billing';
   static const search = '/search';
   static const professional = '/professional/:id';
   static String professionalPath(String id) =>
@@ -36,5 +38,20 @@ abstract final class AppRoutes {
     path: search,
     queryParameters: categoryId == null ? null : {'category': '$categoryId'},
   ).toString();
+  static const digital = '/digital';
+  static const freelancer = '/freelancer/:id';
+  static String freelancerPath(String id) =>
+      '/freelancer/${Uri.encodeComponent(id)}';
+  static const proFreelance = '/pro/freelance';
+  // Remote projects (digital work, no place).
+  static const myProjects = '/projects';
+  static const newProject = '/projects/new';
+  static const project = '/projects/:id';
+  static String projectPath(String id) =>
+      '/projects/${Uri.encodeComponent(id)}';
+  static const proProjects = '/pro/projects';
+  static const proProject = '/pro/projects/:id';
+  static String proProjectPath(String id) =>
+      '/pro/projects/${Uri.encodeComponent(id)}';
   static const gallery = '/gallery'; // debug / GALLERY builds only
 }

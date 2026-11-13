@@ -34,7 +34,7 @@ class FavoritesScreen extends ConsumerWidget {
         loading: () => const SkeletonGroup(
           child: Padding(
             padding: EdgeInsetsDirectional.all(AppSpacing.gutter),
-            child: Skeleton(height: 112, radius: AppRadius.lg),
+            child: Skeleton(height: 92, radius: AppRadius.sm),
           ),
         ),
         error: (e, _) => MarketplaceFailureView(
@@ -64,15 +64,38 @@ class FavoritesScreen extends ConsumerWidget {
                 await ref.read(favoriteProfessionalsProvider.future);
               } catch (_) {}
             },
-            child: ListView.separated(
-              padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
-              itemCount: shown.length,
-              separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
-              itemBuilder: (context, i) => ProfessionalCard(
-                professional: shown[i],
-                onTap: () =>
-                    context.push(AppRoutes.professionalPath(shown[i].id)),
+            child: ListView.builder(
+              padding: const EdgeInsetsDirectional.fromSTEB(
+                AppSpacing.gutter,
+                AppSpacing.sm,
+                AppSpacing.gutter,
+                AppSpacing.lg,
               ),
+              itemCount: shown.length + 1,
+              itemBuilder: (context, i) {
+                // A quiet count line heads the list.
+                if (i == 0) {
+                  return Padding(
+                    padding: const EdgeInsetsDirectional.only(
+                      bottom: AppSpacing.md,
+                    ),
+                    child: Semantics(
+                      header: true,
+                      child: Text(
+                        l10n.professionalsCount(shown.length),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                final p = shown[i - 1];
+                return ProfessionalCard(
+                  professional: p,
+                  onTap: () => context.push(AppRoutes.professionalPath(p.id)),
+                );
+              },
             ),
           );
         },

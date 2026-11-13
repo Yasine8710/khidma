@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../location/domain/location_domain.dart';
+import 'google_map_provider.dart';
 
 /// One pin: a professional with a known position.
 class MapMarker {
@@ -51,6 +52,12 @@ class UnavailableMapProvider implements MapProvider {
       const SizedBox.shrink();
 }
 
+/// Passed with `--dart-define=GOOGLE_MAPS_API_KEY=...` (the same value goes to
+/// the native projects, see docs/MAPS.md). Empty: no map, toggle hidden.
+const _googleMapsApiKey = String.fromEnvironment('GOOGLE_MAPS_API_KEY');
+
 final mapProviderProvider = Provider<MapProvider>(
-  (ref) => const UnavailableMapProvider(),
+  (ref) => _googleMapsApiKey.trim().isEmpty
+      ? const UnavailableMapProvider()
+      : const GoogleMapProvider(apiKey: _googleMapsApiKey),
 );

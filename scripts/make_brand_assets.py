@@ -1,6 +1,7 @@
-"""Generates Khidma brand rasters and the SVG mark from one geometry.
+"""Generates Khidma brand rasters and the SVG mark (black and white identity).
 
-Mark: a doorway arch (Sidi Bou Said doors) with a saffron lantern dot.
+Mark: a black (#141414) rounded square with a white "K" drawn in three round-capped
+strokes (no font needed). The app icon is the white K on a full black field.
 
 Run from the repo root (pip install -r scripts/requirements.txt):
   python scripts/make_brand_assets.py              # source rasters + SVG
@@ -8,98 +9,114 @@ Run from the repo root (pip install -r scripts/requirements.txt):
   python scripts/make_brand_assets.py --maskable   # padded web maskable icons
 
 Outputs in app/assets/brand/: icon-1024.png (opaque, iOS/web), icon-foreground.png
-(transparent, Android adaptive), icon-monochrome.png (Android themed icons),
-mark-splash.png (transparent), logo-mark.svg. `--maskable` writes
-app/web/icons/Icon-maskable-{192,512}.png after the launcher-icons step, because
-that tool would otherwise reuse the full-bleed artwork, which the W3C maskable
-safe zone (80% circle) clips.
+(transparent white K, Android adaptive; adaptive_icon_background is #141414 in
+pubspec), icon-monochrome.png (Android themed icons), mark-splash.png
+(transparent: the black square with the K), logo-mark.svg. `--maskable`
+writes app/web/icons/Icon-maskable-{192,512}.png after the launcher-icons
+step, because that tool would otherwise reuse the full-bleed artwork, which
+the W3C maskable safe zone (80% circle) clips.
 
-The Dart painter (app/lib/shared/widgets/khidma_logo.dart) mirrors OUTER, INNER
-and DOT; test/widgets/brand_test.dart compares the SVG numbers to the script.
+The Dart widget (app/lib/shared/widgets/khidma_logo.dart, KhidmaMarkPainter)
+draws the same geometry; test/widgets/brand_test.dart checks the SVG colours.
 """
 import sys
 from pathlib import Path
 
 from PIL import Image, ImageDraw
 
-PRIMARY = (0x1F, 0x5A, 0xA6, 255)
+BRAND = (0x14, 0x14, 0x14, 255)
 WHITE = (255, 255, 255, 255)
-SAFFRON = (0xE8, 0xA3, 0x3D, 255)
 CLEAR = (0, 0, 0, 0)
-
-# Geometry in a 120x120 grid. Radius of an arch = (x1 - x0) / 2.
-OUTER = dict(x0=36, x1=84, spring=52, bottom=92)
-INNER = dict(x0=48, x1=72, spring=52, bottom=92)
-DOT = dict(cx=60, cy=70, r=5.5)
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / 'app' / 'assets' / 'brand'
 WEB_ICONS = ROOT / 'app' / 'web' / 'icons'
 SS = 4  # supersampling
 
-
-def arch(draw, g, scale, fill, ox=0, oy=0):
-    r = (g['x1'] - g['x0']) / 2
-    x0, x1 = g['x0'] * scale + ox, g['x1'] * scale + ox
-    spring = g['spring'] * scale + oy
-    bottom = g['bottom'] * scale + oy
-    rr = r * scale
-    draw.rectangle([x0, spring, x1, bottom], fill=fill)
-    draw.ellipse([x0, spring - rr, x1, spring + rr], fill=fill)
-
-
-def dot(draw, scale, fill, ox=0, oy=0):
-    cx, cy, r = DOT['cx'] * scale + ox, DOT['cy'] * scale + oy, DOT['r'] * scale
-    draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=fill)
+# Mark geometry in an 80-unit square (same numbers as KhidmaMarkPainter).
+SIDE = 80
+RADIUS = 20
+STROKE = 9
+STROKES = [
+    (28, 22, 28, 58),  # stem
+    (28, 46, 52, 22),  # upper arm
+    (37, 37, 53, 58),  # lower leg
+]
+# The K's own box (stroke caps included), to centre it alone.
+K_BOX = (28 - STROKE / 2, 22 - STROKE / 2, 53 + STROKE / 2, 58 + STROKE / 2)
 
 
-def render(size, background, mark_scale, arch_color=WHITE, dot_color=SAFFRON):
-    """Mark centered on a size x size canvas. mark_scale = pixels per grid unit."""
+def draw_k(d, s, ox, oy, fill):
+    """Round-capped K strokes, s pixels per unit, square origin at (ox, oy)."""
+    w = STROKE * s
+    for x0, y0, x1, y1 in STROKES:
+        a = (ox + x0 * s, oy + y0 * s)
+        b = (ox + x1 * s, oy + y1 * s)
+        d.line([a, b], fill=fill, width=round(w))
+        for x, y in (a, b):
+            d.ellipse([x - w / 2, y - w / 2, x + w / 2, y + w / 2], fill=fill)
+
+
+def render(size, background, scale, square=True, k=WHITE):
+    """The mark centred on a size x size canvas; scale = pixels per unit.
+
+    square=False draws the K alone, centred on its own box."""
     big = size * SS
     img = Image.new('RGBA', (big, big), background)
     d = ImageDraw.Draw(img)
-    s = mark_scale * SS
-    ox = oy = (big - 120 * s) / 2
-    arch(d, OUTER, s, arch_color, ox, oy)
-    arch(d, INNER, s, background if background[3] else CLEAR, ox, oy)
-    dot(d, s, dot_color, ox, oy)
+    s = scale * SS
+    if square:
+        ox = oy = (big - SIDE * s) / 2
+        d.rounded_rectangle(
+            [ox, oy, ox + SIDE * s, oy + SIDE * s], radius=RADIUS * s,
+            fill=BRAND)
+    else:
+        cx = (K_BOX[0] + K_BOX[2]) / 2
+        cy = (K_BOX[1] + K_BOX[3]) / 2
+        ox = big / 2 - cx * s
+        oy = big / 2 - cy * s
+    draw_k(d, s, ox, oy, k)
     return img.resize((size, size), Image.LANCZOS)
 
 
-def svg_path(g):
-    r = (g['x1'] - g['x0']) / 2
-    w = g['x1'] - g['x0']
-    return f"M{g['x0']} {g['bottom']}V{g['spring']}a{r:g} {r:g} 0 0 1 {w:g} 0V{g['bottom']}Z"
+def k_height():
+    return K_BOX[3] - K_BOX[1]
 
 
 def write_sources():
     OUT.mkdir(parents=True, exist_ok=True)
-    unit = 1024 / 120
-    # iOS / web icon: opaque, mark fills ~69% of the height.
-    render(1024, PRIMARY, unit * 1.3).convert('RGB').save(OUT / 'icon-1024.png')
-    # Android adaptive foreground: transparent; fits the 66% safe zone.
-    render(1024, CLEAR, unit * 1.15).save(OUT / 'icon-foreground.png')
-    # Android 13+ themed icon: single-color silhouette (arch + dot), same padding.
-    render(1024, CLEAR, unit * 1.15, WHITE, WHITE).save(OUT / 'icon-monochrome.png')
-    # Splash mark: transparent, smaller on the canvas.
-    render(768, CLEAR, 768 / 120 * 0.9).save(OUT / 'mark-splash.png')
+    # iOS / web icon: opaque full black field, the K ~46% of the height.
+    render(1024, BRAND, 1024 * 0.46 / k_height(), square=False).convert(
+        'RGB').save(OUT / 'icon-1024.png')
+    # Android adaptive foreground: transparent white K inside the safe zone.
+    render(1024, CLEAR, 1024 * 0.32 / k_height(), square=False).save(
+        OUT / 'icon-foreground.png')
+    # Android 13+ themed icon: the same single-colour K silhouette.
+    render(1024, CLEAR, 1024 * 0.32 / k_height(), square=False).save(
+        OUT / 'icon-monochrome.png')
+    # Splash mark: transparent, the black square inside the Android 12 mask.
+    render(768, CLEAR, 768 * 0.44 / SIDE).save(OUT / 'mark-splash.png')
+    off = 20  # the SVG puts the 80-unit square in a 120 grid
+    lines = '\n'.join(
+        f'    <line x1="{x0 + off}" y1="{y0 + off}" x2="{x1 + off}" y2="{y1 + off}"/>'
+        for x0, y0, x1, y1 in STROKES)
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
   <title>Khidma</title>
-  <path fill="#1F5AA6" fill-rule="evenodd" d="{svg_path(OUTER)}{svg_path(INNER)}"/>
-  <circle cx="{DOT['cx']}" cy="{DOT['cy']}" r="{DOT['r']}" fill="#E8A33D"/>
+  <rect x="{off}" y="{off}" width="{SIDE}" height="{SIDE}" rx="{RADIUS}" fill="#141414"/>
+  <g stroke="#FFFFFF" stroke-width="{STROKE}" stroke-linecap="round" fill="none">
+{lines}
+  </g>
 </svg>
 '''
     (OUT / 'logo-mark.svg').write_text(svg, encoding='utf-8')
 
 
 def write_maskable():
-    """Opaque icons with the mark well inside the 80% maskable safe circle."""
+    """Opaque icons with the K well inside the 80% maskable safe circle."""
     WEB_ICONS.mkdir(parents=True, exist_ok=True)
     for size in (192, 512):
-        # Farthest arch corner from center is ~(24 x 32) grid units; at scale
-        # k it must stay inside 40% of the size.
-        k = size / 120 * 0.95
-        render(size, PRIMARY, k).convert('RGB').save(WEB_ICONS / f'Icon-maskable-{size}.png')
+        render(size, BRAND, size * 0.36 / k_height(), square=False).convert(
+            'RGB').save(WEB_ICONS / f'Icon-maskable-{size}.png')
 
 
 if __name__ == '__main__':

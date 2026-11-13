@@ -6,6 +6,10 @@ export const LANGUAGES = ['fr', 'ar', 'en'];
 export const KINDS = [
   'offer_received', 'offer_accepted', 'message',
   'job_started', 'job_done', 'job_completed', 'job_cancelled',
+  'report_actioned', 'report_dismissed', 'account_suspended', 'account_restored',
+  'appeal_rejected', 'verification_expired', 'listing_held', 'listing_released',
+  'payment_confirmed', 'payment_rejected',
+  'subscription_due_soon', 'subscription_due_now', 'subscription_overdue', 'subscription_grace_over',
 ];
 
 const TEXTS = {
@@ -44,6 +48,76 @@ const TEXTS = {
     ar: ['أُلغي العمل', 'ألغى الطرف الآخر العمل.'],
     en: ['Job cancelled', 'The other party cancelled the job.'],
   },
+  report_actioned: {
+    fr: ['Signalement traité', 'Merci. Nous avons pris des mesures suite à votre signalement.'],
+    ar: ['تمت معالجة البلاغ', 'شكرًا. اتخذنا إجراءً بعد بلاغك.'],
+    en: ['Report handled', 'Thank you. We took action after your report.'],
+  },
+  report_dismissed: {
+    fr: ['Signalement examiné', 'Merci. Après examen, aucune mesure n’a été nécessaire.'],
+    ar: ['تمت مراجعة البلاغ', 'شكرًا. بعد المراجعة، لم يكن أي إجراء ضروريًا.'],
+    en: ['Report reviewed', 'Thank you. After review, no action was needed.'],
+  },
+  account_suspended: {
+    fr: ['Compte suspendu', 'Votre profil professionnel est suspendu. Ouvrez l’app pour voir pourquoi.'],
+    ar: ['تم تعليق الحساب', 'تم تعليق ملفك المهني. افتح التطبيق لمعرفة السبب.'],
+    en: ['Account suspended', 'Your professional profile is suspended. Open the app to see why.'],
+  },
+  account_restored: {
+    fr: ['Suspension levée', 'Votre profil peut de nouveau être publié.'],
+    ar: ['تم رفع التعليق', 'يمكنك نشر ملفك من جديد.'],
+    en: ['Suspension lifted', 'Your profile can be published again.'],
+  },
+  appeal_rejected: {
+    fr: ['Recours refusé', 'Votre recours a été examiné et refusé.'],
+    ar: ['رُفض الطعن', 'تمت مراجعة طعنك ورفضه.'],
+    en: ['Appeal rejected', 'Your appeal was reviewed and rejected.'],
+  },
+  verification_expired: {
+    fr: ['Badge expiré', 'Votre vérification a expiré. Renouvelez-la pour retrouver le badge.'],
+    ar: ['انتهت صلاحية الشارة', 'انتهت صلاحية التحقق. جدّده لاستعادة الشارة.'],
+    en: ['Badge expired', 'Your verification expired. Renew it to get the badge back.'],
+  },
+  listing_held: {
+    fr: ['Annonce retirée', 'Votre annonce freelance a été retirée. Ouvrez l’app pour voir pourquoi.'],
+    ar: ['تم سحب إعلانك', 'تم سحب إعلانك الحر. افتح التطبيق لمعرفة السبب.'],
+    en: ['Listing taken down', 'Your freelance listing was taken down. Open the app to see why.'],
+  },
+  listing_released: {
+    fr: ['Annonce débloquée', 'Vous pouvez de nouveau publier votre annonce freelance.'],
+    ar: ['تم رفع الحظر عن إعلانك', 'يمكنك نشر إعلانك الحر من جديد.'],
+    en: ['Listing unlocked', 'You can publish your freelance listing again.'],
+  },
+  payment_confirmed: {
+    fr: ['Paiement confirmé', 'Votre abonnement est actif. Merci !'],
+    ar: ['تم تأكيد الدفع', 'اشتراكك مفعّل. شكرًا!'],
+    en: ['Payment confirmed', 'Your subscription is active. Thank you!'],
+  },
+  payment_rejected: {
+    fr: ['Paiement refusé', 'Nous n’avons pas pu confirmer votre paiement. Ouvrez l’app pour voir pourquoi.'],
+    ar: ['رُفض الدفع', 'لم نتمكن من تأكيد دفعتك. افتح التطبيق لمعرفة السبب.'],
+    en: ['Payment refused', 'We could not confirm your payment. Open the app to see why.'],
+  },
+  subscription_due_soon: {
+    fr: ['Abonnement bientôt à renouveler', 'Votre abonnement se termine dans quelques jours.'],
+    ar: ['اقترب موعد تجديد الاشتراك', 'ينتهي اشتراكك خلال أيام قليلة.'],
+    en: ['Subscription ends soon', 'Your subscription ends in a few days.'],
+  },
+  subscription_due_now: {
+    fr: ['Abonnement à renouveler', 'Votre abonnement se termine aujourd’hui ou demain.'],
+    ar: ['جدّد اشتراكك', 'ينتهي اشتراكك اليوم أو غدًا.'],
+    en: ['Renew your subscription', 'Your subscription ends today or tomorrow.'],
+  },
+  subscription_overdue: {
+    fr: ['Abonnement en retard', 'Réglez votre abonnement pour garder votre profil visible.'],
+    ar: ['الاشتراك متأخر', 'سدّد اشتراكك ليبقى ملفك ظاهرًا.'],
+    en: ['Subscription overdue', 'Pay your subscription to keep your profile visible.'],
+  },
+  subscription_grace_over: {
+    fr: ['Délai de paiement dépassé', 'Votre profil peut être masqué. Il réapparaît dès le paiement.'],
+    ar: ['انتهت مهلة الدفع', 'قد يُخفى ملفك. يعود للظهور فور الدفع.'],
+    en: ['Payment grace period over', 'Your profile may be hidden. It shows again as soon as you pay.'],
+  },
 };
 
 /** The title and body for a kind, in `language` (French when unknown). */
@@ -70,6 +144,22 @@ export function notificationRoute(kind, payload) {
     case 'job_completed':
     case 'job_cancelled':
       return '/pro/jobs';
+    case 'account_suspended':
+    case 'account_restored':
+    case 'appeal_rejected':
+      return '/pro';
+    case 'verification_expired':
+      return '/pro/verification';
+    case 'listing_held':
+    case 'listing_released':
+      return '/pro/freelance';
+    case 'payment_confirmed':
+    case 'payment_rejected':
+    case 'subscription_due_soon':
+    case 'subscription_due_now':
+    case 'subscription_overdue':
+    case 'subscription_grace_over':
+      return '/pro/billing';
     default:
       return '/home';
   }

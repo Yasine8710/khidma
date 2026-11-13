@@ -19,6 +19,36 @@ class AppLocalizationsFr extends AppLocalizations {
   String get chooseLanguage => 'Choisir la langue';
 
   @override
+  String get acctMemberCard => 'Carte de membre';
+
+  @override
+  String get acctAccountType => 'Type de compte';
+
+  @override
+  String get acctCustomer => 'Client';
+
+  @override
+  String get acctSettings => 'Réglages';
+
+  @override
+  String get acctAccount => 'Compte';
+
+  @override
+  String get acctWorkshop => 'Atelier';
+
+  @override
+  String get acctStatus => 'Statut';
+
+  @override
+  String get acctTools => 'Outils';
+
+  @override
+  String get profileHelp => 'Aide';
+
+  @override
+  String get profileHelpTitle => 'Comment ça marche';
+
+  @override
   String get languageFrench => 'Français';
 
   @override
@@ -48,6 +78,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get navHome => 'Accueil';
+
+  @override
+  String get navExplore => 'Explorer';
 
   @override
   String get navRequests => 'Demandes';
@@ -422,6 +455,673 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get homeSubtitle => 'De quel service avez-vous besoin ?';
+
+  @override
+  String get discLicenceKicker => 'Fiche professionnelle';
+
+  @override
+  String get discFactExperience => 'Expérience';
+
+  @override
+  String get discFactAvailability => 'Disponibilité';
+
+  @override
+  String get discFactArea => 'Zone';
+
+  @override
+  String get discHintPlumbing => 'Fuites, sanitaires, chauffe-eau';
+
+  @override
+  String get discHintElectricity => 'Installations, pannes, tableaux';
+
+  @override
+  String get discHintAirConditioning => 'Pose, entretien, réparation';
+
+  @override
+  String get discHintMechanics => 'Réparation et entretien de véhicules';
+
+  @override
+  String get discHintPainting => 'Intérieur et extérieur';
+
+  @override
+  String get discHintCarpentry => 'Meubles, portes, fenêtres en bois';
+
+  @override
+  String get discHintCleaning => 'Maisons, bureaux, fin de chantier';
+
+  @override
+  String get discHintAppliance => 'Lave-linge, réfrigérateurs, fours';
+
+  @override
+  String get discHintConstruction => 'Maçonnerie, carrelage, rénovation';
+
+  @override
+  String get discHintGardening => 'Jardins et espaces verts';
+
+  @override
+  String get discHintMoving => 'Transport et déménagement';
+
+  @override
+  String get discHintMaintenance => 'Petits travaux et dépannage';
+
+  @override
+  String get homeQuoteTitle => 'Besoin d’un service ?';
+
+  @override
+  String get homeQuoteBody =>
+      'Décrivez-le une fois et recevez des offres de professionnels.';
+
+  @override
+  String get avatarChange => 'Changer la photo';
+
+  @override
+  String get avatarChoose => 'Choisir une photo';
+
+  @override
+  String get avatarRemove => 'Supprimer la photo';
+
+  @override
+  String get avatarFailed =>
+      'Impossible de mettre à jour votre photo. Essayez une autre image.';
+
+  @override
+  String get avatarLabel => 'Photo de profil';
+
+  @override
+  String get statRating => 'Note';
+
+  @override
+  String get statReviews => 'Avis';
+
+  @override
+  String get statYears => 'Années';
+
+  @override
+  String get billTitle => 'Abonnement';
+
+  @override
+  String get billCurrent => 'Mon abonnement';
+
+  @override
+  String get billNone => 'Aucun abonnement pour le moment.';
+
+  @override
+  String get billStatusLabel => 'Statut';
+
+  @override
+  String get billStatusActive => 'Actif';
+
+  @override
+  String get billStatusPastDue => 'En retard';
+
+  @override
+  String get billStatusExpired => 'Expiré';
+
+  @override
+  String get billStatusCancelled => 'Résilié';
+
+  @override
+  String get billValidUntil => 'Valable jusqu\'au';
+
+  @override
+  String get billDaysLeftLabel => 'Jours restants';
+
+  @override
+  String billDaysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jours restants',
+      one: '1 jour restant',
+      zero: 'Expire aujourd\'hui',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get billChoosePlan => 'Choisir une formule';
+
+  @override
+  String billPeriod(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jours',
+      one: '1 jour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get billChooseMethod => 'Mode de paiement';
+
+  @override
+  String get billMethodFlouci => 'Flouci';
+
+  @override
+  String get billMethodFlouciHint =>
+      'Paiement en ligne, confirmé automatiquement';
+
+  @override
+  String get billMethodD17 => 'D17';
+
+  @override
+  String get billMethodD17Hint =>
+      'Envoi depuis votre portefeuille La Poste, confirmé par notre équipe';
+
+  @override
+  String get billMethodBank => 'Virement bancaire';
+
+  @override
+  String get billMethodBankHint =>
+      'Virement vers notre compte, confirmé par notre équipe';
+
+  @override
+  String get billPay => 'Payer';
+
+  @override
+  String get billFlouciOpened =>
+      'Le paiement s\'est ouvert dans votre navigateur. Revenez ici ensuite.';
+
+  @override
+  String get billMyPayments => 'Mes paiements';
+
+  @override
+  String get billNoPayments => 'Aucun paiement pour le moment.';
+
+  @override
+  String get billOrderPending => 'En attente';
+
+  @override
+  String get billOrderAwaiting => 'À confirmer';
+
+  @override
+  String get billOrderPaid => 'Payé';
+
+  @override
+  String get billOrderFailed => 'Échoué';
+
+  @override
+  String get billOrderCancelled => 'Annulé';
+
+  @override
+  String get billOrderRejected => 'Refusé';
+
+  @override
+  String get billInstructionsTitle => 'Instructions de paiement';
+
+  @override
+  String get billAmount => 'Montant';
+
+  @override
+  String get billReference => 'Référence';
+
+  @override
+  String get billReferenceHint =>
+      'Écrivez cette référence dans le motif du virement ou la note D17.';
+
+  @override
+  String get billCopy => 'Copier';
+
+  @override
+  String get billCopied => 'Copié';
+
+  @override
+  String get billPayTo => 'Payer à';
+
+  @override
+  String get billBankName => 'Banque';
+
+  @override
+  String get billHolder => 'Titulaire';
+
+  @override
+  String get billRib => 'RIB';
+
+  @override
+  String get billD17Number => 'Numéro D17';
+
+  @override
+  String get billNoDetails =>
+      'Les coordonnées de paiement ne sont pas encore disponibles.';
+
+  @override
+  String get billIPaid => 'J\'ai payé';
+
+  @override
+  String get billPaidTitle => 'Votre paiement';
+
+  @override
+  String get billNoteLabel => 'Note (facultatif)';
+
+  @override
+  String get billSend => 'Envoyer';
+
+  @override
+  String get billCancelOrder => 'Annuler la commande';
+
+  @override
+  String get billAwaitingBody =>
+      'Merci. Notre équipe vérifie votre paiement, votre abonnement démarre dès sa confirmation.';
+
+  @override
+  String get billNotProTitle => 'Devenez professionnel d\'abord';
+
+  @override
+  String get billNotProBody =>
+      'L\'abonnement est réservé aux professionnels. Créez d\'abord votre profil.';
+
+  @override
+  String get billNotProCta => 'Créer mon profil';
+
+  @override
+  String get billErrNetwork => 'Pas de connexion. Réessayez.';
+
+  @override
+  String get billErrSignedIn => 'Reconnectez-vous puis réessayez.';
+
+  @override
+  String get billErrRate => 'Trop de commandes aujourd\'hui. Réessayez demain.';
+
+  @override
+  String get billErrInvalid => 'Cette demande n\'est pas valide.';
+
+  @override
+  String get billErrNotFound => 'Cette commande n\'existe plus.';
+
+  @override
+  String get billErrNotConfigured =>
+      'Les paiements ne sont pas encore disponibles.';
+
+  @override
+  String get billFlouciUnavailable =>
+      'Flouci n\'est pas encore disponible, utilisez D17 ou le virement.';
+
+  @override
+  String get billCannotOpen => 'Impossible d\'ouvrir le lien de paiement.';
+
+  @override
+  String get billErrUnknown => 'Une erreur est survenue. Réessayez.';
+
+  @override
+  String get flTitle => 'Services digitaux';
+
+  @override
+  String get flHomeSubtitle => 'Développeurs, designers, monteurs, rédacteurs…';
+
+  @override
+  String get flSearchHint => 'Rechercher un freelance ou une compétence…';
+
+  @override
+  String get flCategories => 'Catégories';
+
+  @override
+  String get flAllCategories => 'Toutes';
+
+  @override
+  String get flResultsTitle => 'Freelances';
+
+  @override
+  String get flEmptyTitle => 'Aucun freelance trouvé';
+
+  @override
+  String get flEmptyBody => 'Essayez un autre mot ou une autre catégorie.';
+
+  @override
+  String get flLoadFailed => 'Impossible de charger les freelances.';
+
+  @override
+  String flPriceFrom(String price, String unit) {
+    return 'à partir de $price / $unit';
+  }
+
+  @override
+  String get flUnitProject => 'projet';
+
+  @override
+  String get flUnitHour => 'heure';
+
+  @override
+  String get flUnitDay => 'jour';
+
+  @override
+  String get flNotFoundTitle => 'Freelance introuvable';
+
+  @override
+  String get flNotFoundBody => 'Cette page n’existe plus ou n’est pas publiée.';
+
+  @override
+  String get flFactPrice => 'Tarif';
+
+  @override
+  String get flFactLanguages => 'Langues';
+
+  @override
+  String get flSkills => 'Compétences';
+
+  @override
+  String get flPortfolio => 'Réalisations';
+
+  @override
+  String flOpenItem(String title) {
+    return 'Ouvrir : $title';
+  }
+
+  @override
+  String get flKindImage => 'Photo';
+
+  @override
+  String get flKindClip => 'Clip vidéo';
+
+  @override
+  String get flKindVideoLink => 'Vidéo en ligne';
+
+  @override
+  String get flKindLink => 'Lien';
+
+  @override
+  String get flTestimonials => 'Témoignages clients';
+
+  @override
+  String get flTestimonialLabel => 'Témoignage client';
+
+  @override
+  String get flTestimonialsNote =>
+      'Ces témoignages viennent d’anciens clients invités par le freelance. Ils sont différents des avis vérifiés laissés après un travail réalisé via Khidma.';
+
+  @override
+  String get flTestimonialsEmpty => 'Pas encore de témoignage.';
+
+  @override
+  String flTestimonialProject(String title) {
+    return 'Projet : $title';
+  }
+
+  @override
+  String flStars(int count) {
+    return '$count sur 5';
+  }
+
+  @override
+  String get flDashRow => 'Activité freelance';
+
+  @override
+  String get flManageTitle => 'Mon activité freelance';
+
+  @override
+  String get flIntroTitle => 'Proposez vos services digitaux';
+
+  @override
+  String get flIntroBody =>
+      'Développement, design, montage, marketing, rédaction… Créez une page publique avec vos réalisations et des témoignages clients. Votre identité vérifiée est la même que pour votre profil de métier : une seule vérification suffit.';
+
+  @override
+  String get flBecome => 'Devenir freelance';
+
+  @override
+  String get flSectionProfile => 'Ma page';
+
+  @override
+  String get flFieldName => 'Nom affiché';
+
+  @override
+  String get flFieldHeadline => 'Titre professionnel';
+
+  @override
+  String get flFieldHeadlineHint => 'Ex. Développeur Flutter';
+
+  @override
+  String get flFieldCategory => 'Catégorie';
+
+  @override
+  String get flFieldBio => 'Présentation';
+
+  @override
+  String get flFieldBioHelp =>
+      '20 caractères minimum pour publier, 2000 au maximum.';
+
+  @override
+  String get flFieldSkills => 'Compétences';
+
+  @override
+  String get flFieldSkillsHelp => 'Séparées par des virgules, 12 au maximum.';
+
+  @override
+  String get flFieldLanguages => 'Langues';
+
+  @override
+  String get flFieldLanguagesHelp => 'Séparées par des virgules, 6 au maximum.';
+
+  @override
+  String get flFieldYears => 'Années d’expérience';
+
+  @override
+  String get flFieldPrice => 'Tarif de départ (DT)';
+
+  @override
+  String get flFieldUnit => 'Par';
+
+  @override
+  String get flFieldAvailability => 'Disponibilité';
+
+  @override
+  String get flErrName => '2 à 80 caractères.';
+
+  @override
+  String get flErrHeadline => '5 à 100 caractères.';
+
+  @override
+  String get flErrBio => '2000 caractères au maximum.';
+
+  @override
+  String get flErrYears => 'Entre 0 et 60.';
+
+  @override
+  String get flErrPrice => 'Montant invalide.';
+
+  @override
+  String flErrTags(int max) {
+    return '30 caractères par élément, $max éléments au plus.';
+  }
+
+  @override
+  String get flSaved => 'Page enregistrée.';
+
+  @override
+  String get flIdentityTitle => 'Identité';
+
+  @override
+  String get flIdentityVerified => 'Identité vérifiée.';
+
+  @override
+  String get flIdentityNotVerified => 'Identité pas encore vérifiée.';
+
+  @override
+  String get flIdentityShared =>
+      'Une seule vérification sert à votre profil de métier et à votre page freelance.';
+
+  @override
+  String get flPublish => 'Publier ma page';
+
+  @override
+  String get flPublishedHint =>
+      'Votre page est visible dans Services digitaux.';
+
+  @override
+  String get flUnpublishedHint =>
+      'Votre page n’est pas visible pour le moment.';
+
+  @override
+  String get flPublishBlocked =>
+      'La publication est bloquée tant que votre identité n’est pas vérifiée.';
+
+  @override
+  String get flErrNotVerified =>
+      'Votre identité n’est pas encore vérifiée. Faites-la vérifier pour publier.';
+
+  @override
+  String get flErrIncomplete =>
+      'Page incomplète : ajoutez un numéro de téléphone de contact dans votre profil de métier, puis renseignez nom, titre, catégorie et présentation (20 caractères minimum).';
+
+  @override
+  String get flErrSuspended =>
+      'Votre compte est suspendu : la publication est impossible.';
+
+  @override
+  String get flErrGeneric =>
+      'L’opération a échoué. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get flErrNotConfigured =>
+      'Le service n’est pas disponible pour le moment.';
+
+  @override
+  String get flErrInvalid =>
+      'Certaines informations sont refusées. Vérifiez-les et réessayez.';
+
+  @override
+  String get flErrRate => 'Trop de demandes. Réessayez plus tard.';
+
+  @override
+  String flPortCount(int count, int max) {
+    return '$count sur $max réalisations';
+  }
+
+  @override
+  String get flPortEmpty => 'Aucune réalisation pour le moment.';
+
+  @override
+  String get flPortAddPhoto => 'Ajouter une photo';
+
+  @override
+  String get flPortAddClip => 'Ajouter un clip (30 s max)';
+
+  @override
+  String get flPortAddVideoLink => 'Ajouter une vidéo en ligne';
+
+  @override
+  String get flPortAddLink => 'Ajouter un lien';
+
+  @override
+  String get flPortLimit => 'Limite de 24 réalisations atteinte.';
+
+  @override
+  String get flPortTooLarge => 'Fichier trop lourd (25 Mo au maximum).';
+
+  @override
+  String get flPortBadFormat =>
+      'Format non pris en charge : utilisez un clip mp4 ou webm, ou ajoutez un lien vidéo.';
+
+  @override
+  String get flFieldTitle => 'Titre';
+
+  @override
+  String get flFieldDescription => 'Description (facultatif)';
+
+  @override
+  String get flFieldUrl => 'Adresse du lien';
+
+  @override
+  String get flErrTitle => '2 à 100 caractères.';
+
+  @override
+  String get flErrDescription => '500 caractères au maximum.';
+
+  @override
+  String get flErrUrlVideo => 'Lien https YouTube ou Vimeo uniquement.';
+
+  @override
+  String get flErrUrlLink => 'Entrez une adresse https valide.';
+
+  @override
+  String get flSheetAdd => 'Ajouter';
+
+  @override
+  String get flSheetChooseFile => 'Choisir le fichier';
+
+  @override
+  String get flItemEdit => 'Modifier';
+
+  @override
+  String get flItemDelete => 'Supprimer';
+
+  @override
+  String get flItemDeleteTitle => 'Supprimer cette réalisation ?';
+
+  @override
+  String get flItemDeleteBody => 'Elle ne sera plus visible sur votre page.';
+
+  @override
+  String get flUploading => 'Envoi en cours…';
+
+  @override
+  String get flInvTitle => 'Invitations de témoignage';
+
+  @override
+  String get flInvHint =>
+      'Envoyez un lien personnel à un ancien client : il écrit son témoignage sur une page web, sans compte. Le lien est valable 30 jours et ne sert qu’une fois.';
+
+  @override
+  String get flInvCreate => 'Créer un lien d’invitation';
+
+  @override
+  String get flInvLabelField => 'Pour qui ? (facultatif)';
+
+  @override
+  String get flInvNotConfigured =>
+      'Les liens de témoignage ne sont pas encore configurés dans cette version de l’application.';
+
+  @override
+  String get flInvLinkTitle => 'Lien créé';
+
+  @override
+  String get flInvLinkWarn => 'Copiez-le maintenant : il ne sera plus affiché.';
+
+  @override
+  String get flInvCopy => 'Copier le lien';
+
+  @override
+  String get flInvCopied => 'Lien copié.';
+
+  @override
+  String get flInvShare => 'Partager par WhatsApp';
+
+  @override
+  String flInvShareText(String url) {
+    return 'Bonjour, pourriez-vous laisser un témoignage sur notre collaboration ? $url';
+  }
+
+  @override
+  String get flInvEmpty => 'Aucune invitation pour le moment.';
+
+  @override
+  String get flInvStatusOpen => 'En attente';
+
+  @override
+  String get flInvStatusUsed => 'Utilisée';
+
+  @override
+  String get flInvStatusExpired => 'Expirée';
+
+  @override
+  String flInvExpires(String date) {
+    return 'Expire le $date';
+  }
+
+  @override
+  String get flInvNoLabel => 'Sans nom';
+
+  @override
+  String get flInvRevoke => 'Révoquer';
+
+  @override
+  String get flInvRevokeTitle => 'Révoquer cette invitation ?';
+
+  @override
+  String get flInvRevokeBody => 'Le lien ne fonctionnera plus.';
+
+  @override
+  String get flInvLimit => '20 invitations en attente au maximum.';
 
   @override
   String get searchHint => 'Rechercher un métier, un nom, une ville…';
@@ -819,6 +1519,20 @@ class AppLocalizationsFr extends AppLocalizations {
   String get regUnpublish => 'Retirer de la liste';
 
   @override
+  String get regDone => 'Terminer';
+
+  @override
+  String get regUsePosition => 'Utiliser ma position actuelle';
+
+  @override
+  String get regPositionSet =>
+      'Position approximative enregistrée (environ 1 km).';
+
+  @override
+  String get regPositionFailed =>
+      'Position introuvable. Vérifiez l’autorisation de localisation : sinon la carte utilisera votre gouvernorat.';
+
+  @override
   String get regSaveDraft => 'Enregistrer et quitter';
 
   @override
@@ -981,6 +1695,49 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get reqMineTitle => 'Mes demandes';
+
+  @override
+  String flowRef(String code) {
+    return 'N° $code';
+  }
+
+  @override
+  String flowRequestCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count demandes',
+      one: '1 demande',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get flowSecService => 'Service';
+
+  @override
+  String get flowSecNeed => 'Le besoin';
+
+  @override
+  String get flowSecWhere => 'Où';
+
+  @override
+  String get flowSecWhen => 'Quand';
+
+  @override
+  String get flowSecPhotos => 'Photos';
+
+  @override
+  String get flowFactPlace => 'Lieu';
+
+  @override
+  String get flowFactBudget => 'Budget indicatif';
+
+  @override
+  String get flowFactNeededBy => 'Souhaité pour le';
+
+  @override
+  String get flowFactExpires => 'Expire le';
 
   @override
   String get reqEmptyCta => 'Demander un devis';
@@ -1696,4 +2453,477 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get verifFailImage =>
       'Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).';
+
+  @override
+  String get reqFilterAll => 'Toutes';
+
+  @override
+  String get reqFilterOpen => 'Ouvertes';
+
+  @override
+  String get reqFilterClosed => 'Terminées';
+
+  @override
+  String get reqFilterEmpty => 'Aucune demande dans cette liste.';
+
+  @override
+  String reqFormProgress(int done, int total) {
+    return '$done sur $total étapes remplies';
+  }
+
+  @override
+  String get chatToday => 'Aujourd’hui';
+
+  @override
+  String get chatYesterday => 'Hier';
+
+  @override
+  String get verifStepSend => 'Documents envoyés';
+
+  @override
+  String get verifStepReview => 'Examen par l’équipe';
+
+  @override
+  String get verifStepBadge => 'Badge sur votre profil';
+
+  @override
+  String get worldTrades => 'Artisans';
+
+  @override
+  String get worldDigital => 'Freelance digital';
+
+  @override
+  String get homeNearbyTitle => 'Pros près de vous';
+
+  @override
+  String get homeHeroFreelanceBody =>
+      'Montrez vos réalisations et trouvez des clients.';
+
+  @override
+  String get homeHeroDigitalCta => 'Découvrir';
+
+  @override
+  String priceFromShort(String price) {
+    return 'dès $price';
+  }
+
+  @override
+  String get docsVerified => 'Documents vérifiés';
+
+  @override
+  String get identityVerified => 'Identité vérifiée';
+
+  @override
+  String yearsShort(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ans',
+      one: '1 an',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get welcomeHeadlineStart => 'Trouvez un';
+
+  @override
+  String get welcomeHeadlineEnd => 'près de chez vous.';
+
+  @override
+  String get welcomeWordPlumber => 'plombier';
+
+  @override
+  String get welcomeWordElectrician => 'électricien';
+
+  @override
+  String get welcomeWordDeveloper => 'développeur';
+
+  @override
+  String get welcomeWordDesigner => 'designer';
+
+  @override
+  String get welcomeWordCarpenter => 'menuisier';
+
+  @override
+  String get welcomeHeadlineA11y =>
+      'Trouvez un plombier, un électricien, un développeur, un designer ou un menuisier près de chez vous.';
+
+  @override
+  String get welcomeSubtitle =>
+      'Comparez les devis, discutez et réservez, partout en Tunisie.';
+
+  @override
+  String get welcomeTrust => 'Artisans et freelances vérifiés';
+
+  @override
+  String get welcomeHaveAccount => 'J\'ai déjà un compte';
+
+  @override
+  String get welcomeLegal =>
+      'En continuant, vous acceptez les conditions d\'utilisation.';
+
+  @override
+  String welcomeLanguageButton(String language) {
+    return 'Langue : $language';
+  }
+
+  @override
+  String get welcomeTradePlumber => 'Plombier';
+
+  @override
+  String get welcomeTradeDesigner => 'Designer UI';
+
+  @override
+  String get welcomeTradeElectrician => 'Électricien';
+
+  @override
+  String get welcomeTradeDeveloper => 'Développeuse';
+
+  @override
+  String get welcomeTradeCarpenter => 'Menuisier';
+
+  @override
+  String get welcomeTradeVideo => 'Monteuse vidéo';
+
+  @override
+  String get reportReasonPayOutside =>
+      'Demande de paiement d’avance ou hors de l’app';
+
+  @override
+  String get reportReasonNoShow => 'Ne s’est pas présenté';
+
+  @override
+  String get reportMessageAction => 'Signaler ce message';
+
+  @override
+  String get reportOfferAction => 'Signaler cette offre';
+
+  @override
+  String get chatSafetyTip =>
+      'Ne payez jamais d’avance. Gardez vos accords dans Khidma.';
+
+  @override
+  String get failSuspended =>
+      'Votre compte est suspendu : cette action n’est pas possible.';
+
+  @override
+  String get suspendedTitle => 'Compte suspendu';
+
+  @override
+  String suspendedUntil(String date) {
+    return 'Votre profil est masqué jusqu’au $date. Vous ne pouvez pas envoyer d’offres ni de messages.';
+  }
+
+  @override
+  String get suspendedIndefinite =>
+      'Votre profil est masqué jusqu’à la décision de l’équipe. Vous ne pouvez pas envoyer d’offres ni de messages.';
+
+  @override
+  String suspendedReason(String reason) {
+    return 'Motif : $reason';
+  }
+
+  @override
+  String get appealAction => 'Faire un recours';
+
+  @override
+  String get appealHint =>
+      'Expliquez pourquoi cette suspension est une erreur.';
+
+  @override
+  String get appealTooShort => 'Écrivez au moins 10 caractères.';
+
+  @override
+  String get appealSend => 'Envoyer le recours';
+
+  @override
+  String get appealSent => 'Recours envoyé. L’équipe va l’examiner.';
+
+  @override
+  String get appealPending => 'Votre recours est en cours d’examen.';
+
+  @override
+  String get appealRejected => 'Votre dernier recours a été refusé.';
+
+  @override
+  String get appealFailRate =>
+      'Attendez une semaine après un refus avant un nouveau recours.';
+
+  @override
+  String get appealFailGeneric =>
+      'Le recours n’a pas pu être envoyé. Réessayez.';
+
+  @override
+  String verifiedUntil(String date) {
+    return 'Identité vérifiée, valable jusqu’au $date';
+  }
+
+  @override
+  String get flPolicyTitle => 'Services interdits';
+
+  @override
+  String get flPolicyIntro =>
+      'Une annonce qui propose l’un de ces services est retirée, et le compte peut être suspendu.';
+
+  @override
+  String get flPolicyIllegal =>
+      'Tout service illégal en Tunisie, ou qui aide à contourner la loi.';
+
+  @override
+  String get flPolicyAcademic =>
+      'Faire à la place d’un élève ou d’un étudiant un devoir, un mémoire ou un examen.';
+
+  @override
+  String get flPolicyDocuments =>
+      'Faux documents : diplômes, attestations, pièces d’identité, factures.';
+
+  @override
+  String get flPolicyPlagiarism =>
+      'Un portfolio avec le travail de quelqu’un d’autre présenté comme le vôtre.';
+
+  @override
+  String get flPolicyAccounts =>
+      'Vente de comptes, de faux avis, d’abonnés ou de « likes ».';
+
+  @override
+  String get flPolicyAccept => 'J’accepte et je publie';
+
+  @override
+  String get flPolicyLink => 'Voir les services interdits';
+
+  @override
+  String get flOnHoldTitle => 'Annonce retirée par l’équipe';
+
+  @override
+  String flOnHoldReason(String reason) {
+    return 'Motif : $reason. Corrigez votre annonce puis contactez le support pour la remettre en ligne.';
+  }
+
+  @override
+  String get flErrOnHold =>
+      'Votre annonce est retirée : elle ne peut pas être publiée pour l’instant.';
+
+  @override
+  String get billAttachProof => 'Joindre un justificatif';
+
+  @override
+  String get billProofHint =>
+      'Facultatif : une photo du reçu aide à confirmer plus vite.';
+
+  @override
+  String billProofCount(int count) {
+    return '$count sur 3 justificatifs joints.';
+  }
+
+  @override
+  String get billProofLimit => 'Vous avez déjà joint 3 justificatifs.';
+
+  @override
+  String billRejectedNote(String note) {
+    return 'Paiement refusé : $note';
+  }
+
+  @override
+  String get listingHiddenTitle => 'Profil masqué';
+
+  @override
+  String get listingHiddenBody =>
+      'Votre abonnement n’est pas réglé : les clients ne voient plus votre profil et vous ne pouvez pas envoyer d’offres. Vos chantiers en cours continuent. Le profil réapparaît dès le paiement.';
+
+  @override
+  String get listingTrialTitle => 'Essai gratuit';
+
+  @override
+  String listingTrialBody(String date) {
+    return 'Votre profil est visible gratuitement jusqu’au $date. Abonnez-vous avant pour rester visible.';
+  }
+
+  @override
+  String get listingPay => 'Régler mon abonnement';
+
+  @override
+  String get reqFailSubscription =>
+      'Votre abonnement n’est pas réglé : vous ne pouvez pas envoyer d’offre pour l’instant.';
+
+  @override
+  String get projNewTitle => 'Projet en ligne';
+
+  @override
+  String get projNewCta => 'Publier un projet en ligne';
+
+  @override
+  String get projMine => 'Mes projets en ligne';
+
+  @override
+  String get projFieldTitle => 'Titre du projet';
+
+  @override
+  String get projFieldCategory => 'Type de travail';
+
+  @override
+  String get projFieldBrief => 'Brief : décrivez le besoin';
+
+  @override
+  String get projFieldDeliverables => 'Livrables attendus';
+
+  @override
+  String get projDeliverablesHint => 'Ex. : logo en PNG et SVG, 3 propositions';
+
+  @override
+  String get projFieldBudgetMin => 'Budget min (TND)';
+
+  @override
+  String get projFieldBudgetMax => 'Budget max (TND)';
+
+  @override
+  String get projFieldDeadline => 'Date limite (facultatif)';
+
+  @override
+  String get projFieldLink => 'Lien de référence (https)';
+
+  @override
+  String get projAddLink => 'Ajouter un lien';
+
+  @override
+  String get projErrLink => 'Seuls les liens https:// sont acceptés.';
+
+  @override
+  String get projErrBudget =>
+      'Le budget max doit être supérieur ou égal au min.';
+
+  @override
+  String get projErrRequired => '3 caractères minimum.';
+
+  @override
+  String get projErrBrief => '10 caractères minimum.';
+
+  @override
+  String get projErrCategory => 'Choisissez un type de travail.';
+
+  @override
+  String get projSubmit => 'Publier le projet';
+
+  @override
+  String get projCreated =>
+      'Projet publié. Les freelances peuvent vous faire des offres.';
+
+  @override
+  String get projEmpty => 'Aucun projet en ligne pour l’instant.';
+
+  @override
+  String get projEmptyOpen => 'Aucun projet ouvert pour le moment.';
+
+  @override
+  String get projRemote => 'À distance';
+
+  @override
+  String projBudget(String range) {
+    return 'Budget : $range';
+  }
+
+  @override
+  String projDeadline(String date) {
+    return 'À livrer avant le $date';
+  }
+
+  @override
+  String get projDeliverables => 'Livrables';
+
+  @override
+  String get projLinks => 'Références';
+
+  @override
+  String get projTerms =>
+      'Khidma ne détient pas l’argent : le paiement se règle directement entre vous et le freelance. Mettez-vous d’accord dans la conversation et ne payez jamais tout d’avance.';
+
+  @override
+  String get projOpenTitle => 'Projets ouverts';
+
+  @override
+  String get projOfferTitle => 'Votre offre';
+
+  @override
+  String get projOfferPrice => 'Prix (TND)';
+
+  @override
+  String get projOfferDays => 'Délai de livraison (jours)';
+
+  @override
+  String get projOfferRevisions => 'Révisions incluses';
+
+  @override
+  String get projOfferMessage => 'Message (facultatif)';
+
+  @override
+  String get projOfferSend => 'Envoyer l’offre';
+
+  @override
+  String get projOfferSent => 'Offre envoyée.';
+
+  @override
+  String get projErrOffer =>
+      'Prix ≥ 1, délai de 1 à 365 jours, 0 à 20 révisions.';
+
+  @override
+  String projRevisionsIncluded(int count) {
+    return '$count révision(s) incluse(s)';
+  }
+
+  @override
+  String get projDeliverTitle => 'Livrer le travail';
+
+  @override
+  String get projDeliverNote => 'Message de livraison';
+
+  @override
+  String get projDeliverLink => 'Lien (Drive, WeTransfer, Figma…)';
+
+  @override
+  String get projDeliverAddPhoto => 'Ajouter une image';
+
+  @override
+  String projDeliverPhotos(int count) {
+    return '$count image(s) jointe(s)';
+  }
+
+  @override
+  String get projDeliverSend => 'Livrer';
+
+  @override
+  String get projDelivered => 'Travail livré. Le client va vérifier.';
+
+  @override
+  String get projDeliverEmpty => 'Ajoutez un message, un lien ou une image.';
+
+  @override
+  String get projDeliveriesTitle => 'Livraisons';
+
+  @override
+  String projDeliveryFile(int n) {
+    return 'Fichier $n';
+  }
+
+  @override
+  String get projNoDelivery => 'Rien n’a encore été livré.';
+
+  @override
+  String get projRevisionAsk => 'Demander une révision';
+
+  @override
+  String get projRevisionHint => 'Ce qu’il faut changer';
+
+  @override
+  String projRevisionLeft(int count) {
+    return '$count révision(s) restante(s)';
+  }
+
+  @override
+  String get projRevisionSent => 'Demande de révision envoyée.';
+
+  @override
+  String get projOpenFileFailed => 'Le fichier n’a pas pu être ouvert.';
+
+  @override
+  String get projStartJob => 'Commencer le travail';
 }

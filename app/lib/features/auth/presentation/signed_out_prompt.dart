@@ -5,6 +5,7 @@ import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/empty_state.dart';
 
 /// Shown on tabs that need an account. Primary: sign in; secondary: create.
 class SignedOutPrompt extends StatelessWidget {
@@ -13,8 +14,11 @@ class SignedOutPrompt extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.body,
+    this.photo,
   });
 
+  /// Ignored (photos are no longer shipped); kept for older call sites.
+  final String? photo;
   final IconData icon;
   final String title;
   final String body;
@@ -35,23 +39,13 @@ class SignedOutPrompt extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 72,
-                height: 72,
-                decoration: BoxDecoration(
-                  color: scheme.primaryContainer,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  icon,
-                  size: 32,
-                  color: scheme.brightness == Brightness.light
-                      ? scheme.primary
-                      : scheme.onPrimaryContainer,
-                ),
-              ),
+              StateVisual(icon: icon, photo: photo),
               const SizedBox(height: AppSpacing.xl),
-              Text(title, style: text.titleLarge, textAlign: TextAlign.center),
+              Text(
+                title,
+                style: text.headlineMedium,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 body,

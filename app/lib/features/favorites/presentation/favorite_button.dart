@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/motion/motion.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
@@ -58,9 +59,30 @@ class FavoriteButton extends ConsumerWidget {
         (false, _) => l10n.favoriteAdd,
       },
       isSelected: saved,
-      icon: Icon(Icons.favorite_border_rounded, color: scheme.onSurfaceVariant),
-      selectedIcon: Icon(Icons.favorite_rounded, color: scheme.error),
+      icon: Icon(Icons.favorite_border_rounded, color: scheme.onSurface),
+      selectedIcon: _Pop(
+        child: Icon(Icons.favorite_rounded, color: scheme.error),
+      ),
       onPressed: onPressed,
+    );
+  }
+}
+
+/// The filled heart pops in once (a small overshoot), unless Reduce Motion.
+class _Pop extends StatelessWidget {
+  const _Pop({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (Motion.reduced(context)) return child;
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.6, end: 1),
+      duration: Motion.base,
+      curve: Motion.settle,
+      builder: (context, s, child) => Transform.scale(scale: s, child: child),
+      child: child,
     );
   }
 }

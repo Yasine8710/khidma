@@ -8,6 +8,7 @@ import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_chip.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../location/application/location_providers.dart';
@@ -28,10 +29,18 @@ const _maxOffset = 5000;
 /// Search: text, category, minimum rating, availability, place, sorting and
 /// paging. Pages load one at a time; each can fail and retry on its own.
 class SearchScreen extends ConsumerStatefulWidget {
-  const SearchScreen({super.key, this.categoryId, this.initialText = ''});
+  const SearchScreen({
+    super.key,
+    this.categoryId,
+    this.initialText = '',
+    this.asTab = false,
+  });
 
   final int? categoryId;
   final String initialText;
+
+  /// Root of the Explore tab: no back button, no keyboard on open.
+  final bool asTab;
 
   @override
   ConsumerState<SearchScreen> createState() => _SearchScreenState();
@@ -180,8 +189,85 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         place == null &&
         where == null;
 
+    final scheme = Theme.of(context).colorScheme;
+    final categories =
+        ref.watch(categoriesProvider).value ?? const <ServiceCategory>[];
+    final n = _filters.activeCount;
+    final filterLabel = n == 0
+        ? l10n.filtersAction
+        : '${l10n.filtersAction} ($n)';
+    // An icon-only filter button on narrow screens or with large text.
+    final compact =
+        MediaQuery.sizeOf(context).width < 360 ||
+        MediaQuery.textScalerOf(context).scale(10) > 13;
+    final filterButton = Semantics(
+      label: l10n.filtersActive(n),
+      excludeSemantics: true,
+      button: true,
+      onTap: _openFilters,
+      child: compact
+          ? Badge(
+              isLabelVisible: n > 0,
+              label: Text('$n'),
+              child: IconButton.filled(
+                onPressed: _openFilters,
+                style: IconButton.styleFrom(
+                  backgroundColor: scheme.primary,
+                  foregroundColor: scheme.onPrimary,
+                  fixedSize: const Size(52, 52),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                  ),
+                ),
+                icon: const Icon(Icons.tune_rounded),
+              ),
+            )
+          : FilledButton.icon(
+              onPressed: _openFilters,
+              style: FilledButton.styleFrom(
+                minimumSize: const Size(52, 52),
+                padding: const EdgeInsetsDirectional.symmetric(
+                  horizontal: AppSpacing.lg,
+                ),
+              ),
+              icon: const Icon(Icons.tune_rounded),
+              label: Text(filterLabel),
+            ),
+    );
+
+    void setCategory(int? id) => setState(() {
+      _filters = SearchFilters(
+        categoryId: id,
+        minRating: _filters.minRating,
+        availableOnly: _filters.availableOnly,
+        sort: _filters.sort,
+        radiusKm: _filters.radiusKm,
+      );
+      _pages = 1;
+    });
+
+    Widget chipRow(List<Widget> chips) => SizedBox(
+      width: double.infinity,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: AppSpacing.gutter,
+        ),
+        child: Row(
+          children: [
+            for (var i = 0; i < chips.length; i++) ...[
+              if (i > 0) const SizedBox(width: AppSpacing.sm),
+              chips[i],
+            ],
+          ],
+        ),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: !widget.asTab,
+        title: widget.asTab ? Text(l10n.navExplore) : null,
         actions: [
           if (mapAvailable)
             IconButton(
@@ -190,25 +276,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               onPressed: () => setState(() => _map = !_map),
             ),
         ],
-        title: TextField(
-          controller: _controller,
-          autofocus: widget.categoryId == null && widget.initialText.isEmpty,
-          textInputAction: TextInputAction.search,
-          maxLength: 100,
-          buildCounter: (
-            _, {
-            required currentLength,
-            required isFocused,
-            maxLength,
-          }) => null,
-          decoration: InputDecoration(
-            hintText: l10n.searchHint,
-            border: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-          ),
-          onChanged: _changed,
-        ),
       ),
       body: SafeArea(
         child: Column(
@@ -216,47 +283,76 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(
                 AppSpacing.gutter,
-                AppSpacing.sm,
+                AppSpacing.xs,
                 AppSpacing.gutter,
-                AppSpacing.sm,
+                AppSpacing.md,
               ),
-              child: Wrap(
-                spacing: AppSpacing.sm,
-                runSpacing: AppSpacing.sm,
-                crossAxisAlignment: WrapCrossAlignment.center,
+              child: Row(
                 children: [
-                  ActionChip(
-                    avatar: const Icon(Icons.place_rounded, size: 18),
-                    label: Text(placeLabel(l10n, locale, place, govs, cities)),
-                    onPressed: () async {
-                      await showPlaceSheet(context);
-                      if (mounted) setState(() => _pages = 1);
-                    },
-                  ),
-                  FilterChip(
-                    avatar: const Icon(Icons.my_location_rounded, size: 18),
-                    label: Text(l10n.nearMe),
-                    selected: where != null,
-                    onSelected: (on) => _toggleNearMe(on),
-                  ),
-                  Semantics(
-                    label: l10n.filtersActive(_filters.activeCount),
-                    excludeSemantics: true,
-                    button: true,
-                    onTap: _openFilters,
-                    child: ActionChip(
-                      avatar: const Icon(Icons.tune_rounded, size: 18),
-                      label: Text(
-                        _filters.activeCount == 0
-                            ? l10n.filtersAction
-                            : '${l10n.filtersAction} (${_filters.activeCount})',
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      autofocus:
+                          !widget.asTab &&
+                          widget.categoryId == null &&
+                          widget.initialText.isEmpty,
+                      textInputAction: TextInputAction.search,
+                      maxLength: 100,
+                      buildCounter: (
+                        _, {
+                        required currentLength,
+                        required isFocused,
+                        maxLength,
+                      }) => null,
+                      decoration: InputDecoration(
+                        hintText: l10n.searchHint,
+                        prefixIcon: Icon(
+                          Icons.search_rounded,
+                          color: scheme.onSurfaceVariant,
+                        ),
                       ),
-                      onPressed: _openFilters,
+                      onChanged: _changed,
                     ),
                   ),
+                  const SizedBox(width: AppSpacing.sm + 2),
+                  filterButton,
                 ],
               ),
             ),
+            // The trades as chips: one tap filters, "Toutes" clears it.
+            chipRow([
+              AppChip(
+                label: l10n.flAllCategories,
+                selected: _filters.categoryId == null,
+                onSelected: (_) => setCategory(null),
+              ),
+              for (final c in categories)
+                AppChip(
+                  label: c.nameFor(locale),
+                  selected: _filters.categoryId == c.id,
+                  onSelected: (on) => setCategory(on ? c.id : null),
+                ),
+            ]),
+            const SizedBox(height: AppSpacing.sm),
+            chipRow([
+              AppChip(
+                icon: Icons.place_outlined,
+                label: placeLabel(l10n, locale, place, govs, cities),
+                selected: place != null,
+                onSelected: (_) async {
+                  await showPlaceSheet(context);
+                  if (mounted) setState(() => _pages = 1);
+                },
+              ),
+              AppChip(
+                icon: Icons.my_location_rounded,
+                label: l10n.nearMe,
+                selected: where != null,
+                onSelected: _toggleNearMe,
+              ),
+            ]),
+            const SizedBox(height: AppSpacing.sm),
+            Divider(height: 1, color: scheme.outlineVariant),
             Expanded(
               child: browsing
                   ? EmptyState(
@@ -324,7 +420,7 @@ class _Results extends ConsumerWidget {
       }
       if (!async.hasValue) {
         if (page == 0) return const _ResultsSkeleton();
-        items.add(const _PageNotice(child: Skeleton(height: 112)));
+        items.add(const _PageNotice(child: Skeleton(height: 92)));
         break;
       }
       final list = async.requireValue;
@@ -337,12 +433,9 @@ class _Results extends ConsumerWidget {
       }
       for (final p in list) {
         items.add(
-          Padding(
-            padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.md),
-            child: ProfessionalCard(
-              professional: p,
-              onTap: () => context.push(AppRoutes.professionalPath(p.id)),
-            ),
+          ProfessionalCard(
+            professional: p,
+            onTap: () => context.push(AppRoutes.professionalPath(p.id)),
           ),
         );
       }
@@ -364,7 +457,12 @@ class _Results extends ConsumerWidget {
     }
 
     return ListView.builder(
-      padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
+      padding: const EdgeInsetsDirectional.fromSTEB(
+        AppSpacing.gutter,
+        AppSpacing.lg,
+        AppSpacing.gutter,
+        AppSpacing.gutter,
+      ),
       itemCount: items.length,
       itemBuilder: (_, i) => items[i],
     );
@@ -378,7 +476,7 @@ class _PageNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.md),
+    padding: const EdgeInsetsDirectional.only(top: AppSpacing.lg),
     child: child,
   );
 }
@@ -392,10 +490,26 @@ class _ResultsSkeleton extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
       children: [
-        for (var i = 0; i < 4; i++) ...[
-          const Skeleton(height: 112, radius: AppRadius.lg),
-          const SizedBox(height: AppSpacing.md),
-        ],
+        for (var i = 0; i < 5; i++)
+          const Padding(
+            padding: EdgeInsetsDirectional.symmetric(vertical: AppSpacing.md),
+            child: Row(
+              children: [
+                Skeleton(width: 64, height: 64),
+                SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Skeleton(width: 160, height: 14),
+                      SizedBox(height: AppSpacing.sm),
+                      Skeleton(width: 100, height: 12),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
       ],
     ),
   );

@@ -10,6 +10,7 @@ import 'package:khidma/features/marketplace/application/marketplace_providers.da
 import 'package:khidma/features/marketplace/data/demo_marketplace_repository.dart';
 import 'package:khidma/features/marketplace/domain/marketplace_domain.dart';
 import 'package:khidma/features/marketplace/presentation/professional_card.dart';
+import 'package:khidma/features/requests/presentation/new_request_screen.dart';
 import 'package:khidma/features/profile/domain/profile_domain.dart';
 
 import '../support/fake_auth_repository.dart';
@@ -39,6 +40,12 @@ void main() {
     ) async {
       await pumpApp(tester);
       expect(find.text('Données de démonstration'), findsOneWidget);
+      // The launcher is taller now: the tiles sit below the fold.
+      await tester.scrollUntilVisible(
+        find.text('Plomberie'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('Plomberie'), findsWidgets);
       final top = (await DemoMarketplaceRepository().search(
         const SearchQuery(limit: 1),
@@ -64,10 +71,15 @@ void main() {
       );
       expect(find.text('Données de démonstration'), findsNothing);
       expect(find.text(_pro), findsNothing);
-      expect(
-        find.text("Ils apparaîtront ici dès qu'ils auront rejoint Khidma."),
-        findsOneWidget,
+      final empty = find.text(
+        "Ils apparaîtront ici dès qu'ils auront rejoint Khidma.",
       );
+      await tester.scrollUntilVisible(
+        empty,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(empty, findsOneWidget);
     });
 
     testWidgets('greets a signed-in person by first name', (tester) async {
@@ -120,15 +132,29 @@ void main() {
       expect(find.text('Vérifié'), findsOneWidget);
     });
 
+    testWidgets('the quote card is on Home and leads to a new request', (
+      tester,
+    ) async {
+      await pumpApp(tester);
+      expect(find.text('Besoin d’un service ?'), findsOneWidget);
+      await tester.ensureVisible(find.text('Demander un devis'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Demander un devis'));
+      await tester.pumpAndSettle();
+      expect(find.byType(NewRequestScreen), findsOneWidget);
+    });
+
     testWidgets('a category tile opens search filtered to it', (tester) async {
       await pumpApp(tester);
-      await tester.ensureVisible(find.text('Électricité').first);
+      // Bring the tile clear of the bottom bar before tapping it.
+      await tester.drag(find.byType(ListView).first, const Offset(0, -250));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Électricité').first);
       await tester.pumpAndSettle();
       expect(find.text('Recherche'), findsNothing); // title is the field
       expect(find.byType(TextField), findsOneWidget);
       expect(find.text(_pro), findsNothing, reason: 'a plumber, not electric');
-      expect(find.byType(Card), findsWidgets);
+      expect(find.byType(ProfessionalCard), findsWidgets);
     });
 
     testWidgets('typing in search finds by name; nonsense shows empty', (

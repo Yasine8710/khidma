@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:khidma/core/storage/preferences_provider.dart';
 import 'package:khidma/app.dart';
+import 'package:khidma/core/motion/ambient_motion.dart';
 import 'package:khidma/features/auth/application/auth_providers.dart';
 import 'package:khidma/features/auth/domain/auth_domain.dart';
 
@@ -26,6 +27,8 @@ Future<ProviderContainer> pumpApp(
   AuthRepository? auth,
   ProfileRepository? profiles,
   List<Override> overrides = const [],
+  bool ambientMotion = false,
+  bool settle = true,
 }) async {
   // Tests start past onboarding unless they say otherwise.
   SharedPreferences.setMockInitialValues({'onboardingSeen': true, ...prefs});
@@ -38,6 +41,8 @@ Future<ProviderContainer> pumpApp(
       profileRepositoryProvider.overrideWithValue(
         profiles ?? FakeProfileRepository(),
       ),
+      // The welcome screen's endless rows would never let the app settle.
+      if (!ambientMotion) ambientMotionProvider.overrideWithValue(false),
       ...overrides,
     ],
   );
@@ -45,7 +50,11 @@ Future<ProviderContainer> pumpApp(
   await tester.pumpWidget(
     UncontrolledProviderScope(container: container, child: const KhidmaApp()),
   );
-  await tester.pumpAndSettle();
+  if (settle) {
+    await tester.pumpAndSettle();
+  } else {
+    await tester.pump();
+  }
   return container;
 }
 
@@ -92,24 +101,41 @@ Future<void> loadAppFonts() async {
     ..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'));
   await icons.load();
 
-  await load('Inter', ['Inter.ttf']);
-  await load('IBMPlexSansArabic', [
-    'IBMPlexSansArabic-Regular.ttf',
-    'IBMPlexSansArabic-Medium.ttf',
-    'IBMPlexSansArabic-SemiBold.ttf',
-    'IBMPlexSansArabic-Bold.ttf',
-  ]);
+  // Latin text uses the platform font on devices; in tests Tajawal (which
+  // has Latin glyphs too) stands in for it under the platform family names.
+  const tajawal = [
+    'Tajawal-Regular.ttf',
+    'Tajawal-Medium.ttf',
+    'Tajawal-Bold.ttf',
+    'Tajawal-ExtraBold.ttf',
+  ];
+  for (final family in [
+    'Tajawal',
+    'Roboto',
+    'CupertinoSystemText',
+    'CupertinoSystemDisplay',
+    '.SF Pro Text',
+    '.SF Pro Display',
+    '.SF UI Text',
+    '.SF UI Display',
+  ]) {
+    await load(family, tajawal);
+  }
 }
 
 /// Scrolls the Profile list (lazy) until [target] is built and visible.
-Future<void> scrollProfileTo(WidgetTester tester, Finder target) =>
-    tester.scrollUntilVisible(
-      target,
-      300,
-      scrollable: find
-          .descendant(
-            of: find.byType(ListView),
-            matching: find.byType(Scrollable),
-          )
-          .first,
-    );
+Future<void> scrollProfileTo(WidgetTester tester, Finder target) async {
+  final scrollable = find
+      .descendant(of: find.byType(ListView), matching: find.byType(Scrollable))
+      .first;
+  await tester.scrollUntilVisible(target, 300, scrollable: scrollable);
+  await tester.ensureVisible(target.first);
+  await tester.pumpAndSettle();
+  // Clear of the floating bottom bar, which sits over the list's lower edge.
+  final screen = tester.view.physicalSize / tester.view.devicePixelRatio;
+  final overlap = tester.getRect(target.first).bottom - (screen.height - 130);
+  if (overlap > 0) {
+    await tester.drag(scrollable, Offset(0, -overlap));
+  }
+  await tester.pumpAndSettle();
+}

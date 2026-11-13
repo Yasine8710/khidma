@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/format/dates.dart';
+import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -209,13 +210,17 @@ class StarPicker extends StatelessWidget {
   }
 }
 
-/// A professional's published reviews: rating, comment, date; never who wrote
-/// them. Nothing is shown while loading, on failure, or when there are none
-/// (the header already says "no reviews yet").
+/// A professional's published reviews as soft cards: rating, comment, month;
+/// never who wrote them. Nothing is shown while loading or on failure; with
+/// none, [emptyText] (when given) says so. No heading: the profile's "Avis"
+/// tab names the section.
 class ReviewsList extends ConsumerStatefulWidget {
-  const ReviewsList({super.key, required this.professionalId});
+  const ReviewsList({super.key, required this.professionalId, this.emptyText});
 
   final String professionalId;
+
+  /// Shown when the professional has no published review yet.
+  final String? emptyText;
 
   @override
   ConsumerState<ReviewsList> createState() => _ReviewsListState();
@@ -263,31 +268,94 @@ class _ReviewsListState extends ConsumerState<ReviewsList> {
       reviews.addAll(async.requireValue);
       more = page == _pages - 1 && async.requireValue.length == reviewsPageSize;
     }
-    if (reviews.isEmpty && footer == null) return const SizedBox.shrink();
+    if (reviews.isEmpty && footer == null) {
+      // Reached only once the first page really loaded (not on failure).
+      final empty = widget.emptyText;
+      if (empty == null) return const SizedBox.shrink();
+      return Text(empty, style: text.bodyMedium?.copyWith(color: muted));
+    }
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: AppSpacing.xl),
-        Semantics(
-          header: true,
-          child: Text(l10n.reviewsTitle, style: text.titleMedium),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        for (final r in reviews)
+        for (var i = 0; i < reviews.length; i++)
           Padding(
             padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.md),
-            child: Semantics(
-              container: true,
-              label:
-                  '${l10n.reviewStar(r.rating)}, ${formatMonthYear(r.month, locale)}',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Wrap(
-                    spacing: AppSpacing.sm,
+            child: _ReviewCard(review: reviews[i], locale: locale),
+          ),
+        if (footer != null || more) const SizedBox(height: AppSpacing.xs),
+        ?footer,
+        if (footer == null && more)
+          AppButton(
+            label: l10n.reviewsMore,
+            variant: AppButtonVariant.secondary,
+            onPressed: () => setState(() => _pages++),
+          ),
+      ],
+    );
+  }
+}
+
+/// One review as a soft card: an anonymous face, "Client · month" and the
+/// stars, then the comment.
+class _ReviewCard extends StatelessWidget {
+  const _ReviewCard({required this.review, required this.locale});
+
+  final Review review;
+  final Locale locale;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
+    final r = review;
+    final month = formatMonthYear(r.month, locale);
+    return StickerBox(
+      padding: const EdgeInsetsDirectional.fromSTEB(
+        AppSpacing.lg,
+        AppSpacing.md,
+        AppSpacing.xs,
+        AppSpacing.lg,
+      ),
+      child: Semantics(
+        container: true,
+        label: '${l10n.reviewStar(r.rating)}, $month',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                ExcludeSemantics(
+                  child: SizedBox.square(
+                    dimension: 36,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: scheme.primaryContainer,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.person_outline_rounded,
+                        size: 20,
+                        color: scheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm + 2),
+                Expanded(
+                  child: Wrap(
+                    spacing: AppSpacing.md,
+                    runSpacing: AppSpacing.xs,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
+                      Text(
+                        '${l10n.reviewAuthorAnon} · $month',
+                        style: text.bodyMedium?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                      // Stars read left to right in every language.
                       Directionality(
                         textDirection: TextDirection.ltr,
                         child: Row(
@@ -298,42 +366,33 @@ class _ReviewsListState extends ConsumerState<ReviewsList> {
                                 Icons.star_rounded,
                                 size: 16,
                                 color: i <= r.rating
-                                    ? AppColors.saffron
-                                    : Theme.of(context).colorScheme.outline,
+                                    ? AppColors.star
+                                    : scheme.outlineVariant,
                               ),
                           ],
                         ),
                       ),
-                      Text(
-                        '${l10n.reviewAuthorAnon} · ${formatMonthYear(r.month, locale)}',
-                        style: text.bodySmall?.copyWith(color: muted),
-                      ),
-                      ReportButton(
-                        target: ReportTarget.review,
-                        targetId: r.id,
-                        compact: true,
-                      ),
                     ],
                   ),
-                  if (r.comment != null && r.comment!.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(
-                        top: AppSpacing.xs,
-                      ),
-                      child: Text(r.comment!, style: text.bodyMedium),
-                    ),
-                ],
-              ),
+                ),
+                ReportButton(
+                  target: ReportTarget.review,
+                  targetId: r.id,
+                  compact: true,
+                ),
+              ],
             ),
-          ),
-        ?footer,
-        if (footer == null && more)
-          AppButton(
-            label: l10n.reviewsMore,
-            variant: AppButtonVariant.secondary,
-            onPressed: () => setState(() => _pages++),
-          ),
-      ],
+            if (r.comment != null && r.comment!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsetsDirectional.only(
+                  top: AppSpacing.sm,
+                  end: AppSpacing.md,
+                ),
+                child: Text(r.comment!, style: text.bodyLarge),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

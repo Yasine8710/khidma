@@ -20,16 +20,7 @@ const _aliProfile = AppProfile(id: 'u1', fullName: 'Ali');
 Future<void> _openDialog(WidgetTester tester) async {
   await tester.tap(find.text('Profil'));
   await tester.pumpAndSettle();
-  await tester.scrollUntilVisible(
-    find.text('Supprimer mon compte'),
-    200,
-    scrollable: find
-        .descendant(
-          of: find.byType(ListView),
-          matching: find.byType(Scrollable),
-        )
-        .first,
-  );
+  await scrollProfileTo(tester, find.text('Supprimer mon compte'));
   await tester.tap(find.text('Supprimer mon compte'));
   await tester.pumpAndSettle();
 }
@@ -113,16 +104,7 @@ void main() {
         await tester.tap(find.text(lang == 'ar' ? 'حسابي' : 'Profile'));
         await tester.pumpAndSettle();
         final label = lang == 'ar' ? 'حذف حسابي' : 'Delete my account';
-        await tester.scrollUntilVisible(
-          find.text(label),
-          200,
-          scrollable: find
-              .descendant(
-                of: find.byType(ListView),
-                matching: find.byType(Scrollable),
-              )
-              .first,
-        );
+        await scrollProfileTo(tester, find.text(label));
         await tester.tap(find.text(label));
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextField), word);
@@ -175,16 +157,7 @@ void main() {
         await tester.tap(find.text('Profil'));
         await tester.pumpAndSettle();
         profiles.failNext = ProfileFailure.network;
-        await tester.scrollUntilVisible(
-          find.text('Supprimer mon compte'),
-          200,
-          scrollable: find
-              .descendant(
-                of: find.byType(ListView),
-                matching: find.byType(Scrollable),
-              )
-              .first,
-        );
+        await scrollProfileTo(tester, find.text('Supprimer mon compte'));
         await tester.tap(find.text('Supprimer mon compte'));
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextField), 'SUPPRIMER');
@@ -322,16 +295,7 @@ void main() {
     );
     await tester.tap(find.text('حسابي'));
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
-      find.text('حذف حسابي'),
-      200,
-      scrollable: find
-          .descendant(
-            of: find.byType(ListView),
-            matching: find.byType(Scrollable),
-          )
-          .first,
-    );
+    await scrollProfileTo(tester, find.text('حذف حسابي'));
     await tester.ensureVisible(find.text('حذف حسابي'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('حذف حسابي'));

@@ -6,18 +6,21 @@ import '../../l10n/generated/app_localizations.dart';
 
 enum BadgeTone { neutral, info, success, warning, error }
 
-/// Small status pill. Always carries text (and usually an icon): color alone
-/// never conveys status.
+/// Small rounded pill in a soft tint of its tone, like "Documents vérifiés"
+/// on a profile. Always carries text (and usually an icon): colour alone
+/// never conveys status. [filled] uses the solid tone with surface-coloured
+/// text, for the rare badge that must stand out.
 class AppBadge extends StatelessWidget {
   const AppBadge({
     super.key,
     required this.label,
     this.tone = BadgeTone.neutral,
     this.icon,
+    this.filled = false,
   });
 
   /// Shown only when an admin has verified the professional. Callers must
-  /// not render it from unverified data.
+  /// not render it from unverified data. Green, with a check seal.
   factory AppBadge.verified(BuildContext context) => AppBadge(
     label: AppLocalizations.of(context).verified,
     tone: BadgeTone.success,
@@ -28,38 +31,43 @@ class AppBadge extends StatelessWidget {
   final BadgeTone tone;
   final IconData? icon;
 
+  /// Solid pill: the tone colour as background, surface-coloured text.
+  final bool filled;
+
   /// Foreground color for [tone] in the given brightness.
   static Color foreground(BadgeTone tone, ColorScheme scheme) {
     final dark = scheme.brightness == Brightness.dark;
     return switch (tone) {
-      BadgeTone.neutral =>
-        dark ? scheme.onSurfaceVariant : AppColors.mutedStrong,
-      BadgeTone.info => dark ? AppColors.darkPrimary : AppColors.primary,
+      BadgeTone.neutral => scheme.onSurfaceVariant,
+      BadgeTone.info => scheme.primary,
       BadgeTone.success => dark ? AppColors.darkSuccess : AppColors.success,
       BadgeTone.warning => dark ? AppColors.darkWarning : AppColors.warning,
-      BadgeTone.error => dark ? AppColors.darkError : AppColors.error,
+      BadgeTone.error => scheme.error,
     };
   }
 
-  /// Background: the foreground tinted over the surface.
+  /// Background: a soft, opaque tint of the tone over the surface (light
+  /// enough that the tone text keeps 4.5:1).
   static Color background(BadgeTone tone, ColorScheme scheme) =>
       Color.alphaBlend(
-        foreground(tone, scheme).withValues(alpha: 0.12),
+        foreground(tone, scheme).withValues(alpha: 0.06),
         scheme.surface,
       );
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final fg = foreground(tone, scheme);
+    final ink = foreground(tone, scheme);
+    final fg = filled ? scheme.surface : ink;
+    final bg = filled ? ink : background(tone, scheme);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: background(tone, scheme),
-        borderRadius: BorderRadius.circular(AppRadius.sm),
+        color: bg,
+        borderRadius: BorderRadius.circular(AppRadius.pill),
       ),
       child: Padding(
         padding: const EdgeInsetsDirectional.symmetric(
-          horizontal: AppSpacing.sm,
+          horizontal: AppSpacing.sm + 2,
           vertical: AppSpacing.xs,
         ),
         child: Row(
@@ -73,7 +81,7 @@ class AppBadge extends StatelessWidget {
               child: Text(
                 label,
                 style: Theme.of(context).textTheme.labelSmall
-                    ?.copyWith(color: fg),
+                    ?.copyWith(color: fg, fontSize: 12),
               ),
             ),
           ],

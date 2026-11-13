@@ -3,12 +3,13 @@
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const PATH = /^[0-9a-f-]{36}\/[A-Za-z0-9._-]{1,100}\.(jpg|jpeg|png|webp|pdf)$/;
 
-/** What the signer may be asked for: verification documents of one request or
- * the images of one reported conversation. Anything else is refused. */
+/** What the signer may be asked for: verification documents of one request,
+ * the images of one reported conversation, or the proofs of one payment
+ * order. Anything else is refused. */
 export function parseRequest(body) {
   if (!body || typeof body !== 'object') return null;
   const { kind, id } = body;
-  if ((kind !== 'verification' && kind !== 'chat') || typeof id !== 'string' || !UUID.test(id)) return null;
+  if (!Object.hasOwn(KINDS, kind) || typeof id !== 'string' || !UUID.test(id)) return null;
   return { kind, id };
 }
 
@@ -16,6 +17,7 @@ export function parseRequest(body) {
 export const KINDS = {
   verification: { bucket: 'verification-docs', seconds: 120 },
   chat: { bucket: 'chat-images', seconds: 120 },
+  payment: { bucket: 'payment-proofs', seconds: 120 },
 };
 
 /** Image paths out of a conversation report context, in message order. */

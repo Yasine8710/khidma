@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:khidma/core/router/app_router.dart';
+import 'package:khidma/features/reviews/presentation/review_widgets.dart';
 import 'package:khidma/core/router/app_routes.dart';
 import 'package:khidma/features/auth/domain/auth_domain.dart';
 import 'package:khidma/features/offers/domain/offers_domain.dart';
@@ -287,7 +288,14 @@ void main() {
       tester,
     ) async {
       await openProfile(tester, FakeReviewsRepository());
-      expect(find.text('Avis'), findsNothing);
+      // The profile's stat card is also called "Avis"; the list has no heading.
+      expect(
+        find.descendant(
+          of: find.byType(ReviewsList),
+          matching: find.text('Avis'),
+        ),
+        findsNothing,
+      );
     });
 
     testWidgets('paging: more reviews on demand', (tester) async {

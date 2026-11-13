@@ -118,6 +118,66 @@ abstract class AppLocalizations {
   /// **'Choisir la langue'**
   String get chooseLanguage;
 
+  /// No description provided for @acctMemberCard.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carte de membre'**
+  String get acctMemberCard;
+
+  /// No description provided for @acctAccountType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de compte'**
+  String get acctAccountType;
+
+  /// No description provided for @acctCustomer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get acctCustomer;
+
+  /// No description provided for @acctSettings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réglages'**
+  String get acctSettings;
+
+  /// No description provided for @acctAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte'**
+  String get acctAccount;
+
+  /// No description provided for @acctWorkshop.
+  ///
+  /// In fr, this message translates to:
+  /// **'Atelier'**
+  String get acctWorkshop;
+
+  /// No description provided for @acctStatus.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get acctStatus;
+
+  /// No description provided for @acctTools.
+  ///
+  /// In fr, this message translates to:
+  /// **'Outils'**
+  String get acctTools;
+
+  /// No description provided for @profileHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aide'**
+  String get profileHelp;
+
+  /// No description provided for @profileHelpTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comment ça marche'**
+  String get profileHelpTitle;
+
   /// No description provided for @languageFrench.
   ///
   /// In fr, this message translates to:
@@ -159,6 +219,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Accueil'**
   String get navHome;
+
+  /// No description provided for @navExplore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Explorer'**
+  String get navExplore;
 
   /// No description provided for @navRequests.
   ///
@@ -825,6 +891,1218 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'De quel service avez-vous besoin ?'**
   String get homeSubtitle;
+
+  /// No description provided for @discLicenceKicker.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fiche professionnelle'**
+  String get discLicenceKicker;
+
+  /// No description provided for @discFactExperience.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expérience'**
+  String get discFactExperience;
+
+  /// No description provided for @discFactAvailability.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponibilité'**
+  String get discFactAvailability;
+
+  /// No description provided for @discFactArea.
+  ///
+  /// In fr, this message translates to:
+  /// **'Zone'**
+  String get discFactArea;
+
+  /// No description provided for @discHintPlumbing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fuites, sanitaires, chauffe-eau'**
+  String get discHintPlumbing;
+
+  /// No description provided for @discHintElectricity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Installations, pannes, tableaux'**
+  String get discHintElectricity;
+
+  /// No description provided for @discHintAirConditioning.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pose, entretien, réparation'**
+  String get discHintAirConditioning;
+
+  /// No description provided for @discHintMechanics.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réparation et entretien de véhicules'**
+  String get discHintMechanics;
+
+  /// No description provided for @discHintPainting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Intérieur et extérieur'**
+  String get discHintPainting;
+
+  /// No description provided for @discHintCarpentry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Meubles, portes, fenêtres en bois'**
+  String get discHintCarpentry;
+
+  /// No description provided for @discHintCleaning.
+  ///
+  /// In fr, this message translates to:
+  /// **'Maisons, bureaux, fin de chantier'**
+  String get discHintCleaning;
+
+  /// No description provided for @discHintAppliance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lave-linge, réfrigérateurs, fours'**
+  String get discHintAppliance;
+
+  /// No description provided for @discHintConstruction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Maçonnerie, carrelage, rénovation'**
+  String get discHintConstruction;
+
+  /// No description provided for @discHintGardening.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jardins et espaces verts'**
+  String get discHintGardening;
+
+  /// No description provided for @discHintMoving.
+  ///
+  /// In fr, this message translates to:
+  /// **'Transport et déménagement'**
+  String get discHintMoving;
+
+  /// No description provided for @discHintMaintenance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Petits travaux et dépannage'**
+  String get discHintMaintenance;
+
+  /// No description provided for @homeQuoteTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Besoin d’un service ?'**
+  String get homeQuoteTitle;
+
+  /// No description provided for @homeQuoteBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Décrivez-le une fois et recevez des offres de professionnels.'**
+  String get homeQuoteBody;
+
+  /// No description provided for @avatarChange.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer la photo'**
+  String get avatarChange;
+
+  /// No description provided for @avatarChoose.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une photo'**
+  String get avatarChoose;
+
+  /// No description provided for @avatarRemove.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer la photo'**
+  String get avatarRemove;
+
+  /// No description provided for @avatarFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de mettre à jour votre photo. Essayez une autre image.'**
+  String get avatarFailed;
+
+  /// No description provided for @avatarLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo de profil'**
+  String get avatarLabel;
+
+  /// No description provided for @statRating.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note'**
+  String get statRating;
+
+  /// No description provided for @statReviews.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avis'**
+  String get statReviews;
+
+  /// No description provided for @statYears.
+  ///
+  /// In fr, this message translates to:
+  /// **'Années'**
+  String get statYears;
+
+  /// No description provided for @billTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Abonnement'**
+  String get billTitle;
+
+  /// No description provided for @billCurrent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mon abonnement'**
+  String get billCurrent;
+
+  /// No description provided for @billNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun abonnement pour le moment.'**
+  String get billNone;
+
+  /// No description provided for @billStatusLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get billStatusLabel;
+
+  /// No description provided for @billStatusActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actif'**
+  String get billStatusActive;
+
+  /// No description provided for @billStatusPastDue.
+  ///
+  /// In fr, this message translates to:
+  /// **'En retard'**
+  String get billStatusPastDue;
+
+  /// No description provided for @billStatusExpired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expiré'**
+  String get billStatusExpired;
+
+  /// No description provided for @billStatusCancelled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Résilié'**
+  String get billStatusCancelled;
+
+  /// No description provided for @billValidUntil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valable jusqu\'au'**
+  String get billValidUntil;
+
+  /// No description provided for @billDaysLeftLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jours restants'**
+  String get billDaysLeftLabel;
+
+  /// No description provided for @billDaysLeft.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Expire aujourd\'hui} =1{1 jour restant} other{{count} jours restants}}'**
+  String billDaysLeft(int count);
+
+  /// No description provided for @billChoosePlan.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une formule'**
+  String get billChoosePlan;
+
+  /// No description provided for @billPeriod.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 jour} other{{count} jours}}'**
+  String billPeriod(int count);
+
+  /// No description provided for @billChooseMethod.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mode de paiement'**
+  String get billChooseMethod;
+
+  /// No description provided for @billMethodFlouci.
+  ///
+  /// In fr, this message translates to:
+  /// **'Flouci'**
+  String get billMethodFlouci;
+
+  /// No description provided for @billMethodFlouciHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement en ligne, confirmé automatiquement'**
+  String get billMethodFlouciHint;
+
+  /// No description provided for @billMethodD17.
+  ///
+  /// In fr, this message translates to:
+  /// **'D17'**
+  String get billMethodD17;
+
+  /// No description provided for @billMethodD17Hint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoi depuis votre portefeuille La Poste, confirmé par notre équipe'**
+  String get billMethodD17Hint;
+
+  /// No description provided for @billMethodBank.
+  ///
+  /// In fr, this message translates to:
+  /// **'Virement bancaire'**
+  String get billMethodBank;
+
+  /// No description provided for @billMethodBankHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Virement vers notre compte, confirmé par notre équipe'**
+  String get billMethodBankHint;
+
+  /// No description provided for @billPay.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payer'**
+  String get billPay;
+
+  /// No description provided for @billFlouciOpened.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le paiement s\'est ouvert dans votre navigateur. Revenez ici ensuite.'**
+  String get billFlouciOpened;
+
+  /// No description provided for @billMyPayments.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes paiements'**
+  String get billMyPayments;
+
+  /// No description provided for @billNoPayments.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun paiement pour le moment.'**
+  String get billNoPayments;
+
+  /// No description provided for @billOrderPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente'**
+  String get billOrderPending;
+
+  /// No description provided for @billOrderAwaiting.
+  ///
+  /// In fr, this message translates to:
+  /// **'À confirmer'**
+  String get billOrderAwaiting;
+
+  /// No description provided for @billOrderPaid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé'**
+  String get billOrderPaid;
+
+  /// No description provided for @billOrderFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échoué'**
+  String get billOrderFailed;
+
+  /// No description provided for @billOrderCancelled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulé'**
+  String get billOrderCancelled;
+
+  /// No description provided for @billOrderRejected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refusé'**
+  String get billOrderRejected;
+
+  /// No description provided for @billInstructionsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Instructions de paiement'**
+  String get billInstructionsTitle;
+
+  /// No description provided for @billAmount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant'**
+  String get billAmount;
+
+  /// No description provided for @billReference.
+  ///
+  /// In fr, this message translates to:
+  /// **'Référence'**
+  String get billReference;
+
+  /// No description provided for @billReferenceHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écrivez cette référence dans le motif du virement ou la note D17.'**
+  String get billReferenceHint;
+
+  /// No description provided for @billCopy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copier'**
+  String get billCopy;
+
+  /// No description provided for @billCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copié'**
+  String get billCopied;
+
+  /// No description provided for @billPayTo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payer à'**
+  String get billPayTo;
+
+  /// No description provided for @billBankName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Banque'**
+  String get billBankName;
+
+  /// No description provided for @billHolder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titulaire'**
+  String get billHolder;
+
+  /// No description provided for @billRib.
+  ///
+  /// In fr, this message translates to:
+  /// **'RIB'**
+  String get billRib;
+
+  /// No description provided for @billD17Number.
+  ///
+  /// In fr, this message translates to:
+  /// **'Numéro D17'**
+  String get billD17Number;
+
+  /// No description provided for @billNoDetails.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les coordonnées de paiement ne sont pas encore disponibles.'**
+  String get billNoDetails;
+
+  /// No description provided for @billIPaid.
+  ///
+  /// In fr, this message translates to:
+  /// **'J\'ai payé'**
+  String get billIPaid;
+
+  /// No description provided for @billPaidTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre paiement'**
+  String get billPaidTitle;
+
+  /// No description provided for @billNoteLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note (facultatif)'**
+  String get billNoteLabel;
+
+  /// No description provided for @billSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer'**
+  String get billSend;
+
+  /// No description provided for @billCancelOrder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler la commande'**
+  String get billCancelOrder;
+
+  /// No description provided for @billAwaitingBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Merci. Notre équipe vérifie votre paiement, votre abonnement démarre dès sa confirmation.'**
+  String get billAwaitingBody;
+
+  /// No description provided for @billNotProTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devenez professionnel d\'abord'**
+  String get billNotProTitle;
+
+  /// No description provided for @billNotProBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'abonnement est réservé aux professionnels. Créez d\'abord votre profil.'**
+  String get billNotProBody;
+
+  /// No description provided for @billNotProCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer mon profil'**
+  String get billNotProCta;
+
+  /// No description provided for @billErrNetwork.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas de connexion. Réessayez.'**
+  String get billErrNetwork;
+
+  /// No description provided for @billErrSignedIn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reconnectez-vous puis réessayez.'**
+  String get billErrSignedIn;
+
+  /// No description provided for @billErrRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop de commandes aujourd\'hui. Réessayez demain.'**
+  String get billErrRate;
+
+  /// No description provided for @billErrInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette demande n\'est pas valide.'**
+  String get billErrInvalid;
+
+  /// No description provided for @billErrNotFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette commande n\'existe plus.'**
+  String get billErrNotFound;
+
+  /// No description provided for @billErrNotConfigured.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les paiements ne sont pas encore disponibles.'**
+  String get billErrNotConfigured;
+
+  /// No description provided for @billFlouciUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Flouci n\'est pas encore disponible, utilisez D17 ou le virement.'**
+  String get billFlouciUnavailable;
+
+  /// No description provided for @billCannotOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d\'ouvrir le lien de paiement.'**
+  String get billCannotOpen;
+
+  /// No description provided for @billErrUnknown.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une erreur est survenue. Réessayez.'**
+  String get billErrUnknown;
+
+  /// No description provided for @flTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Services digitaux'**
+  String get flTitle;
+
+  /// No description provided for @flHomeSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Développeurs, designers, monteurs, rédacteurs…'**
+  String get flHomeSubtitle;
+
+  /// No description provided for @flSearchHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un freelance ou une compétence…'**
+  String get flSearchHint;
+
+  /// No description provided for @flCategories.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégories'**
+  String get flCategories;
+
+  /// No description provided for @flAllCategories.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes'**
+  String get flAllCategories;
+
+  /// No description provided for @flResultsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Freelances'**
+  String get flResultsTitle;
+
+  /// No description provided for @flEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun freelance trouvé'**
+  String get flEmptyTitle;
+
+  /// No description provided for @flEmptyBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essayez un autre mot ou une autre catégorie.'**
+  String get flEmptyBody;
+
+  /// No description provided for @flLoadFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger les freelances.'**
+  String get flLoadFailed;
+
+  /// No description provided for @flPriceFrom.
+  ///
+  /// In fr, this message translates to:
+  /// **'à partir de {price} / {unit}'**
+  String flPriceFrom(String price, String unit);
+
+  /// No description provided for @flUnitProject.
+  ///
+  /// In fr, this message translates to:
+  /// **'projet'**
+  String get flUnitProject;
+
+  /// No description provided for @flUnitHour.
+  ///
+  /// In fr, this message translates to:
+  /// **'heure'**
+  String get flUnitHour;
+
+  /// No description provided for @flUnitDay.
+  ///
+  /// In fr, this message translates to:
+  /// **'jour'**
+  String get flUnitDay;
+
+  /// No description provided for @flNotFoundTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Freelance introuvable'**
+  String get flNotFoundTitle;
+
+  /// No description provided for @flNotFoundBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette page n’existe plus ou n’est pas publiée.'**
+  String get flNotFoundBody;
+
+  /// No description provided for @flFactPrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tarif'**
+  String get flFactPrice;
+
+  /// No description provided for @flFactLanguages.
+  ///
+  /// In fr, this message translates to:
+  /// **'Langues'**
+  String get flFactLanguages;
+
+  /// No description provided for @flSkills.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compétences'**
+  String get flSkills;
+
+  /// No description provided for @flPortfolio.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réalisations'**
+  String get flPortfolio;
+
+  /// No description provided for @flOpenItem.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir : {title}'**
+  String flOpenItem(String title);
+
+  /// No description provided for @flKindImage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photo'**
+  String get flKindImage;
+
+  /// No description provided for @flKindClip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clip vidéo'**
+  String get flKindClip;
+
+  /// No description provided for @flKindVideoLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vidéo en ligne'**
+  String get flKindVideoLink;
+
+  /// No description provided for @flKindLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien'**
+  String get flKindLink;
+
+  /// No description provided for @flTestimonials.
+  ///
+  /// In fr, this message translates to:
+  /// **'Témoignages clients'**
+  String get flTestimonials;
+
+  /// No description provided for @flTestimonialLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Témoignage client'**
+  String get flTestimonialLabel;
+
+  /// No description provided for @flTestimonialsNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ces témoignages viennent d’anciens clients invités par le freelance. Ils sont différents des avis vérifiés laissés après un travail réalisé via Khidma.'**
+  String get flTestimonialsNote;
+
+  /// No description provided for @flTestimonialsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore de témoignage.'**
+  String get flTestimonialsEmpty;
+
+  /// No description provided for @flTestimonialProject.
+  ///
+  /// In fr, this message translates to:
+  /// **'Projet : {title}'**
+  String flTestimonialProject(String title);
+
+  /// No description provided for @flStars.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} sur 5'**
+  String flStars(int count);
+
+  /// No description provided for @flDashRow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activité freelance'**
+  String get flDashRow;
+
+  /// No description provided for @flManageTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mon activité freelance'**
+  String get flManageTitle;
+
+  /// No description provided for @flIntroTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Proposez vos services digitaux'**
+  String get flIntroTitle;
+
+  /// No description provided for @flIntroBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Développement, design, montage, marketing, rédaction… Créez une page publique avec vos réalisations et des témoignages clients. Votre identité vérifiée est la même que pour votre profil de métier : une seule vérification suffit.'**
+  String get flIntroBody;
+
+  /// No description provided for @flBecome.
+  ///
+  /// In fr, this message translates to:
+  /// **'Devenir freelance'**
+  String get flBecome;
+
+  /// No description provided for @flSectionProfile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ma page'**
+  String get flSectionProfile;
+
+  /// No description provided for @flFieldName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom affiché'**
+  String get flFieldName;
+
+  /// No description provided for @flFieldHeadline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre professionnel'**
+  String get flFieldHeadline;
+
+  /// No description provided for @flFieldHeadlineHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. Développeur Flutter'**
+  String get flFieldHeadlineHint;
+
+  /// No description provided for @flFieldCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie'**
+  String get flFieldCategory;
+
+  /// No description provided for @flFieldBio.
+  ///
+  /// In fr, this message translates to:
+  /// **'Présentation'**
+  String get flFieldBio;
+
+  /// No description provided for @flFieldBioHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'20 caractères minimum pour publier, 2000 au maximum.'**
+  String get flFieldBioHelp;
+
+  /// No description provided for @flFieldSkills.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compétences'**
+  String get flFieldSkills;
+
+  /// No description provided for @flFieldSkillsHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Séparées par des virgules, 12 au maximum.'**
+  String get flFieldSkillsHelp;
+
+  /// No description provided for @flFieldLanguages.
+  ///
+  /// In fr, this message translates to:
+  /// **'Langues'**
+  String get flFieldLanguages;
+
+  /// No description provided for @flFieldLanguagesHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Séparées par des virgules, 6 au maximum.'**
+  String get flFieldLanguagesHelp;
+
+  /// No description provided for @flFieldYears.
+  ///
+  /// In fr, this message translates to:
+  /// **'Années d’expérience'**
+  String get flFieldYears;
+
+  /// No description provided for @flFieldPrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tarif de départ (DT)'**
+  String get flFieldPrice;
+
+  /// No description provided for @flFieldUnit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Par'**
+  String get flFieldUnit;
+
+  /// No description provided for @flFieldAvailability.
+  ///
+  /// In fr, this message translates to:
+  /// **'Disponibilité'**
+  String get flFieldAvailability;
+
+  /// No description provided for @flErrName.
+  ///
+  /// In fr, this message translates to:
+  /// **'2 à 80 caractères.'**
+  String get flErrName;
+
+  /// No description provided for @flErrHeadline.
+  ///
+  /// In fr, this message translates to:
+  /// **'5 à 100 caractères.'**
+  String get flErrHeadline;
+
+  /// No description provided for @flErrBio.
+  ///
+  /// In fr, this message translates to:
+  /// **'2000 caractères au maximum.'**
+  String get flErrBio;
+
+  /// No description provided for @flErrYears.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entre 0 et 60.'**
+  String get flErrYears;
+
+  /// No description provided for @flErrPrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant invalide.'**
+  String get flErrPrice;
+
+  /// No description provided for @flErrTags.
+  ///
+  /// In fr, this message translates to:
+  /// **'30 caractères par élément, {max} éléments au plus.'**
+  String flErrTags(int max);
+
+  /// No description provided for @flSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Page enregistrée.'**
+  String get flSaved;
+
+  /// No description provided for @flIdentityTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identité'**
+  String get flIdentityTitle;
+
+  /// No description provided for @flIdentityVerified.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identité vérifiée.'**
+  String get flIdentityVerified;
+
+  /// No description provided for @flIdentityNotVerified.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identité pas encore vérifiée.'**
+  String get flIdentityNotVerified;
+
+  /// No description provided for @flIdentityShared.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une seule vérification sert à votre profil de métier et à votre page freelance.'**
+  String get flIdentityShared;
+
+  /// No description provided for @flPublish.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publier ma page'**
+  String get flPublish;
+
+  /// No description provided for @flPublishedHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre page est visible dans Services digitaux.'**
+  String get flPublishedHint;
+
+  /// No description provided for @flUnpublishedHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre page n’est pas visible pour le moment.'**
+  String get flUnpublishedHint;
+
+  /// No description provided for @flPublishBlocked.
+  ///
+  /// In fr, this message translates to:
+  /// **'La publication est bloquée tant que votre identité n’est pas vérifiée.'**
+  String get flPublishBlocked;
+
+  /// No description provided for @flErrNotVerified.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre identité n’est pas encore vérifiée. Faites-la vérifier pour publier.'**
+  String get flErrNotVerified;
+
+  /// No description provided for @flErrIncomplete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Page incomplète : ajoutez un numéro de téléphone de contact dans votre profil de métier, puis renseignez nom, titre, catégorie et présentation (20 caractères minimum).'**
+  String get flErrIncomplete;
+
+  /// No description provided for @flErrSuspended.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre compte est suspendu : la publication est impossible.'**
+  String get flErrSuspended;
+
+  /// No description provided for @flErrGeneric.
+  ///
+  /// In fr, this message translates to:
+  /// **'L’opération a échoué. Vérifiez votre connexion et réessayez.'**
+  String get flErrGeneric;
+
+  /// No description provided for @flErrNotConfigured.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le service n’est pas disponible pour le moment.'**
+  String get flErrNotConfigured;
+
+  /// No description provided for @flErrInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Certaines informations sont refusées. Vérifiez-les et réessayez.'**
+  String get flErrInvalid;
+
+  /// No description provided for @flErrRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop de demandes. Réessayez plus tard.'**
+  String get flErrRate;
+
+  /// No description provided for @flPortCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} sur {max} réalisations'**
+  String flPortCount(int count, int max);
+
+  /// No description provided for @flPortEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune réalisation pour le moment.'**
+  String get flPortEmpty;
+
+  /// No description provided for @flPortAddPhoto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une photo'**
+  String get flPortAddPhoto;
+
+  /// No description provided for @flPortAddClip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un clip (30 s max)'**
+  String get flPortAddClip;
+
+  /// No description provided for @flPortAddVideoLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une vidéo en ligne'**
+  String get flPortAddVideoLink;
+
+  /// No description provided for @flPortAddLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un lien'**
+  String get flPortAddLink;
+
+  /// No description provided for @flPortLimit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Limite de 24 réalisations atteinte.'**
+  String get flPortLimit;
+
+  /// No description provided for @flPortTooLarge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fichier trop lourd (25 Mo au maximum).'**
+  String get flPortTooLarge;
+
+  /// No description provided for @flPortBadFormat.
+  ///
+  /// In fr, this message translates to:
+  /// **'Format non pris en charge : utilisez un clip mp4 ou webm, ou ajoutez un lien vidéo.'**
+  String get flPortBadFormat;
+
+  /// No description provided for @flFieldTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre'**
+  String get flFieldTitle;
+
+  /// No description provided for @flFieldDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Description (facultatif)'**
+  String get flFieldDescription;
+
+  /// No description provided for @flFieldUrl.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse du lien'**
+  String get flFieldUrl;
+
+  /// No description provided for @flErrTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'2 à 100 caractères.'**
+  String get flErrTitle;
+
+  /// No description provided for @flErrDescription.
+  ///
+  /// In fr, this message translates to:
+  /// **'500 caractères au maximum.'**
+  String get flErrDescription;
+
+  /// No description provided for @flErrUrlVideo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien https YouTube ou Vimeo uniquement.'**
+  String get flErrUrlVideo;
+
+  /// No description provided for @flErrUrlLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrez une adresse https valide.'**
+  String get flErrUrlLink;
+
+  /// No description provided for @flSheetAdd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter'**
+  String get flSheetAdd;
+
+  /// No description provided for @flSheetChooseFile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir le fichier'**
+  String get flSheetChooseFile;
+
+  /// No description provided for @flItemEdit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier'**
+  String get flItemEdit;
+
+  /// No description provided for @flItemDelete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get flItemDelete;
+
+  /// No description provided for @flItemDeleteTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer cette réalisation ?'**
+  String get flItemDeleteTitle;
+
+  /// No description provided for @flItemDeleteBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Elle ne sera plus visible sur votre page.'**
+  String get flItemDeleteBody;
+
+  /// No description provided for @flUploading.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoi en cours…'**
+  String get flUploading;
+
+  /// No description provided for @flInvTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Invitations de témoignage'**
+  String get flInvTitle;
+
+  /// No description provided for @flInvHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyez un lien personnel à un ancien client : il écrit son témoignage sur une page web, sans compte. Le lien est valable 30 jours et ne sert qu’une fois.'**
+  String get flInvHint;
+
+  /// No description provided for @flInvCreate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer un lien d’invitation'**
+  String get flInvCreate;
+
+  /// No description provided for @flInvLabelField.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour qui ? (facultatif)'**
+  String get flInvLabelField;
+
+  /// No description provided for @flInvNotConfigured.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les liens de témoignage ne sont pas encore configurés dans cette version de l’application.'**
+  String get flInvNotConfigured;
+
+  /// No description provided for @flInvLinkTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien créé'**
+  String get flInvLinkTitle;
+
+  /// No description provided for @flInvLinkWarn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copiez-le maintenant : il ne sera plus affiché.'**
+  String get flInvLinkWarn;
+
+  /// No description provided for @flInvCopy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copier le lien'**
+  String get flInvCopy;
+
+  /// No description provided for @flInvCopied.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien copié.'**
+  String get flInvCopied;
+
+  /// No description provided for @flInvShare.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partager par WhatsApp'**
+  String get flInvShare;
+
+  /// No description provided for @flInvShareText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bonjour, pourriez-vous laisser un témoignage sur notre collaboration ? {url}'**
+  String flInvShareText(String url);
+
+  /// No description provided for @flInvEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune invitation pour le moment.'**
+  String get flInvEmpty;
+
+  /// No description provided for @flInvStatusOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente'**
+  String get flInvStatusOpen;
+
+  /// No description provided for @flInvStatusUsed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisée'**
+  String get flInvStatusUsed;
+
+  /// No description provided for @flInvStatusExpired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expirée'**
+  String get flInvStatusExpired;
+
+  /// No description provided for @flInvExpires.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expire le {date}'**
+  String flInvExpires(String date);
+
+  /// No description provided for @flInvNoLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans nom'**
+  String get flInvNoLabel;
+
+  /// No description provided for @flInvRevoke.
+  ///
+  /// In fr, this message translates to:
+  /// **'Révoquer'**
+  String get flInvRevoke;
+
+  /// No description provided for @flInvRevokeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Révoquer cette invitation ?'**
+  String get flInvRevokeTitle;
+
+  /// No description provided for @flInvRevokeBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le lien ne fonctionnera plus.'**
+  String get flInvRevokeBody;
+
+  /// No description provided for @flInvLimit.
+  ///
+  /// In fr, this message translates to:
+  /// **'20 invitations en attente au maximum.'**
+  String get flInvLimit;
 
   /// No description provided for @searchHint.
   ///
@@ -1522,6 +2800,30 @@ abstract class AppLocalizations {
   /// **'Retirer de la liste'**
   String get regUnpublish;
 
+  /// No description provided for @regDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminer'**
+  String get regDone;
+
+  /// No description provided for @regUsePosition.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utiliser ma position actuelle'**
+  String get regUsePosition;
+
+  /// No description provided for @regPositionSet.
+  ///
+  /// In fr, this message translates to:
+  /// **'Position approximative enregistrée (environ 1 km).'**
+  String get regPositionSet;
+
+  /// No description provided for @regPositionFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Position introuvable. Vérifiez l’autorisation de localisation : sinon la carte utilisera votre gouvernorat.'**
+  String get regPositionFailed;
+
   /// No description provided for @regSaveDraft.
   ///
   /// In fr, this message translates to:
@@ -1815,6 +3117,72 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Mes demandes'**
   String get reqMineTitle;
+
+  /// No description provided for @flowRef.
+  ///
+  /// In fr, this message translates to:
+  /// **'N° {code}'**
+  String flowRef(String code);
+
+  /// No description provided for @flowRequestCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 demande} other{{count} demandes}}'**
+  String flowRequestCount(int count);
+
+  /// No description provided for @flowSecService.
+  ///
+  /// In fr, this message translates to:
+  /// **'Service'**
+  String get flowSecService;
+
+  /// No description provided for @flowSecNeed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le besoin'**
+  String get flowSecNeed;
+
+  /// No description provided for @flowSecWhere.
+  ///
+  /// In fr, this message translates to:
+  /// **'Où'**
+  String get flowSecWhere;
+
+  /// No description provided for @flowSecWhen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quand'**
+  String get flowSecWhen;
+
+  /// No description provided for @flowSecPhotos.
+  ///
+  /// In fr, this message translates to:
+  /// **'Photos'**
+  String get flowSecPhotos;
+
+  /// No description provided for @flowFactPlace.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lieu'**
+  String get flowFactPlace;
+
+  /// No description provided for @flowFactBudget.
+  ///
+  /// In fr, this message translates to:
+  /// **'Budget indicatif'**
+  String get flowFactBudget;
+
+  /// No description provided for @flowFactNeededBy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Souhaité pour le'**
+  String get flowFactNeededBy;
+
+  /// No description provided for @flowFactExpires.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expire le'**
+  String get flowFactExpires;
 
   /// No description provided for @reqEmptyCta.
   ///
@@ -3045,6 +4413,822 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).'**
   String get verifFailImage;
+
+  /// No description provided for @reqFilterAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes'**
+  String get reqFilterAll;
+
+  /// No description provided for @reqFilterOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvertes'**
+  String get reqFilterOpen;
+
+  /// No description provided for @reqFilterClosed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminées'**
+  String get reqFilterClosed;
+
+  /// No description provided for @reqFilterEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune demande dans cette liste.'**
+  String get reqFilterEmpty;
+
+  /// No description provided for @reqFormProgress.
+  ///
+  /// In fr, this message translates to:
+  /// **'{done} sur {total} étapes remplies'**
+  String reqFormProgress(int done, int total);
+
+  /// No description provided for @chatToday.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aujourd’hui'**
+  String get chatToday;
+
+  /// No description provided for @chatYesterday.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hier'**
+  String get chatYesterday;
+
+  /// No description provided for @verifStepSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Documents envoyés'**
+  String get verifStepSend;
+
+  /// No description provided for @verifStepReview.
+  ///
+  /// In fr, this message translates to:
+  /// **'Examen par l’équipe'**
+  String get verifStepReview;
+
+  /// No description provided for @verifStepBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Badge sur votre profil'**
+  String get verifStepBadge;
+
+  /// No description provided for @worldTrades.
+  ///
+  /// In fr, this message translates to:
+  /// **'Artisans'**
+  String get worldTrades;
+
+  /// No description provided for @worldDigital.
+  ///
+  /// In fr, this message translates to:
+  /// **'Freelance digital'**
+  String get worldDigital;
+
+  /// No description provided for @homeNearbyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pros près de vous'**
+  String get homeNearbyTitle;
+
+  /// No description provided for @homeHeroFreelanceBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montrez vos réalisations et trouvez des clients.'**
+  String get homeHeroFreelanceBody;
+
+  /// No description provided for @homeHeroDigitalCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Découvrir'**
+  String get homeHeroDigitalCta;
+
+  /// No description provided for @priceFromShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'dès {price}'**
+  String priceFromShort(String price);
+
+  /// No description provided for @docsVerified.
+  ///
+  /// In fr, this message translates to:
+  /// **'Documents vérifiés'**
+  String get docsVerified;
+
+  /// No description provided for @identityVerified.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identité vérifiée'**
+  String get identityVerified;
+
+  /// No description provided for @yearsShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 an} other{{count} ans}}'**
+  String yearsShort(int count);
+
+  /// No description provided for @welcomeHeadlineStart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trouvez un'**
+  String get welcomeHeadlineStart;
+
+  /// No description provided for @welcomeHeadlineEnd.
+  ///
+  /// In fr, this message translates to:
+  /// **'près de chez vous.'**
+  String get welcomeHeadlineEnd;
+
+  /// No description provided for @welcomeWordPlumber.
+  ///
+  /// In fr, this message translates to:
+  /// **'plombier'**
+  String get welcomeWordPlumber;
+
+  /// No description provided for @welcomeWordElectrician.
+  ///
+  /// In fr, this message translates to:
+  /// **'électricien'**
+  String get welcomeWordElectrician;
+
+  /// No description provided for @welcomeWordDeveloper.
+  ///
+  /// In fr, this message translates to:
+  /// **'développeur'**
+  String get welcomeWordDeveloper;
+
+  /// No description provided for @welcomeWordDesigner.
+  ///
+  /// In fr, this message translates to:
+  /// **'designer'**
+  String get welcomeWordDesigner;
+
+  /// No description provided for @welcomeWordCarpenter.
+  ///
+  /// In fr, this message translates to:
+  /// **'menuisier'**
+  String get welcomeWordCarpenter;
+
+  /// The rotating welcome headline, read once by screen readers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trouvez un plombier, un électricien, un développeur, un designer ou un menuisier près de chez vous.'**
+  String get welcomeHeadlineA11y;
+
+  /// No description provided for @welcomeSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comparez les devis, discutez et réservez, partout en Tunisie.'**
+  String get welcomeSubtitle;
+
+  /// No description provided for @welcomeTrust.
+  ///
+  /// In fr, this message translates to:
+  /// **'Artisans et freelances vérifiés'**
+  String get welcomeTrust;
+
+  /// No description provided for @welcomeHaveAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'J\'ai déjà un compte'**
+  String get welcomeHaveAccount;
+
+  /// No description provided for @welcomeLegal.
+  ///
+  /// In fr, this message translates to:
+  /// **'En continuant, vous acceptez les conditions d\'utilisation.'**
+  String get welcomeLegal;
+
+  /// Semantics label of the language button on the welcome screen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Langue : {language}'**
+  String welcomeLanguageButton(String language);
+
+  /// No description provided for @welcomeTradePlumber.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plombier'**
+  String get welcomeTradePlumber;
+
+  /// No description provided for @welcomeTradeDesigner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Designer UI'**
+  String get welcomeTradeDesigner;
+
+  /// No description provided for @welcomeTradeElectrician.
+  ///
+  /// In fr, this message translates to:
+  /// **'Électricien'**
+  String get welcomeTradeElectrician;
+
+  /// No description provided for @welcomeTradeDeveloper.
+  ///
+  /// In fr, this message translates to:
+  /// **'Développeuse'**
+  String get welcomeTradeDeveloper;
+
+  /// No description provided for @welcomeTradeCarpenter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Menuisier'**
+  String get welcomeTradeCarpenter;
+
+  /// No description provided for @welcomeTradeVideo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Monteuse vidéo'**
+  String get welcomeTradeVideo;
+
+  /// No description provided for @reportReasonPayOutside.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande de paiement d’avance ou hors de l’app'**
+  String get reportReasonPayOutside;
+
+  /// No description provided for @reportReasonNoShow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ne s’est pas présenté'**
+  String get reportReasonNoShow;
+
+  /// No description provided for @reportMessageAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Signaler ce message'**
+  String get reportMessageAction;
+
+  /// No description provided for @reportOfferAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Signaler cette offre'**
+  String get reportOfferAction;
+
+  /// No description provided for @chatSafetyTip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ne payez jamais d’avance. Gardez vos accords dans Khidma.'**
+  String get chatSafetyTip;
+
+  /// No description provided for @failSuspended.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre compte est suspendu : cette action n’est pas possible.'**
+  String get failSuspended;
+
+  /// No description provided for @suspendedTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte suspendu'**
+  String get suspendedTitle;
+
+  /// No description provided for @suspendedUntil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre profil est masqué jusqu’au {date}. Vous ne pouvez pas envoyer d’offres ni de messages.'**
+  String suspendedUntil(String date);
+
+  /// No description provided for @suspendedIndefinite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre profil est masqué jusqu’à la décision de l’équipe. Vous ne pouvez pas envoyer d’offres ni de messages.'**
+  String get suspendedIndefinite;
+
+  /// No description provided for @suspendedReason.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif : {reason}'**
+  String suspendedReason(String reason);
+
+  /// No description provided for @appealAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faire un recours'**
+  String get appealAction;
+
+  /// No description provided for @appealHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expliquez pourquoi cette suspension est une erreur.'**
+  String get appealHint;
+
+  /// No description provided for @appealTooShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écrivez au moins 10 caractères.'**
+  String get appealTooShort;
+
+  /// No description provided for @appealSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer le recours'**
+  String get appealSend;
+
+  /// No description provided for @appealSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recours envoyé. L’équipe va l’examiner.'**
+  String get appealSent;
+
+  /// No description provided for @appealPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre recours est en cours d’examen.'**
+  String get appealPending;
+
+  /// No description provided for @appealRejected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre dernier recours a été refusé.'**
+  String get appealRejected;
+
+  /// No description provided for @appealFailRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Attendez une semaine après un refus avant un nouveau recours.'**
+  String get appealFailRate;
+
+  /// No description provided for @appealFailGeneric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le recours n’a pas pu être envoyé. Réessayez.'**
+  String get appealFailGeneric;
+
+  /// No description provided for @verifiedUntil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identité vérifiée, valable jusqu’au {date}'**
+  String verifiedUntil(String date);
+
+  /// No description provided for @flPolicyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Services interdits'**
+  String get flPolicyTitle;
+
+  /// No description provided for @flPolicyIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une annonce qui propose l’un de ces services est retirée, et le compte peut être suspendu.'**
+  String get flPolicyIntro;
+
+  /// No description provided for @flPolicyIllegal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout service illégal en Tunisie, ou qui aide à contourner la loi.'**
+  String get flPolicyIllegal;
+
+  /// No description provided for @flPolicyAcademic.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faire à la place d’un élève ou d’un étudiant un devoir, un mémoire ou un examen.'**
+  String get flPolicyAcademic;
+
+  /// No description provided for @flPolicyDocuments.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faux documents : diplômes, attestations, pièces d’identité, factures.'**
+  String get flPolicyDocuments;
+
+  /// No description provided for @flPolicyPlagiarism.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un portfolio avec le travail de quelqu’un d’autre présenté comme le vôtre.'**
+  String get flPolicyPlagiarism;
+
+  /// No description provided for @flPolicyAccounts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente de comptes, de faux avis, d’abonnés ou de « likes ».'**
+  String get flPolicyAccounts;
+
+  /// No description provided for @flPolicyAccept.
+  ///
+  /// In fr, this message translates to:
+  /// **'J’accepte et je publie'**
+  String get flPolicyAccept;
+
+  /// No description provided for @flPolicyLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les services interdits'**
+  String get flPolicyLink;
+
+  /// No description provided for @flOnHoldTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annonce retirée par l’équipe'**
+  String get flOnHoldTitle;
+
+  /// No description provided for @flOnHoldReason.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif : {reason}. Corrigez votre annonce puis contactez le support pour la remettre en ligne.'**
+  String flOnHoldReason(String reason);
+
+  /// No description provided for @flErrOnHold.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre annonce est retirée : elle ne peut pas être publiée pour l’instant.'**
+  String get flErrOnHold;
+
+  /// No description provided for @billAttachProof.
+  ///
+  /// In fr, this message translates to:
+  /// **'Joindre un justificatif'**
+  String get billAttachProof;
+
+  /// No description provided for @billProofHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Facultatif : une photo du reçu aide à confirmer plus vite.'**
+  String get billProofHint;
+
+  /// No description provided for @billProofCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} sur 3 justificatifs joints.'**
+  String billProofCount(int count);
+
+  /// No description provided for @billProofLimit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez déjà joint 3 justificatifs.'**
+  String get billProofLimit;
+
+  /// No description provided for @billRejectedNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement refusé : {note}'**
+  String billRejectedNote(String note);
+
+  /// No description provided for @listingHiddenTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil masqué'**
+  String get listingHiddenTitle;
+
+  /// No description provided for @listingHiddenBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre abonnement n’est pas réglé : les clients ne voient plus votre profil et vous ne pouvez pas envoyer d’offres. Vos chantiers en cours continuent. Le profil réapparaît dès le paiement.'**
+  String get listingHiddenBody;
+
+  /// No description provided for @listingTrialTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essai gratuit'**
+  String get listingTrialTitle;
+
+  /// No description provided for @listingTrialBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre profil est visible gratuitement jusqu’au {date}. Abonnez-vous avant pour rester visible.'**
+  String listingTrialBody(String date);
+
+  /// No description provided for @listingPay.
+  ///
+  /// In fr, this message translates to:
+  /// **'Régler mon abonnement'**
+  String get listingPay;
+
+  /// No description provided for @reqFailSubscription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre abonnement n’est pas réglé : vous ne pouvez pas envoyer d’offre pour l’instant.'**
+  String get reqFailSubscription;
+
+  /// No description provided for @projNewTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Projet en ligne'**
+  String get projNewTitle;
+
+  /// No description provided for @projNewCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publier un projet en ligne'**
+  String get projNewCta;
+
+  /// No description provided for @projMine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes projets en ligne'**
+  String get projMine;
+
+  /// No description provided for @projFieldTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre du projet'**
+  String get projFieldTitle;
+
+  /// No description provided for @projFieldCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de travail'**
+  String get projFieldCategory;
+
+  /// No description provided for @projFieldBrief.
+  ///
+  /// In fr, this message translates to:
+  /// **'Brief : décrivez le besoin'**
+  String get projFieldBrief;
+
+  /// No description provided for @projFieldDeliverables.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livrables attendus'**
+  String get projFieldDeliverables;
+
+  /// No description provided for @projDeliverablesHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. : logo en PNG et SVG, 3 propositions'**
+  String get projDeliverablesHint;
+
+  /// No description provided for @projFieldBudgetMin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Budget min (TND)'**
+  String get projFieldBudgetMin;
+
+  /// No description provided for @projFieldBudgetMax.
+  ///
+  /// In fr, this message translates to:
+  /// **'Budget max (TND)'**
+  String get projFieldBudgetMax;
+
+  /// No description provided for @projFieldDeadline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date limite (facultatif)'**
+  String get projFieldDeadline;
+
+  /// No description provided for @projFieldLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien de référence (https)'**
+  String get projFieldLink;
+
+  /// No description provided for @projAddLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un lien'**
+  String get projAddLink;
+
+  /// No description provided for @projErrLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuls les liens https:// sont acceptés.'**
+  String get projErrLink;
+
+  /// No description provided for @projErrBudget.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le budget max doit être supérieur ou égal au min.'**
+  String get projErrBudget;
+
+  /// No description provided for @projErrRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'3 caractères minimum.'**
+  String get projErrRequired;
+
+  /// No description provided for @projErrBrief.
+  ///
+  /// In fr, this message translates to:
+  /// **'10 caractères minimum.'**
+  String get projErrBrief;
+
+  /// No description provided for @projErrCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez un type de travail.'**
+  String get projErrCategory;
+
+  /// No description provided for @projSubmit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publier le projet'**
+  String get projSubmit;
+
+  /// No description provided for @projCreated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Projet publié. Les freelances peuvent vous faire des offres.'**
+  String get projCreated;
+
+  /// No description provided for @projEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun projet en ligne pour l’instant.'**
+  String get projEmpty;
+
+  /// No description provided for @projEmptyOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun projet ouvert pour le moment.'**
+  String get projEmptyOpen;
+
+  /// No description provided for @projRemote.
+  ///
+  /// In fr, this message translates to:
+  /// **'À distance'**
+  String get projRemote;
+
+  /// No description provided for @projBudget.
+  ///
+  /// In fr, this message translates to:
+  /// **'Budget : {range}'**
+  String projBudget(String range);
+
+  /// No description provided for @projDeadline.
+  ///
+  /// In fr, this message translates to:
+  /// **'À livrer avant le {date}'**
+  String projDeadline(String date);
+
+  /// No description provided for @projDeliverables.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livrables'**
+  String get projDeliverables;
+
+  /// No description provided for @projLinks.
+  ///
+  /// In fr, this message translates to:
+  /// **'Références'**
+  String get projLinks;
+
+  /// No description provided for @projTerms.
+  ///
+  /// In fr, this message translates to:
+  /// **'Khidma ne détient pas l’argent : le paiement se règle directement entre vous et le freelance. Mettez-vous d’accord dans la conversation et ne payez jamais tout d’avance.'**
+  String get projTerms;
+
+  /// No description provided for @projOpenTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Projets ouverts'**
+  String get projOpenTitle;
+
+  /// No description provided for @projOfferTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre offre'**
+  String get projOfferTitle;
+
+  /// No description provided for @projOfferPrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix (TND)'**
+  String get projOfferPrice;
+
+  /// No description provided for @projOfferDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'Délai de livraison (jours)'**
+  String get projOfferDays;
+
+  /// No description provided for @projOfferRevisions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Révisions incluses'**
+  String get projOfferRevisions;
+
+  /// No description provided for @projOfferMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message (facultatif)'**
+  String get projOfferMessage;
+
+  /// No description provided for @projOfferSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer l’offre'**
+  String get projOfferSend;
+
+  /// No description provided for @projOfferSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Offre envoyée.'**
+  String get projOfferSent;
+
+  /// No description provided for @projErrOffer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix ≥ 1, délai de 1 à 365 jours, 0 à 20 révisions.'**
+  String get projErrOffer;
+
+  /// No description provided for @projRevisionsIncluded.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} révision(s) incluse(s)'**
+  String projRevisionsIncluded(int count);
+
+  /// No description provided for @projDeliverTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livrer le travail'**
+  String get projDeliverTitle;
+
+  /// No description provided for @projDeliverNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message de livraison'**
+  String get projDeliverNote;
+
+  /// No description provided for @projDeliverLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien (Drive, WeTransfer, Figma…)'**
+  String get projDeliverLink;
+
+  /// No description provided for @projDeliverAddPhoto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une image'**
+  String get projDeliverAddPhoto;
+
+  /// No description provided for @projDeliverPhotos.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} image(s) jointe(s)'**
+  String projDeliverPhotos(int count);
+
+  /// No description provided for @projDeliverSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livrer'**
+  String get projDeliverSend;
+
+  /// No description provided for @projDelivered.
+  ///
+  /// In fr, this message translates to:
+  /// **'Travail livré. Le client va vérifier.'**
+  String get projDelivered;
+
+  /// No description provided for @projDeliverEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez un message, un lien ou une image.'**
+  String get projDeliverEmpty;
+
+  /// No description provided for @projDeliveriesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livraisons'**
+  String get projDeliveriesTitle;
+
+  /// No description provided for @projDeliveryFile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fichier {n}'**
+  String projDeliveryFile(int n);
+
+  /// No description provided for @projNoDelivery.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rien n’a encore été livré.'**
+  String get projNoDelivery;
+
+  /// No description provided for @projRevisionAsk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demander une révision'**
+  String get projRevisionAsk;
+
+  /// No description provided for @projRevisionHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce qu’il faut changer'**
+  String get projRevisionHint;
+
+  /// No description provided for @projRevisionLeft.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} révision(s) restante(s)'**
+  String projRevisionLeft(int count);
+
+  /// No description provided for @projRevisionSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande de révision envoyée.'**
+  String get projRevisionSent;
+
+  /// No description provided for @projOpenFileFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le fichier n’a pas pu être ouvert.'**
+  String get projOpenFileFailed;
+
+  /// No description provided for @projStartJob.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commencer le travail'**
+  String get projStartJob;
 }
 
 class _AppLocalizationsDelegate

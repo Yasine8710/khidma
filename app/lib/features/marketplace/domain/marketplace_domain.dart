@@ -108,6 +108,28 @@ enum Availability { available, busy, offline }
 
 enum Verification { unverified, pending, verified, rejected }
 
+/// Today's date in Tunisia (UTC+1 all year), where badge dates are read.
+DateTime tunisToday([DateTime? now]) {
+  final t = (now ?? DateTime.now()).toUtc().add(const Duration(hours: 1));
+  return DateTime.utc(t.year, t.month, t.day);
+}
+
+/// A database verification status, read with its validity date: a badge
+/// whose `verified_until` has passed is shown as unverified (the database
+/// turns it back daily; this closes the gap). Unknown values (such as
+/// `revoked`) are unverified.
+Verification parseVerification(Object? status, Object? until, {DateTime? now}) {
+  final v = Verification.values.firstWhere(
+    (v) => v.name == status,
+    orElse: () => Verification.unverified,
+  );
+  if (v != Verification.verified || until is! String) return v;
+  final date = DateTime.tryParse(until);
+  if (date == null) return v;
+  final day = DateTime.utc(date.year, date.month, date.day);
+  return day.isBefore(tunisToday(now)) ? Verification.unverified : v;
+}
+
 /// What a professional card needs. Built only from public columns: contact
 /// details are never part of it (they are revealed on request, see Phase 3.4).
 class ProfessionalSummary {
@@ -127,9 +149,17 @@ class ProfessionalSummary {
     this.rating = 0,
     this.reviewCount = 0,
     this.distanceKm,
+    this.avatarUrl,
+    this.verifiedUntil,
   });
 
   final String id;
+
+  /// Last day the badge is valid (only on profile reads, not search results).
+  final DateTime? verifiedUntil;
+
+  /// Public address of the professional's own picture, when they added one.
+  final String? avatarUrl;
 
   /// The public name (business or professional name).
   final String name;
@@ -150,6 +180,28 @@ class ProfessionalSummary {
 
   /// Distance from the position used for the search, when one was given.
   final double? distanceKm;
+
+  /// The same professional with a picture address (search results come from a
+  /// function that does not carry it).
+  ProfessionalSummary withAvatar(String? url) => ProfessionalSummary(
+    id: id,
+    name: name,
+    categoryId: categoryId,
+    description: description,
+    yearsExperience: yearsExperience,
+    governorateId: governorateId,
+    cityId: cityId,
+    neighborhoodId: neighborhoodId,
+    latitude: latitude,
+    longitude: longitude,
+    availability: availability,
+    verification: verification,
+    rating: rating,
+    reviewCount: reviewCount,
+    distanceKm: distanceKm,
+    avatarUrl: url,
+    verifiedUntil: verifiedUntil,
+  );
 
   bool get isVerified => verification == Verification.verified;
   bool get hasReviews => reviewCount > 0;

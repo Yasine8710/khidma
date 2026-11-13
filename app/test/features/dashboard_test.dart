@@ -52,6 +52,18 @@ Future<dynamic> _open(
   return c;
 }
 
+/// The dashboard list is lazy: scroll until [target] is built, clear of the
+/// floating bottom bar.
+Future<void> _reveal(WidgetTester tester, Finder target) async {
+  await tester.scrollUntilVisible(
+    target,
+    200,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.drag(find.byType(Scrollable).first, const Offset(0, -140));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   setUpAll(loadAppFonts);
 
@@ -125,6 +137,8 @@ void main() {
     ) async {
       final repo = FakeProfessionalRepository(draft: _complete);
       await _open(tester, repo);
+      await _reveal(tester, find.text('Occupé'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Occupé'));
       await tester.pumpAndSettle();
       expect(repo.availabilityCalls, [Availability.busy]);
@@ -140,6 +154,8 @@ void main() {
         final repo = FakeProfessionalRepository(draft: _complete);
         await _open(tester, repo);
         repo.failNext = ProfessionalFailure.network;
+        await _reveal(tester, find.text('Hors ligne'));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('Hors ligne'));
         await tester.pumpAndSettle();
         expect(
@@ -160,6 +176,8 @@ void main() {
       final repo = FakeProfessionalRepository(draft: _complete)
         ..reloadFails = true;
       await _open(tester, repo);
+      await _reveal(tester, find.text('Occupé'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Occupé'));
       await tester.pumpAndSettle();
       expect(repo.availabilityCalls, [Availability.busy]);
@@ -243,9 +261,19 @@ void main() {
       );
       await tester.tap(find.text('Profil'));
       await tester.pumpAndSettle();
-      await tester.ensureVisible(find.text('Mon espace pro'));
+      // Centre the row so it sits clear of the dock.
+      await Scrollable.ensureVisible(
+        tester.element(find.text('Mon espace pro')),
+        alignment: 0.4,
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Mon espace pro'));
       await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Disponibilité'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('Disponibilité'), findsOneWidget);
     });
 

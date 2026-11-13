@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import 'avatar_editor.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -123,6 +126,8 @@ class _EditFormState extends ConsumerState<_EditForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const Center(child: AvatarEditor(size: 104)),
+              const SizedBox(height: AppSpacing.xl),
               AppTextField(
                 label: l10n.fullNameLabel,
                 controller: _name,

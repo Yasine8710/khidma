@@ -8,6 +8,7 @@ import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../portfolio/domain/portfolio_domain.dart';
 import '../../requests/domain/requests_domain.dart';
+import '../../requests/presentation/flow_widgets.dart';
 import '../application/trust_providers.dart';
 import '../domain/trust_domain.dart';
 
@@ -99,31 +100,72 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       body = ListView(
         padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
         children: [
-          Semantics(
-            liveRegion: true,
-            child: Row(
+          // Where the file stands, then its steps: send, review, badge.
+          FlowCard(
+            gap: 0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Icon(
-                  approved
-                      ? Icons.verified_rounded
-                      : pending
-                      ? Icons.hourglass_top_rounded
-                      : Icons.shield_outlined,
-                  color: approved ? scheme.primary : scheme.onSurfaceVariant,
+                Semantics(
+                  liveRegion: true,
+                  child: Row(
+                    children: [
+                      ExcludeSemantics(
+                        child: Container(
+                          width: 48,
+                          height: 48,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: approved
+                                ? scheme.primary
+                                : scheme.primaryContainer,
+                          ),
+                          child: Icon(
+                            approved
+                                ? Icons.verified_rounded
+                                : pending
+                                ? Icons.hourglass_top_rounded
+                                : Icons.shield_outlined,
+                            size: 26,
+                            color: approved
+                                ? scheme.onPrimary
+                                : scheme.onPrimaryContainer,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Text(switch (info.status) {
+                          VerificationStatus.none => l10n.verifStatusNone,
+                          VerificationStatus.pending => l10n.verifStatusPending,
+                          VerificationStatus.approved =>
+                            l10n.verifStatusApproved,
+                          VerificationStatus.rejected =>
+                            l10n.verifStatusRejected,
+                          VerificationStatus.cancelled =>
+                            l10n.verifStatusCancelled,
+                        }, style: text.titleLarge),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(switch (info.status) {
-                    VerificationStatus.none => l10n.verifStatusNone,
-                    VerificationStatus.pending => l10n.verifStatusPending,
-                    VerificationStatus.approved => l10n.verifStatusApproved,
-                    VerificationStatus.rejected => l10n.verifStatusRejected,
-                    VerificationStatus.cancelled => l10n.verifStatusCancelled,
-                  }, style: text.titleMedium),
+                const SizedBox(height: AppSpacing.md),
+                const Hairline(),
+                const SizedBox(height: AppSpacing.md),
+                _Steps(
+                  steps: [
+                    l10n.verifStepSend,
+                    l10n.verifStepReview,
+                    l10n.verifStepBadge,
+                  ],
+                  current: approved ? 2 : (pending ? 1 : 0),
+                  complete: approved,
                 ),
               ],
             ),
           ),
+          const SizedBox(height: AppSpacing.sm),
           if (info.status == VerificationStatus.rejected &&
               info.rejectReason != null) ...[
             const SizedBox(height: AppSpacing.xs),
@@ -135,7 +177,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
           const SizedBox(height: AppSpacing.md),
           Text(
             pending ? l10n.verifPendingBody : l10n.verifIntro,
-            style: text.bodyMedium,
+            style: text.bodyLarge,
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
@@ -151,35 +193,67 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                 style: text.titleSmall,
               ),
             ),
-            for (var i = 0; i < _documents.length; i++)
+            if (_documents.isNotEmpty)
               Padding(
                 padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
-                child: Row(
+                // Rounded previews side by side, each with a remove button.
+                child: Wrap(
+                  spacing: AppSpacing.sm,
+                  runSpacing: AppSpacing.sm,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.memory(
-                        _documents[i].bytes,
-                        width: 72,
-                        height: 72,
-                        fit: BoxFit.cover,
-                        // The preview is decoration: the count says it all.
-                        excludeFromSemantics: true,
-                        errorBuilder: (_, _, _) => const SizedBox(
-                          width: 72,
-                          height: 72,
-                          child: Icon(Icons.description_outlined),
+                    for (var i = 0; i < _documents.length; i++)
+                      SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(AppRadius.md),
+                              child: Image.memory(
+                                _documents[i].bytes,
+                                fit: BoxFit.cover,
+                                // Decoration: the count says it all.
+                                excludeFromSemantics: true,
+                                errorBuilder: (_, _, _) => ColoredBox(
+                                  color: scheme.surfaceContainerHighest,
+                                  child: Icon(
+                                    Icons.description_outlined,
+                                    color: scheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            PositionedDirectional(
+                              top: 0,
+                              end: 0,
+                              child: IconButton(
+                                tooltip: l10n.verifRemove(i + 1),
+                                iconSize: 16,
+                                style: IconButton.styleFrom(
+                                  minimumSize: const Size(30, 30),
+                                  fixedSize: const Size(30, 30),
+                                  padding: EdgeInsets.zero,
+                                  tapTargetSize: MaterialTapTargetSize.padded,
+                                  backgroundColor: scheme.surface,
+                                  foregroundColor: scheme.onSurface,
+                                  shape: CircleBorder(
+                                    side: BorderSide(
+                                      color: scheme.outlineVariant,
+                                    ),
+                                  ),
+                                ),
+                                icon: const Icon(Icons.close_rounded),
+                                onPressed: busy
+                                    ? null
+                                    : () => setState(
+                                        () => _documents.removeAt(i),
+                                      ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      tooltip: l10n.verifRemove(i + 1),
-                      icon: const Icon(Icons.close_rounded),
-                      onPressed: busy
-                          ? null
-                          : () => setState(() => _documents.removeAt(i)),
-                    ),
                   ],
                 ),
               ),
@@ -234,6 +308,74 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.verifTitle)),
       body: SafeArea(child: body),
+    );
+  }
+}
+
+/// The steps of a verification side by side: a dot per step joined by thin
+/// lines, the label under it (the current one in bold).
+class _Steps extends StatelessWidget {
+  const _Steps({
+    required this.steps,
+    required this.current,
+    required this.complete,
+  });
+
+  final List<String> steps;
+  final int current;
+  final bool complete;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    Widget line(bool on, bool show) => Expanded(
+      child: Container(
+        height: 2,
+        color: !show
+            ? Colors.transparent
+            : (on ? scheme.primary : scheme.outlineVariant),
+      ),
+    );
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var i = 0; i < steps.length; i++)
+          Expanded(
+            child: Semantics(
+              selected: i == current,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      line(i <= current, i > 0),
+                      StepDot(
+                        done: complete || i < current,
+                        now: !complete && i == current,
+                      ),
+                      line(i < current, i < steps.length - 1),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Padding(
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      horizontal: 2,
+                    ),
+                    child: Text(
+                      steps[i],
+                      textAlign: TextAlign.center,
+                      style: i == current && !complete
+                          ? text.labelMedium
+                          : text.bodySmall?.copyWith(
+                              color: scheme.onSurfaceVariant,
+                            ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

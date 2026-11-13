@@ -56,6 +56,8 @@ class PortfolioScreen extends ConsumerWidget {
                 style: text.titleSmall,
               ),
             ),
+            const SizedBox(height: AppSpacing.sm),
+            const Divider(),
             const SizedBox(height: AppSpacing.md),
             if (items.isEmpty)
               Text(l10n.portfolioEmpty, style: text.bodyMedium)
@@ -141,22 +143,45 @@ class _Thumb extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
     return Stack(
       fit: StackFit.expand,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(AppRadius.sm),
-          child: PortfolioImage(
-            url: item.url,
-            semanticLabel: l10n.portfolioPhotoOf(index, total),
-            cacheWidth: 400,
+        // A print in a 1px rule frame.
+        DecoratedBox(
+          position: DecorationPosition.foreground,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+            border: Border.all(color: scheme.outlineVariant),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+            child: PortfolioImage(
+              url: item.url,
+              semanticLabel: l10n.portfolioPhotoOf(index, total),
+              cacheWidth: 400,
+            ),
           ),
         ),
         PositionedDirectional(
           top: 0,
           end: 0,
-          child: IconButton.filledTonal(
+          // A small paper tab over the corner; the hit area stays 48x48.
+          child: IconButton(
             tooltip: '${l10n.portfolioRemove} ($index)',
+            style: IconButton.styleFrom(
+              backgroundColor: scheme.surface,
+              foregroundColor: scheme.onSurface,
+              disabledBackgroundColor: scheme.surface,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+                side: BorderSide(color: scheme.outline),
+              ),
+              minimumSize: const Size(32, 32),
+              fixedSize: const Size(32, 32),
+              padding: EdgeInsets.zero,
+              tapTargetSize: MaterialTapTargetSize.padded,
+            ),
             icon: const Icon(Icons.delete_outline_rounded, size: 18),
             onPressed: busy ? null : () => _confirmRemove(context, ref),
           ),

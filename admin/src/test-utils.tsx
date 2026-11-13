@@ -9,7 +9,10 @@ export function fakeApi(over: Partial<Record<keyof Api, unknown>> = {}): Api {
   const names = [
     'isAdmin', 'overview', 'stats', 'users', 'professionals', 'requests', 'reviews', 'verifications',
     'reports', 'reportContext', 'audit', 'reviewVerification', 'handleReport', 'setSuspended',
-    'setReviewStatus', 'upsertCategory',
+    'setReviewStatus', 'upsertCategory', 'paymentOrders', 'confirmPayment', 'rejectPayment', 'setPaymentSetting',
+    'appeals', 'suspend', 'decideAppeal', 'revokeVerification', 'holdFreelancer', 'releaseFreelancer',
+    'billingSummary', 'subscriptions', 'billingDetail', 'extendSubscription', 'setSubscriptionStatus',
+    'billingConfig', 'setBillingConfig',
   ] as const;
   const api: Record<string, unknown> = {};
   for (const n of names) {
@@ -23,6 +26,7 @@ export function fakeMedia(over: Partial<Media> = {}): Media {
   return {
     verificationDocuments: vi.fn().mockResolvedValue([]),
     chatImages: vi.fn().mockResolvedValue([]),
+    paymentProofs: vi.fn().mockResolvedValue([]),
     ...over,
   };
 }

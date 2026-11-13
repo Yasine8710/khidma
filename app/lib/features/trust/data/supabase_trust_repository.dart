@@ -42,15 +42,43 @@ class SupabaseTrustRepository implements TrustRepository {
     String? details,
   ) => _guard(() async {
     final text = details?.trim();
+    final body = text == null || text.isEmpty ? null : text;
+    if (target == ReportTarget.message) {
+      final id = int.tryParse(targetId);
+      if (id == null) throw const RequestsError(RequestsFailure.invalidInput);
+      await _client.rpc(
+        'report_message',
+        params: {'p_message': id, 'p_reason': reason.dbName, 'p_details': body},
+      );
+      return;
+    }
     await _client.rpc(
       'report_content',
       params: {
         'p_type': target.name,
         'p_target': targetId,
-        'p_reason': reason.name,
-        'p_details': text == null || text.isEmpty ? null : text,
+        'p_reason': reason.dbName,
+        'p_details': body,
       },
     );
+  });
+
+  @override
+  Future<AccountStatus> myAccountStatus() => _guard(() async {
+    if (_userId() == null) return AccountStatus.none;
+    final data = await _client.rpc('my_account_status');
+    return data is Map<String, dynamic>
+        ? AccountStatus.fromJson(data)
+        : AccountStatus.none;
+  });
+
+  @override
+  Future<void> submitAppeal(String message) => _guard(() async {
+    final text = message.trim();
+    if (text.length < minAppealLength || text.length > maxAppealLength) {
+      throw const RequestsError(RequestsFailure.invalidInput);
+    }
+    await _client.rpc('submit_appeal', params: {'p_message': text});
   });
 
   @override

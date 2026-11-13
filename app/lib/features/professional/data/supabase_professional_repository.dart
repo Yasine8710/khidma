@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
 import '../../../core/format/tunisian_phone.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
+import '../../location/domain/location_domain.dart';
 import '../domain/professional_domain.dart';
 
 /// Maps Supabase errors to a [ProfessionalFailure]. Database messages are
@@ -62,7 +63,7 @@ class SupabaseProfessionalRepository implements ProfessionalRepository {
 
   static const _cols =
       'business_name, primary_category_id, description, years_experience, '
-      'governorate_id, city_id, neighborhood_id, availability, is_published, verification_status';
+      'governorate_id, city_id, neighborhood_id, latitude, longitude, availability, is_published, verification_status';
 
   @override
   Future<ProfessionalDraft> fetchMine() => _guard(() async {
@@ -93,6 +94,12 @@ class SupabaseProfessionalRepository implements ProfessionalRepository {
       governorateId: row['governorate_id'] as int?,
       cityId: row['city_id'] as int?,
       neighborhoodId: row['neighborhood_id'] as int?,
+      position: row['latitude'] is num && row['longitude'] is num
+          ? LocationFix.approximate(
+              (row['latitude'] as num).toDouble(),
+              (row['longitude'] as num).toDouble(),
+            )
+          : null,
       phone: phone is String && phone.isNotEmpty ? phone : null,
       serviceCategoryIds: {for (final r in services) r['category_id'] as int},
       areas: [
@@ -144,6 +151,13 @@ class SupabaseProfessionalRepository implements ProfessionalRepository {
                 ? null
                 : input.neighborhoodId,
             'contact_phone': phone,
+            // Null asks the database to place the pin at the governorate.
+            'latitude': input.governorateId == null
+                ? null
+                : input.position?.latitude,
+            'longitude': input.governorateId == null
+                ? null
+                : input.position?.longitude,
           })
           .eq('user_id', _uid());
     });

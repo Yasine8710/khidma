@@ -5,6 +5,7 @@ import '../../../core/format/digits.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_chip.dart';
 import '../application/marketplace_providers.dart';
 import '../domain/marketplace_domain.dart';
 
@@ -78,14 +79,26 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
     final categoriesAsync = ref.watch(categoriesProvider);
     final categories = categoriesAsync.value ?? const <ServiceCategory>[];
 
+    final scheme = Theme.of(context).colorScheme;
+    // Each group opens with a hairline, like the rows of a printed form.
     Widget heading(String label) => Padding(
-      padding: const EdgeInsetsDirectional.only(
-        top: AppSpacing.lg,
-        bottom: AppSpacing.sm,
-      ),
-      child: Semantics(
-        header: true,
-        child: Text(label, style: text.titleSmall),
+      padding: const EdgeInsetsDirectional.only(top: AppSpacing.lg),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: BorderDirectional(
+            top: BorderSide(color: scheme.outlineVariant),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(
+            top: AppSpacing.md,
+            bottom: AppSpacing.xs,
+          ),
+          child: Semantics(
+            header: true,
+            child: Text(label, style: text.titleSmall),
+          ),
+        ),
       ),
     );
 
@@ -120,16 +133,16 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
                   ),
                 Wrap(
                   spacing: AppSpacing.sm,
-                  runSpacing: AppSpacing.sm,
+                  runSpacing: 0,
                   children: [
-                    ChoiceChip(
-                      label: Text(l10n.filterAllCategories),
+                    AppChip(
+                      label: l10n.filterAllCategories,
                       selected: _category == null,
                       onSelected: (_) => setState(() => _category = null),
                     ),
                     for (final c in categories)
-                      ChoiceChip(
-                        label: Text(c.nameFor(locale)),
+                      AppChip(
+                        label: c.nameFor(locale),
                         selected: _category == c.id,
                         onSelected: (_) => setState(() => _category = c.id),
                       ),
@@ -138,17 +151,15 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
                 heading(l10n.filterMinRating),
                 Wrap(
                   spacing: AppSpacing.sm,
-                  runSpacing: AppSpacing.sm,
+                  runSpacing: 0,
                   children: [
                     for (final r in _ratingChoices)
-                      ChoiceChip(
-                        label: Text(
-                          r == null
-                              ? l10n.filterRatingAny
-                              : l10n.filterRatingAtLeast(
-                                  toWesternDigits(r.toString()),
-                                ),
-                        ),
+                      AppChip(
+                        label: r == null
+                            ? l10n.filterRatingAny
+                            : l10n.filterRatingAtLeast(
+                                toWesternDigits(r.toString()),
+                              ),
                         selected: _minRating == r,
                         onSelected: (_) => setState(() => _minRating = r),
                       ),
@@ -165,15 +176,13 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
                   heading(l10n.filterRadius),
                   Wrap(
                     spacing: AppSpacing.sm,
-                    runSpacing: AppSpacing.sm,
+                    runSpacing: 0,
                     children: [
                       for (final r in _radiusChoices)
-                        ChoiceChip(
-                          label: Text(
-                            r == null
-                                ? l10n.filterRadiusAny
-                                : l10n.distanceKm(r.toStringAsFixed(0)),
-                          ),
+                        AppChip(
+                          label: r == null
+                              ? l10n.filterRadiusAny
+                              : l10n.distanceKm(r.toStringAsFixed(0)),
                           selected: _radius == r,
                           onSelected: (_) => setState(() => _radius = r),
                         ),
@@ -183,18 +192,18 @@ class _FiltersSheetState extends ConsumerState<_FiltersSheet> {
                 heading(l10n.sortBy),
                 Wrap(
                   spacing: AppSpacing.sm,
-                  runSpacing: AppSpacing.sm,
+                  runSpacing: 0,
                   children: [
                     for (final s in [
                       ..._sortChoices,
                       if (widget.hasPosition) ProfessionalSort.nearest,
                     ])
-                      ChoiceChip(
-                        label: Text(switch (s) {
+                      AppChip(
+                        label: switch (s) {
                           ProfessionalSort.reviews => l10n.sortReviews,
                           ProfessionalSort.nearest => l10n.sortNearest,
                           _ => l10n.sortRating,
-                        }),
+                        },
                         selected: _sort == s,
                         onSelected: (_) => setState(() => _sort = s),
                       ),

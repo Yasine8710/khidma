@@ -193,7 +193,11 @@ void main() {
       };
       for (final e in expected.entries) {
         fake.failNext = e.key;
-        await tester.tap(find.widgetWithText(FilledButton, 'Se connecter'));
+        // The notice above the button pushes it down: scroll it into view.
+        final signIn = find.widgetWithText(FilledButton, 'Se connecter');
+        await tester.ensureVisible(signIn);
+        await tester.pumpAndSettle();
+        await tester.tap(signIn);
         await tester.pumpAndSettle();
         expect(find.text(e.value), findsOneWidget, reason: '${e.key}');
       }
@@ -263,6 +267,8 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Réinitialiser le mot de passe'), findsOneWidget);
       c.read(routerProvider).pop();
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Créer un compte').last);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Créer un compte').last);
       await tester.pumpAndSettle();
@@ -423,6 +429,8 @@ void main() {
       await pumpApp(tester, auth: fake);
       await tester.tap(find.text('Profil'));
       await tester.pumpAndSettle();
+      // Sign-out is a settings row near the end of the Profile list.
+      await scrollProfileTo(tester, find.text('Se déconnecter'));
       await tester.tap(find.text('Se déconnecter'));
       await tester.pumpAndSettle();
       expect(fake.signOutCalls, 1);

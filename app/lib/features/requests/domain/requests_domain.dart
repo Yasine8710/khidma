@@ -131,6 +131,12 @@ enum RequestsFailure {
 
   /// The profile is already verified.
   alreadyVerified,
+
+  /// The professional account is suspended: no offers, chats or messages.
+  suspended,
+
+  /// Subscriptions are enforced and this professional's is not paid.
+  subscriptionRequired,
   notFound,
   notConfigured,
   unknown,

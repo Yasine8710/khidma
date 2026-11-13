@@ -8,6 +8,8 @@ import 'package:http/testing.dart';
 import 'package:khidma/core/router/app_router.dart';
 import 'package:khidma/core/router/app_routes.dart';
 import 'package:khidma/features/auth/domain/auth_domain.dart';
+import 'package:khidma/features/location/application/location_providers.dart';
+import 'package:khidma/features/location/domain/location_domain.dart';
 import 'package:khidma/features/marketplace/domain/marketplace_domain.dart';
 import 'package:khidma/features/professional/application/professional_providers.dart';
 import 'package:khidma/features/professional/data/supabase_professional_repository.dart';
@@ -31,17 +33,34 @@ const _aliPro = AppProfile(
 const _name = 'Plomberie Ben Salah';
 const _about = 'Fuites, chauffe-eau et sanitaires. Intervention rapide.';
 
+class _FakeLocation implements LocationService {
+  _FakeLocation({this.fail});
+  final LocationFailure? fail;
+  @override
+  Future<LocationFix> current() async {
+    if (fail != null) throw LocationException(fail!);
+    return LocationFix.approximate(36.8431, 10.3171);
+  }
+
+  @override
+  Future<void> openSettings() async {}
+}
+
 Future<ProviderContainerLike> _open(
   WidgetTester tester,
   FakeProfessionalRepository repo, {
   Map<String, Object> prefs = const {},
+  LocationService? location,
 }) async {
   final c = await pumpApp(
     tester,
     auth: FakeAuthRepository(signedIn: _ali),
     profiles: FakeProfileRepository(profile: _aliPro),
     prefs: prefs,
-    overrides: [professionalRepositoryProvider.overrideWithValue(repo)],
+    overrides: [
+      professionalRepositoryProvider.overrideWithValue(repo),
+      if (location != null) locationServiceProvider.overrideWithValue(location),
+    ],
   );
   c.read(routerProvider).push(AppRoutes.proRegistration);
   await tester.pumpAndSettle();
@@ -179,11 +198,76 @@ void main() {
         find.text('Brouillon : invisible pour les clients.'),
         findsOneWidget,
       );
+      // The main action is in the footer, not inside the scrolling review.
+      expect(
+        find.descendant(
+          of: find.byType(SingleChildScrollView),
+          matching: find.text('Publier mon profil'),
+        ),
+        findsNothing,
+      );
       await _tap(tester, 'Publier mon profil');
       expect(repo.publishCalls, [true]);
       expect(find.text('Votre profil est publié.'), findsOneWidget);
+      // Once published, the footer offers a way out.
+      expect(find.widgetWithText(FilledButton, 'Terminer'), findsOneWidget);
       await _tap(tester, 'Retirer de la liste');
       expect(repo.publishCalls, [true, false]);
+    });
+
+    testWidgets('"use my position" is saved with the profile, rounded', (
+      tester,
+    ) async {
+      final repo = FakeProfessionalRepository();
+      await _open(tester, repo, location: _FakeLocation());
+      await _fillBusiness(tester);
+      await _tap(tester, 'Continuer');
+      await _pickGovernorate(tester, 'Ariana');
+      await _tap(tester, 'Utiliser ma position actuelle');
+      expect(
+        find.text('Position approximative enregistrée (environ 1 km).'),
+        findsOneWidget,
+      );
+      await _tap(tester, 'Continuer');
+      expect(
+        repo.saved.last.position,
+        LocationFix.approximate(36.8431, 10.3171),
+      );
+      expect(repo.saved.last.position!.latitude, 36.84);
+    });
+
+    testWidgets('a refused permission shows a message and sends no position', (
+      tester,
+    ) async {
+      final repo = FakeProfessionalRepository();
+      await _open(
+        tester,
+        repo,
+        location: _FakeLocation(fail: LocationFailure.denied),
+      );
+      await _fillBusiness(tester);
+      await _tap(tester, 'Continuer');
+      await _pickGovernorate(tester, 'Ariana');
+      await _tap(tester, 'Utiliser ma position actuelle');
+      expect(find.textContaining('Position introuvable'), findsOneWidget);
+      await _tap(tester, 'Continuer');
+      expect(repo.saved.last.position, isNull);
+    });
+
+    testWidgets('changing the governorate drops a pin from the old one', (
+      tester,
+    ) async {
+      final repo = FakeProfessionalRepository();
+      await _open(tester, repo, location: _FakeLocation());
+      await _fillBusiness(tester);
+      await _tap(tester, 'Continuer');
+      await _pickGovernorate(tester, 'Ariana');
+      await _tap(tester, 'Utiliser ma position actuelle');
+      expect(find.textContaining('Position approximative'), findsOneWidget);
+      await _pickGovernorate(tester, 'Tunis');
+      expect(find.textContaining('Position approximative'), findsNothing);
+      await _tap(tester, 'Continuer');
+      expect(repo.saved.last.position, isNull);
     });
 
     testWidgets(
@@ -511,6 +595,54 @@ void main() {
       expect(body.keys, isNot(contains('is_published')));
       expect(body.keys, isNot(contains('verification_status')));
     });
+
+    test(
+      'saveProfile sends the pin, or nulls so the database places it',
+      () async {
+        responder = (r) => r.url.path.endsWith('/professional_profiles')
+            ? {
+                'business_name': 'N',
+                'primary_category_id': null,
+                'description': null,
+                'years_experience': null,
+                'governorate_id': 11,
+                'city_id': null,
+                'latitude': 36.84,
+                'longitude': 10.32,
+                'availability': 'available',
+                'is_published': false,
+                'verification_status': 'unverified',
+              }
+            : <Object>[];
+        Map<String, dynamic> lastPatch() =>
+            jsonDecode(requests.lastWhere((r) => r.method == 'PATCH').body)
+                as Map<String, dynamic>;
+        final draft = await build().saveProfile(
+          ProfessionalProfileInput(
+            governorateId: 11,
+            position: LocationFix.approximate(36.8431, 10.3171),
+          ),
+        );
+        expect(lastPatch()['latitude'], 36.84);
+        expect(lastPatch()['longitude'], 10.32);
+        expect(draft.position, LocationFix.approximate(36.84, 10.32));
+        await build().saveProfile(
+          const ProfessionalProfileInput(governorateId: 11),
+        );
+        expect(lastPatch()['latitude'], isNull);
+        expect(lastPatch().containsKey('latitude'), isTrue);
+        await build().saveProfile(
+          ProfessionalProfileInput(
+            position: LocationFix.approximate(36.84, 10.32),
+          ),
+        );
+        expect(
+          lastPatch()['latitude'],
+          isNull,
+          reason: 'no governorate, no pin',
+        );
+      },
+    );
 
     test('a neighbourhood is cleared whenever the city is', () async {
       responder = (r) => r.url.path.endsWith('/professional_profiles')

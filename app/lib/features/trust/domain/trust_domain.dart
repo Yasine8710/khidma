@@ -6,10 +6,36 @@ import '../../requests/domain/requests_domain.dart';
 const maxVerificationDocuments = 3;
 
 /// Where a report is about. Reports on a review or a conversation are only
-/// possible for what the reporter can see.
-enum ReportTarget { professional, review, conversation }
+/// possible for what the reporter can see. The names are the values the
+/// database function `report_content` takes; a [message] report carries the
+/// message id and goes through `report_message`.
+enum ReportTarget {
+  professional,
+  review,
+  conversation,
+  freelancer,
+  testimonial,
+  offer,
+  message,
+}
 
-enum ReportReason { spam, fake, abuse, scam, inappropriate, other }
+enum ReportReason {
+  scam,
+  payOutside,
+  noShow,
+  fake,
+  abuse,
+  spam,
+  inappropriate,
+  other;
+
+  /// The value the database takes.
+  String get dbName => switch (this) {
+    payOutside => 'pay_outside',
+    noShow => 'no_show',
+    _ => name,
+  };
+}
 
 /// Longest free text accepted with a report.
 const maxReportDetails = 500;
@@ -24,6 +50,49 @@ class VerificationInfo {
   final String? rejectReason;
 }
 
+/// The signed-in person's own account state: a suspension (professionals
+/// only) and the latest appeal against it.
+class AccountStatus {
+  const AccountStatus({
+    this.suspended = false,
+    this.suspendedUntil,
+    this.reason,
+    this.appeal,
+    this.appealNote,
+  });
+
+  final bool suspended;
+
+  /// Null while suspended means "until an admin lifts it".
+  final DateTime? suspendedUntil;
+  final String? reason;
+  final AppealStatus? appeal;
+  final String? appealNote;
+
+  static const none = AccountStatus();
+
+  factory AccountStatus.fromJson(Map<String, dynamic> j) => AccountStatus(
+    suspended: j['suspended'] == true,
+    suspendedUntil: j['suspended_until'] == null
+        ? null
+        : DateTime.parse(j['suspended_until'] as String).toLocal(),
+    reason: j['reason'] as String?,
+    appeal: switch (j['appeal_status']) {
+      'open' => AppealStatus.open,
+      'rejected' => AppealStatus.rejected,
+      'lifted' => AppealStatus.lifted,
+      _ => null,
+    },
+    appealNote: j['appeal_note'] as String?,
+  );
+}
+
+enum AppealStatus { open, rejected, lifted }
+
+/// Shortest and longest appeal text (also enforced by the database).
+const minAppealLength = 10;
+const maxAppealLength = 1000;
+
 abstract interface class TrustRepository {
   Future<void> report(
     ReportTarget target,
@@ -33,6 +102,10 @@ abstract interface class TrustRepository {
   );
 
   Future<VerificationInfo> myVerification();
+
+  Future<AccountStatus> myAccountStatus();
+
+  Future<void> submitAppeal(String message);
 
   /// Uploads [documents] to the private bucket, then sends them for review.
   /// Files from a failed attempt are removed again.
@@ -52,6 +125,11 @@ class NotConfiguredTrustRepository implements TrustRepository {
   ) async => throw const RequestsError(RequestsFailure.notConfigured);
   @override
   Future<VerificationInfo> myVerification() async =>
+      throw const RequestsError(RequestsFailure.notConfigured);
+  @override
+  Future<AccountStatus> myAccountStatus() async => AccountStatus.none;
+  @override
+  Future<void> submitAppeal(String message) async =>
       throw const RequestsError(RequestsFailure.notConfigured);
   @override
   Future<void> submitVerification(List<PreparedPhoto> documents) async =>

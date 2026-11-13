@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../freelance/presentation/prohibited_policy.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../../requests/domain/requests_domain.dart';
+import '../../requests/presentation/flow_widgets.dart' show FlowCard, Hairline;
 import '../application/trust_providers.dart';
 import '../domain/trust_domain.dart';
 
@@ -16,6 +18,8 @@ String reportReasonLabel(AppLocalizations l10n, ReportReason r) => switch (r) {
   ReportReason.scam => l10n.reportReasonScam,
   ReportReason.inappropriate => l10n.reportReasonInappropriate,
   ReportReason.other => l10n.reportReasonOther,
+  ReportReason.payOutside => l10n.reportReasonPayOutside,
+  ReportReason.noShow => l10n.reportReasonNoShow,
 };
 
 String reportFailureText(AppLocalizations l10n, RequestsFailure f) =>
@@ -138,31 +142,51 @@ class _ReportSheetState extends ConsumerState<_ReportSheet> {
         children: [
           Semantics(
             header: true,
-            child: Text(l10n.reportTitle, style: text.titleLarge),
+            child: Text(l10n.reportTitle, style: text.headlineSmall),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
             l10n.reportHint,
             style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
           ),
+          // Freelance listings: what is not allowed, to help pick a reason.
+          if (widget.target == ReportTarget.freelancer ||
+              widget.target == ReportTarget.testimonial)
+            const Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: ProhibitedPolicyLink(),
+            ),
           const SizedBox(height: AppSpacing.md),
-          RadioGroup<ReportReason>(
-            groupValue: _reason,
-            onChanged: (v) => setState(() {
-              _reason = v;
-              _reasonError = false;
-            }),
-            child: Column(
-              children: [
-                for (final r in ReportReason.values)
-                  RadioListTile<ReportReason>(
-                    value: r,
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(reportReasonLabel(l10n, r)),
-                  ),
-              ],
+          // Reasons as a grouped list of radio rows.
+          FlowCard(
+            gap: 0,
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.xs,
+            ),
+            child: RadioGroup<ReportReason>(
+              groupValue: _reason,
+              onChanged: (v) => setState(() {
+                _reason = v;
+                _reasonError = false;
+              }),
+              child: Material(
+                type: MaterialType.transparency,
+                child: Column(
+                  children: [
+                    for (final r in ReportReason.values) ...[
+                      if (r.index > 0) const Hairline(),
+                      RadioListTile<ReportReason>(
+                        value: r,
+                        shape: const RoundedRectangleBorder(),
+                        title: Text(reportReasonLabel(l10n, r)),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
             ),
           ),
+          const SizedBox(height: AppSpacing.sm),
           if (_reasonError)
             Padding(
               padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),

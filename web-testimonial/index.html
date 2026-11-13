@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src https://*.supabase.co; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>Laisser un témoignage</title>
+<style>
+  :root {
+    --paper: #F4EFE6; --card: #FFFCF6; --ink: #1F1B16; --muted: #6B6257;
+    --rule: #D9CFBD; --control: #8A8070; --clay: #B0432A; --error: #9B2C1B;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #1C1815; --card: #25201C; --ink: #F1EADD; --muted: #B3A999;
+      --rule: #3A332C; --control: #8F8576; --clay: #E07A5F; --error: #F2917D;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 32rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  h1 { font: 600 1.6rem/1.25 Georgia, "Times New Roman", serif; margin: 0 0 .5rem; }
+  p { margin: 0 0 1rem; }
+  .muted { color: var(--muted); font-size: .95rem; }
+  form { border-top: 2px solid var(--ink); padding-top: 1rem; }
+  label, legend { display: block; font-weight: 600; margin: 0 0 .25rem; padding: 0; }
+  .field { margin-bottom: 1.1rem; }
+  input[type=text], textarea {
+    width: 100%; font: inherit; color: var(--ink); background: var(--card);
+    border: 1px solid var(--control); border-radius: 6px; padding: .7rem .75rem;
+  }
+  textarea { min-height: 8rem; resize: vertical; }
+  fieldset { border: 0; margin: 0 0 1.1rem; padding: 0; }
+  .stars { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .stars label {
+    display: inline-flex; align-items: center; gap: .35rem; font-weight: 400;
+    min-height: 44px; padding: 0 .75rem; border: 1px solid var(--control);
+    border-radius: 6px; background: var(--card); margin: 0; cursor: pointer;
+  }
+  .stars input { width: 1.1rem; height: 1.1rem; margin: 0; accent-color: var(--clay); }
+  input:focus-visible, textarea:focus-visible, button:focus-visible {
+    outline: 3px solid var(--clay); outline-offset: 2px;
+  }
+  .err { color: var(--error); font-size: .9rem; margin: .25rem 0 0; }
+  button {
+    width: 100%; min-height: 52px; font: 600 1rem inherit; font-family: inherit;
+    color: #fff; background: var(--clay); border: 0; border-radius: 6px; cursor: pointer;
+  }
+  button[disabled] { opacity: .6; cursor: progress; }
+  .box { border: 1px solid var(--rule); background: var(--card); border-radius: 6px; padding: 1rem; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <!-- ===== CONFIG (edit these two values before deploying; never put a secret key here) ===== -->
+  <!-- SUPABASE_URL: your project URL.  SUPABASE_PUBLISHABLE_KEY: the public sb_publishable_... key. -->
+  <script>
+    var CONFIG = {
+      SUPABASE_URL: "https://YOUR-PROJECT.supabase.co",
+      SUPABASE_PUBLISHABLE_KEY: "sb_publishable_YOUR_KEY_HERE"
+    };
+  </script>
+  <!-- ===== END CONFIG ===== -->
+
+  <h1 id="title">Laisser un témoignage</h1>
+  <p class="muted" id="intro">Un professionnel vous a invité à donner votre avis sur votre collaboration. Votre témoignage sera affiché sur sa page, avec votre nom.</p>
+
+  <section id="invalid" class="box" hidden role="alert">
+    <p><strong>Ce lien n'est plus valide.</strong></p>
+    <p class="muted">Il a déjà été utilisé, il a expiré ou il a été annulé. Demandez un nouveau lien à la personne qui vous l'a envoyé.</p>
+  </section>
+
+  <section id="done" class="box" hidden role="status">
+    <p><strong>Merci, votre témoignage a bien été envoyé.</strong></p>
+    <p class="muted">Vous pouvez fermer cette page.</p>
+  </section>
+
+  <form id="form" novalidate>
+    <div class="field">
+      <label for="name">Votre nom</label>
+      <input id="name" name="name" type="text" autocomplete="name" maxlength="60" required aria-describedby="name-err">
+      <p class="err" id="name-err" hidden></p>
+    </div>
+
+    <fieldset aria-describedby="rating-err">
+      <legend>Votre note (de 1 à 5)</legend>
+      <div class="stars" id="stars">
+        <label><input type="radio" name="rating" value="1"> 1</label>
+        <label><input type="radio" name="rating" value="2"> 2</label>
+        <label><input type="radio" name="rating" value="3"> 3</label>
+        <label><input type="radio" name="rating" value="4"> 4</label>
+        <label><input type="radio" name="rating" value="5"> 5</label>
+      </div>
+      <p class="err" id="rating-err" hidden></p>
+    </fieldset>
+
+    <div class="field">
+      <label for="body">Votre message</label>
+      <textarea id="body" name="body" maxlength="1000" required aria-describedby="body-err"></textarea>
+      <p class="muted">Entre 10 et 1000 caractères.</p>
+      <p class="err" id="body-err" hidden></p>
+    </div>
+
+    <div class="field">
+      <label for="project">Projet concerné (facultatif)</label>
+      <input id="project" name="project" type="text" maxlength="100">
+    </div>
+
+    <p class="err" id="form-err" role="alert" hidden></p>
+    <button type="submit" id="submit">Envoyer mon témoignage</button>
+  </form>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var TOKEN_RE = /^[0-9a-f]{64}$/;
+
+  function readToken() {
+    var m = location.pathname.match(/\/t\/([^\/?#]+)\/?$/);
+    var t = m ? decodeURIComponent(m[1]) : new URLSearchParams(location.search).get("t");
+    t = (t || "").trim().toLowerCase();
+    return TOKEN_RE.test(t) ? t : null;
+  }
+
+  var $ = function (id) { return document.getElementById(id); };
+  var form = $("form");
+  var token = readToken();
+
+  function show(el, on) { el.hidden = !on; }
+  function setErr(id, msg) {
+    var el = $(id);
+    el.textContent = msg || "";
+    show(el, !!msg);
+  }
+  function showInvalid() {
+    show(form, false);
+    show($("done"), false);
+    show($("intro"), false);
+    show($("invalid"), true);
+  }
+
+  if (!token) { showInvalid(); return; }
+
+  var configured = CONFIG.SUPABASE_URL.indexOf("YOUR-PROJECT") === -1 &&
+                   CONFIG.SUPABASE_PUBLISHABLE_KEY.indexOf("YOUR_KEY") === -1;
+  var base = CONFIG.SUPABASE_URL.replace(/\/+$/, "");
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var name = $("name").value.trim();
+    var body = $("body").value.trim();
+    var project = $("project").value.trim();
+    var checked = form.querySelector('input[name="rating"]:checked');
+    var ok = true;
+
+    setErr("form-err", "");
+    if (name.length < 2 || name.length > 60) { setErr("name-err", "Entrez votre nom (2 à 60 caractères)."); ok = false; } else { setErr("name-err", ""); }
+    if (!checked) { setErr("rating-err", "Choisissez une note de 1 à 5."); ok = false; } else { setErr("rating-err", ""); }
+    if (body.length < 10 || body.length > 1000) { setErr("body-err", "Votre message doit faire entre 10 et 1000 caractères."); ok = false; } else { setErr("body-err", ""); }
+    if (project.length > 100) { setErr("form-err", "Le nom du projet est trop long (100 caractères maximum)."); ok = false; }
+    if (!ok) return;
+
+    if (!configured) { setErr("form-err", "Cette page n'est pas encore configurée."); return; }
+
+    var btn = $("submit");
+    btn.disabled = true;
+    btn.textContent = "Envoi en cours…";
+
+    fetch(base + "/rest/v1/rpc/submit_testimonial", {
+      method: "POST",
+      headers: {
+        "apikey": CONFIG.SUPABASE_PUBLISHABLE_KEY,
+        "Authorization": "Bearer " + CONFIG.SUPABASE_PUBLISHABLE_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        p_token: token,
+        p_name: name,
+        p_rating: parseInt(checked.value, 10),
+        p_body: body,
+        p_project: project === "" ? null : project
+      }),
+      referrerPolicy: "no-referrer",
+      credentials: "omit"
+    }).then(function (res) {
+      if (res.ok) {
+        show(form, false);
+        show($("intro"), false);
+        show($("done"), true);
+        $("title").focus();
+        return;
+      }
+      return res.json().catch(function () { return {}; }).then(function (err) {
+        var msg = String((err && err.message) || "");
+        if (msg.indexOf("invalid_token") !== -1) { showInvalid(); return; }
+        if (msg.indexOf("invalid_input") !== -1) {
+          setErr("form-err", "Certaines informations sont refusées. Vérifiez-les et réessayez.");
+        } else {
+          setErr("form-err", "L'envoi a échoué. Réessayez dans un instant.");
+        }
+        btn.disabled = false;
+        btn.textContent = "Envoyer mon témoignage";
+      });
+    }).catch(function () {
+      setErr("form-err", "Connexion impossible. Vérifiez votre réseau et réessayez.");
+      btn.disabled = false;
+      btn.textContent = "Envoyer mon témoignage";
+    });
+  });
+})();
+</script>
+</body>
+</html>

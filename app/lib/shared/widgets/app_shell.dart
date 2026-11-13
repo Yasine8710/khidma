@@ -14,20 +14,26 @@ class AppShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final shell = navigationShell;
     return Scaffold(
-      body: navigationShell,
+      body: shell,
       bottomNavigationBar: AppBottomNav(
-        currentIndex: navigationShell.currentIndex,
-        onSelected: (i) => navigationShell.goBranch(
+        currentIndex: shell.currentIndex,
+        onSelected: (i) => shell.goBranch(
           i,
           // Tapping the active tab returns to its root screen.
-          initialLocation: i == navigationShell.currentIndex,
+          initialLocation: i == shell.currentIndex,
         ),
         items: [
           NavItem(Icons.home_outlined, Icons.home_rounded, l10n.navHome),
           NavItem(
-            Icons.assignment_outlined,
-            Icons.assignment_rounded,
+            Icons.search_rounded,
+            Icons.manage_search_rounded,
+            l10n.navExplore,
+          ),
+          NavItem(
+            Icons.description_outlined,
+            Icons.description_rounded,
             l10n.navRequests,
           ),
           NavItem(

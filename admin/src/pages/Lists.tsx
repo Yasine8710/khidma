@@ -64,16 +64,30 @@ export function Professionals() {
                   }}
                 />
               ) : (
-                <NoteAction
-                  label="Suspend"
-                  prompt="Reason (kept in the audit log)"
-                  danger
-                  required
-                  onSubmit={async (note) => {
-                    await api.setSuspended(r.user_id, true, note);
-                    paged.reload();
-                  }}
-                />
+                <div className="stack">
+                  <NoteAction
+                    label="Suspend"
+                    prompt="Reason (shown to the professional, kept in the audit log)"
+                    danger
+                    required
+                    onSubmit={async (note) => {
+                      await api.setSuspended(r.user_id, true, note);
+                      paged.reload();
+                    }}
+                  />
+                  {r.verification_status === 'verified' && (
+                    <NoteAction
+                      label="Revoke badge"
+                      prompt="Reason (kept in the audit log)"
+                      danger
+                      required
+                      onSubmit={async (note) => {
+                        await api.revokeVerification(r.user_id, note);
+                        paged.reload();
+                      }}
+                    />
+                  )}
+                </div>
               ),
           },
         ]}

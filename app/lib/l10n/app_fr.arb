@@ -3,6 +3,16 @@
   "appName": "Khidma",
   "tagline": "Des professionnels de confiance, près de chez vous.",
   "chooseLanguage": "Choisir la langue",
+  "acctMemberCard": "Carte de membre",
+  "acctAccountType": "Type de compte",
+  "acctCustomer": "Client",
+  "acctSettings": "Réglages",
+  "acctAccount": "Compte",
+  "acctWorkshop": "Atelier",
+  "acctStatus": "Statut",
+  "acctTools": "Outils",
+  "profileHelp": "Aide",
+  "profileHelpTitle": "Comment ça marche",
   "languageFrench": "Français",
   "languageArabic": "العربية",
   "languageEnglish": "English",
@@ -17,6 +27,7 @@
   },
   "phoneInvalid": "Numéro tunisien invalide. Exemple : +216 20 123 456",
   "navHome": "Accueil",
+  "navExplore": "Explorer",
   "navRequests": "Demandes",
   "navMessages": "Messages",
   "navProfile": "Profil",
@@ -176,6 +187,284 @@
   "homeGreeting": "Bonjour",
   "homeGreetingNamed": "Bonjour, {name}",
   "homeSubtitle": "De quel service avez-vous besoin ?",
+  "discLicenceKicker": "Fiche professionnelle",
+  "discFactExperience": "Expérience",
+  "discFactAvailability": "Disponibilité",
+  "discFactArea": "Zone",
+  "discHintPlumbing": "Fuites, sanitaires, chauffe-eau",
+  "discHintElectricity": "Installations, pannes, tableaux",
+  "discHintAirConditioning": "Pose, entretien, réparation",
+  "discHintMechanics": "Réparation et entretien de véhicules",
+  "discHintPainting": "Intérieur et extérieur",
+  "discHintCarpentry": "Meubles, portes, fenêtres en bois",
+  "discHintCleaning": "Maisons, bureaux, fin de chantier",
+  "discHintAppliance": "Lave-linge, réfrigérateurs, fours",
+  "discHintConstruction": "Maçonnerie, carrelage, rénovation",
+  "discHintGardening": "Jardins et espaces verts",
+  "discHintMoving": "Transport et déménagement",
+  "discHintMaintenance": "Petits travaux et dépannage",
+  "homeQuoteTitle": "Besoin d’un service ?",
+  "homeQuoteBody": "Décrivez-le une fois et recevez des offres de professionnels.",
+  "avatarChange": "Changer la photo",
+  "avatarChoose": "Choisir une photo",
+  "avatarRemove": "Supprimer la photo",
+  "avatarFailed": "Impossible de mettre à jour votre photo. Essayez une autre image.",
+  "avatarLabel": "Photo de profil",
+  "statRating": "Note",
+  "statReviews": "Avis",
+  "statYears": "Années",
+  "billTitle": "Abonnement",
+  "billCurrent": "Mon abonnement",
+  "billNone": "Aucun abonnement pour le moment.",
+  "billStatusLabel": "Statut",
+  "billStatusActive": "Actif",
+  "billStatusPastDue": "En retard",
+  "billStatusExpired": "Expiré",
+  "billStatusCancelled": "Résilié",
+  "billValidUntil": "Valable jusqu'au",
+  "billDaysLeftLabel": "Jours restants",
+  "billDaysLeft": "{count, plural, =0{Expire aujourd'hui} =1{1 jour restant} other{{count} jours restants}}",
+  "@billDaysLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "billChoosePlan": "Choisir une formule",
+  "billPeriod": "{count, plural, =1{1 jour} other{{count} jours}}",
+  "@billPeriod": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "billChooseMethod": "Mode de paiement",
+  "billMethodFlouci": "Flouci",
+  "billMethodFlouciHint": "Paiement en ligne, confirmé automatiquement",
+  "billMethodD17": "D17",
+  "billMethodD17Hint": "Envoi depuis votre portefeuille La Poste, confirmé par notre équipe",
+  "billMethodBank": "Virement bancaire",
+  "billMethodBankHint": "Virement vers notre compte, confirmé par notre équipe",
+  "billPay": "Payer",
+  "billFlouciOpened": "Le paiement s'est ouvert dans votre navigateur. Revenez ici ensuite.",
+  "billMyPayments": "Mes paiements",
+  "billNoPayments": "Aucun paiement pour le moment.",
+  "billOrderPending": "En attente",
+  "billOrderAwaiting": "À confirmer",
+  "billOrderPaid": "Payé",
+  "billOrderFailed": "Échoué",
+  "billOrderCancelled": "Annulé",
+  "billOrderRejected": "Refusé",
+  "billInstructionsTitle": "Instructions de paiement",
+  "billAmount": "Montant",
+  "billReference": "Référence",
+  "billReferenceHint": "Écrivez cette référence dans le motif du virement ou la note D17.",
+  "billCopy": "Copier",
+  "billCopied": "Copié",
+  "billPayTo": "Payer à",
+  "billBankName": "Banque",
+  "billHolder": "Titulaire",
+  "billRib": "RIB",
+  "billD17Number": "Numéro D17",
+  "billNoDetails": "Les coordonnées de paiement ne sont pas encore disponibles.",
+  "billIPaid": "J'ai payé",
+  "billPaidTitle": "Votre paiement",
+  "billNoteLabel": "Note (facultatif)",
+  "billSend": "Envoyer",
+  "billCancelOrder": "Annuler la commande",
+  "billAwaitingBody": "Merci. Notre équipe vérifie votre paiement, votre abonnement démarre dès sa confirmation.",
+  "billNotProTitle": "Devenez professionnel d'abord",
+  "billNotProBody": "L'abonnement est réservé aux professionnels. Créez d'abord votre profil.",
+  "billNotProCta": "Créer mon profil",
+  "billErrNetwork": "Pas de connexion. Réessayez.",
+  "billErrSignedIn": "Reconnectez-vous puis réessayez.",
+  "billErrRate": "Trop de commandes aujourd'hui. Réessayez demain.",
+  "billErrInvalid": "Cette demande n'est pas valide.",
+  "billErrNotFound": "Cette commande n'existe plus.",
+  "billErrNotConfigured": "Les paiements ne sont pas encore disponibles.",
+  "billFlouciUnavailable": "Flouci n'est pas encore disponible, utilisez D17 ou le virement.",
+  "billCannotOpen": "Impossible d'ouvrir le lien de paiement.",
+  "billErrUnknown": "Une erreur est survenue. Réessayez.",
+  "flTitle": "Services digitaux",
+  "flHomeSubtitle": "Développeurs, designers, monteurs, rédacteurs…",
+  "flSearchHint": "Rechercher un freelance ou une compétence…",
+  "flCategories": "Catégories",
+  "flAllCategories": "Toutes",
+  "flResultsTitle": "Freelances",
+  "flEmptyTitle": "Aucun freelance trouvé",
+  "flEmptyBody": "Essayez un autre mot ou une autre catégorie.",
+  "flLoadFailed": "Impossible de charger les freelances.",
+  "flPriceFrom": "à partir de {price} / {unit}",
+  "flUnitProject": "projet",
+  "flUnitHour": "heure",
+  "flUnitDay": "jour",
+  "flNotFoundTitle": "Freelance introuvable",
+  "flNotFoundBody": "Cette page n’existe plus ou n’est pas publiée.",
+  "flFactPrice": "Tarif",
+  "flFactLanguages": "Langues",
+  "flSkills": "Compétences",
+  "flPortfolio": "Réalisations",
+  "flOpenItem": "Ouvrir : {title}",
+  "flKindImage": "Photo",
+  "flKindClip": "Clip vidéo",
+  "flKindVideoLink": "Vidéo en ligne",
+  "flKindLink": "Lien",
+  "flTestimonials": "Témoignages clients",
+  "flTestimonialLabel": "Témoignage client",
+  "flTestimonialsNote": "Ces témoignages viennent d’anciens clients invités par le freelance. Ils sont différents des avis vérifiés laissés après un travail réalisé via Khidma.",
+  "flTestimonialsEmpty": "Pas encore de témoignage.",
+  "flTestimonialProject": "Projet : {title}",
+  "flStars": "{count} sur 5",
+  "flDashRow": "Activité freelance",
+  "flManageTitle": "Mon activité freelance",
+  "flIntroTitle": "Proposez vos services digitaux",
+  "flIntroBody": "Développement, design, montage, marketing, rédaction… Créez une page publique avec vos réalisations et des témoignages clients. Votre identité vérifiée est la même que pour votre profil de métier : une seule vérification suffit.",
+  "flBecome": "Devenir freelance",
+  "flSectionProfile": "Ma page",
+  "flFieldName": "Nom affiché",
+  "flFieldHeadline": "Titre professionnel",
+  "flFieldHeadlineHint": "Ex. Développeur Flutter",
+  "flFieldCategory": "Catégorie",
+  "flFieldBio": "Présentation",
+  "flFieldBioHelp": "20 caractères minimum pour publier, 2000 au maximum.",
+  "flFieldSkills": "Compétences",
+  "flFieldSkillsHelp": "Séparées par des virgules, 12 au maximum.",
+  "flFieldLanguages": "Langues",
+  "flFieldLanguagesHelp": "Séparées par des virgules, 6 au maximum.",
+  "flFieldYears": "Années d’expérience",
+  "flFieldPrice": "Tarif de départ (DT)",
+  "flFieldUnit": "Par",
+  "flFieldAvailability": "Disponibilité",
+  "flErrName": "2 à 80 caractères.",
+  "flErrHeadline": "5 à 100 caractères.",
+  "flErrBio": "2000 caractères au maximum.",
+  "flErrYears": "Entre 0 et 60.",
+  "flErrPrice": "Montant invalide.",
+  "flErrTags": "30 caractères par élément, {max} éléments au plus.",
+  "flSaved": "Page enregistrée.",
+  "flIdentityTitle": "Identité",
+  "flIdentityVerified": "Identité vérifiée.",
+  "flIdentityNotVerified": "Identité pas encore vérifiée.",
+  "flIdentityShared": "Une seule vérification sert à votre profil de métier et à votre page freelance.",
+  "flPublish": "Publier ma page",
+  "flPublishedHint": "Votre page est visible dans Services digitaux.",
+  "flUnpublishedHint": "Votre page n’est pas visible pour le moment.",
+  "flPublishBlocked": "La publication est bloquée tant que votre identité n’est pas vérifiée.",
+  "flErrNotVerified": "Votre identité n’est pas encore vérifiée. Faites-la vérifier pour publier.",
+  "flErrIncomplete": "Page incomplète : ajoutez un numéro de téléphone de contact dans votre profil de métier, puis renseignez nom, titre, catégorie et présentation (20 caractères minimum).",
+  "flErrSuspended": "Votre compte est suspendu : la publication est impossible.",
+  "flErrGeneric": "L’opération a échoué. Vérifiez votre connexion et réessayez.",
+  "flErrNotConfigured": "Le service n’est pas disponible pour le moment.",
+  "flErrInvalid": "Certaines informations sont refusées. Vérifiez-les et réessayez.",
+  "flErrRate": "Trop de demandes. Réessayez plus tard.",
+  "flPortCount": "{count} sur {max} réalisations",
+  "flPortEmpty": "Aucune réalisation pour le moment.",
+  "flPortAddPhoto": "Ajouter une photo",
+  "flPortAddClip": "Ajouter un clip (30 s max)",
+  "flPortAddVideoLink": "Ajouter une vidéo en ligne",
+  "flPortAddLink": "Ajouter un lien",
+  "flPortLimit": "Limite de 24 réalisations atteinte.",
+  "flPortTooLarge": "Fichier trop lourd (25 Mo au maximum).",
+  "flPortBadFormat": "Format non pris en charge : utilisez un clip mp4 ou webm, ou ajoutez un lien vidéo.",
+  "flFieldTitle": "Titre",
+  "flFieldDescription": "Description (facultatif)",
+  "flFieldUrl": "Adresse du lien",
+  "flErrTitle": "2 à 100 caractères.",
+  "flErrDescription": "500 caractères au maximum.",
+  "flErrUrlVideo": "Lien https YouTube ou Vimeo uniquement.",
+  "flErrUrlLink": "Entrez une adresse https valide.",
+  "flSheetAdd": "Ajouter",
+  "flSheetChooseFile": "Choisir le fichier",
+  "flItemEdit": "Modifier",
+  "flItemDelete": "Supprimer",
+  "flItemDeleteTitle": "Supprimer cette réalisation ?",
+  "flItemDeleteBody": "Elle ne sera plus visible sur votre page.",
+  "flUploading": "Envoi en cours…",
+  "flInvTitle": "Invitations de témoignage",
+  "flInvHint": "Envoyez un lien personnel à un ancien client : il écrit son témoignage sur une page web, sans compte. Le lien est valable 30 jours et ne sert qu’une fois.",
+  "flInvCreate": "Créer un lien d’invitation",
+  "flInvLabelField": "Pour qui ? (facultatif)",
+  "flInvNotConfigured": "Les liens de témoignage ne sont pas encore configurés dans cette version de l’application.",
+  "flInvLinkTitle": "Lien créé",
+  "flInvLinkWarn": "Copiez-le maintenant : il ne sera plus affiché.",
+  "flInvCopy": "Copier le lien",
+  "flInvCopied": "Lien copié.",
+  "flInvShare": "Partager par WhatsApp",
+  "flInvShareText": "Bonjour, pourriez-vous laisser un témoignage sur notre collaboration ? {url}",
+  "flInvEmpty": "Aucune invitation pour le moment.",
+  "flInvStatusOpen": "En attente",
+  "flInvStatusUsed": "Utilisée",
+  "flInvStatusExpired": "Expirée",
+  "flInvExpires": "Expire le {date}",
+  "flInvNoLabel": "Sans nom",
+  "flInvRevoke": "Révoquer",
+  "flInvRevokeTitle": "Révoquer cette invitation ?",
+  "flInvRevokeBody": "Le lien ne fonctionnera plus.",
+  "flInvLimit": "20 invitations en attente au maximum.",
+  "@flPriceFrom": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "@flOpenItem": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "@flTestimonialProject": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "@flStars": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@flErrTags": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@flPortCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@flInvShareText": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "@flInvExpires": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "searchHint": "Rechercher un métier, un nom, une ville…",
   "placeAll": "Toute la Tunisie",
   "placeChoose": "Choisir une zone",
@@ -348,6 +637,10 @@
   "regReviewBody": "Voici ce que verront les clients.",
   "regPublish": "Publier mon profil",
   "regUnpublish": "Retirer de la liste",
+  "regDone": "Terminer",
+  "regUsePosition": "Utiliser ma position actuelle",
+  "regPositionSet": "Position approximative enregistrée (environ 1 km).",
+  "regPositionFailed": "Position introuvable. Vérifiez l’autorisation de localisation : sinon la carte utilisera votre gouvernorat.",
   "regSaveDraft": "Enregistrer et quitter",
   "regPublished": "Votre profil est publié.",
   "regDraft": "Brouillon : invisible pour les clients.",
@@ -434,6 +727,31 @@
   },
   "reqNew": "Nouvelle demande",
   "reqMineTitle": "Mes demandes",
+  "flowRef": "N° {code}",
+  "@flowRef": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "flowRequestCount": "{count, plural, =1{1 demande} other{{count} demandes}}",
+  "@flowRequestCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "flowSecService": "Service",
+  "flowSecNeed": "Le besoin",
+  "flowSecWhere": "Où",
+  "flowSecWhen": "Quand",
+  "flowSecPhotos": "Photos",
+  "flowFactPlace": "Lieu",
+  "flowFactBudget": "Budget indicatif",
+  "flowFactNeededBy": "Souhaité pour le",
+  "flowFactExpires": "Expire le",
   "reqEmptyCta": "Demander un devis",
   "reqStatusOpen": "Ouverte",
   "reqStatusAwarded": "Attribuée",
@@ -745,5 +1063,267 @@
   "verifFailVerified": "Votre profil est déjà vérifié.",
   "verifFailLimit": "Trop de demandes ces 30 derniers jours. Réessayez plus tard.",
   "verifFailGeneric": "L’envoi a échoué. Vérifiez votre connexion et réessayez.",
-  "verifFailImage": "Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP)."
+  "verifFailImage": "Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).",
+  "reqFilterAll": "Toutes",
+  "reqFilterOpen": "Ouvertes",
+  "reqFilterClosed": "Terminées",
+  "reqFilterEmpty": "Aucune demande dans cette liste.",
+  "reqFormProgress": "{done} sur {total} étapes remplies",
+  "@reqFormProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "chatToday": "Aujourd’hui",
+  "chatYesterday": "Hier",
+  "verifStepSend": "Documents envoyés",
+  "verifStepReview": "Examen par l’équipe",
+  "verifStepBadge": "Badge sur votre profil",
+  "worldTrades": "Artisans",
+  "worldDigital": "Freelance digital",
+  "homeNearbyTitle": "Pros près de vous",
+  "homeHeroFreelanceBody": "Montrez vos réalisations et trouvez des clients.",
+  "homeHeroDigitalCta": "Découvrir",
+  "priceFromShort": "dès {price}",
+  "@priceFromShort": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "docsVerified": "Documents vérifiés",
+  "identityVerified": "Identité vérifiée",
+  "yearsShort": "{count, plural, =1{1 an} other{{count} ans}}",
+  "@yearsShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "welcomeHeadlineStart": "Trouvez un",
+  "welcomeHeadlineEnd": "près de chez vous.",
+  "welcomeWordPlumber": "plombier",
+  "welcomeWordElectrician": "électricien",
+  "welcomeWordDeveloper": "développeur",
+  "welcomeWordDesigner": "designer",
+  "welcomeWordCarpenter": "menuisier",
+  "welcomeHeadlineA11y": "Trouvez un plombier, un électricien, un développeur, un designer ou un menuisier près de chez vous.",
+  "@welcomeHeadlineA11y": {
+    "description": "The rotating welcome headline, read once by screen readers."
+  },
+  "welcomeSubtitle": "Comparez les devis, discutez et réservez, partout en Tunisie.",
+  "welcomeTrust": "Artisans et freelances vérifiés",
+  "welcomeHaveAccount": "J'ai déjà un compte",
+  "welcomeLegal": "En continuant, vous acceptez les conditions d'utilisation.",
+  "welcomeLanguageButton": "Langue : {language}",
+  "@welcomeLanguageButton": {
+    "description": "Semantics label of the language button on the welcome screen.",
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeTradePlumber": "Plombier",
+  "welcomeTradeDesigner": "Designer UI",
+  "welcomeTradeElectrician": "Électricien",
+  "welcomeTradeDeveloper": "Développeuse",
+  "welcomeTradeCarpenter": "Menuisier",
+  "welcomeTradeVideo": "Monteuse vidéo",
+  "reportReasonPayOutside": "Demande de paiement d’avance ou hors de l’app",
+  "reportReasonNoShow": "Ne s’est pas présenté",
+  "reportMessageAction": "Signaler ce message",
+  "reportOfferAction": "Signaler cette offre",
+  "chatSafetyTip": "Ne payez jamais d’avance. Gardez vos accords dans Khidma.",
+  "failSuspended": "Votre compte est suspendu : cette action n’est pas possible.",
+  "suspendedTitle": "Compte suspendu",
+  "suspendedUntil": "Votre profil est masqué jusqu’au {date}. Vous ne pouvez pas envoyer d’offres ni de messages.",
+  "@suspendedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "suspendedIndefinite": "Votre profil est masqué jusqu’à la décision de l’équipe. Vous ne pouvez pas envoyer d’offres ni de messages.",
+  "suspendedReason": "Motif : {reason}",
+  "@suspendedReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "appealAction": "Faire un recours",
+  "appealHint": "Expliquez pourquoi cette suspension est une erreur.",
+  "appealTooShort": "Écrivez au moins 10 caractères.",
+  "appealSend": "Envoyer le recours",
+  "appealSent": "Recours envoyé. L’équipe va l’examiner.",
+  "appealPending": "Votre recours est en cours d’examen.",
+  "appealRejected": "Votre dernier recours a été refusé.",
+  "appealFailRate": "Attendez une semaine après un refus avant un nouveau recours.",
+  "appealFailGeneric": "Le recours n’a pas pu être envoyé. Réessayez.",
+  "verifiedUntil": "Identité vérifiée, valable jusqu’au {date}",
+  "@verifiedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "flPolicyTitle": "Services interdits",
+  "flPolicyIntro": "Une annonce qui propose l’un de ces services est retirée, et le compte peut être suspendu.",
+  "flPolicyIllegal": "Tout service illégal en Tunisie, ou qui aide à contourner la loi.",
+  "flPolicyAcademic": "Faire à la place d’un élève ou d’un étudiant un devoir, un mémoire ou un examen.",
+  "flPolicyDocuments": "Faux documents : diplômes, attestations, pièces d’identité, factures.",
+  "flPolicyPlagiarism": "Un portfolio avec le travail de quelqu’un d’autre présenté comme le vôtre.",
+  "flPolicyAccounts": "Vente de comptes, de faux avis, d’abonnés ou de « likes ».",
+  "flPolicyAccept": "J’accepte et je publie",
+  "flPolicyLink": "Voir les services interdits",
+  "flOnHoldTitle": "Annonce retirée par l’équipe",
+  "flOnHoldReason": "Motif : {reason}. Corrigez votre annonce puis contactez le support pour la remettre en ligne.",
+  "@flOnHoldReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "flErrOnHold": "Votre annonce est retirée : elle ne peut pas être publiée pour l’instant.",
+  "billAttachProof": "Joindre un justificatif",
+  "billProofHint": "Facultatif : une photo du reçu aide à confirmer plus vite.",
+  "billProofCount": "{count} sur 3 justificatifs joints.",
+  "@billProofCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "billProofLimit": "Vous avez déjà joint 3 justificatifs.",
+  "billRejectedNote": "Paiement refusé : {note}",
+  "@billRejectedNote": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "listingHiddenTitle": "Profil masqué",
+  "listingHiddenBody": "Votre abonnement n’est pas réglé : les clients ne voient plus votre profil et vous ne pouvez pas envoyer d’offres. Vos chantiers en cours continuent. Le profil réapparaît dès le paiement.",
+  "listingTrialTitle": "Essai gratuit",
+  "listingTrialBody": "Votre profil est visible gratuitement jusqu’au {date}. Abonnez-vous avant pour rester visible.",
+  "@listingTrialBody": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "listingPay": "Régler mon abonnement",
+  "reqFailSubscription": "Votre abonnement n’est pas réglé : vous ne pouvez pas envoyer d’offre pour l’instant.",
+  "projNewTitle": "Projet en ligne",
+  "projNewCta": "Publier un projet en ligne",
+  "projMine": "Mes projets en ligne",
+  "projFieldTitle": "Titre du projet",
+  "projFieldCategory": "Type de travail",
+  "projFieldBrief": "Brief : décrivez le besoin",
+  "projFieldDeliverables": "Livrables attendus",
+  "projDeliverablesHint": "Ex. : logo en PNG et SVG, 3 propositions",
+  "projFieldBudgetMin": "Budget min (TND)",
+  "projFieldBudgetMax": "Budget max (TND)",
+  "projFieldDeadline": "Date limite (facultatif)",
+  "projFieldLink": "Lien de référence (https)",
+  "projAddLink": "Ajouter un lien",
+  "projErrLink": "Seuls les liens https:// sont acceptés.",
+  "projErrBudget": "Le budget max doit être supérieur ou égal au min.",
+  "projErrRequired": "3 caractères minimum.",
+  "projErrBrief": "10 caractères minimum.",
+  "projErrCategory": "Choisissez un type de travail.",
+  "projSubmit": "Publier le projet",
+  "projCreated": "Projet publié. Les freelances peuvent vous faire des offres.",
+  "projEmpty": "Aucun projet en ligne pour l’instant.",
+  "projEmptyOpen": "Aucun projet ouvert pour le moment.",
+  "projRemote": "À distance",
+  "projBudget": "Budget : {range}",
+  "@projBudget": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "projDeadline": "À livrer avant le {date}",
+  "@projDeadline": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "projDeliverables": "Livrables",
+  "projLinks": "Références",
+  "projTerms": "Khidma ne détient pas l’argent : le paiement se règle directement entre vous et le freelance. Mettez-vous d’accord dans la conversation et ne payez jamais tout d’avance.",
+  "projOpenTitle": "Projets ouverts",
+  "projOfferTitle": "Votre offre",
+  "projOfferPrice": "Prix (TND)",
+  "projOfferDays": "Délai de livraison (jours)",
+  "projOfferRevisions": "Révisions incluses",
+  "projOfferMessage": "Message (facultatif)",
+  "projOfferSend": "Envoyer l’offre",
+  "projOfferSent": "Offre envoyée.",
+  "projErrOffer": "Prix ≥ 1, délai de 1 à 365 jours, 0 à 20 révisions.",
+  "projRevisionsIncluded": "{count} révision(s) incluse(s)",
+  "@projRevisionsIncluded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "projDeliverTitle": "Livrer le travail",
+  "projDeliverNote": "Message de livraison",
+  "projDeliverLink": "Lien (Drive, WeTransfer, Figma…)",
+  "projDeliverAddPhoto": "Ajouter une image",
+  "projDeliverPhotos": "{count} image(s) jointe(s)",
+  "@projDeliverPhotos": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "projDeliverSend": "Livrer",
+  "projDelivered": "Travail livré. Le client va vérifier.",
+  "projDeliverEmpty": "Ajoutez un message, un lien ou une image.",
+  "projDeliveriesTitle": "Livraisons",
+  "projDeliveryFile": "Fichier {n}",
+  "@projDeliveryFile": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "projNoDelivery": "Rien n’a encore été livré.",
+  "projRevisionAsk": "Demander une révision",
+  "projRevisionHint": "Ce qu’il faut changer",
+  "projRevisionLeft": "{count} révision(s) restante(s)",
+  "@projRevisionLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "projRevisionSent": "Demande de révision envoyée.",
+  "projOpenFileFailed": "Le fichier n’a pas pu être ouvert.",
+  "projStartJob": "Commencer le travail"
 }

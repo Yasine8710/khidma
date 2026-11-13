@@ -85,6 +85,18 @@ void main() {
   setUpAll(loadAppFonts);
 
   group('contact on the profile', () {
+    testWidgets('the Contact button at the top jumps to the contact section', (
+      tester,
+    ) async {
+      await _open(tester, _Repo());
+      await tester.tap(find.widgetWithText(OutlinedButton, 'Contact'));
+      await tester.pumpAndSettle();
+      final screen = tester.view.physicalSize / tester.view.devicePixelRatio;
+      final box = tester.getRect(find.text('Afficher le contact'));
+      expect(box.bottom, lessThanOrEqualTo(screen.height));
+      expect(box.top, greaterThanOrEqualTo(0));
+    });
+
     testWidgets('signed out: asked to sign in, no number requested', (
       tester,
     ) async {

@@ -65,6 +65,7 @@ class FakeProfessionalRepository implements ProfessionalRepository {
       phone: dropPhone || blank(i.phone) == null
           ? null
           : TunisianPhone.e164(i.phone!),
+      position: i.governorateId == null ? null : i.position,
       serviceCategoryIds: draft.serviceCategoryIds,
       areas: draft.areas,
       availability: draft.availability,

@@ -222,7 +222,7 @@ describe('sequence and function exposure', () => {
     assert.deepEqual(r.rows.filter((x) => x.public_x || x.default_acl).map((x) => x.proname), [], 'PUBLIC / default ACL');
     const anonCan = r.rows.filter((x) => x.anon_x).map((x) => x.proname).sort();
     const authCan = r.rows.filter((x) => x.auth_x).map((x) => x.proname).sort();
-    assert.deepEqual(anonCan, ['is_admin', 'search_normalize', 'search_professionals']);
+    assert.deepEqual(anonCan, ['badge_valid', 'freelancer_is_visible', 'is_admin', 'listing_allowed', 'search_normalize', 'search_professionals', 'submit_testimonial', 'tunis_today']);
     assert.deepEqual(authCan, [
       'accept_offer', 'admin_set_review_status', 'become_professional', 'can_view_request_photos', 'cancel_booking',
       'cancel_quote_request', 'chat_file_unsent', 'chat_folder_member', 'chat_folder_writable', 'chat_image_count', 'confirm_booking_completed',
@@ -239,6 +239,29 @@ describe('sequence and function exposure', () => {
       'admin_audit_log_page', 'admin_handle_report', 'admin_list_reports', 'admin_list_verifications', 'admin_report_context',
       'admin_review_verification', 'admin_set_suspended', 'admin_verification_documents', 'cancel_verification', 'my_verification',
       'my_verification_file_count', 'report_content', 'submit_verification', 'verification_file_unsubmitted',
+      // freelance
+      'admin_set_testimonial_status', 'become_freelancer', 'create_testimonial_invite', 'freelancer_is_visible',
+      'my_freelance_file_count', 'reveal_freelancer_contact', 'submit_testimonial',
+      // payments
+      'admin_confirm_payment', 'admin_list_payment_orders', 'admin_reject_payment', 'admin_set_payment_setting',
+      'cancel_payment_order', 'create_payment_order', 'get_payment_instructions', 'mark_payment_sent', 'my_subscription',
+      // trust v2
+      'admin_decide_appeal', 'admin_list_appeals', 'admin_revoke_verification', 'admin_suspend', 'badge_valid',
+      'my_account_status', 'report_message', 'submit_appeal', 'tunis_today',
+      // freelance moderation
+      'admin_hold_freelancer', 'admin_release_freelancer',
+      // admin billing
+      'admin_billing_detail', 'admin_billing_summary', 'admin_extend_subscription', 'admin_list_subscriptions',
+      'admin_set_subscription_status',
+      // payment proofs
+      'admin_payment_proofs', 'attach_payment_proof', 'my_payment_proof_count', 'my_payment_proof_file_count',
+      'payment_proof_unattached',
+      // subscription enforcement
+      'admin_billing_config', 'admin_set_billing_config', 'listing_allowed', 'my_listing_status',
+      // remote jobs
+      'booking_deliveries', 'create_remote_request', 'deliver_booking', 'delivery_file_count', 'delivery_file_unattached',
+      'delivery_folder_party', 'get_remote_request', 'list_remote_requests', 'my_remote_requests', 'request_revision',
+      'submit_remote_offer',
     ].sort());
   });
 

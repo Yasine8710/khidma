@@ -2,14 +2,16 @@ import '../../trust/domain/trust_domain.dart';
 import '../../trust/presentation/report_sheet.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/format/dates.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/empty_state.dart';
 import '../../portfolio/presentation/portfolio_image.dart';
 import '../../requests/domain/requests_domain.dart';
+import '../../requests/presentation/flow_widgets.dart';
 import '../application/messages_providers.dart';
 import '../domain/messages_domain.dart';
 import 'messages_screen.dart' show conversationTitle;
@@ -44,6 +46,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }) => switch (f) {
     RequestsFailure.rateLimited => l10n.chatRateLimited,
     RequestsFailure.notOpen => l10n.chatClosed,
+    RequestsFailure.suspended => l10n.failSuspended,
     _ => photo ? l10n.chatPhotoFailed : l10n.chatSendFailed,
   };
 
@@ -110,18 +113,35 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       // The banner above says what is wrong and offers a retry.
       list = const SizedBox.shrink();
     } else if (messages.isEmpty && !async.isLoading) {
-      list = EmptyState(
+      list = CalmEmpty(
         icon: Icons.chat_bubble_outline_rounded,
         title: l10n.chatEmpty,
-        body: '',
       );
     } else {
+      // Oldest first with a date line where the day changes, then reversed
+      // for the list, which starts at the bottom.
+      final entries = <Object>[];
+      DateTime? day;
+      for (final m in messages) {
+        final local = m.createdAt.toLocal();
+        final d = DateTime(local.year, local.month, local.day);
+        if (day != d) {
+          entries.add(d);
+          day = d;
+        }
+        entries.add(m);
+      }
       list = ListView.builder(
         reverse: true,
-        padding: const EdgeInsetsDirectional.all(AppSpacing.md),
-        itemCount: messages.length,
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        itemCount: entries.length,
         itemBuilder: (context, i) {
-          final m = messages[messages.length - 1 - i];
+          final e = entries[entries.length - 1 - i];
+          if (e is DateTime) return _DayLine(day: e, locale: locale);
+          final m = e as ChatMessage;
           // Messages carry a role: mine is the one written by my side.
           final mine = iAmCustomer != null && m.fromCustomer == iAmCustomer;
           return _Bubble(message: m, mine: mine, locale: locale);
@@ -129,10 +149,22 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       );
     }
 
+    final title = summary == null
+        ? l10n.navMessages
+        : conversationTitle(l10n, summary);
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          summary == null ? l10n.navMessages : conversationTitle(l10n, summary),
+        titleSpacing: 0,
+        title: Row(
+          children: [
+            if (summary != null) ...[
+              PersonAvatar(name: title, size: 36),
+              const SizedBox(width: AppSpacing.md),
+            ],
+            Expanded(
+              child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
+            ),
+          ],
         ),
         actions: [
           ReportButton(
@@ -143,22 +175,33 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         bottom: summary == null
             ? null
             : PreferredSize(
-                preferredSize: const Size.fromHeight(24),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(
-                    start: AppSpacing.gutter,
-                    end: AppSpacing.gutter,
-                    bottom: AppSpacing.sm,
+                preferredSize: Size.fromHeight(
+                  MediaQuery.textScalerOf(context).scale(18) +
+                      AppSpacing.sm +
+                      1,
+                ),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    border: BorderDirectional(
+                      bottom: BorderSide(color: scheme.outlineVariant),
+                    ),
                   ),
-                  child: Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: Text(
-                      summary.requestTitle,
-                      style: text.bodySmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(
+                      start: AppSpacing.gutter,
+                      end: AppSpacing.gutter,
+                      bottom: AppSpacing.sm,
+                    ),
+                    child: Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Text(
+                        summary.requestTitle,
+                        style: text.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
@@ -195,6 +238,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ),
                 ),
               ),
+            const _SafetyTip(),
             Expanded(child: list),
             if (_error != null)
               Semantics(
@@ -210,55 +254,104 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
               ),
             if (!writable)
-              Padding(
-                padding: const EdgeInsetsDirectional.all(AppSpacing.md),
-                child: Text(
-                  l10n.chatReadOnly,
-                  style: text.bodyMedium?.copyWith(
-                    color: scheme.onSurfaceVariant,
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainerHighest,
+                  border: BorderDirectional(
+                    top: BorderSide(color: scheme.outlineVariant),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.lock_outline_rounded,
+                        size: 18,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: Text(
+                          l10n.chatReadOnly,
+                          style: text.bodyMedium?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               )
             else
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(
-                  AppSpacing.sm,
-                  AppSpacing.xs,
-                  AppSpacing.sm,
-                  AppSpacing.sm,
+              // The composer: a rounded field and a round brand send
+              // button on a white band under a hairline.
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: scheme.surface,
+                  border: BorderDirectional(
+                    top: BorderSide(color: scheme.outlineVariant),
+                  ),
                 ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      tooltip: l10n.chatAddImage,
-                      icon: const Icon(Icons.add_photo_alternate_outlined),
-                      onPressed: busy ? null : _sendImage,
-                    ),
-                    Expanded(
-                      child: TextField(
-                        controller: _controller,
-                        minLines: 1,
-                        maxLines: 5,
-                        maxLength: maxMessageLength,
-                        textInputAction: TextInputAction.newline,
-                        buildCounter: (
-                          _, {
-                          required currentLength,
-                          required isFocused,
-                          maxLength,
-                        }) => null,
-                        decoration: InputDecoration(
-                          hintText: l10n.chatInputHint,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(
+                    AppSpacing.xs,
+                    AppSpacing.sm,
+                    AppSpacing.sm,
+                    AppSpacing.sm,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        tooltip: l10n.chatAddImage,
+                        color: scheme.onSurfaceVariant,
+                        icon: const Icon(Icons.add_photo_alternate_outlined),
+                        onPressed: busy ? null : _sendImage,
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: _controller,
+                          minLines: 1,
+                          maxLines: 5,
+                          maxLength: maxMessageLength,
+                          textInputAction: TextInputAction.newline,
+                          buildCounter: (
+                            _, {
+                            required currentLength,
+                            required isFocused,
+                            maxLength,
+                          }) => null,
+                          decoration: InputDecoration(
+                            hintText: l10n.chatInputHint,
+                            filled: true,
+                            fillColor: scheme.surfaceContainerHighest,
+                            isDense: true,
+                            contentPadding:
+                                const EdgeInsetsDirectional.symmetric(
+                                  horizontal: AppSpacing.lg,
+                                  vertical: AppSpacing.md,
+                                ),
+                            border: _pill(Colors.transparent),
+                            enabledBorder: _pill(Colors.transparent),
+                            focusedBorder: _pill(scheme.primary),
+                          ),
                         ),
                       ),
-                    ),
-                    IconButton.filled(
-                      tooltip: l10n.chatSend,
-                      icon: const Icon(Icons.send_rounded),
-                      onPressed: busy ? null : _send,
-                    ),
-                  ],
+                      const SizedBox(width: AppSpacing.sm),
+                      IconButton.filled(
+                        tooltip: l10n.chatSend,
+                        style: IconButton.styleFrom(
+                          minimumSize: const Size(48, 48),
+                          backgroundColor: scheme.primary,
+                          foregroundColor: scheme.onPrimary,
+                          shape: const CircleBorder(),
+                        ),
+                        icon: const Icon(Icons.send_rounded),
+                        onPressed: busy ? null : _send,
+                      ),
+                    ],
+                  ),
                 ),
               ),
           ],
@@ -266,6 +359,142 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       ),
     );
   }
+
+  static OutlineInputBorder _pill(Color c) => OutlineInputBorder(
+    borderRadius: BorderRadius.circular(AppRadius.xl),
+    borderSide: c == Colors.transparent
+        ? BorderSide.none
+        : BorderSide(color: c, width: 1.5),
+  );
+}
+
+/// "Aujourd'hui", "Hier" or the date, centred on a soft pill between the
+/// messages of different days.
+class _DayLine extends StatelessWidget {
+  const _DayLine({required this.day, required this.locale});
+
+  final DateTime day;
+  final Locale locale;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final now = DateTime.now();
+    // Calendar days counted in UTC, so a daylight-saving change cannot make
+    // yesterday look like today.
+    final days = DateTime.utc(
+      now.year,
+      now.month,
+      now.day,
+    ).difference(DateTime.utc(day.year, day.month, day.day)).inDays;
+    final label = switch (days) {
+      0 => l10n.chatToday,
+      1 => l10n.chatYesterday,
+      _ => formatDate(day, locale),
+    };
+    return Padding(
+      padding: const EdgeInsetsDirectional.symmetric(vertical: AppSpacing.md),
+      child: Center(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: scheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(AppRadius.pill),
+          ),
+          child: Padding(
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.xs,
+            ),
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.labelSmall
+                  ?.copyWith(color: scheme.onSurfaceVariant),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A standing reminder at the top of every conversation.
+class _SafetyTip extends StatelessWidget {
+  const _SafetyTip();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest,
+        border: BorderDirectional(
+          bottom: BorderSide(color: scheme.outlineVariant),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: AppSpacing.gutter,
+          vertical: AppSpacing.sm,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.shield_outlined,
+              size: 18,
+              color: scheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                l10n.chatSafetyTip,
+                style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Long-press menu on the other side's message: copy it or report it.
+Future<void> _showMessageMenu(BuildContext context, ChatMessage message) {
+  final l10n = AppLocalizations.of(context);
+  final body = message.body;
+  return showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    useSafeArea: true,
+    builder: (sheet) => Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (body != null && body.isNotEmpty)
+          ListTile(
+            leading: const Icon(Icons.copy_outlined),
+            title: Text(l10n.billCopy),
+            onTap: () {
+              Clipboard.setData(ClipboardData(text: body));
+              Navigator.of(sheet).pop();
+            },
+          ),
+        ListTile(
+          leading: const Icon(Icons.flag_outlined),
+          title: Text(l10n.reportMessageAction),
+          onTap: () {
+            Navigator.of(sheet).pop();
+            showReportSheet(
+              context,
+              target: ReportTarget.message,
+              targetId: '${message.id}',
+            );
+          },
+        ),
+      ],
+    ),
+  );
 }
 
 class _Bubble extends ConsumerWidget {
@@ -284,8 +513,11 @@ class _Bubble extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    final bg = mine ? scheme.primary : scheme.surfaceContainerHighest;
+    // Mine in brand with white text; theirs white with a hairline.
+    final bg = mine ? scheme.primary : scheme.surface;
     final fg = mine ? scheme.onPrimary : scheme.onSurface;
+    const r = Radius.circular(AppRadius.lg);
+    const tail = Radius.circular(4);
     final who = mine ? l10n.chatYouSent : l10n.chatThem;
     final body = message.body;
     final image = message.imagePath;
@@ -301,35 +533,61 @@ class _Bubble extends ConsumerWidget {
         child: Semantics(
           container: true,
           label: '$who, ${formatTime(message.createdAt, locale)}',
-          child: Container(
-            margin: const EdgeInsetsDirectional.symmetric(
-              vertical: AppSpacing.xs,
-            ),
-            padding: const EdgeInsetsDirectional.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: bg,
-              borderRadius: BorderRadius.circular(AppRadius.lg),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (image != null) _ChatImage(path: image),
-                if (body != null && body.isNotEmpty) ...[
-                  if (image != null) const SizedBox(height: AppSpacing.sm),
-                  SelectableText(
-                    body,
-                    style: text.bodyMedium?.copyWith(color: fg),
+          customSemanticsActions: mine
+              ? null
+              : {
+                  CustomSemanticsAction(label: l10n.reportMessageAction): () =>
+                      _showMessageMenu(context, message),
+                },
+          child: GestureDetector(
+            onLongPress: mine ? null : () => _showMessageMenu(context, message),
+            child: Container(
+              margin: const EdgeInsetsDirectional.symmetric(vertical: 3),
+              padding: const EdgeInsetsDirectional.fromSTEB(
+                AppSpacing.md,
+                AppSpacing.sm,
+                AppSpacing.md,
+                AppSpacing.sm - 2,
+              ),
+              decoration: BoxDecoration(
+                color: bg,
+                // The corner on the sender's side is tucked in.
+                borderRadius: BorderRadiusDirectional.only(
+                  topStart: r,
+                  topEnd: r,
+                  bottomStart: mine ? r : tail,
+                  bottomEnd: mine ? tail : r,
+                ),
+                border: mine ? null : Border.all(color: scheme.outlineVariant),
+              ),
+              // The time sits at the end, under the text.
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (image != null) _ChatImage(path: image),
+                  if (body != null && body.isNotEmpty) ...[
+                    if (image != null) const SizedBox(height: AppSpacing.sm),
+                    if (mine)
+                      SelectableText(
+                        body,
+                        style: text.bodyLarge?.copyWith(color: fg),
+                      )
+                    else
+                      Text(body, style: text.bodyLarge?.copyWith(color: fg)),
+                  ],
+                  const SizedBox(height: 2),
+                  Text(
+                    formatTime(message.createdAt, locale),
+                    style: text.labelSmall?.copyWith(
+                      color: mine
+                          ? fg.withValues(alpha: 0.85)
+                          : scheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  formatTime(message.createdAt, locale),
-                  style: text.labelSmall?.copyWith(
-                    color: fg.withValues(alpha: 0.8),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -351,14 +609,16 @@ class _ChatImage extends ConsumerWidget {
       width: 220,
       height: 160,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
         child: url.when(
           data: (u) => PortfolioImage(
             url: u,
             semanticLabel: l10n.chatPhoto,
             cacheWidth: 440,
           ),
-          loading: () => const ColoredBox(color: Color(0x22000000)),
+          loading: () => ColoredBox(
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          ),
           error: (_, _) => Center(
             child: IconButton(
               tooltip: l10n.retry,

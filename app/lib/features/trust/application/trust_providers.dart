@@ -26,6 +26,46 @@ final myVerificationProvider = FutureProvider.autoDispose<VerificationInfo>(
   },
 );
 
+/// The signed-in person's suspension state (none when signed out).
+final myAccountStatusProvider = FutureProvider.autoDispose<AccountStatus>(
+  retry: (n, e) => null,
+  (ref) {
+    if (ref.watch(currentUserProvider.select((u) => u?.id)) == null) {
+      return Future.value(AccountStatus.none);
+    }
+    return ref.watch(trustRepositoryProvider).myAccountStatus();
+  },
+);
+
+/// Sends an appeal against a suspension. [busy] while it runs.
+final appealActionsProvider = NotifierProvider<AppealActions, bool>(
+  AppealActions.new,
+);
+
+class AppealActions extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  /// Returns the failure, or null on success.
+  Future<RequestsFailure?> send(String message) async {
+    if (state) return RequestsFailure.unknown;
+    state = true;
+    try {
+      await ref.read(trustRepositoryProvider).submitAppeal(message);
+      return null;
+    } on RequestsError catch (e) {
+      return e.failure;
+    } catch (_) {
+      return RequestsFailure.unknown;
+    } finally {
+      if (ref.mounted) {
+        state = false;
+        ref.invalidate(myAccountStatusProvider);
+      }
+    }
+  }
+}
+
 /// Sends a report. [busy] is true while it runs (a double tap sends once).
 final reportActionsProvider = NotifierProvider<ReportActions, bool>(
   ReportActions.new,

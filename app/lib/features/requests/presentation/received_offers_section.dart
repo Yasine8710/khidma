@@ -7,21 +7,23 @@ import '../../../core/format/money.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/app_avatar.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/rating_stars.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
 import '../../offers/domain/offers_domain.dart';
+import '../../offers/presentation/job_timeline.dart';
 import '../../offers/presentation/offers_texts.dart';
 import '../../messages/application/messages_providers.dart';
 import '../../reviews/application/reviews_providers.dart';
 import '../../reviews/presentation/review_widgets.dart';
+import '../../trust/domain/trust_domain.dart';
+import '../../trust/presentation/report_sheet.dart';
 import '../application/customer_offers_providers.dart';
 import '../domain/customer_offers_domain.dart';
 import '../domain/requests_domain.dart';
+import 'flow_widgets.dart';
 import 'requests_texts.dart';
 
 enum _Sort { price, rating, delay }
@@ -30,9 +32,16 @@ enum _Sort { price, rating, delay }
 /// behind each (name, rating, verified only when verified). The customer
 /// accepts or declines here; accepting awards the request.
 class ReceivedOffersSection extends ConsumerStatefulWidget {
-  const ReceivedOffersSection({super.key, required this.request});
+  const ReceivedOffersSection({
+    super.key,
+    required this.request,
+    this.remote = false,
+  });
 
   final QuoteRequest request;
+
+  /// A remote project: accepting shows the payment terms first.
+  final bool remote;
 
   @override
   ConsumerState<ReceivedOffersSection> createState() =>
@@ -90,11 +99,29 @@ class _ReceivedOffersSectionState extends ConsumerState<ReceivedOffersSection> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(accept ? l10n.offerAcceptTitle : l10n.offerDeclineTitle),
-        content: Text(
-          accept
-              ? l10n.offerAcceptBody(proName, formatTnd(offer.priceTnd, locale))
-              : l10n.offerDeclineBody,
-        ),
+        content: accept && widget.remote
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.offerAcceptBody(
+                      proName,
+                      formatTnd(offer.priceTnd, locale),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Text(l10n.projTerms),
+                ],
+              )
+            : Text(
+                accept
+                    ? l10n.offerAcceptBody(
+                        proName,
+                        formatTnd(offer.priceTnd, locale),
+                      )
+                    : l10n.offerDeclineBody,
+              ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
@@ -241,16 +268,12 @@ class _ReceivedOffersSectionState extends ConsumerState<ReceivedOffersSection> {
     }
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Semantics(
-          header: true,
-          child: Text(
-            '${l10n.offersReceived} · ${l10n.reqOffers(widget.request.offerCount)}',
-            style: text.titleMedium,
-          ),
+        SectionTitle(
+          title: l10n.offersReceived,
+          note: l10n.reqOffers(widget.request.offerCount),
         ),
-        const SizedBox(height: AppSpacing.sm),
         body,
       ],
     );
@@ -283,128 +306,191 @@ class _OfferCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context);
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    final scheme = Theme.of(context).colorScheme;
+    final muted = scheme.onSurfaceVariant;
     final name = pro?.name.isNotEmpty == true
         ? pro!.name
         : l10n.offerProUnknown;
     final live = offer.isPending || offer.status == OfferStatus.accepted;
+    final won = offer.status == OfferStatus.accepted;
+    final scale = MediaQuery.textScalerOf(context).scale(1);
 
-    return AppCard(
+    // The quoted price, large and bold. Prices read left to right with
+    // Western digits in every language.
+    final price = Directionality(
+      textDirection: TextDirection.ltr,
+      child: Text(formatTnd(offer.priceTnd, locale), style: text.headlineSmall),
+    );
+
+    final who = Row(
+      children: [
+        PersonAvatar(name: name, size: 44),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: text.titleMedium,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              if (pro != null)
+                RatingStars(
+                  rating: pro!.rating,
+                  reviewCount: pro!.reviewCount,
+                  size: 14,
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    final slip = Opacity(
+      opacity: live ? 1 : 0.6,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Side by side when there is room; the price under the name on a
+          // narrow screen or with large text.
+          LayoutBuilder(
+            builder: (context, box) => box.maxWidth >= 260 * scale
+                ? Row(
+                    children: [
+                      Expanded(child: who),
+                      const SizedBox(width: AppSpacing.md),
+                      price,
+                    ],
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      who,
+                      const SizedBox(height: AppSpacing.sm),
+                      price,
+                    ],
+                  ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              if (pro?.isVerified ?? false)
+                StatusPill(
+                  label: l10n.verified,
+                  tone: BadgeTone.info,
+                  icon: Icons.verified_rounded,
+                ),
+              if (isLowest)
+                StatusPill(
+                  label: l10n.offerLowest,
+                  tone: BadgeTone.success,
+                  icon: Icons.south_rounded,
+                ),
+              if (!offer.isPending)
+                StatusPill(
+                  label: offerStatusLabel(l10n, offer.status),
+                  tone: offerStatusTone(offer.status),
+                ),
+              if (offer.revisions != null)
+                StatusPill(
+                  label: l10n.projRevisionsIncluded(offer.revisions!),
+                  icon: Icons.replay_rounded,
+                ),
+              if (offer.estimatedDays != null)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.schedule_rounded, size: 16, color: muted),
+                    const SizedBox(width: AppSpacing.xs),
+                    Flexible(
+                      child: Text(
+                        l10n.offerDelay(offer.estimatedDays!),
+                        style: text.labelMedium,
+                      ),
+                    ),
+                  ],
+                ),
+              Text(
+                formatDate(offer.createdAt, locale),
+                style: text.bodySmall?.copyWith(color: muted),
+              ),
+              // The customer can report a suspicious offer (e.g. pay first).
+              ReportButton(
+                target: ReportTarget.offer,
+                targetId: offer.id,
+                compact: true,
+              ),
+            ],
+          ),
+          if (offer.message != null && offer.message!.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.md),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(AppRadius.md),
+              ),
+              child: Padding(
+                padding: const EdgeInsetsDirectional.all(AppSpacing.md),
+                child: Text(offer.message!, style: text.bodyMedium),
+              ),
+            ),
+          ],
+          if (live) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: AppButton(
+                label: l10n.chatAskPro,
+                icon: Icons.chat_bubble_outline_rounded,
+                variant: AppButtonVariant.text,
+                expand: false,
+                onPressed: onMessage,
+              ),
+            ),
+          ],
+          if (canAct) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Row(
+              children: [
+                Expanded(
+                  child: AppButton(
+                    label: l10n.offerDecline,
+                    variant: AppButtonVariant.secondary,
+                    onPressed: () => onDecline(name),
+                  ),
+                ),
+                if (canAccept) ...[
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: AppButton(
+                      label: l10n.offerAccept,
+                      onPressed: () => onAccept(name),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+
+    // The accepted offer gets a brand outline, like a selected card.
+    return FlowCard(
+      gap: 0,
       semanticLabel: '$name, ${formatTnd(offer.priceTnd, locale)}',
       onTap: pro == null
           ? null
           : () =>
                 context.push(AppRoutes.professionalPath(offer.professionalId)),
-      child: Opacity(
-        opacity: live ? 1 : 0.6,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                AppAvatar(name: name, size: 40, decorative: true),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        name,
-                        style: text.titleSmall,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      if (pro != null)
-                        RatingStars(
-                          rating: pro!.rating,
-                          reviewCount: pro!.reviewCount,
-                          size: 14,
-                        ),
-                    ],
-                  ),
-                ),
-                // Prices read left to right with Western digits in every language.
-                Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: Text(
-                    formatTnd(offer.priceTnd, locale),
-                    style: text.titleMedium,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.xs,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                if (pro?.isVerified ?? false) AppBadge.verified(context),
-                if (isLowest)
-                  AppBadge(
-                    label: l10n.offerLowest,
-                    tone: BadgeTone.success,
-                    icon: Icons.south_rounded,
-                  ),
-                if (!offer.isPending)
-                  AppBadge(
-                    label: offerStatusLabel(l10n, offer.status),
-                    tone: offerStatusTone(offer.status),
-                  ),
-                if (offer.estimatedDays != null)
-                  Text(
-                    l10n.offerDelay(offer.estimatedDays!),
-                    style: text.bodySmall,
-                  ),
-                Text(
-                  formatDate(offer.createdAt, locale),
-                  style: text.bodySmall?.copyWith(color: muted),
-                ),
-              ],
-            ),
-            if (offer.message != null && offer.message!.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Text(offer.message!, style: text.bodyMedium),
-            ],
-            if (live) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: AppButton(
-                  label: l10n.chatAskPro,
-                  icon: Icons.chat_bubble_outline_rounded,
-                  variant: AppButtonVariant.text,
-                  expand: false,
-                  onPressed: onMessage,
-                ),
-              ),
-            ],
-            if (canAct) ...[
-              const SizedBox(height: AppSpacing.md),
-              Row(
-                children: [
-                  Expanded(
-                    child: AppButton(
-                      label: l10n.offerDecline,
-                      variant: AppButtonVariant.secondary,
-                      onPressed: () => onDecline(name),
-                    ),
-                  ),
-                  if (canAccept) ...[
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: AppButton(
-                        label: l10n.offerAccept,
-                        onPressed: () => onAccept(name),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ],
-          ],
-        ),
-      ),
+      borderColor: won ? scheme.primary : null,
+      border: won ? 1.5 : AppInk.border,
+      child: slip,
     );
   }
 }
@@ -496,56 +582,78 @@ class BookingSection extends ConsumerWidget {
       );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: AppSpacing.xl),
-        Semantics(
-          header: true,
-          child: Text(l10n.bookingTitle, style: text.titleMedium),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.xs,
-          crossAxisAlignment: WrapCrossAlignment.center,
+    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(top: AppSpacing.lg),
+      child: FlowCard(
+        gap: 0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            AppBadge(
-              label: jobStatusLabel(l10n, booking.status),
-              tone: jobStatusTone(booking.status),
+            Row(
+              children: [
+                const IconTile(icon: Icons.handyman_outlined, brand: true),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Semantics(
+                        header: true,
+                        child: Text(l10n.bookingTitle, style: text.titleLarge),
+                      ),
+                      Text(
+                        l10n.jobAgreedPrice(
+                          formatTnd(booking.priceTnd, locale),
+                        ),
+                        style: text.bodyMedium?.copyWith(color: muted),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Text(
-              l10n.jobAgreedPrice(formatTnd(booking.priceTnd, locale)),
-              style: text.bodySmall,
-            ),
+            const SizedBox(height: AppSpacing.md),
+            const Hairline(),
+            const SizedBox(height: AppSpacing.md),
+            if (booking.status == BookingStatus.cancelled)
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: StatusPill(
+                  label: jobStatusLabel(l10n, booking.status),
+                  tone: jobStatusTone(booking.status),
+                ),
+              )
+            else
+              JobTimeline(status: booking.status),
+            if (booking.status == BookingStatus.completed)
+              _ReviewPrompt(bookingId: booking.id, aboutCustomer: false),
+            if (booking.canConfirm) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Text(l10n.bookingWaitingForYou, style: text.bodyMedium),
+              const SizedBox(height: AppSpacing.sm),
+              AppButton(
+                label: l10n.bookingConfirm,
+                isLoading: busy,
+                onPressed: () => run(
+                  () => ref
+                      .read(customerOfferActionsProvider.notifier)
+                      .confirm(requestId, booking.id),
+                  l10n.bookingConfirmed,
+                ),
+              ),
+            ],
+            if (booking.canCancel) ...[
+              const SizedBox(height: AppSpacing.sm),
+              AppButton(
+                label: l10n.jobCancel,
+                variant: AppButtonVariant.secondary,
+                onPressed: busy ? null : cancel,
+              ),
+            ],
           ],
         ),
-        if (booking.status == BookingStatus.completed)
-          _ReviewPrompt(bookingId: booking.id, aboutCustomer: false),
-        if (booking.canConfirm) ...[
-          const SizedBox(height: AppSpacing.sm),
-          Text(l10n.bookingWaitingForYou, style: text.bodyMedium),
-          const SizedBox(height: AppSpacing.sm),
-          AppButton(
-            label: l10n.bookingConfirm,
-            isLoading: busy,
-            onPressed: () => run(
-              () => ref
-                  .read(customerOfferActionsProvider.notifier)
-                  .confirm(requestId, booking.id),
-              l10n.bookingConfirmed,
-            ),
-          ),
-        ],
-        if (booking.canCancel) ...[
-          const SizedBox(height: AppSpacing.sm),
-          AppButton(
-            label: l10n.jobCancel,
-            variant: AppButtonVariant.secondary,
-            onPressed: busy ? null : cancel,
-          ),
-        ],
-      ],
+      ),
     );
   }
 }
@@ -566,7 +674,14 @@ class _ReviewPrompt extends ConsumerWidget {
     if (reviewed.contains(bookingId)) {
       return Padding(
         padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
-        child: AppBadge(label: l10n.reviewDone, tone: BadgeTone.success),
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: StatusPill(
+            label: l10n.reviewDone,
+            tone: BadgeTone.success,
+            icon: Icons.check_rounded,
+          ),
+        ),
       );
     }
     return Padding(

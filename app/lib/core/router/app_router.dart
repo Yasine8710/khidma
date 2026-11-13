@@ -7,9 +7,13 @@ import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/new_password_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
 import '../../features/favorites/presentation/favorites_screen.dart';
+import '../../features/freelance/presentation/digital_screen.dart';
+import '../../features/freelance/presentation/freelance_manage_screen.dart';
+import '../../features/freelance/presentation/freelancer_screen.dart';
 import '../../features/gallery/gallery_config.dart';
 import '../../features/gallery/gallery_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/billing/presentation/billing_screen.dart';
 import '../../features/marketplace/presentation/professional_screen.dart';
 import '../../features/marketplace/presentation/search_screen.dart';
 import '../../features/messages/presentation/chat_screen.dart';
@@ -19,6 +23,8 @@ import '../../features/offers/presentation/my_offers_screen.dart';
 import '../../features/offers/presentation/pro_inbox_screen.dart';
 import '../../features/offers/presentation/pro_request_screen.dart';
 import '../../features/portfolio/presentation/portfolio_screen.dart';
+import '../../features/projects/presentation/customer_project_screens.dart';
+import '../../features/projects/presentation/freelancer_project_screens.dart';
 import '../../features/trust/presentation/verification_screen.dart';
 import '../../features/requests/presentation/new_request_screen.dart';
 import '../../features/requests/presentation/request_detail_screen.dart';
@@ -141,6 +147,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const VerificationScreen(),
       ),
       GoRoute(
+        path: AppRoutes.proBilling,
+        builder: (context, state) => const BillingScreen(),
+      ),
+      GoRoute(
         path: AppRoutes.proDashboard,
         builder: (context, state) => const DashboardScreen(),
       ),
@@ -164,6 +174,42 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) =>
             ProfessionalScreen(id: state.pathParameters['id'] ?? ''),
       ),
+      GoRoute(
+        path: AppRoutes.digital,
+        builder: (context, state) => const DigitalScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.freelancer,
+        builder: (context, state) =>
+            FreelancerScreen(id: state.pathParameters['id'] ?? ''),
+      ),
+      GoRoute(
+        path: AppRoutes.proFreelance,
+        builder: (context, state) => const FreelanceManageScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.myProjects,
+        builder: (context, state) => const MyProjectsScreen(),
+      ),
+      // before the :id route, so "new" is never read as an id
+      GoRoute(
+        path: AppRoutes.newProject,
+        builder: (context, state) => const NewProjectScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.project,
+        builder: (context, state) =>
+            ProjectDetailScreen(id: state.pathParameters['id'] ?? ''),
+      ),
+      GoRoute(
+        path: AppRoutes.proProjects,
+        builder: (context, state) => const ProjectInboxScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.proProject,
+        builder: (context, state) =>
+            ProProjectScreen(id: state.pathParameters['id'] ?? ''),
+      ),
       if (kShowGallery)
         GoRoute(
           path: AppRoutes.gallery,
@@ -173,6 +219,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state, shell) => AppShell(navigationShell: shell),
         branches: [
           _branch(AppRoutes.home, (_) => const HomeScreen()),
+          _branch(AppRoutes.explore, (_) => const SearchScreen(asTab: true)),
           _branch(AppRoutes.requests, (_) => const RequestsScreen()),
           _branch(AppRoutes.messages, (_) => const MessagesScreen()),
           _branch(AppRoutes.profile, (_) => const ProfileScreen()),

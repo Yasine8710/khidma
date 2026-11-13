@@ -62,7 +62,7 @@ void main() {
       expect(r.url.queryParameters['id'], 'eq.u1');
       expect(
         r.url.queryParameters['select'],
-        'id,full_name,phone,preferred_language,is_customer,is_professional',
+        'id,full_name,phone,preferred_language,is_customer,is_professional,avatar_path',
       );
       expect(r.url.queryParameters['select'], isNot(contains('*')));
       expect(

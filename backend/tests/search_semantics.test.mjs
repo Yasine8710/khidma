@@ -112,12 +112,10 @@ describe('search semantics found in review', () => {
     assert.match(src, /left\(p_query, 100\)/);
   });
 
-  test('professionals without a position sort after those with one when sorting by distance', async () => {
+  test('an explicit position wins; everyone else is placed at their governorate (migration 1600)', async () => {
     const r = await call(anon(db), { sort: 'nearest', lat: 36.88, lng: 10.32, limit: 50 });
-    const withPos = r.rows.filter((x) => x.distance_km !== null).length;
-    assert.equal(withPos, 1);
     assert.equal(r.rows[0].business_name, 'Basé La Marsa');
-    assert.ok(r.rows.slice(withPos).every((x) => x.distance_km === null), 'the rest are unknown, last');
+    assert.ok(r.rows.every((x) => x.distance_km !== null), 'a published profile always has a position now');
   });
 
   test('more than 50 matches: the page is capped at 50 and paging continues', async () => {

@@ -84,7 +84,9 @@ class _Star extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final empty = Theme.of(context).colorScheme.outline;
+    final scheme = Theme.of(context).colorScheme;
+    // Empty stars are a quiet grey; filled ones the warm star colour.
+    final empty = scheme.outline.withValues(alpha: 0.35);
     return SizedBox(
       width: size,
       height: size,
@@ -93,11 +95,7 @@ class _Star extends StatelessWidget {
           Icon(Icons.star_rounded, size: size, color: empty),
           ClipRect(
             clipper: _FillClipper(fill),
-            child: Icon(
-              Icons.star_rounded,
-              size: size,
-              color: AppColors.saffron,
-            ),
+            child: Icon(Icons.star_rounded, size: size, color: AppColors.star),
           ),
         ],
       ),

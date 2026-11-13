@@ -102,13 +102,13 @@ void main() {
       await tester.runAsync(() async {
         for (final n in [192, 512]) {
           final i = await _decode('web/icons/Icon-maskable-$n.png');
-          // Background is brand blue 1F5AA6; anything else is the mark.
+          // Background is the brand black 141414; anything else is the mark.
           final r = _maxRadius(
             i,
             (r, g, b, a) =>
-                (r - 0x1F).abs() < 6 &&
-                (g - 0x5A).abs() < 6 &&
-                (b - 0xA6).abs() < 6,
+                (r - 0x14).abs() < 6 &&
+                (g - 0x14).abs() < 6 &&
+                (b - 0x14).abs() < 6,
           );
           expect(r, lessThanOrEqualTo(0.40), reason: 'Icon-maskable-$n');
         }
@@ -155,16 +155,37 @@ void main() {
           .readAsStringSync();
       final py = File('../scripts/make_brand_assets.py').readAsStringSync();
       final svg = File('assets/brand/logo-mark.svg').readAsStringSync();
-      expect(dart, contains('arch(36, 84, 52, 92)'));
-      expect(dart, contains('arch(48, 72, 52, 92)'));
-      expect(dart, contains('Offset(60 * s, 70 * s)'));
-      expect(dart, contains('5.5 * s'));
-      expect(py, contains('OUTER = dict(x0=36, x1=84, spring=52, bottom=92)'));
-      expect(py, contains('INNER = dict(x0=48, x1=72, spring=52, bottom=92)'));
-      expect(py, contains('DOT = dict(cx=60, cy=70, r=5.5)'));
-      expect(svg, contains('M36 92V52a24 24 0 0 1 48 0V92Z'));
-      expect(svg, contains('M48 92V52a12 12 0 0 1 24 0V92Z'));
-      expect(svg, contains('cx="60" cy="70" r="5.5"'));
+      // Square, corner and stroke width.
+      expect(dart, contains('radius = 20.0'));
+      expect(dart, contains('stroke = 9.0'));
+      expect(py, contains('SIDE = 80'));
+      expect(py, contains('RADIUS = 20'));
+      expect(py, contains('STROKE = 9'));
+      expect(
+        svg,
+        contains('<rect x="20" y="20" width="80" height="80" rx="20"'),
+      );
+      expect(svg, contains('fill="#141414"'));
+      expect(svg, contains('stroke="#FFFFFF" stroke-width="9"'));
+      // The K's three strokes: the same in the painter and the script, and
+      // offset by 20 into the SVG's 120 grid.
+      List<List<int>> strokes(String src, RegExp re) => re
+          .allMatches(src)
+          .map((m) => [for (var i = 1; i <= 4; i++) int.parse(m[i]!)])
+          .toList();
+      final tuple = RegExp(r'\((\d+), (\d+), (\d+), (\d+)\)');
+      final fromDart = strokes(dart, tuple);
+      final fromPy = strokes(
+        py.substring(py.indexOf('STROKES = [')),
+        tuple,
+      ).take(3).toList();
+      final fromSvg = strokes(
+        svg,
+        RegExp(r'x1="(\d+)" y1="(\d+)" x2="(\d+)" y2="(\d+)"'),
+      ).map((s) => [for (final v in s) v - 20]).toList();
+      expect(fromDart, hasLength(3));
+      expect(fromPy, fromDart);
+      expect(fromSvg, fromDart);
     });
   });
 

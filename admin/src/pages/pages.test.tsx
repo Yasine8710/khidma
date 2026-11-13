@@ -6,6 +6,7 @@ import { fakeApi, fakeMedia, renderWith } from '../test-utils';
 import { Categories, validateCategory } from './Categories';
 import { Professionals, Reviews } from './Lists';
 import { Reports } from './Reports';
+import { Appeals } from './Appeals';
 import { Verification } from './Verification';
 
 const ver = (over: Partial<VerificationRow> = {}): VerificationRow => ({
@@ -13,7 +14,8 @@ const ver = (over: Partial<VerificationRow> = {}): VerificationRow => ({
 });
 const rep = (over: Partial<ReportRow> = {}): ReportRow => ({
   id: 'r1', target_type: 'professional', target_id: 'p1aaaaaaaa', reason: 'scam', details: 'Demande un acompte', status: 'open',
-  created_at: '2026-11-10T10:00:00Z', reports_on_target: 1, ...over,
+  created_at: '2026-11-10T10:00:00Z', reports_on_target: 1, message_id: null, subject_id: 'p1aaaaaaaa',
+  subject_reporters_30d: 1, flagged: false, subject_is_professional: true, subject_suspended: false, ...over,
 });
 
 describe('Verification', () => {
@@ -113,6 +115,88 @@ describe('Reports', () => {
   });
 });
 
+describe('Reports: trust v2', () => {
+  it('a flagged person is marked; suspending from the queue needs a reason and passes the report', async () => {
+    const suspend = vi.fn().mockResolvedValue(undefined);
+    const reports = vi.fn().mockResolvedValue([rep({ flagged: true, subject_reporters_30d: 4 })]);
+    renderWith(<Reports />, { api: fakeApi({ reports, suspend }) });
+    const user = userEvent.setup();
+    expect(await screen.findByText('flagged: 4 reporters')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Suspend 7 days' }));
+    expect(screen.getByRole('button', { name: 'Confirm: Suspend 7 days' })).toBeDisabled();
+    await user.type(screen.getByLabelText('Reason (shown to the professional)'), 'Paiement hors app');
+    await user.click(screen.getByRole('button', { name: 'Confirm: Suspend 7 days' }));
+    await waitFor(() => expect(suspend).toHaveBeenCalledWith('p1aaaaaaaa', 7, 'Paiement hors app', 'r1'));
+    expect(reports).toHaveBeenCalledTimes(2);
+  });
+
+  it('no suspend button for a customer, a testimonial or someone already suspended', async () => {
+    const reports = vi.fn().mockResolvedValue([
+      rep({ id: 'a', subject_is_professional: false }),
+      rep({ id: 'b', target_type: 'testimonial', subject_id: null, subject_is_professional: false }),
+      rep({ id: 'c', subject_suspended: true }),
+    ]);
+    renderWith(<Reports />, { api: fakeApi({ reports }) });
+    expect(await screen.findAllByRole('button', { name: 'Dismiss' })).toHaveLength(3);
+    expect(screen.queryByRole('button', { name: 'Suspend 7 days' })).toBeNull();
+    expect(screen.getByText('suspended')).toBeInTheDocument();
+  });
+
+  it('a reported message is pointed out in its conversation', async () => {
+    const reportContext = vi.fn().mockResolvedValue({
+      reported_message_id: 9,
+      messages: [{ id: 8, sender_is_customer: true, body: 'Bonjour' }, { id: 9, sender_is_customer: false, body: 'Payez d avance' }],
+    });
+    renderWith(<Reports />, { api: fakeApi({ reports: vi.fn().mockResolvedValue([rep({ target_type: 'message', message_id: 9 })]), reportContext }) });
+    await screen.findByText('message p1aaaaaa #9');
+    await userEvent.setup().click(screen.getByRole('button', { name: 'Read conversation (logged)' }));
+    const li = (await screen.findByText('Payez d avance')).closest('li')!;
+    expect(within(li).getByText('reported')).toBeInTheDocument();
+  });
+});
+
+describe('Reports: freelance listings', () => {
+  it('a reported listing can be unpublished with a reason, and released from its context', async () => {
+    const holdFreelancer = vi.fn().mockResolvedValue(undefined);
+    const releaseFreelancer = vi.fn().mockResolvedValue(undefined);
+    const reportContext = vi.fn().mockResolvedValue({ display_name: 'Sami', admin_hold_reason: 'Plagiat' });
+    const reports = vi.fn().mockResolvedValue([rep({ target_type: 'freelancer', target_id: 'f1aaaaaaaa' })]);
+    renderWith(<Reports />, { api: fakeApi({ reports, holdFreelancer, releaseFreelancer, reportContext }) });
+    const user = userEvent.setup();
+    await user.click(await screen.findByRole('button', { name: 'Unpublish listing' }));
+    await user.type(screen.getByLabelText('Reason (shown to the freelancer)'), 'Plagiat');
+    await user.click(screen.getByRole('button', { name: 'Confirm: Unpublish listing' }));
+    await waitFor(() => expect(holdFreelancer).toHaveBeenCalledWith('f1aaaaaaaa', 'Plagiat', 'r1'));
+    await user.click(screen.getByRole('button', { name: 'Show details' }));
+    await user.click(await screen.findByRole('button', { name: 'Release listing' }));
+    await waitFor(() => expect(releaseFreelancer).toHaveBeenCalledWith('f1aaaaaaaa'));
+  });
+
+  it('other targets have no unpublish button', async () => {
+    renderWith(<Reports />, { api: fakeApi({ reports: vi.fn().mockResolvedValue([rep()]) }) });
+    await screen.findByRole('button', { name: 'Dismiss' });
+    expect(screen.queryByRole('button', { name: 'Unpublish listing' })).toBeNull();
+  });
+});
+
+describe('Appeals', () => {
+  it('lists open appeals; lifting or keeping sends the decision', async () => {
+    const appeals = vi.fn().mockResolvedValue([
+      { id: 'ap1', professional_id: 'p1', business_name: 'Alpha', message: 'Erreur, je n ai rien demande', status: 'open', created_at: '2026-11-12T10:00:00Z', suspended_until: null, suspension_reason: 'Paiement hors app', decision_note: null },
+    ]);
+    const decideAppeal = vi.fn().mockResolvedValue(undefined);
+    renderWith(<Appeals />, { api: fakeApi({ appeals, decideAppeal }) });
+    const user = userEvent.setup();
+    expect(await screen.findByText('Erreur, je n ai rien demande')).toBeInTheDocument();
+    expect(screen.getByText('until lifted')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Keep suspension' }));
+    await user.type(screen.getByLabelText('Why (optional)'), 'Preuves claires');
+    await user.click(screen.getByRole('button', { name: 'Confirm: Keep suspension' }));
+    await waitFor(() => expect(decideAppeal).toHaveBeenCalledWith('ap1', false, 'Preuves claires'));
+    expect(appeals).toHaveBeenCalledWith('open', 0);
+  });
+});
+
 describe('Professionals and Reviews', () => {
   it('suspending needs a reason; a suspended one offers to lift it', async () => {
     const professionals = vi.fn().mockResolvedValue([
@@ -125,7 +209,7 @@ describe('Professionals and Reviews', () => {
     const alpha = (await screen.findByText('Alpha')).closest('tr')!;
     await user.click(within(alpha).getByRole('button', { name: 'Suspend' }));
     expect(screen.getByRole('button', { name: 'Confirm: Suspend' })).toBeDisabled();
-    await user.type(screen.getByLabelText('Reason (kept in the audit log)'), 'Arnaque');
+    await user.type(screen.getByLabelText('Reason (shown to the professional, kept in the audit log)'), 'Arnaque');
     await user.click(screen.getByRole('button', { name: 'Confirm: Suspend' }));
     await waitFor(() => expect(setSuspended).toHaveBeenCalledWith('p1', true, 'Arnaque'));
     const beta = screen.getByText('Beta').closest('tr')!;

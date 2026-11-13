@@ -125,17 +125,22 @@ void main() {
           ],
         );
         await _open(tester, repo, AppRoutes.proInbox);
+        // "Peinture" is also a category filter: look in the results only.
+        Finder listed(String title) => find.descendant(
+          of: find.byType(RefreshIndicator),
+          matching: find.text(title),
+        );
         // Starts in the professional's own governorate (11): the Ariana one is out.
         expect(find.text('Fuite sous évier'), findsOneWidget);
         expect(find.text('Prise cassée'), findsOneWidget);
-        expect(find.text('Peinture'), findsNothing);
+        expect(listed('Peinture'), findsNothing);
         expect(find.text('Votre offre : En attente'), findsOneWidget);
         expect(find.text('2 offres'), findsOneWidget);
         expect(repo.queries.last.governorateId, 11);
 
         await tester.tap(find.text('Dans mon gouvernorat'));
         await tester.pumpAndSettle();
-        expect(find.text('Peinture'), findsOneWidget);
+        expect(listed('Peinture'), findsOneWidget);
         expect(repo.queries.last.governorateId, isNull);
 
         await tester.tap(find.text('Électricité'));
@@ -205,6 +210,8 @@ void main() {
         scrollable: find.byType(Scrollable).last,
       );
       expect(find.text('Voir plus'), findsNothing);
+      // Rows cascade in on first build: let the entrance finish.
+      await tester.pumpAndSettle();
     });
   });
 

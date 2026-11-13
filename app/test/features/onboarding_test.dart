@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:khidma/core/storage/preferences_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:khidma/core/l10n/locale_controller.dart';
 import 'package:khidma/core/router/app_router.dart';
 import 'package:khidma/core/router/app_routes.dart';
+import 'package:khidma/core/storage/preferences_provider.dart';
+import 'package:khidma/core/theme/app_theme.dart';
+import 'package:khidma/features/auth/presentation/login_screen.dart';
 import 'package:khidma/features/onboarding/application/onboarding_controller.dart';
+import 'package:khidma/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:khidma/features/onboarding/presentation/welcome_marquee.dart';
+import 'package:khidma/l10n/generated/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../test_helpers.dart';
 
 const _fresh = {'onboardingSeen': false};
+
+const _sentenceFr =
+    'Trouvez un plombier, un électricien, un développeur, un designer '
+    'ou un menuisier près de chez vous.';
 
 class _FailingStore implements KeyValueStore {
   @override
@@ -28,43 +38,101 @@ class _FailingStore implements KeyValueStore {
 String _path(ProviderContainer c) =>
     c.read(routerProvider).routerDelegate.currentConfiguration.uri.path;
 
+/// Scroll offsets of the three moving rows.
+List<double> _rowOffsets(WidgetTester tester) => tester
+    .stateList<ScrollableState>(
+      find.descendant(
+        of: find.byType(WelcomeMarquee),
+        matching: find.byType(Scrollable),
+      ),
+    )
+    .map((s) => s.position.pixels)
+    .toList();
+
+/// Advances [seconds] of animation one frame at a time (the screen never
+/// settles while its rows move).
+Future<void> _run(WidgetTester tester, double seconds) async {
+  final frames = (seconds * 20).round();
+  for (var i = 0; i < frames; i++) {
+    await tester.pump(const Duration(milliseconds: 50));
+  }
+}
+
+/// The welcome screen alone (no router), with motion on and optional
+/// TickerMode / Reduce Motion, to check how its endless motion behaves.
+Future<void> _pumpWelcome(
+  WidgetTester tester, {
+  bool tickers = true,
+  bool reduce = false,
+}) async {
+  SharedPreferences.setMockInitialValues(_fresh);
+  final sp = await SharedPreferences.getInstance();
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [keyValueStoreProvider.overrideWithValue(PrefsStore(sp))],
+      child: TickerMode(
+        enabled: tickers,
+        child: MaterialApp(
+          locale: const Locale('fr'),
+          supportedLocales: supportedLocales,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          theme: AppTheme.light(const Locale('fr')),
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(disableAnimations: reduce),
+            child: child!,
+          ),
+          home: const OnboardingScreen(),
+        ),
+      ),
+    ),
+  );
+  await tester.pump();
+}
+
 void main() {
   setUpAll(loadAppFonts);
 
-  testWidgets('first launch shows onboarding, language page first', (
-    tester,
-  ) async {
+  testWidgets('first launch shows the single welcome screen', (tester) async {
     final c = await pumpApp(tester, prefs: _fresh);
     expect(_path(c), AppRoutes.onboarding);
-    expect(find.text('Choisir la langue'), findsOneWidget);
-    expect(find.text('Suivant'), findsOneWidget);
-    // No tab bar and no Skip on the language page.
-    expect(find.text('Accueil'), findsNothing);
+    expect(find.text('Khidma'), findsOneWidget);
+    expect(find.text('Français'), findsOneWidget, reason: 'language button');
+    expect(find.text('Trouvez un'), findsOneWidget);
+    expect(find.text('plombier'), findsOneWidget);
+    expect(find.text('près de chez vous.'), findsOneWidget);
+    expect(find.text('Artisans et freelances vérifiés'), findsOneWidget);
+    expect(find.text('Commencer'), findsOneWidget);
+    expect(find.text("J'ai déjà un compte"), findsOneWidget);
+    expect(find.byType(WelcomeMarquee), findsOneWidget);
+    // One screen: no slides, no Next/Skip, no tab bar.
+    expect(find.byType(PageView), findsNothing);
+    expect(find.text('Suivant'), findsNothing);
     expect(find.text('Passer'), findsNothing);
+    expect(find.text('Accueil'), findsNothing);
   });
 
-  testWidgets('walks through the pages and ends on Home, saved', (
+  testWidgets('rows show real category names and sample pros, no counts', (
+    tester,
+  ) async {
+    await pumpApp(tester, prefs: _fresh);
+    expect(find.text('Plomberie'), findsWidgets);
+    expect(find.text('Développement web'), findsWidgets);
+    expect(find.text('Mehdi B.'), findsWidgets);
+    expect(find.text('Plombier'), findsWidgets);
+    // No invented numbers anywhere ("2 400+ pros", "1000 avis"...).
+    expect(find.textContaining('+'), findsNothing);
+    expect(find.textContaining(RegExp(r'\d{3}')), findsNothing);
+  });
+
+  testWidgets('Commencer marks onboarding seen and lands on Home, saved', (
     tester,
   ) async {
     final c = await pumpApp(tester, prefs: _fresh);
-    await tester.tap(find.text('Suivant'));
-    await tester.pumpAndSettle();
-    expect(
-      find.text('Trouvez des professionnels de confiance'),
-      findsOneWidget,
-    );
-    expect(find.text('Passer'), findsOneWidget);
-
-    await tester.tap(find.text('Suivant'));
-    await tester.pumpAndSettle();
-    expect(find.text('Comparez et demandez un devis'), findsOneWidget);
-
-    await tester.tap(find.text('Suivant'));
-    await tester.pumpAndSettle();
-    expect(find.text('Contactez-les directement'), findsOneWidget);
-    expect(find.text('Commencer'), findsOneWidget);
-    expect(find.text('Passer'), findsNothing, reason: 'last page has no skip');
-
     await tester.tap(find.text('Commencer'));
     await tester.pumpAndSettle();
     expect(_path(c), AppRoutes.home);
@@ -73,13 +141,16 @@ void main() {
     expect(c.read(keyValueStoreProvider).getBool('onboardingSeen'), isTrue);
   });
 
-  testWidgets('Skip completes onboarding', (tester) async {
+  testWidgets('"J\'ai déjà un compte" marks seen and opens sign-in', (
+    tester,
+  ) async {
     final c = await pumpApp(tester, prefs: _fresh);
-    await tester.tap(find.text('Suivant'));
+    await tester.tap(find.text("J'ai déjà un compte"));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Passer'));
-    await tester.pumpAndSettle();
-    expect(_path(c), AppRoutes.home);
+    expect(_path(c), AppRoutes.login);
+    expect(find.byType(LoginScreen), findsOneWidget);
+    expect(c.read(onboardingSeenProvider), isTrue);
+    expect(c.read(keyValueStoreProvider).getBool('onboardingSeen'), isTrue);
   });
 
   testWidgets('onboarding is not shown again once seen', (tester) async {
@@ -99,42 +170,65 @@ void main() {
     expect(_path(c), AppRoutes.onboarding);
   });
 
-  testWidgets('changing language on page one re-renders the flow', (
+  testWidgets('language sheet switches the language and closes', (
     tester,
   ) async {
     final c = await pumpApp(tester, prefs: _fresh);
-    await tester.ensureVisible(find.text('English'));
+    await tester.tap(find.text('Français'));
+    await tester.pumpAndSettle();
+    expect(find.text('Choisir la langue'), findsOneWidget);
+    expect(find.text('العربية'), findsOneWidget);
+    expect(find.text('English'), findsOneWidget);
+
     await tester.tap(find.text('English'));
     await tester.pumpAndSettle();
     expect(c.read(localeProvider), const Locale('en'));
-    expect(find.text('Choose language'), findsOneWidget);
-    expect(find.text('Next'), findsOneWidget);
-    await tester.tap(find.text('Next'));
-    await tester.pumpAndSettle();
-    expect(find.text('Find trusted professionals'), findsOneWidget);
+    expect(c.read(keyValueStoreProvider).getString('locale'), 'en');
+    expect(find.text('Choose language'), findsNothing, reason: 'sheet closed');
+    expect(find.text('Find'), findsOneWidget);
+    expect(find.text('a plumber'), findsOneWidget);
+    expect(find.text('Get started'), findsOneWidget);
+    expect(find.text('I already have an account'), findsOneWidget);
+    expect(find.text('English'), findsOneWidget, reason: 'button shows it');
+    expect(find.text('Plumbing'), findsWidgets, reason: 'rows translated');
+    expect(_path(c), AppRoutes.onboarding, reason: 'still on welcome');
   });
 
-  testWidgets('Arabic: RTL, swipe direction and page order', (tester) async {
+  testWidgets('Arabic: RTL, natural headline, logo at the start (right)', (
+    tester,
+  ) async {
     await pumpApp(tester, prefs: {..._fresh, 'locale': 'ar'});
     expect(screenDirection(tester), TextDirection.rtl);
-    expect(find.text('اختر اللغة'), findsOneWidget);
-    // In RTL the next page is to the left: swiping right-to-left goes back,
-    // left-to-right goes forward.
-    await tester.fling(find.byType(PageView), const Offset(400, 0), 1000);
-    await tester.pumpAndSettle();
-    expect(find.text('اعثر على حرفيين موثوقين'), findsOneWidget);
-  });
-
-  testWidgets('screen readers get "page x of y"', (tester) async {
-    final handle = tester.ensureSemantics();
-    await pumpApp(tester, prefs: _fresh);
-    expect(find.bySemanticsLabel(RegExp('Page 1 sur 4')), findsOneWidget);
-    await tester.tap(find.text('Suivant'));
-    await tester.pumpAndSettle();
+    expect(find.text('اعثر على'), findsOneWidget);
+    expect(find.text('قريب منك.'), findsOneWidget);
+    // "اعثر على سبّاك قريب منك": the word sits between the two lines.
+    final headline = find
+        .ancestor(of: find.text('اعثر على'), matching: find.byType(Column))
+        .first;
     expect(
-      find.bySemanticsLabel(RegExp('Page 2 sur 4, Trouvez')),
+      find.descendant(of: headline, matching: find.text('سبّاك')),
       findsOneWidget,
     );
+    expect(find.text('ابدأ'), findsOneWidget);
+    expect(find.text('مهدي ب.'), findsWidgets, reason: 'names in Arabic');
+    final logo = tester.getCenter(find.text('Khidma'));
+    final lang = tester.getCenter(find.text('العربية'));
+    expect(logo.dx, greaterThan(lang.dx));
+  });
+
+  testWidgets('screen readers hear the headline once, not the moving rows', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    await pumpApp(tester, prefs: _fresh);
+    expect(find.bySemanticsLabel(_sentenceFr), findsOneWidget);
+    // The rotating word is not announced on its own.
+    expect(find.bySemanticsLabel('plombier'), findsNothing);
+    // Decorative rows are hidden from assistive tech.
+    expect(find.bySemanticsLabel('Mehdi B.'), findsNothing);
+    expect(find.bySemanticsLabel('Plomberie'), findsNothing);
+    expect(find.bySemanticsLabel('Langue : Français'), findsOneWidget);
+    expect(find.bySemanticsLabel('Commencer'), findsOneWidget);
     handle.dispose();
   });
 
@@ -145,7 +239,7 @@ void main() {
     expect(find.textContaining('location'), findsNothing);
   });
 
-  testWidgets('keeps the deep link through onboarding and restores it', (
+  testWidgets('Commencer restores the deep link that was waiting', (
     tester,
   ) async {
     final c = await pumpApp(tester, prefs: _fresh);
@@ -155,7 +249,7 @@ void main() {
     expect(uri.path, AppRoutes.onboarding);
     expect(uri.queryParameters['from'], '${AppRoutes.messages}?ref=push');
 
-    await c.read(onboardingSeenProvider.notifier).complete();
+    await tester.tap(find.text('Commencer'));
     await tester.pumpAndSettle();
     final after = c
         .read(routerProvider)
@@ -185,68 +279,88 @@ void main() {
     }
   });
 
-  testWidgets('cold start at a deep link before onboarding goes through it', (
+  testWidgets('cold start at a deep link goes through the welcome screen', (
     tester,
   ) async {
     tester.platformDispatcher.defaultRouteNameTestValue = '/profile';
     addTearDown(tester.platformDispatcher.clearDefaultRouteNameTestValue);
     final c = await pumpApp(tester, prefs: _fresh);
     expect(_path(c), AppRoutes.onboarding);
-    await c.read(onboardingSeenProvider.notifier).complete();
+    await tester.tap(find.text('Commencer'));
     await tester.pumpAndSettle();
     expect(_path(c), AppRoutes.profile);
   });
 
-  testWidgets('Back button returns to the previous page', (tester) async {
-    await pumpApp(tester, prefs: _fresh);
-    expect(find.byTooltip('Précédent'), findsNothing);
-    await tester.tap(find.text('Suivant'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byTooltip('Précédent'));
-    await tester.pumpAndSettle();
-    expect(find.text('Choisir la langue'), findsOneWidget);
-    expect(find.byTooltip('Précédent'), findsNothing);
-  });
+  group('motion', () {
+    testWidgets('rows scroll and the word rotates while visible', (
+      tester,
+    ) async {
+      await _pumpWelcome(tester);
+      expect(find.text('plombier'), findsOneWidget);
+      expect(_rowOffsets(tester), everyElement(0.0));
+      await _run(tester, 1);
+      final first = _rowOffsets(tester);
+      expect(first, hasLength(3));
+      expect(first, everyElement(greaterThan(10.0)));
+      // Different speeds per row.
+      expect(first.toSet(), hasLength(3));
+      await _run(tester, 1.8);
+      expect(find.text('électricien'), findsOneWidget);
+      expect(_rowOffsets(tester).first, greaterThan(first.first));
+      // Disposing mid-motion leaves no ticker or timer behind.
+      await tester.pumpWidget(const SizedBox());
+    });
 
-  testWidgets('Arabic: Next goes forward, Back returns, all pages reachable', (
-    tester,
-  ) async {
-    await pumpApp(tester, prefs: {..._fresh, 'locale': 'ar'});
-    for (final title in [
-      'اعثر على حرفيين موثوقين',
-      'قارن واطلب عرض سعر',
-      'تواصل معهم مباشرة',
-    ]) {
-      await tester.tap(find.byType(FilledButton));
+    testWidgets('paused when hidden (TickerMode off)', (tester) async {
+      await _pumpWelcome(tester, tickers: false);
+      await _run(tester, 3);
+      expect(_rowOffsets(tester), everyElement(0.0));
+      expect(find.text('plombier'), findsOneWidget);
+      expect(find.text('électricien'), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+    });
+
+    testWidgets('Reduce Motion: still rows, fixed word, everything shown', (
+      tester,
+    ) async {
+      await _pumpWelcome(tester, reduce: true);
+      // No entrance either: the last item of the cascade is fully visible.
+      final opacity = tester.widget<Opacity>(
+        find
+            .ancestor(
+              of: find.text('Commencer'),
+              matching: find.byType(Opacity),
+            )
+            .first,
+      );
+      expect(opacity.opacity, 1);
+      await _run(tester, 3);
+      expect(_rowOffsets(tester), everyElement(0.0));
+      expect(find.text('plombier'), findsOneWidget);
+      expect(tester.hasRunningAnimations, isFalse);
+    });
+
+    testWidgets('full app with motion on keeps moving, then disposes', (
+      tester,
+    ) async {
+      final c = await pumpApp(
+        tester,
+        prefs: _fresh,
+        ambientMotion: true,
+        settle: false,
+      );
+      await _run(tester, 2.5);
+      expect(find.text('électricien'), findsOneWidget);
+      // Buttons still work while the rows move.
+      await tester.tap(find.text('Commencer'));
+      await _run(tester, 1);
+      expect(_path(c), AppRoutes.home);
+      expect(find.byType(OnboardingScreen), findsNothing);
       await tester.pumpAndSettle();
-      expect(find.text(title), findsOneWidget);
-    }
-    expect(find.text('ابدأ'), findsOneWidget);
-    await tester.tap(find.byTooltip('السابق'));
-    await tester.pumpAndSettle();
-    expect(find.text('قارن واطلب عرض سعر'), findsOneWidget);
-    // Reverse swipe (left to right in RTL is forward; right to left is back).
-    await tester.fling(find.byType(PageView), const Offset(-400, 0), 1000);
-    await tester.pumpAndSettle();
-    expect(find.text('اعثر على حرفيين موثوقين'), findsOneWidget);
+    });
   });
 
-  testWidgets('reduced motion: page changes apply without animation', (
-    tester,
-  ) async {
-    tester.platformDispatcher.accessibilityFeaturesTestValue =
-        const FakeAccessibilityFeatures(disableAnimations: true);
-    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
-    await pumpApp(tester, prefs: _fresh);
-    await tester.tap(find.text('Suivant'));
-    await tester.pumpAndSettle();
-    expect(
-      find.text('Trouvez des professionnels de confiance'),
-      findsOneWidget,
-    );
-  });
-
-  testWidgets('every language is reachable on a small phone at 2x text', (
+  testWidgets('small phone at 2x text: no overflow, every language reachable', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(320 * 3, 568 * 3);
@@ -257,18 +371,31 @@ void main() {
       tester.platformDispatcher.clearTextScaleFactorTestValue();
     });
     final c = await pumpApp(tester, prefs: _fresh);
+    expect(tester.takeException(), isNull);
+    // The rows give their room to the words at very large text.
+    expect(find.byType(WelcomeMarquee), findsNothing);
+    var current = 'Français';
     for (final entry in {
       'العربية': const Locale('ar'),
       'English': const Locale('en'),
       'Français': const Locale('fr'),
     }.entries) {
-      await tester.ensureVisible(find.text(entry.key));
-      await tester.tap(find.text(entry.key));
+      await tester.tap(find.text(current));
+      await tester.pumpAndSettle();
+      final option = find.text(entry.key).last;
+      await tester.ensureVisible(option);
+      await tester.pumpAndSettle();
+      await tester.tap(option);
       await tester.pumpAndSettle();
       expect(c.read(localeProvider), entry.value, reason: entry.key);
+      expect(tester.takeException(), isNull, reason: entry.key);
+      current = entry.key;
     }
-    // Decoration is dropped on compact screens to leave room for the list.
-    expect(find.byIcon(Icons.translate_rounded), findsNothing);
+    await tester.ensureVisible(find.text('Commencer'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Commencer'));
+    await tester.pumpAndSettle();
+    expect(_path(c), AppRoutes.home);
   });
 
   testWidgets(
@@ -313,25 +440,32 @@ void main() {
     addTearDown(tester.view.reset);
     await pumpApp(tester, prefs: _fresh);
     expect(find.text('Khidma'), findsOneWidget);
+    expect(find.byType(WelcomeMarquee), findsOneWidget);
   });
 
   for (final lang in ['fr', 'ar', 'en']) {
-    testWidgets('no overflow on a 320x568 phone at 1.5x text ($lang)', (
-      tester,
-    ) async {
-      tester.view.physicalSize = const Size(320 * 3, 568 * 3);
-      tester.view.devicePixelRatio = 3;
-      tester.platformDispatcher.textScaleFactorTestValue = 1.5;
-      addTearDown(() {
-        tester.view.reset();
-        tester.platformDispatcher.clearTextScaleFactorTestValue();
-      });
-      await pumpApp(tester, prefs: {..._fresh, 'locale': lang});
-      for (var i = 0; i < 4; i++) {
-        expect(tester.takeException(), isNull, reason: '$lang page $i');
-        await tester.tap(find.byType(FilledButton));
+    for (final width in [320.0, 390.0]) {
+      testWidgets('no overflow at ${width.round()} px and 1.5x text ($lang)', (
+        tester,
+      ) async {
+        tester.view.physicalSize = Size(width * 3, 568 * 3);
+        tester.view.devicePixelRatio = 3;
+        tester.platformDispatcher.textScaleFactorTestValue = 1.5;
+        addTearDown(() {
+          tester.view.reset();
+          tester.platformDispatcher.clearTextScaleFactorTestValue();
+        });
+        final c = await pumpApp(tester, prefs: {..._fresh, 'locale': lang});
+        expect(tester.takeException(), isNull, reason: lang);
+        // The words are all there and the main button is reachable.
+        final start = find.byType(FilledButton);
+        await tester.ensureVisible(start);
         await tester.pumpAndSettle();
-      }
-    });
+        await tester.tap(start);
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull, reason: lang);
+        expect(_path(c), AppRoutes.home, reason: lang);
+      });
+    }
   }
 }

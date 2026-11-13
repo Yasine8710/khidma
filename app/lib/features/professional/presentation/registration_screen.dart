@@ -12,8 +12,11 @@ import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../location/application/location_providers.dart';
+import '../../location/domain/location_domain.dart';
 import '../../marketplace/application/marketplace_providers.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
+import '../../profile/presentation/avatar_editor.dart';
 import '../application/professional_providers.dart';
 import '../domain/professional_domain.dart';
 
@@ -34,6 +37,39 @@ String gapText(AppLocalizations l10n, ProfileGap g) => switch (g) {
   ProfileGap.location => l10n.gapLocation,
   ProfileGap.phone => l10n.gapPhone,
 };
+
+/// The wizard's ruled progress: one segment per step, inked up to the
+/// current one. Decoration: the "Step x of y" text above says it.
+class _StepRule extends StatelessWidget {
+  const _StepRule({required this.current, required this.total});
+
+  final int current;
+  final int total;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return ExcludeSemantics(
+      child: SizedBox(
+        height: 3,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            for (var i = 0; i < total; i++) ...[
+              if (i > 0) const SizedBox(width: AppSpacing.xs),
+              Expanded(
+                child: Container(
+                  height: i == current ? 3 : (i < current ? 2 : 1),
+                  color: i <= current ? scheme.onSurface : scheme.outline,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 /// Multi-step professional profile. Each step is saved when the person
 /// continues, so leaving half-way keeps the draft and the next visit resumes.
@@ -101,6 +137,9 @@ class _WizardState extends ConsumerState<_Wizard> {
   late int? _category = widget.initial.categoryId;
   late int? _governorate = widget.initial.governorateId;
   late int? _city = widget.initial.cityId;
+  late LocationFix? _position = widget.initial.position;
+  bool _locating = false;
+  String? _positionError;
   late final Set<int> _areas = {
     for (final a in widget.initial.areas)
       if (a.cityId == null) a.governorateId,
@@ -131,7 +170,39 @@ class _WizardState extends ConsumerState<_Wizard> {
         ? widget.initial.neighborhoodId
         : null,
     phone: _phone.text,
+    position: _position,
   );
+
+  /// The owner's approximate position (about 1 km, rounded before use).
+  Future<void> _usePosition() async {
+    if (_locating) return;
+    setState(() {
+      _locating = true;
+      _positionError = null;
+    });
+    final (gov, city) = (_governorate, _city);
+    LocationFix? fix;
+    try {
+      fix = await ref.read(locationServiceProvider).current();
+    } catch (_) {
+      // Permission refused, service off, timeout: the map falls back.
+      fix = null;
+    }
+    if (!mounted) return;
+    // The place was changed while waiting: this fix belongs to the old one.
+    if (gov != _governorate || city != _city) {
+      setState(() => _locating = false);
+      return;
+    }
+    setState(() {
+      _locating = false;
+      if (fix != null) {
+        _position = fix;
+      } else {
+        _positionError = AppLocalizations.of(context).regPositionFailed;
+      }
+    });
+  }
 
   /// Areas stored: whole governorates chosen here, never the home one twice
   /// (its professionals already match through their base location), and any
@@ -258,15 +329,38 @@ class _WizardState extends ConsumerState<_Wizard> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xs),
-                    LinearProgressIndicator(
-                      value: (_step.index + 1) / _Step.values.length,
+                    const SizedBox(height: AppSpacing.sm),
+                    _StepRule(current: _step.index, total: _Step.values.length),
+                    const SizedBox(height: AppSpacing.xl),
+                    // A numbered form section: the folio number, then the
+                    // step's title.
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ExcludeSemantics(
+                          child: Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: Text(
+                              (_step.index + 1).toString().padLeft(2, '0'),
+                              style: text.headlineSmall?.copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: Semantics(
+                            header: true,
+                            child: Text(title, style: text.headlineSmall),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: AppSpacing.lg),
-                    Semantics(
-                      header: true,
-                      child: Text(title, style: text.headlineSmall),
-                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    const Divider(),
                     const SizedBox(height: AppSpacing.lg),
                     ..._fields(context),
                     if (_error != null) ...[
@@ -286,10 +380,12 @@ class _WizardState extends ConsumerState<_Wizard> {
               ),
             ),
           ),
+          // The footer sits below a hairline, like the foot of a form.
+          const Divider(),
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(
               AppSpacing.gutter,
-              AppSpacing.sm,
+              AppSpacing.md,
               AppSpacing.gutter,
               AppSpacing.lg,
             ),
@@ -308,21 +404,35 @@ class _WizardState extends ConsumerState<_Wizard> {
                         : _back,
                   ),
                 ),
-                if (!isReview) ...[
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: AppButton(
-                      label: l10n.regNext,
-                      isLoading: busy,
-                      onPressed: _next,
-                    ),
-                  ),
-                ],
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: isReview
+                      ? _finishButton(l10n, busy)
+                      : AppButton(
+                          label: l10n.regNext,
+                          isLoading: busy,
+                          onPressed: _next,
+                        ),
+                ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  /// The last step's main action lives in the footer, always visible: the
+  /// publish button used to sit below the fold of the scrolling review.
+  Widget _finishButton(AppLocalizations l10n, bool busy) {
+    final draft = ref.watch(myProfessionalProvider).value ?? widget.initial;
+    if (draft.isPublished) {
+      return AppButton(label: l10n.regDone, onPressed: () => context.pop());
+    }
+    return AppButton(
+      label: l10n.regPublish,
+      isLoading: busy,
+      onPressed: draft.gaps.isEmpty ? () => _setPublished(true) : null,
     );
   }
 
@@ -341,6 +451,20 @@ class _WizardState extends ConsumerState<_Wizard> {
     switch (_step) {
       case _Step.business:
         return [
+          // A real picture builds trust; optional, and shared with the account.
+          Center(
+            child: Column(
+              children: [
+                const AvatarEditor(size: 96),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  l10n.avatarLabel,
+                  style: text.bodySmall?.copyWith(color: muted),
+                ),
+              ],
+            ),
+          ),
+          gap,
           AppTextField(
             label: l10n.regBusinessName,
             controller: _name,
@@ -418,7 +542,12 @@ class _WizardState extends ConsumerState<_Wizard> {
                 DropdownMenuItem(value: g.id, child: Text(g.nameFor(locale))),
             ],
             onChanged: (v) => setState(() {
-              if (v != _governorate) _city = null;
+              if (v != _governorate) {
+                _city = null;
+                // A pin from another governorate would be wrong.
+                _position = null;
+                _positionError = null;
+              }
               _governorate = v;
               _governorateError = false;
             }),
@@ -438,8 +567,37 @@ class _WizardState extends ConsumerState<_Wizard> {
             ],
             onChanged: _governorate == null
                 ? null
-                : (v) => setState(() => _city = v),
+                : (v) => setState(() {
+                    if (v != _city) _position = null;
+                    _city = v;
+                  }),
           ),
+          gap,
+          AppButton(
+            label: l10n.regUsePosition,
+            variant: AppButtonVariant.secondary,
+            isLoading: _locating,
+            onPressed: _governorate == null ? null : _usePosition,
+          ),
+          if (_position != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              l10n.regPositionSet,
+              style: text.bodySmall?.copyWith(color: muted),
+            ),
+          ],
+          if (_positionError != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Semantics(
+              liveRegion: true,
+              child: Text(
+                _positionError!,
+                style: text.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+            ),
+          ],
         ];
       case _Step.areas:
         return [
@@ -559,12 +717,6 @@ class _WizardState extends ConsumerState<_Wizard> {
           variant: AppButtonVariant.secondary,
           isLoading: busy,
           onPressed: () => _setPublished(false),
-        )
-      else
-        AppButton(
-          label: l10n.regPublish,
-          isLoading: busy,
-          onPressed: gaps.isEmpty ? () => _setPublished(true) : null,
         ),
     ];
   }

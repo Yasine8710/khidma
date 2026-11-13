@@ -1,0 +1,37 @@
+# Test build for the owner's own iPhone: unsigned .ipa made on a Codemagic Mac,
+# signed on the owner's PC by Sideloadly (free Apple ID, valid 7 days).
+# Not a release pipeline. Steps: docs/IPHONE_TEST.md
+workflows:
+  iphone-test:
+    name: iPhone test build (unsigned)
+    instance_type: mac_mini_m2
+    max_build_duration: 45
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      # Codemagic > Teams/Personal > Environment variables, group "khidma":
+      # SUPABASE_URL, SUPABASE_ANON_KEY, GOOGLE_MAPS_API_KEY (mark secure).
+      groups:
+        - khidma
+    triggering:
+      events: []
+    scripts:
+      - name: Maps key for the native iOS side
+        script: printf 'GOOGLE_MAPS_API_KEY=%s\n' "$GOOGLE_MAPS_API_KEY" > app/ios/Flutter/Maps.xcconfig
+      - name: Packages
+        script: cd app && flutter pub get
+      - name: Build without signing
+        script: |
+          cd app
+          flutter build ios --release --no-codesign \
+            --dart-define=SUPABASE_URL="$SUPABASE_URL" \
+            --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
+            --dart-define=GOOGLE_MAPS_API_KEY="$GOOGLE_MAPS_API_KEY"
+      - name: Package the .ipa
+        script: |
+          cd app/build/ios/iphoneos
+          mkdir Payload && cp -R Runner.app Payload/
+          zip -qr khidma.ipa Payload
+    artifacts:
+      - app/build/ios/iphoneos/khidma.ipa

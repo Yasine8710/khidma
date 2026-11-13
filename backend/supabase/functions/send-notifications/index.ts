@@ -19,7 +19,7 @@
 // forget_device_token(). Known limit: a row counts as delivered when at least
 // one of the account's devices accepted it.
 
-import { createClient } from 'npm:@supabase/supabase-js@2';
+import { createClient } from 'npm:@supabase/supabase-js@2.119.0';
 import { isAuthorized, notificationRoute, notificationText } from './texts.mjs';
 
 const supabase = createClient(

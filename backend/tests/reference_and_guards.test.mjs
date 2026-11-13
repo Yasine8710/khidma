@@ -144,6 +144,18 @@ describe('structural security guards', () => {
       'authenticated:request_photos:INSERT',
       'authenticated:request_photos:DELETE',
       'authenticated:notification_preferences:SELECT',
+      // freelance (column-level grants are checked in the column matrix)
+      'anon:digital_categories:SELECT',
+      'authenticated:digital_categories:SELECT',
+      'anon:freelancer_portfolio_items:SELECT',
+      'authenticated:freelancer_portfolio_items:SELECT',
+      'authenticated:freelancer_portfolio_items:INSERT',
+      'authenticated:freelancer_portfolio_items:DELETE',
+      'authenticated:freelancer_invites:DELETE',
+      // payments (payment_orders is column-level)
+      'anon:subscription_plans:SELECT',
+      'authenticated:subscription_plans:SELECT',
+      'authenticated:subscriptions:SELECT',
     ];
     assert.deepEqual([...got].sort(), [...expected].sort());
   });
@@ -157,10 +169,10 @@ describe('structural security guards', () => {
         order by 1, 2, 3`);
     const updates = (grantee, table) =>
       r.rows.filter((x) => x.grantee === grantee && x.table_name === table).map((x) => x.column_name).sort();
-    assert.deepEqual(updates('authenticated', 'profiles'), ['avatar_url', 'full_name', 'phone', 'preferred_language']);
+    assert.deepEqual(updates('authenticated', 'profiles'), ['avatar_path', 'avatar_url', 'full_name', 'phone', 'preferred_language']);
     assert.deepEqual(updates('authenticated', 'customer_profiles'), ['default_city_id', 'default_governorate_id']);
     assert.deepEqual(updates('authenticated', 'professional_profiles'), [
-      'availability', 'business_name', 'city_id', 'contact_phone', 'description', 'governorate_id',
+      'availability', 'avatar_path', 'business_name', 'city_id', 'contact_phone', 'description', 'governorate_id',
       'is_published', 'latitude', 'longitude', 'neighborhood_id', 'primary_category_id', 'years_experience',
     ]);
     assert.deepEqual(

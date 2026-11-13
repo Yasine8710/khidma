@@ -43,6 +43,12 @@ describe('createApi', () => {
     expect(rpc).toHaveBeenLastCalledWith('admin_review_verification', { p_request: 'r1', p_approve: true, p_reason: null });
     await api.setSuspended('u1', true, '   ');
     expect(rpc).toHaveBeenLastCalledWith('admin_set_suspended', { p_user: 'u1', p_suspended: true, p_reason: null });
+    await api.suspend('u1', null, '  Arnaque ', 'r1');
+    expect(rpc).toHaveBeenLastCalledWith('admin_suspend', { p_user: 'u1', p_days: null, p_reason: 'Arnaque', p_report: 'r1' });
+    await api.revokeVerification('u1', ' Faux document ');
+    expect(rpc).toHaveBeenLastCalledWith('admin_revoke_verification', { p_user: 'u1', p_reason: 'Faux document' });
+    await api.decideAppeal('a1', true, '  ');
+    expect(rpc).toHaveBeenLastCalledWith('admin_decide_appeal', { p_appeal: 'a1', p_lift: true, p_note: null });
   });
 
   it('turns an error answer into an ApiError and a thrown fetch into network', async () => {
@@ -75,6 +81,8 @@ describe('createMedia', () => {
     expect(JSON.parse(init.body)).toEqual({ kind: 'verification', id: 'req1' });
     await media.chatImages('rep1');
     expect(JSON.parse(fetcher.mock.calls[1]![1].body)).toEqual({ kind: 'chat', id: 'rep1' });
+    await media.paymentProofs('ord1');
+    expect(JSON.parse(fetcher.mock.calls[2]![1].body)).toEqual({ kind: 'payment', id: 'ord1' });
   });
 
   it('refuses without a session, and on bad or failed answers', async () => {

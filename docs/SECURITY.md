@@ -155,6 +155,178 @@ Known residuals, all waiting on the server-side worker of #32 or a real Supabase
 - The remaining `npm audit` findings are dev-only tooling (vitest worker and vite dev server): they cannot run in production, and tests only load our own code.
 - Concurrency fixes (review pair lock, verification file locks, upload quota lock) are checked structurally; a true parallel test needs a real Postgres.
 
+### Trust v2: scam reports, suspension, badge rules (#54, migration 2000)
+- Reports also cover an offer (only the customer who received it) and one message (only the other member of the conversation). New reasons: `pay_outside`, `no_show`. Evidence is text only (500 chars); no extra files are stored.
+- Each report records its subject (the person it is about). Limits against weaponised reporting: 10 reports per reporter per 24 h, one open report per target, at most 3 reports by one person on the same subject per 30 days. The queue sorts by distinct reporters on the subject; 3 or more in 30 days sets `flagged`. Nothing is suspended automatically.
+- `admin_suspend(user, days | null, reason, report?)`: unpublishes the profile and freelance listing, withdraws pending offers and, when started from a report, closes every open report on that person. The reason is shown to the professional. Triggers on `quote_offers`, `conversations` and `messages` refuse new rows from a suspended professional, whatever function writes them. Booked jobs keep their chat for the customer.
+- A timed suspension ends on its own: writes are allowed again once the time is up, the owner's `my_account_status()` lifts it, and `service_lift_expired_suspensions()` (service role, every 15 minutes) clears the rest. Lifting never republishes. System lifts are not written to the admin audit log (it records admin actions only).
+- Appeals: one open appeal at a time, a week's wait after a rejection, decided in the admin panel (Appeals tab) and audited.
+- Reporters get an outcome notice (`report_actioned` or `report_dismissed`) with an empty payload: never the note or what was done. Account notices use the `account` category, which ignores notification preferences.
+- Badge: verification is valid 365 days (`verified_until`, a Tunis date, public). `badge_valid()` gates the search output and freelance visibility, the app hides a badge past its date, and `service_expire_verifications()` (service role, daily) turns expired ones back to unverified with a notice. Admins can revoke a badge (`revoked`, reason required, audited). The profile shows "Identity verified, valid until ..."; no document data is ever shown.
+- Owner step: enable `pg_cron` (Database > Extensions) **before** running migration 2000 so the two jobs are scheduled; otherwise schedule both `service_*` functions with any daily or 15-minute cron.
+
+### Freelance moderation (#67, migration 2100)
+- Prohibited services (illegal services, academic cheating, fake documents, plagiarised portfolios, selling accounts or fake reviews) are listed in the app in FR/AR/EN: agreed to before every publication and linked from the report form for freelance listings and testimonials.
+- `admin_hold_freelancer(user, reason, report?)` unpublishes a freelance listing and puts it on hold (`admin_hold_reason`, shown to the owner only: a held listing is unpublished, so no one else can read its row, and visitors have no grant). A trigger refuses republishing while held; `admin_release_freelancer` lifts it. From a report, the report is closed as actioned and its reporter told. Both actions are audited and send the owner a notice. The local professional profile is not touched (that is what suspension is for).
+
+### Admin billing (#65, migration 2200)
+- `admin_billing_summary()` (MRR = running subscriptions normalised to 30 days, in millimes; active, past_due, expired, cancelled; payments waiting and waiting over 48 h), `admin_list_subscriptions(status)`, `admin_billing_detail(user)` (subscription + last 50 orders). A period that ended counts as past_due even before the daily job.
+- Corrective actions, reason required and audited: `admin_extend_subscription(user, 1-60 days)` (extend grace, comp a month; starts a subscription on the cheapest plan if there is none) and `admin_set_subscription_status(user, active | cancelled)` (reactivating is refused once the period is over: extend instead).
+- All refuse non-admins and visitors (admin_billing tests and the rls_matrix admin sweep). Admin panel: Billing tab.
+
+### Payment proofs and decision notices (#63, migration 2300)
+- A professional may attach up to 3 receipt photos to their own unpaid D17 or bank-transfer order (`attach_payment_proof`). Files live in the private `payment-proofs` bucket (5 MB, images and PDF, 20 files per person) under `<uid>/`; only the owner reads them through Storage; an attached file cannot be deleted (it is the payment record); account deletion queues them for the cleanup worker.
+- Admins see receipts only through the admin-media signer (`kind: payment`), which first calls the audited `admin_payment_proofs`; links last 2 minutes.
+- A trigger on `payment_orders` queues exactly one notice when an order becomes paid or rejected, whoever decided (admin or Flouci callback). The push says only "confirmed" or "refused"; the owner reads the admin's note in the app (`admin_note` is now readable on their own orders).
+
+### Subscription enforcement (#64, migration 2400)
+- Off by default (`admin_config.enforce_subscriptions`); admins switch it and set the free trial (`free_trial_days`, default 30) with `admin_set_billing_config` (reason required, audited) from the Billing tab.
+- When on, `listing_allowed(user)` decides visibility: a subscription active or past_due that ended less than 7 days ago, or a profile younger than the trial. It is part of the `professional_profiles` read policy, so search, profile pages, services, areas, portfolio and favorites follow it without client filtering; the privileged phone reveal and freelance visibility check it explicitly; a trigger refuses new offers (`subscription_required`). The owner and admins always see the profile. Hiding is a read rule: nothing is unpublished, and a payment shows the profile again at once.
+- Accepted jobs are unaffected: bookings, chats and reviews do not check listing status (tested end to end with a hidden professional).
+- Reminders: `service_subscription_reminders()` (service role, daily 07:00 UTC = 08:00 Tunis) sends due-soon (2-5 days left), due-now (0-1), overdue (1-6 days late) and grace-over (7-30 days late), each once per period (dedup key = user + period end day + stage); days are Tunis calendar days. `service_expire_subscriptions()` runs hourly. Both are scheduled by the migration when pg_cron is on.
+- 8 planted bugs (policy, offer trigger, reveal, grace length, UTC days, resent reminder, freelance rule, trial) were all caught by `subscription_enforcement.test.mjs`.
+
+### Remote freelance jobs (#50, migration 2500)
+- A remote project is a quote request of kind `remote`: digital category, brief, deliverables, budget range, deadline, up to 5 https links (checked by `_valid_links` in a table constraint), and no place (a check constraint forbids category/governorate/city on remote rows and remote fields on local rows). Created with `create_remote_request`, sharing the local request limits (5 per hour, 10 open).
+- Local lists and screens (`list_open_requests`, `get_open_request`, `my_quote_requests`, `get_my_quote_request`) now return local requests only; remote ones go through `my_remote_requests`, `list_remote_requests`, `get_remote_request`, which never return the customer id.
+- Only visible freelancers (verified, listed, not suspended, listing allowed) see remote projects and offer on them (`submit_remote_offer`: price, delivery days, 0-20 included revisions). A trigger refuses any offer on a remote project from someone else, whatever function writes it, and refuses revisions on local offers. `accept_offer` checks the freelance listing instead of a published local profile for remote offers.
+- Deliveries: private `deliveries` bucket (25 MB; images, PDF, ZIP, MP4) under `<booking id>/`; only the freelancer of the booking uploads, and only while the job is in progress or waiting; both parties read; a handed-in file cannot be deleted; at most 30 files per job. `deliver_booking` takes a note, an https link and/or files of that booking's folder (never another job's), and moves the job to waiting for the customer (the existing "work done?" notice). `request_revision` returns it to in progress, up to the revisions included in the accepted offer, and posts the request in the conversation. Account deletion queues the delivery files of the person's jobs.
+- The app shows before accepting a remote offer that Khidma holds no money and payment is settled between the parties. The app hands in images (and a link for larger files); the bucket also accepts PDF, ZIP and MP4 for later.
+- 8 planted bugs (offer trigger, local list leak, open bucket, unlimited revisions, cross-job file, http links, customer upload, non-freelancer listing) were all caught by `remote_jobs.test.mjs`.
+
+## Security audit (#55, 2026-11-13)
+
+### Threat model (STRIDE)
+Components: iOS app (Flutter), Supabase Auth, PostgREST + Postgres (RLS), Storage (6 buckets), Edge Functions (admin-media, send-notifications, storage-cleanup, flouci-payments), admin web (React, local), testimonial page (Vercel), payment callbacks (Flouci, manual D17/bank).
+
+| Threat | Where | Mitigation (evidence) |
+|---|---|---|
+| **S**poofing a user | Auth, PostgREST | Supabase JWT; `auth.uid()` in every policy; anonymous sessions refused by `require_registered_user()`; roles never from metadata (tests: profiles, contact_and_integrity) |
+| Spoofing an admin | admin web, `is_admin()` | row in `admin_users` (no client path) + `aal2` (TOTP) via `admin_config.require_mfa` (admin_dashboard tests) |
+| Spoofing a payment callback | flouci-payments | callback re-verifies the payment with Flouci server-to-server; idempotent `payment_events` key (flouci_logic tests) |
+| **T**ampering with rows | PostgREST | column-limited UPDATE grants, RLS USING + WITH CHECK, state machines in definer functions (rls_matrix: mass assignment, stranger updates/deletes) |
+| Tampering with files | Storage | per-bucket folder policies (`<uid>/...`, conversation or alias folders); no admin Storage policy (rls_matrix: storage guessing) |
+| **R**epudiation by admins | admin actions | append-only `admin_audit_log`, written by every admin function; document and chat views logged |
+| **I**nformation disclosure: contact, identity docs | `professional_profiles`, `verification-docs` | `contact_phone`/`verified_at` not granted; reveal RPC rate-limited (40/h) and logged; docs private, deleted after decision |
+| Disclosure across tenants (IDOR) | RPCs, tables | id-taking functions re-check membership (rls_matrix: IDOR sweep over every 1-uuid function; admin sweep) |
+| Disclosure through push | send-notifications | payloads carry ids only; texts built from the kind (notification_texts tests) |
+| **D**enial of service / abuse | RPCs, uploads | per-user limits in functions (requests, offers, messages, reports, reveals, photos); see #56 for the full table |
+| **E**levation of privilege | SECURITY DEFINER | every definer function pins `search_path = ''`; EXECUTE matrix pinned; non-admins refused by every `admin_*` (contact_and_integrity, rls_matrix) |
+
+### Automated RLS and API pen-test
+`backend/tests/rls_matrix.test.mjs` builds a world with at least one row in **every** table (two professionals, one hidden and suspended, a customer, a full job with chat and review, freelance rows, payments, reports, verification, appeal) and then checks, as a visitor, a registered stranger, the owners and an admin session:
+- every table is classified (reference / public / private / closed); a new table fails until classified;
+- the exact column grants of `anon` and `authenticated` match a reviewed snapshot;
+- public tables show visitors and strangers the same rows and nothing of a hidden owner; private tables show strangers nothing and the owner something; closed tables are denied to every client role;
+- a stranger's every granted UPDATE and DELETE touches zero rows; inserts in someone else's name are denied; owners cannot write any column outside their grant;
+- Storage: a stranger lists no object in any bucket and cannot write into another user's, conversation's or request's folder;
+- every `admin_*` function refuses non-admins and visitors; every function taking one uuid, called by a stranger with real ids, returns nothing and changes nothing.
+Mutation check: 9 planted holes (open bookings policy, readable reports, admin function without check, IDOR peek function, unclassified table, Storage list-all policy, public hidden portfolio, stranger booking updates, favorites for others) were all caught.
+
+### MASVS L1 checklist (iOS app)
+| Control | Status | Evidence |
+|---|---|---|
+| STORAGE-1 sensitive data stored securely | pass | session and PKCE verifier in Keychain (`secure_auth_storage.dart`, `main.dart` authOptions); shared preferences hold only locale, theme, onboarding flag, recently viewed and local favorites ids |
+| STORAGE-2 no sensitive data in logs or backups | pass | Supabase SDK `debug: false`; `_log` prints error types only, debug builds only |
+| CRYPTO-1/2 strong, standard crypto | pass / n.a. | no custom crypto; TLS by the platform; tokens and hashes server-side (invite tokens stored as SHA-256) |
+| AUTH-1 secure auth and session | pass | Supabase Auth with PKCE; refresh tokens rotate; account deletion in-app (5.1.1(v)) |
+| AUTH-2 local auth | n.a. | no biometric unlock |
+| AUTH-3 extra auth for sensitive operations | partial | admin requires TOTP (aal2); app users single factor (MFA for professionals is #57) |
+| NETWORK-1 secure traffic | pass | `SUPABASE_URL` must be https (`app_config.dart`); no ATS exceptions in `Info.plist` |
+| NETWORK-2 identity pinning | accepted risk | no certificate pinning: Supabase and Google rotate certificates; ATS + system trust store. Revisit with #57 |
+| PLATFORM-1 IPC / deep links | pass | one URL scheme (auth callback) handled by supabase_flutter; `FlutterDeepLinkingEnabled = false`, so links cannot drive the router |
+| PLATFORM-2 WebViews | n.a. | none |
+| PLATFORM-3 UI and external links | pass | only https links leave the app (`freelancer_screen.dart`, DB check on portfolio URLs); tel/WhatsApp built from validated numbers |
+| CODE-1/2 platform and dependencies current | pass | direct pub deps up to date; 162 pub packages checked on OSV: 0 advisories; Dependabot config added |
+| CODE-3 input validation | pass | every write goes through typed RPCs or column grants with DB checks |
+| CODE-4 obfuscation | out of L1 scope | release builds are not obfuscated yet; add `--obfuscate --split-debug-info` with #31 |
+| PRIVACY | pass | `PrivacyInfo.xcprivacy`; month-only review dates; customers' ids hidden from professionals (`customer_id` not granted) |
+
+### Dependency audit
+| Part | Tool | Result |
+|---|---|---|
+| app (Flutter) | `flutter pub outdated`, OSV batch query on `pubspec.lock` | direct deps current; 0 advisories (162 packages) |
+| admin | `npm audit` | was 2 critical + 1 moderate (dev only: vitest 3.2.7 / tinypool, @vitest/mocker); fixed with vitest 4.1.12 (released 2026-10-15). `.npmrc` sets `legacy-peer-deps` because npm 10 crashes resolving vitest 4's optional peers; `@testing-library/dom` is now an explicit dev dependency. Now 0 |
+| backend tests | `npm audit` | 0 |
+| Edge Functions | review | imported `supabase-js@2` (floating major); pinned to `npm:@supabase/supabase-js@2.119.0` |
+| testimonial page | review | static HTML, no dependencies |
+Dependabot (`.github/dependabot.yml`) opens weekly update PRs for pub, admin, backend and monthly for Actions. The owner should also enable Dependabot alerts and security updates in the repository settings.
+
+### Findings
+| # | Severity | Finding | Status |
+|---|---|---|---|
+| A1 | high | A suspended professional could still send messages (no check in `send_message`) | fixed in #54 (triggers on offers, conversations, messages) |
+| A2 | medium | Admin dev toolchain had critical advisories (tinypool RCE gadget via vitest) | fixed: vitest 4.1.12 |
+| A3 | medium | Edge Functions imported a floating `supabase-js@2` (supply chain) | fixed: pinned 2.119.0; **redeploy storage-cleanup** (live) to pick it up |
+| A4 | low | Column SELECT grants were not pinned by a test (only UPDATE/INSERT) | fixed: full snapshot in `rls_matrix` |
+| A5 | low | An expired badge blocked renewal until the daily job ran | fixed in #54 |
+| A6 | low | INSERT grants on favorites, portfolio, services, areas, request photos include `created_at`/`id`: an owner can backdate their own rows | accepted (own data only, no cross-tenant effect) |
+| A7 | low | Customers cannot be suspended, only reported | open: follow-up with #53 levels |
+| A8 | info | No certificate pinning | accepted risk (see NETWORK-2) |
+| A9 | info | Release builds not obfuscated | open: with #31 |
+| A10 | info | Concurrency (advisory-lock races) cannot be exercised on PGlite | open: needs a real Postgres run (#6) |
+| A11 | info | CI cannot run (GitHub billing lock, #5), so the suites run locally only | open: owner |
+| A12 | medium | The rls_matrix write check read `rowCount`, which PGlite does not set, so "stranger updates touch 0 rows" passed without checking | fixed 2026-11-13 (`affectedRows`; the stranger's own rows excluded); planted update-all and delete-all policies are now caught |
+
+## Abuse protection and operations (#56)
+
+### Limits
+Database limits raise `P0001 rate_limited` (or `limit_reached`); PostgREST answers HTTP 400 with that tag, and the app shows a "too many, try later" message (`RequestsFailure.rateLimited`). HTTP 429 only comes from Supabase Auth's own limits.
+
+| What | Limit | Test |
+|---|---|---|
+| Phone reveals (professionals + freelancers, one budget) | 40 per hour per user | contact_and_integrity, limits |
+| Quote requests | 5 per hour, 10 open | requests |
+| Offers | 50 pending per professional (withdrawing does not reset) | requests |
+| Messages | 30 per minute per sender | messaging |
+| Chat images | 100 per conversation, 2 MB, jpeg/png/webp | messaging |
+| Request photos | 5 per request, 60 files per person, 2 MB | request_photos |
+| Portfolio | 12 items, 16 files, 2 MB | portfolio |
+| Freelance portfolio | 24 items; media 25 MB, images + mp4/webm | freelance, limits |
+| Avatars | 1 MB, images | avatars, limits |
+| Verification | 6 files, 5 MB (images + pdf), 3 requests per 30 days | verification_reports |
+| Reviews | 3 per author per subject | reviews |
+| Reports | 10 per day, 1 open per target, 3 per person per 30 days | verification_reports, trust_v2 |
+| Appeals | 1 open, 7 days after a rejection | trust_v2 |
+| Favorites | 200 per user | favorites |
+| Testimonial invites | 20 open per freelancer (each single use) | freelance |
+| Payment orders | 10 per 24 hours (same unpaid order is reused) | limits |
+| Device tokens | 10 per account (newest kept) | notifications |
+| Search | 50 rows a page, offset up to 5000, query 100 characters | search_semantics |
+
+Not limited in SQL (no client IP is visible to Postgres): anonymous search and reference reads. Supabase's role `statement_timeout` (anon 3 s, authenticated 8 s by default) bounds each call; put Cloudflare in front if scraping appears. Edge Functions: `send-notifications` and `storage-cleanup` need a 16+ character bearer secret, `admin-media` an admin `aal2` session, `flouci-payments` a valid signature checked before any outbound call. No per-IP limiter: function instances are short-lived, so an in-memory counter would not hold.
+
+**Owner (dashboard, Authentication > Rate limits)**: keep the defaults or lower them (e-mails sent per hour, sign-ups and sign-ins per 5 minutes per IP, token refreshes, OTP / verification per hour). CAPTCHA (Turnstile is free) on sign-up and password reset if fake sign-ups appear; the app would then need to pass `captchaToken`.
+
+### Secrets
+- Clients ship only the Supabase URL and the publishable key (`app_config.dart` refuses `sb_secret_` and service-role keys). Secrets live in Supabase Edge Function secrets (`NOTIFY_SECRET`, `CLEANUP_SECRET`, `FLOUCI_*`), Codemagic's `khidma` group (dart-defines) and gitignored `app/config/dev.json` / `admin/.env.local`.
+- Scanning: `.gitleaks.toml` (default rules + Supabase key shapes, test fixtures allowlisted), a CI job `secrets` (gitleaks v8.30.1 over the full history; CI runs once #5 is cleared) and `scripts/hooks/pre-commit` (enable with `git config core.hooksPath scripts/hooks`; needs gitleaks installed: `winget install Gitleaks.Gitleaks`).
+- History check, 2026-11-13: all 172 commits scanned for Supabase secret keys and access tokens, JWTs, private keys, AWS/Google/GitHub/Slack tokens and URLs with passwords. Only hit: the fake `sb_secret_abcDEF123` in `app_config_test.dart` (it tests that such keys are refused).
+- Rotation: (1) create the new key or secret; (2) update it where it is used (Supabase secrets with `supabase secrets set`, Codemagic group, local files); (3) redeploy the functions, rebuild the app if a dart-define changed; (4) revoke the old one; (5) note it in the audit table below. The database password was last rotated on 2026-11-11. Supabase access tokens (`sbp_`) are created for one session and revoked after.
+
+### Logging and monitoring
+- App: Sentry, **off unless built with `--dart-define=SENTRY_DSN=...`** (`lib/core/monitoring/error_reporting.dart`). It uses the pure Dart SDK (Dart errors only, no native crash reports, nothing native to build). Events carry no user, request, breadcrumbs or device name; e-mails, phone-like numbers and tokens are scrubbed from messages (tested). `--dart-define=SENTRY_TEST_EVENT=true` sends one test message at startup.
+- Admin: the same, with `VITE_SENTRY_DSN`; the SDK is loaded only when it is set and collects no user, cookies, headers, query strings or bodies.
+- Edge Functions write no logs containing request bodies, tokens or personal data (none of them call `console.*`); Supabase keeps its own invocation logs.
+- **Owner**: create a free Sentry project (EU region), put the DSN in the Codemagic group as `SENTRY_DSN`, build once with `SENTRY_TEST_EVENT=true` and check the alert e-mail arrives. Add alert rules: new issue, more than 20 events in 1 hour. In Supabase, Reports and Logs cover auth failures, 5xx and Edge Function errors; set an e-mail alert on Edge Function error rate if the plan offers it. When Sentry is on, add "Crash data" to the App Store privacy labels (#61).
+
+### Backup and restore
+- Facts (Supabase docs, checked 2026-11-13): the Free plan has **no automatic backups**; Pro keeps 7 daily backups; point-in-time recovery is a Pro add-on (about $100/month for 7 days, worst-case data loss about 2 minutes).
+- Until then: `scripts/db_backup.sh backup` (Supabase CLI `db dump`: roles, schema, data) weekly and before every migration, kept off-site; Storage files are not in it (they would need the Storage API).
+- **Restore drill (owner, needs the DB password)**: create a scratch Free project, run `scripts/db_backup.sh restore backups/<stamp>` against it, check that row counts of `profiles`, `professional_profiles`, `quote_requests` and `messages` match, delete the scratch project. Record the times here:
+
+| Date | Backup time | Restore time (RTO part) | Data loss window (RPO) | By |
+|---|---|---|---|---|
+| (not run yet) | | | up to the last weekly dump | |
+
+### Incident response (one page)
+1. **Detect**: Sentry alert, Supabase logs, a user report or a report in the admin queue.
+2. **Contain** (minutes): suspend the account in the admin panel; revoke a leaked key or token at once (Supabase API keys, `sbp_` tokens, function secrets); if data is exposed through a policy, ship a migration that closes it first and analyse after; pausing the project is the last resort.
+3. **Assess**: what data, which users, since when (audit log, Supabase logs, `admin_audit_log`).
+4. **Fix and verify**: migration plus a regression test in `backend/tests`; rerun the full suite.
+5. **Tell**: affected users in clear words; personal data breaches go to the INPDP (Tunisia, law 2004-63, see #57) without delay.
+6. **Learn**: add a row to the findings table above and a note here.
+
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.
 - The Supabase SDK's own debug logger is disabled; the app prints only error types, and only in debug builds.
@@ -166,3 +338,6 @@ Known residuals, all waiting on the server-side worker of #32 or a real Supabase
 The suite was mutation-tested twice (19 mutations: revokes removed, RLS disabled, column grants widened, metadata trusted, search_path unpinned, phone exposed, rate limit removed, anonymous-auth accepted, sequences left open, a leaky function added, ...); every one was caught.
 
 Limits: PGlite is not a full Supabase stack (no Auth service, Storage, PostGIS or realtime). Storage policies, Edge Functions and JWT handling need testing against a real Supabase project (blocked on issue #6). Seed names, especially Arabic, need native-speaker review.
+
+### Storage cleanup worker (issue #34, free)
+`backend/supabase/functions/storage-cleanup` removes the files queued in `storage_cleanup_queue` (account deletion, cancelled requests, verification decisions) through the Storage API, then the queue rows. It only touches the four known buckets, refuses empty or path-escaping names, handles at most 200 rows per run and keeps rows of a failed bucket for the next run. Callers need `Authorization: Bearer <CLEANUP_SECRET>` (16+ characters, compared in constant time). Schedule it every few minutes (Dashboard > Integrations > Cron). Logic and secret check are tested in `backend/tests/storage_cleanup.test.mjs`; the deployed behaviour is not verified yet.

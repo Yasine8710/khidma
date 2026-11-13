@@ -7,14 +7,14 @@ import '../../../core/format/money.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/app_card.dart';
-import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/app_chip.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/application/marketplace_providers.dart';
+import '../../marketplace/presentation/category_icon.dart';
 import '../../professional/application/professional_providers.dart';
+import '../../requests/presentation/flow_widgets.dart';
 import '../application/offers_providers.dart';
 import '../domain/offers_domain.dart';
 import 'offers_texts.dart';
@@ -61,7 +61,7 @@ class _ProInboxScreenState extends ConsumerState<ProInboxScreen> {
               ),
             );
     } else if (!published) {
-      body = EmptyState(
+      body = CalmEmpty(
         icon: Icons.visibility_off_outlined,
         title: l10n.proInboxTitle,
         body: l10n.proInboxNeedsPublished,
@@ -81,8 +81,9 @@ class _ProInboxScreenState extends ConsumerState<ProInboxScreen> {
       body: SafeArea(
         child: Column(
           children: [
+            // Filters over a hairline.
             SizedBox(
-              height: 56,
+              height: 64,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsetsDirectional.symmetric(
@@ -90,17 +91,18 @@ class _ProInboxScreenState extends ConsumerState<ProInboxScreen> {
                   vertical: AppSpacing.sm,
                 ),
                 children: [
-                  FilterChip(
-                    label: Text(l10n.proInboxMyArea),
+                  AppChip(
+                    label: l10n.proInboxMyArea,
+                    icon: Icons.place_outlined,
                     selected: _myArea,
                     onSelected: (v) => setState(() {
                       _myArea = v;
                       _pages = 1;
                     }),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
-                  ChoiceChip(
-                    label: Text(l10n.proInboxAllCategories),
+                  const SizedBox(width: AppSpacing.lg),
+                  AppChip(
+                    label: l10n.proInboxAllCategories,
                     selected: _category == null,
                     onSelected: (_) => setState(() {
                       _category = null;
@@ -109,8 +111,8 @@ class _ProInboxScreenState extends ConsumerState<ProInboxScreen> {
                   ),
                   for (final c in categories) ...[
                     const SizedBox(width: AppSpacing.sm),
-                    ChoiceChip(
-                      label: Text(c.nameFor(locale)),
+                    AppChip(
+                      label: c.nameFor(locale),
                       selected: _category == c.id,
                       onSelected: (_) => setState(() {
                         _category = c.id;
@@ -120,6 +122,12 @@ class _ProInboxScreenState extends ConsumerState<ProInboxScreen> {
                   ],
                 ],
               ),
+            ),
+            const Padding(
+              padding: EdgeInsetsDirectional.symmetric(
+                horizontal: AppSpacing.gutter,
+              ),
+              child: Hairline(),
             ),
             Expanded(child: body),
           ],
@@ -155,10 +163,13 @@ class _Pages extends ConsumerWidget {
           );
         }
         items.add(
-          AppButton(
-            label: l10n.retry,
-            variant: AppButtonVariant.secondary,
-            onPressed: () => ref.invalidate(openRequestsPageProvider(q)),
+          Padding(
+            padding: const EdgeInsetsDirectional.only(top: AppSpacing.lg),
+            child: AppButton(
+              label: l10n.retry,
+              variant: AppButtonVariant.secondary,
+              onPressed: () => ref.invalidate(openRequestsPageProvider(q)),
+            ),
           ),
         );
         break;
@@ -172,37 +183,49 @@ class _Pages extends ConsumerWidget {
             ),
           );
         }
-        items.add(const Skeleton(height: 96));
+        items.add(
+          const Padding(
+            padding: EdgeInsetsDirectional.only(top: AppSpacing.md),
+            child: Skeleton(height: 96),
+          ),
+        );
         break;
       }
       final list = async.requireValue;
       if (page == 0 && list.isEmpty) {
-        return EmptyState(
+        return CalmEmpty(
           icon: Icons.inbox_outlined,
           title: l10n.proInboxEmptyTitle,
           body: l10n.proInboxEmptyBody,
         );
       }
       for (final r in list) {
-        items.add(_RequestCard(request: r));
+        items.add(_RequestCard(request: r, index: items.length));
       }
       more = page == pages - 1 && list.length == openRequestsPageSize;
     }
     if (more) {
       items.add(
-        AppButton(
-          label: l10n.loadMore,
-          variant: AppButtonVariant.secondary,
-          onPressed: onMore,
+        Padding(
+          padding: const EdgeInsetsDirectional.only(top: AppSpacing.lg),
+          child: AppButton(
+            label: l10n.loadMore,
+            variant: AppButtonVariant.secondary,
+            onPressed: onMore,
+          ),
         ),
       );
     }
     return RefreshIndicator(
       onRefresh: () async => ref.invalidate(openRequestsPageProvider),
-      child: ListView.separated(
-        padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
+      child: ListView.builder(
+        padding: const EdgeInsetsDirectional.fromSTEB(
+          AppSpacing.gutter,
+          0,
+          AppSpacing.gutter,
+          AppSpacing.xl,
+        ),
         itemCount: items.length,
-        separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
         itemBuilder: (_, i) => items[i],
       ),
     );
@@ -210,9 +233,10 @@ class _Pages extends ConsumerWidget {
 }
 
 class _RequestCard extends ConsumerWidget {
-  const _RequestCard({required this.request});
+  const _RequestCard({required this.request, this.index = 0});
 
   final OpenRequest request;
+  final int index;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -220,54 +244,81 @@ class _RequestCard extends ConsumerWidget {
     final locale = Localizations.localeOf(context);
     final text = Theme.of(context).textTheme;
     final muted = Theme.of(context).colorScheme.onSurfaceVariant;
-    final category = (ref.watch(categoriesProvider).value ?? const [])
+    final scheme = Theme.of(context).colorScheme;
+    final cat = (ref.watch(categoriesProvider).value ?? const [])
         .where((c) => c.id == request.categoryId)
-        .map((c) => c.nameFor(locale))
         .firstOrNull;
     final place = (ref.watch(governoratesProvider).value ?? const [])
         .where((g) => g.id == request.governorateId)
         .map((g) => g.nameFor(locale))
         .firstOrNull;
     final mineStatus = request.myOfferStatus;
-    return AppCard(
+    final meta = [
+      formatDate(request.createdAt, locale),
+      ?cat?.nameFor(locale),
+      ?place,
+    ].join(' · ');
+    return FlowCard(
+      index: index,
       semanticLabel: request.title,
       onTap: () => context.push(AppRoutes.proRequestPath(request.id)),
-      child: Column(
+      padding: const EdgeInsetsDirectional.all(AppSpacing.md + 2),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            request.title,
-            style: text.titleSmall,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+          IconTile(
+            icon: categoryIcon(cat?.icon ?? ''),
+            seed: request.categoryId,
           ),
-          Text(
-            [?category, ?place].join(' · '),
-            style: text.bodySmall?.copyWith(color: muted),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.xs,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              if (mineStatus != null)
-                AppBadge(
-                  label: l10n.offerYours(offerStatusLabel(l10n, mineStatus)),
-                  tone: offerStatusTone(mineStatus),
-                ),
-              Text(l10n.reqOffers(request.offersCount), style: text.bodySmall),
-              if (request.budgetTnd != null)
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
-                  l10n.reqBudget(formatTnd(request.budgetTnd!, locale)),
-                  style: text.bodySmall,
+                  request.title,
+                  style: text.titleMedium,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              Text(
-                formatDate(request.createdAt, locale),
-                style: text.bodySmall?.copyWith(color: muted),
-              ),
-            ],
+                const SizedBox(height: 2),
+                Text(
+                  meta,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: text.bodySmall?.copyWith(color: muted),
+                ),
+                const SizedBox(height: AppSpacing.sm + 2),
+                Wrap(
+                  spacing: AppSpacing.md,
+                  runSpacing: AppSpacing.xs,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    if (mineStatus != null)
+                      StatusPill(
+                        label: l10n.offerYours(
+                          offerStatusLabel(l10n, mineStatus),
+                        ),
+                        tone: offerStatusTone(mineStatus),
+                      ),
+                    Text(
+                      l10n.reqOffers(request.offersCount),
+                      style: request.offersCount > 0
+                          ? text.labelLarge?.copyWith(color: scheme.primary)
+                          : text.bodyMedium?.copyWith(color: muted),
+                    ),
+                    if (request.budgetTnd != null)
+                      Text(
+                        l10n.reqBudget(formatTnd(request.budgetTnd!, locale)),
+                        style: text.bodyMedium?.copyWith(color: muted),
+                      ),
+                  ],
+                ),
+              ],
+            ),
           ),
+          const SizedBox(width: AppSpacing.xs),
+          const EndChevron(),
         ],
       ),
     );

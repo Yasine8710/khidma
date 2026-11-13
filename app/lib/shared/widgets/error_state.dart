@@ -16,7 +16,7 @@ class ErrorState extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return EmptyState(
-      icon: Icons.cloud_off_rounded,
+      icon: Icons.cloud_off_outlined,
       title: title ?? l10n.errorTitle,
       body: body ?? l10n.errorBody,
       actionLabel: l10n.retry,
