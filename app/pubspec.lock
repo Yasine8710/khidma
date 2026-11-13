@@ -933,6 +933,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  sentry:
+    dependency: "direct main"
+    description:
+      name: sentry
+      sha256: f8219c441f6b0903f88475058373c08ac62cac753195b344cc1f8c540a6e490a
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.2.0"
   shared_preferences:
     dependency: "direct main"
     description:

@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
 import 'core/config/app_config.dart';
+import 'core/monitoring/error_reporting.dart';
 import 'core/storage/preferences_provider.dart';
 import 'features/auth/application/auth_providers.dart';
 import 'features/auth/data/secure_auth_storage.dart';
@@ -43,6 +44,8 @@ import 'features/profile/domain/profile_domain.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Only when built with SENTRY_DSN; otherwise a no-op.
+  await initErrorReporting();
   final store = await _openStore();
   final auth = await _openAuth();
   final ProfileRepository profiles = auth.isAvailable

@@ -1,0 +1,27 @@
+# gitleaks configuration: the default rules plus Supabase key shapes.
+# Run locally: gitleaks git . --config .gitleaks.toml --redact
+title = "khidma"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "supabase-secret-key"
+description = "Supabase secret API key"
+regex = '''sb_secret_[A-Za-z0-9_-]{20,}'''
+keywords = ["sb_secret_"]
+
+[[rules]]
+id = "supabase-access-token"
+description = "Supabase personal access token"
+regex = '''sbp_[a-f0-9]{40}'''
+keywords = ["sbp_"]
+
+[allowlist]
+description = "Test fixtures with fake keys"
+paths = [
+  '''app/test/.*_test\.dart''',
+  '''backend/tests/.*\.test\.mjs''',
+  '''admin/src/.*\.test\.tsx?''',
+  '''app/config/dev\.example\.json''',
+]

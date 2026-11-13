@@ -41,3 +41,6 @@ app/ios/Flutter/Maps.xcconfig
 
 # Claude Code agent worktrees
 .claude/
+
+# local database dumps (scripts/db_backup.sh)
+backups/

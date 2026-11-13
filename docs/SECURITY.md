@@ -238,6 +238,65 @@ Dependabot (`.github/dependabot.yml`) opens weekly update PRs for pub, admin, ba
 | A10 | info | Concurrency (advisory-lock races) cannot be exercised on PGlite | open: needs a real Postgres run (#6) |
 | A11 | info | CI cannot run (GitHub billing lock, #5), so the suites run locally only | open: owner |
 
+## Abuse protection and operations (#56)
+
+### Limits
+Database limits raise `P0001 rate_limited` (or `limit_reached`); PostgREST answers HTTP 400 with that tag, and the app shows a "too many, try later" message (`RequestsFailure.rateLimited`). HTTP 429 only comes from Supabase Auth's own limits.
+
+| What | Limit | Test |
+|---|---|---|
+| Phone reveals (professionals + freelancers, one budget) | 40 per hour per user | contact_and_integrity, limits |
+| Quote requests | 5 per hour, 10 open | requests |
+| Offers | 50 pending per professional (withdrawing does not reset) | requests |
+| Messages | 30 per minute per sender | messaging |
+| Chat images | 100 per conversation, 2 MB, jpeg/png/webp | messaging |
+| Request photos | 5 per request, 60 files per person, 2 MB | request_photos |
+| Portfolio | 12 items, 16 files, 2 MB | portfolio |
+| Freelance portfolio | 24 items; media 25 MB, images + mp4/webm | freelance, limits |
+| Avatars | 1 MB, images | avatars, limits |
+| Verification | 6 files, 5 MB (images + pdf), 3 requests per 30 days | verification_reports |
+| Reviews | 3 per author per subject | reviews |
+| Reports | 10 per day, 1 open per target, 3 per person per 30 days | verification_reports, trust_v2 |
+| Appeals | 1 open, 7 days after a rejection | trust_v2 |
+| Favorites | 200 per user | favorites |
+| Testimonial invites | 20 open per freelancer (each single use) | freelance |
+| Payment orders | 10 per 24 hours (same unpaid order is reused) | limits |
+| Device tokens | 10 per account (newest kept) | notifications |
+| Search | 50 rows a page, offset up to 5000, query 100 characters | search_semantics |
+
+Not limited in SQL (no client IP is visible to Postgres): anonymous search and reference reads. Supabase's role `statement_timeout` (anon 3 s, authenticated 8 s by default) bounds each call; put Cloudflare in front if scraping appears. Edge Functions: `send-notifications` and `storage-cleanup` need a 16+ character bearer secret, `admin-media` an admin `aal2` session, `flouci-payments` a valid signature checked before any outbound call. No per-IP limiter: function instances are short-lived, so an in-memory counter would not hold.
+
+**Owner (dashboard, Authentication > Rate limits)**: keep the defaults or lower them (e-mails sent per hour, sign-ups and sign-ins per 5 minutes per IP, token refreshes, OTP / verification per hour). CAPTCHA (Turnstile is free) on sign-up and password reset if fake sign-ups appear; the app would then need to pass `captchaToken`.
+
+### Secrets
+- Clients ship only the Supabase URL and the publishable key (`app_config.dart` refuses `sb_secret_` and service-role keys). Secrets live in Supabase Edge Function secrets (`NOTIFY_SECRET`, `CLEANUP_SECRET`, `FLOUCI_*`), Codemagic's `khidma` group (dart-defines) and gitignored `app/config/dev.json` / `admin/.env.local`.
+- Scanning: `.gitleaks.toml` (default rules + Supabase key shapes, test fixtures allowlisted), a CI job `secrets` (gitleaks v8.30.1 over the full history; CI runs once #5 is cleared) and `scripts/hooks/pre-commit` (enable with `git config core.hooksPath scripts/hooks`; needs gitleaks installed: `winget install Gitleaks.Gitleaks`).
+- History check, 2026-11-13: all 172 commits scanned for Supabase secret keys and access tokens, JWTs, private keys, AWS/Google/GitHub/Slack tokens and URLs with passwords. Only hit: the fake `sb_secret_abcDEF123` in `app_config_test.dart` (it tests that such keys are refused).
+- Rotation: (1) create the new key or secret; (2) update it where it is used (Supabase secrets with `supabase secrets set`, Codemagic group, local files); (3) redeploy the functions, rebuild the app if a dart-define changed; (4) revoke the old one; (5) note it in the audit table below. The database password was last rotated on 2026-11-11. Supabase access tokens (`sbp_`) are created for one session and revoked after.
+
+### Logging and monitoring
+- App: Sentry, **off unless built with `--dart-define=SENTRY_DSN=...`** (`lib/core/monitoring/error_reporting.dart`). It uses the pure Dart SDK (Dart errors only, no native crash reports, nothing native to build). Events carry no user, request, breadcrumbs or device name; e-mails, phone-like numbers and tokens are scrubbed from messages (tested). `--dart-define=SENTRY_TEST_EVENT=true` sends one test message at startup.
+- Admin: the same, with `VITE_SENTRY_DSN`; the SDK is loaded only when it is set and collects no user, cookies, headers, query strings or bodies.
+- Edge Functions write no logs containing request bodies, tokens or personal data (none of them call `console.*`); Supabase keeps its own invocation logs.
+- **Owner**: create a free Sentry project (EU region), put the DSN in the Codemagic group as `SENTRY_DSN`, build once with `SENTRY_TEST_EVENT=true` and check the alert e-mail arrives. Add alert rules: new issue, more than 20 events in 1 hour. In Supabase, Reports and Logs cover auth failures, 5xx and Edge Function errors; set an e-mail alert on Edge Function error rate if the plan offers it. When Sentry is on, add "Crash data" to the App Store privacy labels (#61).
+
+### Backup and restore
+- Facts (Supabase docs, checked 2026-11-13): the Free plan has **no automatic backups**; Pro keeps 7 daily backups; point-in-time recovery is a Pro add-on (about $100/month for 7 days, worst-case data loss about 2 minutes).
+- Until then: `scripts/db_backup.sh backup` (Supabase CLI `db dump`: roles, schema, data) weekly and before every migration, kept off-site; Storage files are not in it (they would need the Storage API).
+- **Restore drill (owner, needs the DB password)**: create a scratch Free project, run `scripts/db_backup.sh restore backups/<stamp>` against it, check that row counts of `profiles`, `professional_profiles`, `quote_requests` and `messages` match, delete the scratch project. Record the times here:
+
+| Date | Backup time | Restore time (RTO part) | Data loss window (RPO) | By |
+|---|---|---|---|---|
+| (not run yet) | | | up to the last weekly dump | |
+
+### Incident response (one page)
+1. **Detect**: Sentry alert, Supabase logs, a user report or a report in the admin queue.
+2. **Contain** (minutes): suspend the account in the admin panel; revoke a leaked key or token at once (Supabase API keys, `sbp_` tokens, function secrets); if data is exposed through a policy, ship a migration that closes it first and analyse after; pausing the project is the last resort.
+3. **Assess**: what data, which users, since when (audit log, Supabase logs, `admin_audit_log`).
+4. **Fix and verify**: migration plus a regression test in `backend/tests`; rerun the full suite.
+5. **Tell**: affected users in clear words; personal data breaches go to the INPDP (Tunisia, law 2004-63, see #57) without delay.
+6. **Learn**: add a row to the findings table above and a note here.
+
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.
 - The Supabase SDK's own debug logger is disabled; the app prints only error types, and only in debug builds.
