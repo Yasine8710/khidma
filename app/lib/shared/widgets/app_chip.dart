@@ -4,10 +4,10 @@ import '../../core/haptics.dart';
 import '../../core/motion/motion.dart';
 import '../../core/theme/app_spacing.dart';
 
-/// Selectable filter chip (category, price range, availability...): a
-/// rectangular block with a heavy ink outline. Selected = the world colour
-/// (with its text colour) and a hard shadow; unselected = paper, flat.
-/// At least 40 high visually and 48x48 to hit; grows with text size.
+/// Selectable filter chip (category, price range, availability...): a pill.
+/// Unselected = white with a hairline; selected = soft violet with violet
+/// text, a violet edge and a check (so the state never rests on colour
+/// alone). At least 40 high visually and 48x48 to hit; grows with text size.
 class AppChip extends StatelessWidget {
   const AppChip({
     super.key,
@@ -26,8 +26,8 @@ class AppChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final reduce = Motion.reduced(context);
-    final rtl = Directionality.of(context) == TextDirection.rtl;
     final fg = selected ? scheme.onPrimaryContainer : scheme.onSurface;
+    final lead = icon ?? (selected ? Icons.check_rounded : null);
     return Semantics(
       button: true,
       selected: selected,
@@ -46,34 +46,25 @@ class AppChip extends StatelessWidget {
             widthFactor: 1,
             child: AnimatedContainer(
               duration: reduce ? Duration.zero : Motion.fast,
-              curve: Motion.slam,
+              curve: Curves.easeOut,
               constraints: const BoxConstraints(minHeight: 40),
               padding: const EdgeInsetsDirectional.symmetric(
-                horizontal: AppSpacing.lg,
+                horizontal: AppSpacing.lg - 2,
                 vertical: AppSpacing.sm,
               ),
               decoration: BoxDecoration(
                 color: selected ? scheme.primaryContainer : scheme.surface,
-                borderRadius: BorderRadius.circular(AppRadius.sm),
+                borderRadius: BorderRadius.circular(AppRadius.pill),
                 border: Border.all(
-                  color: scheme.onSurface,
-                  width: AppInk.border,
+                  color: selected ? scheme.primary : scheme.outlineVariant,
                 ),
-                boxShadow: selected
-                    ? [
-                        BoxShadow(
-                          color: scheme.onSurface,
-                          offset: Offset(rtl ? -3 : 3, 3),
-                        ),
-                      ]
-                    : null,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (icon != null) ...[
-                    Icon(icon, size: 18, color: fg),
-                    const SizedBox(width: AppSpacing.sm),
+                  if (lead != null) ...[
+                    Icon(lead, size: 18, color: fg),
+                    const SizedBox(width: AppSpacing.xs + 2),
                   ],
                   Flexible(
                     child: Text(

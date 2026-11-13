@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_spacing.dart';
 import 'app_button.dart';
 
-/// Section title in Anton (display) with an optional trailing text action ("See
-/// all"). An optional [kicker] prints a small uppercase line in muted ink
-/// above the title, like a sign heading ("N° 01 · SERVICES"); set
-/// [rule] to draw a hairline under the heading.
+/// Section title row: the title on the start side, an optional violet text
+/// link ("Tout voir") on the end side. An optional [kicker] prints a small
+/// muted line above the title; set [rule] to draw a hairline under the row.
 class SectionHeader extends StatelessWidget {
   const SectionHeader({
     super.key,
@@ -21,7 +20,7 @@ class SectionHeader extends StatelessWidget {
   final String? actionLabel;
   final VoidCallback? onAction;
 
-  /// Small uppercase label above the title. Read before the title.
+  /// Small muted line above the title. Read before the title.
   final String? kicker;
 
   /// Hairline under the heading.
@@ -32,10 +31,10 @@ class SectionHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final heading = Semantics(
       header: true,
-      child: Text(title, style: theme.textTheme.headlineSmall),
+      child: Text(title, style: theme.textTheme.titleLarge),
     );
     final row = Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
           child: kicker == null
@@ -72,11 +71,7 @@ class SectionHeader extends StatelessWidget {
               children: [
                 row,
                 const SizedBox(height: AppSpacing.sm),
-                Divider(
-                  color: theme.colorScheme.onSurface,
-                  thickness: AppInk.border,
-                  height: AppInk.border,
-                ),
+                const Divider(),
               ],
             )
           : row,
@@ -84,8 +79,8 @@ class SectionHeader extends StatelessWidget {
   }
 }
 
-/// The small uppercase muted line above a heading ("N° 02 · ACTIVITÉ").
-/// Uppercasing is skipped for Arabic, which has no case.
+/// A small muted line above a heading (e.g. a category above a name). Never
+/// forced to capitals.
 class SectionKicker extends StatelessWidget {
   const SectionKicker(this.text, {super.key});
 
@@ -94,12 +89,11 @@ class SectionKicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final ar = Localizations.localeOf(context).languageCode == 'ar';
     return Text(
-      ar ? text : text.toUpperCase(),
-      style: theme.textTheme.labelSmall?.copyWith(
+      text,
+      style: theme.textTheme.labelMedium?.copyWith(
         color: theme.colorScheme.onSurfaceVariant,
-        letterSpacing: ar ? 0 : 1.2,
+        fontWeight: FontWeight.w500,
       ),
     );
   }

@@ -429,6 +429,8 @@ void main() {
       await pumpApp(tester, auth: fake);
       await tester.tap(find.text('Profil'));
       await tester.pumpAndSettle();
+      // Sign-out is a settings row near the end of the Profile list.
+      await scrollProfileTo(tester, find.text('Se déconnecter'));
       await tester.tap(find.text('Se déconnecter'));
       await tester.pumpAndSettle();
       expect(fake.signOutCalls, 1);

@@ -43,6 +43,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get acctTools => 'Outils';
 
   @override
+  String get profileHelp => 'Aide';
+
+  @override
+  String get profileHelpTitle => 'Comment ça marche';
+
+  @override
   String get languageFrench => 'Français';
 
   @override

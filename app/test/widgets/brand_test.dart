@@ -33,10 +33,26 @@ void main() {
       expect(s.colorType, 6);
     });
 
-    test('SVG mark uses the theme brand colors', () {
+    test('SVG mark uses the theme brand colors (violet square, white K)', () {
       final svg = File('assets/brand/logo-mark.svg').readAsStringSync();
-      expect(svg.toUpperCase(), contains(_hex(AppColors.primary)));
-      expect(svg.toUpperCase(), contains(_hex(AppColors.saffron)));
+      expect(svg.toUpperCase(), contains(_hex(AppColors.violet)));
+      expect(svg.toUpperCase(), contains(_hex(AppColors.paper)));
+      // No trace of the rejected Signal / terracotta identities.
+      for (final old in ['#F5C400', '#0E0E0E', '#B0432A']) {
+        expect(svg.toUpperCase(), isNot(contains(old)), reason: old);
+      }
+    });
+
+    test('launcher and splash colours are the violet brand', () {
+      final pubspec = File('pubspec.yaml').readAsStringSync();
+      expect(
+        pubspec,
+        contains('adaptive_icon_background: "${_hex(AppColors.violet)}"'),
+      );
+      expect(pubspec, contains('color: "${_hex(AppColors.ground)}"'));
+      for (final old in ['#B0432A', '#F4EFE6', '#F5C400']) {
+        expect(pubspec, isNot(contains(old)), reason: old);
+      }
     });
 
     test('app icons exist for iOS and Android', () {

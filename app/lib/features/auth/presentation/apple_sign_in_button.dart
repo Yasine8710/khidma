@@ -41,13 +41,7 @@ class AppleSignInSection extends ConsumerWidget {
         const SizedBox(height: AppSpacing.xl),
         Row(
           children: [
-            Expanded(
-              child: Divider(
-                color: scheme.onSurface,
-                thickness: AppInk.border,
-                height: AppInk.border,
-              ),
-            ),
+            const Expanded(child: Divider()),
             Padding(
               padding: const EdgeInsetsDirectional.symmetric(
                 horizontal: AppSpacing.md,
@@ -58,13 +52,7 @@ class AppleSignInSection extends ConsumerWidget {
                     ?.copyWith(color: scheme.onSurfaceVariant),
               ),
             ),
-            Expanded(
-              child: Divider(
-                color: scheme.onSurface,
-                thickness: AppInk.border,
-                height: AppInk.border,
-              ),
-            ),
+            const Expanded(child: Divider()),
           ],
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -74,8 +62,11 @@ class AppleSignInSection extends ConsumerWidget {
           label: l10n.continueWithApple,
           excludeSemantics: true,
           onTap: busy ? null : onPressed,
+          // Apple's own style: solid black (white in dark mode), no border.
           child: StickerBox(
             color: bg,
+            border: 0,
+            radius: AppRadius.md,
             child: Material(
               color: Colors.transparent,
               borderRadius: BorderRadius.circular(AppRadius.md),

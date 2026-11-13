@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../core/motion/motion.dart';
 import '../../core/theme/app_spacing.dart';
 import 'app_button.dart';
+import 'fade_in.dart';
 
-/// Centered empty state, typographic: a glyph sticker, a big Anton title, an
-/// explanatory body and an optional loud action.
+/// Centered empty state: a soft tinted circle with a line icon, a short
+/// title, one line of help and an optional button. Fades in once.
 class EmptyState extends StatelessWidget {
   const EmptyState({
     super.key,
@@ -38,33 +38,35 @@ class EmptyState extends StatelessWidget {
         ),
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 360),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              StateVisual(icon: icon, photo: photo),
-              const SizedBox(height: AppSpacing.xl),
-              Text(
-                title,
-                style: text.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                body,
-                style: text.bodyMedium?.copyWith(
-                  color: scheme.onSurfaceVariant,
+          child: FadeIn(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                StateVisual(icon: icon, photo: photo),
+                const SizedBox(height: AppSpacing.lg + 4),
+                Text(
+                  title,
+                  style: text.titleLarge,
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              if (actionLabel != null && onAction != null) ...[
-                const SizedBox(height: AppSpacing.xl),
-                AppButton(
-                  label: actionLabel!,
-                  onPressed: onAction,
-                  expand: false,
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  body,
+                  style: text.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
+                if (actionLabel != null && onAction != null) ...[
+                  const SizedBox(height: AppSpacing.xl),
+                  AppButton(
+                    label: actionLabel!,
+                    onPressed: onAction,
+                    expand: false,
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -72,9 +74,9 @@ class EmptyState extends StatelessWidget {
   }
 }
 
-/// The picture above a state's title: a glyph on a world-colour sticker
-/// block (ink frame, hard shadow) that slams in once. Photos are no longer
-/// shipped, so a given [photo] is ignored. Decoration only.
+/// The picture above a state's title: a line icon in a soft violet circle.
+/// Photos are no longer shipped, so a given [photo] is ignored. Decoration
+/// only.
 class StateVisual extends StatelessWidget {
   const StateVisual({super.key, required this.icon, this.photo});
 
@@ -86,22 +88,16 @@ class StateVisual extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final block = StickerBox(
-      color: scheme.primaryContainer,
-      padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
-      child: Icon(icon, size: 44, color: scheme.onPrimaryContainer),
-    );
-    if (Motion.reduced(context)) return ExcludeSemantics(child: block);
     return ExcludeSemantics(
-      child: TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0.6, end: 1),
-        duration: Motion.slow,
-        curve: Motion.slam,
-        builder: (context, t, child) => Transform.rotate(
-          angle: (1 - t) * -0.2,
-          child: Transform.scale(scale: t, child: child),
+      child: Container(
+        width: 88,
+        height: 88,
+        decoration: BoxDecoration(
+          color: scheme.primaryContainer,
+          shape: BoxShape.circle,
         ),
-        child: block,
+        alignment: Alignment.center,
+        child: Icon(icon, size: 38, color: scheme.primary),
       ),
     );
   }

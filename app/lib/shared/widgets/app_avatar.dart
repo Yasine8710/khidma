@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../core/theme/app_spacing.dart';
+import '../../core/theme/app_colors.dart';
 
-/// Sticker avatar: a round face inside a heavy ink ring, network image when
-/// available, otherwise Anton initials on the world colour. A failed
-/// or not-yet-loaded image shows initials, never a blank or broken-image
-/// icon. Set [decorative] when the name is already shown next to it, so
-/// screen readers do not read it twice.
+/// Round avatar: the network image when available, otherwise white initials
+/// on a colour picked from the name (always the same for the same person).
+/// A failed or not-yet-loaded image shows initials, never a blank or
+/// broken-image icon. Set [decorative] when the name is already shown next
+/// to it, so screen readers do not read it twice.
 class AppAvatar extends StatelessWidget {
   const AppAvatar({
     super.key,
@@ -35,20 +35,28 @@ class AppAvatar extends StatelessWidget {
     return first(words.first) + first(words[1]);
   }
 
+  /// Stable, platform-independent hash of the trimmed name.
+  static int colorIndexOf(String name) {
+    var h = 7;
+    for (final u in name.trim().toLowerCase().codeUnits) {
+      h = (h * 31 + u) & 0x7fffffff;
+    }
+    return h;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    // A monogram: display initials on the world colour.
     final initials = Container(
-      color: scheme.primaryContainer,
+      color: AppColors.avatar(colorIndexOf(name)),
       alignment: Alignment.center,
       child: Text(
         initialsOf(name),
         maxLines: 1,
-        // The circle does not grow with the text size; keep the monogram in.
+        // The circle does not grow with the text size; keep the initials in.
         textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2),
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          color: scheme.onPrimaryContainer,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          color: AppColors.paper,
+          fontWeight: FontWeight.w700,
           fontSize: size * 0.38,
           height: 1,
         ),
@@ -57,17 +65,9 @@ class AppAvatar extends StatelessWidget {
 
     final url = imageUrl;
     final px = size * MediaQuery.devicePixelRatioOf(context);
-    final avatar = Container(
+    final avatar = SizedBox(
       width: size,
       height: size,
-      // A heavy ink ring, drawn over the picture's edge.
-      foregroundDecoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: scheme.onSurface,
-          width: size >= 64 ? AppInk.border + 1 : AppInk.border,
-        ),
-      ),
       child: ClipOval(
         child: url == null || url.isEmpty
             ? initials

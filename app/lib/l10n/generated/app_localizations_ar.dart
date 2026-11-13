@@ -43,6 +43,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get acctTools => 'الأدوات';
 
   @override
+  String get profileHelp => 'المساعدة';
+
+  @override
+  String get profileHelpTitle => 'كيف تعمل خدمة';
+
+  @override
   String get languageFrench => 'Français';
 
   @override

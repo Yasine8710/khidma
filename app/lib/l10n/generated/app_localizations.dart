@@ -166,6 +166,18 @@ abstract class AppLocalizations {
   /// **'Outils'**
   String get acctTools;
 
+  /// No description provided for @profileHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aide'**
+  String get profileHelp;
+
+  /// No description provided for @profileHelpTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comment ça marche'**
+  String get profileHelpTitle;
+
   /// No description provided for @languageFrench.
   ///
   /// In fr, this message translates to:

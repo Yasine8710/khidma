@@ -43,6 +43,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get acctTools => 'Tools';
 
   @override
+  String get profileHelp => 'Help';
+
+  @override
+  String get profileHelpTitle => 'How Khidma works';
+
+  @override
   String get languageFrench => 'Français';
 
   @override
