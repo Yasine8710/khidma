@@ -490,6 +490,7 @@ void main() {
       expect(AppAvatar.initialsOf('Karim Ben Salah'), 'KB');
       expect(AppAvatar.initialsOf('  samir  '), 'S');
       expect(AppAvatar.initialsOf('خالد المنصوري'), 'خا');
+      expect(AppAvatar.initialsOf('Salma (démo)'), 'S');
       expect(AppAvatar.initialsOf(''), '?');
       expect(AppAvatar.initialsOf('   '), '?');
       // Grapheme clusters: a decomposed accent and skin-tone emoji stay whole.

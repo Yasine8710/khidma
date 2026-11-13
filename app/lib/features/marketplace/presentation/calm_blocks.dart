@@ -315,6 +315,8 @@ class SectionTitle extends StatelessWidget {
           if (actionLabel != null && onAction != null) ...[
             const SizedBox(width: AppSpacing.sm),
             Flexible(
+              fit: FlexFit.loose,
+              flex: 0,
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 150),
                 child: TextButton(

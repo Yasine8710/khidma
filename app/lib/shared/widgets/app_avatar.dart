@@ -21,13 +21,16 @@ class AppAvatar extends StatelessWidget {
   final double size;
   final bool decorative;
 
+  static final _punct = RegExp(r'^\p{P}', unicode: true);
+
   /// "Karim Ben Salah" -> "KB", "خالد" -> "خ", "" -> "?". Uses grapheme
   /// clusters, so accents, skin tones and flags are not split.
   static String initialsOf(String name) {
     final words = name
         .trim()
         .split(RegExp(r'\s+'))
-        .where((w) => w.isNotEmpty)
+        // Skip words that start with punctuation: "Salma (démo)" gives "S".
+        .where((w) => w.isNotEmpty && !_punct.hasMatch(w))
         .toList();
     if (words.isEmpty) return '?';
     String first(String w) => w.characters.first.toUpperCase();

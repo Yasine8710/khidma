@@ -524,7 +524,7 @@ class _HeroCarouselState extends State<_HeroCarousel> {
     final scheme = Theme.of(context).colorScheme;
     final reduce = Motion.reduced(context);
     final s = _scale(context);
-    final height = 196 + 110 * (s - 1).clamp(0.0, 1.5);
+    final height = 212 + 120 * (s - 1).clamp(0.0, 1.5);
     return Column(
       children: [
         Listener(
@@ -641,23 +641,36 @@ class _HeroCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Flexible(
-                          child: Text(
-                            slide.title,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            style: text.titleLarge?.copyWith(color: on),
-                          ),
+                        Text(
+                          slide.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: text.titleLarge?.copyWith(color: on),
                         ),
                         const SizedBox(height: AppSpacing.xs + 2),
+                        // Whole lines only: an ellipsis, never a half-cut line.
                         Flexible(
-                          child: Text(
-                            slide.body,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            style: text.bodyMedium?.copyWith(
-                              color: on.withValues(alpha: 0.9),
-                            ),
+                          child: LayoutBuilder(
+                            builder: (context, c) {
+                              final style = text.bodyMedium?.copyWith(
+                                color: on.withValues(alpha: 0.9),
+                              );
+                              final line = MediaQuery.textScalerOf(context)
+                                  .scale(
+                                    (style?.fontSize ?? 14) *
+                                        (style?.height ?? 1.45),
+                                  );
+                              final lines = (c.maxHeight / line).floor().clamp(
+                                1,
+                                3,
+                              );
+                              return Text(
+                                slide.body,
+                                maxLines: lines,
+                                overflow: TextOverflow.ellipsis,
+                                style: style,
+                              );
+                            },
                           ),
                         ),
                         const Spacer(),
@@ -772,11 +785,8 @@ class _CategoryTile extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
-            Text(
+            _TileLabel(
               name,
-              maxLines: 2,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.labelMedium
                   ?.copyWith(fontWeight: FontWeight.w500),
             ),
@@ -1463,6 +1473,46 @@ class _FreelancerCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// A two-line centred label that never breaks inside a word: when the
+/// longest word is wider than the tile, the text is scaled down to fit.
+class _TileLabel extends StatelessWidget {
+  const _TileLabel(this.text, {this.style});
+
+  final String text;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, c) {
+        final scaler = MediaQuery.textScalerOf(context);
+        var widest = 0.0;
+        for (final word in text.split(RegExp(r'\s+'))) {
+          final tp = TextPainter(
+            text: TextSpan(text: word, style: style),
+            textDirection: Directionality.of(context),
+            textScaler: scaler,
+            maxLines: 1,
+          )..layout();
+          if (tp.width > widest) widest = tp.width;
+          tp.dispose();
+        }
+        final shrink = widest > c.maxWidth && widest > 0
+            ? (c.maxWidth / widest).clamp(0.7, 1.0)
+            : 1.0;
+        final base = style?.fontSize ?? 13;
+        return Text(
+          text,
+          maxLines: 2,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: style?.copyWith(fontSize: base * shrink),
+        );
+      },
     );
   }
 }
