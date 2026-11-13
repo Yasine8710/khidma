@@ -165,6 +165,79 @@ Known residuals, all waiting on the server-side worker of #32 or a real Supabase
 - Badge: verification is valid 365 days (`verified_until`, a Tunis date, public). `badge_valid()` gates the search output and freelance visibility, the app hides a badge past its date, and `service_expire_verifications()` (service role, daily) turns expired ones back to unverified with a notice. Admins can revoke a badge (`revoked`, reason required, audited). The profile shows "Identity verified, valid until ..."; no document data is ever shown.
 - Owner step: enable `pg_cron` (Database > Extensions) **before** running migration 2000 so the two jobs are scheduled; otherwise schedule both `service_*` functions with any daily or 15-minute cron.
 
+## Security audit (#55, 2026-11-13)
+
+### Threat model (STRIDE)
+Components: iOS app (Flutter), Supabase Auth, PostgREST + Postgres (RLS), Storage (6 buckets), Edge Functions (admin-media, send-notifications, storage-cleanup, flouci-payments), admin web (React, local), testimonial page (Vercel), payment callbacks (Flouci, manual D17/bank).
+
+| Threat | Where | Mitigation (evidence) |
+|---|---|---|
+| **S**poofing a user | Auth, PostgREST | Supabase JWT; `auth.uid()` in every policy; anonymous sessions refused by `require_registered_user()`; roles never from metadata (tests: profiles, contact_and_integrity) |
+| Spoofing an admin | admin web, `is_admin()` | row in `admin_users` (no client path) + `aal2` (TOTP) via `admin_config.require_mfa` (admin_dashboard tests) |
+| Spoofing a payment callback | flouci-payments | callback re-verifies the payment with Flouci server-to-server; idempotent `payment_events` key (flouci_logic tests) |
+| **T**ampering with rows | PostgREST | column-limited UPDATE grants, RLS USING + WITH CHECK, state machines in definer functions (rls_matrix: mass assignment, stranger updates/deletes) |
+| Tampering with files | Storage | per-bucket folder policies (`<uid>/...`, conversation or alias folders); no admin Storage policy (rls_matrix: storage guessing) |
+| **R**epudiation by admins | admin actions | append-only `admin_audit_log`, written by every admin function; document and chat views logged |
+| **I**nformation disclosure: contact, identity docs | `professional_profiles`, `verification-docs` | `contact_phone`/`verified_at` not granted; reveal RPC rate-limited (40/h) and logged; docs private, deleted after decision |
+| Disclosure across tenants (IDOR) | RPCs, tables | id-taking functions re-check membership (rls_matrix: IDOR sweep over every 1-uuid function; admin sweep) |
+| Disclosure through push | send-notifications | payloads carry ids only; texts built from the kind (notification_texts tests) |
+| **D**enial of service / abuse | RPCs, uploads | per-user limits in functions (requests, offers, messages, reports, reveals, photos); see #56 for the full table |
+| **E**levation of privilege | SECURITY DEFINER | every definer function pins `search_path = ''`; EXECUTE matrix pinned; non-admins refused by every `admin_*` (contact_and_integrity, rls_matrix) |
+
+### Automated RLS and API pen-test
+`backend/tests/rls_matrix.test.mjs` builds a world with at least one row in **every** table (two professionals, one hidden and suspended, a customer, a full job with chat and review, freelance rows, payments, reports, verification, appeal) and then checks, as a visitor, a registered stranger, the owners and an admin session:
+- every table is classified (reference / public / private / closed); a new table fails until classified;
+- the exact column grants of `anon` and `authenticated` match a reviewed snapshot;
+- public tables show visitors and strangers the same rows and nothing of a hidden owner; private tables show strangers nothing and the owner something; closed tables are denied to every client role;
+- a stranger's every granted UPDATE and DELETE touches zero rows; inserts in someone else's name are denied; owners cannot write any column outside their grant;
+- Storage: a stranger lists no object in any bucket and cannot write into another user's, conversation's or request's folder;
+- every `admin_*` function refuses non-admins and visitors; every function taking one uuid, called by a stranger with real ids, returns nothing and changes nothing.
+Mutation check: 9 planted holes (open bookings policy, readable reports, admin function without check, IDOR peek function, unclassified table, Storage list-all policy, public hidden portfolio, stranger booking updates, favorites for others) were all caught.
+
+### MASVS L1 checklist (iOS app)
+| Control | Status | Evidence |
+|---|---|---|
+| STORAGE-1 sensitive data stored securely | pass | session and PKCE verifier in Keychain (`secure_auth_storage.dart`, `main.dart` authOptions); shared preferences hold only locale, theme, onboarding flag, recently viewed and local favorites ids |
+| STORAGE-2 no sensitive data in logs or backups | pass | Supabase SDK `debug: false`; `_log` prints error types only, debug builds only |
+| CRYPTO-1/2 strong, standard crypto | pass / n.a. | no custom crypto; TLS by the platform; tokens and hashes server-side (invite tokens stored as SHA-256) |
+| AUTH-1 secure auth and session | pass | Supabase Auth with PKCE; refresh tokens rotate; account deletion in-app (5.1.1(v)) |
+| AUTH-2 local auth | n.a. | no biometric unlock |
+| AUTH-3 extra auth for sensitive operations | partial | admin requires TOTP (aal2); app users single factor (MFA for professionals is #57) |
+| NETWORK-1 secure traffic | pass | `SUPABASE_URL` must be https (`app_config.dart`); no ATS exceptions in `Info.plist` |
+| NETWORK-2 identity pinning | accepted risk | no certificate pinning: Supabase and Google rotate certificates; ATS + system trust store. Revisit with #57 |
+| PLATFORM-1 IPC / deep links | pass | one URL scheme (auth callback) handled by supabase_flutter; `FlutterDeepLinkingEnabled = false`, so links cannot drive the router |
+| PLATFORM-2 WebViews | n.a. | none |
+| PLATFORM-3 UI and external links | pass | only https links leave the app (`freelancer_screen.dart`, DB check on portfolio URLs); tel/WhatsApp built from validated numbers |
+| CODE-1/2 platform and dependencies current | pass | direct pub deps up to date; 162 pub packages checked on OSV: 0 advisories; Dependabot config added |
+| CODE-3 input validation | pass | every write goes through typed RPCs or column grants with DB checks |
+| CODE-4 obfuscation | out of L1 scope | release builds are not obfuscated yet; add `--obfuscate --split-debug-info` with #31 |
+| PRIVACY | pass | `PrivacyInfo.xcprivacy`; month-only review dates; customers' ids hidden from professionals (`customer_id` not granted) |
+
+### Dependency audit
+| Part | Tool | Result |
+|---|---|---|
+| app (Flutter) | `flutter pub outdated`, OSV batch query on `pubspec.lock` | direct deps current; 0 advisories (162 packages) |
+| admin | `npm audit` | was 2 critical + 1 moderate (dev only: vitest 3.2.7 / tinypool, @vitest/mocker); fixed with vitest 4.1.12 (released 2026-10-15). `.npmrc` sets `legacy-peer-deps` because npm 10 crashes resolving vitest 4's optional peers; `@testing-library/dom` is now an explicit dev dependency. Now 0 |
+| backend tests | `npm audit` | 0 |
+| Edge Functions | review | imported `supabase-js@2` (floating major); pinned to `npm:@supabase/supabase-js@2.119.0` |
+| testimonial page | review | static HTML, no dependencies |
+Dependabot (`.github/dependabot.yml`) opens weekly update PRs for pub, admin, backend and monthly for Actions. The owner should also enable Dependabot alerts and security updates in the repository settings.
+
+### Findings
+| # | Severity | Finding | Status |
+|---|---|---|---|
+| A1 | high | A suspended professional could still send messages (no check in `send_message`) | fixed in #54 (triggers on offers, conversations, messages) |
+| A2 | medium | Admin dev toolchain had critical advisories (tinypool RCE gadget via vitest) | fixed: vitest 4.1.12 |
+| A3 | medium | Edge Functions imported a floating `supabase-js@2` (supply chain) | fixed: pinned 2.119.0; **redeploy storage-cleanup** (live) to pick it up |
+| A4 | low | Column SELECT grants were not pinned by a test (only UPDATE/INSERT) | fixed: full snapshot in `rls_matrix` |
+| A5 | low | An expired badge blocked renewal until the daily job ran | fixed in #54 |
+| A6 | low | INSERT grants on favorites, portfolio, services, areas, request photos include `created_at`/`id`: an owner can backdate their own rows | accepted (own data only, no cross-tenant effect) |
+| A7 | low | Customers cannot be suspended, only reported | open: follow-up with #53 levels |
+| A8 | info | No certificate pinning | accepted risk (see NETWORK-2) |
+| A9 | info | Release builds not obfuscated | open: with #31 |
+| A10 | info | Concurrency (advisory-lock races) cannot be exercised on PGlite | open: needs a real Postgres run (#6) |
+| A11 | info | CI cannot run (GitHub billing lock, #5), so the suites run locally only | open: owner |
+
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.
 - The Supabase SDK's own debug logger is disabled; the app prints only error types, and only in debug builds.

@@ -5,7 +5,7 @@
 // audited database function *as the caller* (so is_admin() and the second
 // factor are enforced and the view is logged), then signs with the service
 // role. It has not been run (needs a Supabase project, issue #6).
-import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { createClient } from 'npm:@supabase/supabase-js@2.119.0';
 import { chatImagePaths, corsHeaders, KINDS, parseRequest, safePaths } from './logic.mjs';
 
 const url = Deno.env.get('SUPABASE_URL')!;

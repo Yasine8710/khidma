@@ -15,7 +15,7 @@
 //   FLOUCI_SUCCESS_URL, FLOUCI_FAIL_URL   https pages the customer returns to
 //   FLOUCI_API (optional)           override the base URL (test/production)
 //   SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY  (provided)
-import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { createClient } from 'npm:@supabase/supabase-js@2.119.0';
 import {
   authHeader, buildGenerateBody, FLOUCI_API, interpretVerify, isHttpsUrl, parseWebhook, verifySignature,
 } from './logic.mjs';

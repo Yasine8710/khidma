@@ -12,7 +12,7 @@
 //
 // A bucket that fails keeps its queue rows and is retried next run. Files that
 // are already gone count as done.
-import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { createClient } from 'npm:@supabase/supabase-js@2.119.0';
 import { isAuthorized, planBatches } from './logic.mjs';
 
 const supabase = createClient(
