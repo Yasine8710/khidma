@@ -10,7 +10,7 @@ import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/register_row.dart';
 import '../../marketplace/application/contact_providers.dart'
     show urlOpenerProvider;
-import '../../marketplace/presentation/professional_card.dart';
+import '../../marketplace/presentation/calm_blocks.dart';
 import '../application/freelance_providers.dart';
 import '../domain/freelance_domain.dart';
 import 'freelance_widgets.dart';
@@ -121,7 +121,7 @@ class _FreelanceInvitesSectionState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        RegisterHeading(title: l10n.flInvTitle),
+        SectionTitle(title: l10n.flInvTitle),
         Text(
           l10n.flInvHint,
           style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),

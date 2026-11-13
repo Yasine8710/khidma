@@ -2445,4 +2445,44 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get verifStepBadge => 'شارة على ملفك';
+
+  @override
+  String get worldTrades => 'الحرفيون';
+
+  @override
+  String get worldDigital => 'العمل الحر الرقمي';
+
+  @override
+  String get homeNearbyTitle => 'حرفيون بالقرب منك';
+
+  @override
+  String get homeHeroFreelanceBody => 'اعرض أعمالك واعثر على عملاء.';
+
+  @override
+  String get homeHeroDigitalCta => 'اكتشف';
+
+  @override
+  String priceFromShort(String price) {
+    return 'ابتداءً من $price';
+  }
+
+  @override
+  String get docsVerified => 'وثائق موثّقة';
+
+  @override
+  String get identityVerified => 'هوية موثّقة';
+
+  @override
+  String yearsShort(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count سنة',
+      many: '$count سنة',
+      few: '$count سنوات',
+      two: 'سنتان',
+      one: 'سنة',
+    );
+    return '$_temp0';
+  }
 }

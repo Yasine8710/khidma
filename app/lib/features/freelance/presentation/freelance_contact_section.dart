@@ -10,8 +10,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../marketplace/application/contact_providers.dart'
     show urlOpenerProvider;
-import '../../marketplace/presentation/professional_card.dart'
-    show RegisterHeading;
+import '../../marketplace/presentation/contact_section.dart' show ContactCard;
 import '../application/freelance_providers.dart';
 import '../domain/freelance_domain.dart';
 
@@ -82,14 +81,7 @@ class FreelanceContactSection extends ConsumerWidget {
       };
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        RegisterHeading(title: l10n.contactTitle),
-        const SizedBox(height: AppSpacing.sm),
-        body,
-      ],
-    );
+    return ContactCard(title: l10n.contactTitle, child: body);
   }
 
   static String _failureText(AppLocalizations l10n, FreelanceFailure f) =>

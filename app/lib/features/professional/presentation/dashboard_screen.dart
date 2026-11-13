@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/motion/motion.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -129,8 +130,10 @@ class _BodyState extends ConsumerState<_Body> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // The workshop's name plate.
-            SectionKicker(l10n.acctWorkshop),
+            Text(
+              l10n.acctWorkshop,
+              style: text.bodyMedium?.copyWith(color: muted),
+            ),
             const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
@@ -211,7 +214,7 @@ class _BodyState extends ConsumerState<_Body> {
             ],
             section,
             // Everything a professional does, as register rows.
-            SectionHeader(kicker: '01', title: l10n.acctTools),
+            SectionHeader(title: l10n.acctTools),
             const SizedBox(height: AppSpacing.xs),
             RegisterGroup(
               children: [
@@ -249,7 +252,7 @@ class _BodyState extends ConsumerState<_Body> {
               ],
             ),
             section,
-            SectionHeader(kicker: '02', title: l10n.dashAvailability),
+            SectionHeader(title: l10n.dashAvailability),
             const SizedBox(height: AppSpacing.sm),
             SegmentedButton<Availability>(
               showSelectedIcon: false,
@@ -264,7 +267,7 @@ class _BodyState extends ConsumerState<_Body> {
               onSelectionChanged: busy ? null : (s) => setAvailability(s.first),
             ),
             section,
-            SectionHeader(kicker: '03', title: l10n.dashActivity),
+            SectionHeader(title: l10n.dashActivity),
             const SizedBox(height: AppSpacing.sm),
             const _Activity(),
             const SizedBox(height: AppSpacing.sm),
@@ -363,7 +366,7 @@ class _Stat extends StatelessWidget {
             // Digits always read left to right and are Western.
             Directionality(
               textDirection: TextDirection.ltr,
-              child: Text('$value', style: text.headlineMedium),
+              child: CountUp(value: value, style: text.headlineSmall),
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(

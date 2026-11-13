@@ -336,64 +336,64 @@
   "flInvLimit": "20 open invitations at most.",
   "@flPriceFrom": {
     "placeholders": {
-        "price": {
-          "type": "String"
-        },
-        "unit": {
-          "type": "String"
-        }
+      "price": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
     }
   },
   "@flOpenItem": {
     "placeholders": {
-        "title": {
-          "type": "String"
-        }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "@flTestimonialProject": {
     "placeholders": {
-        "title": {
-          "type": "String"
-        }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "@flStars": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "@flErrTags": {
     "placeholders": {
-        "max": {
-          "type": "int"
-        }
+      "max": {
+        "type": "int"
+      }
     }
   },
   "@flPortCount": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        },
-        "max": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
     }
   },
   "@flInvShareText": {
     "placeholders": {
-        "url": {
-          "type": "String"
-        }
+      "url": {
+        "type": "String"
+      }
     }
   },
   "@flInvExpires": {
     "placeholders": {
-        "date": {
-          "type": "String"
-        }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "searchHint": "Search a trade, a name, a city…",
@@ -790,5 +790,14 @@
   "chatYesterday": "Yesterday",
   "verifStepSend": "Documents sent",
   "verifStepReview": "Team review",
-  "verifStepBadge": "Badge on your profile"
+  "verifStepBadge": "Badge on your profile",
+  "worldTrades": "Trades",
+  "worldDigital": "Digital freelance",
+  "homeNearbyTitle": "Pros near you",
+  "homeHeroFreelanceBody": "Show your work and find clients.",
+  "homeHeroDigitalCta": "Explore",
+  "priceFromShort": "from {price}",
+  "docsVerified": "Documents verified",
+  "identityVerified": "Identity verified",
+  "yearsShort": "{count, plural, =1{1 yr} other{{count} yrs}}"
 }

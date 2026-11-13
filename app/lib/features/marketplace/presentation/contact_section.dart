@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/format/tunisian_phone.dart';
+import '../../../core/motion/motion.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -11,7 +12,60 @@ import '../../auth/application/auth_providers.dart';
 import '../application/contact_providers.dart';
 import '../application/marketplace_providers.dart';
 import '../domain/marketplace_domain.dart';
-import 'professional_card.dart';
+
+/// The contact block of a profile: a soft card with a phone tile and the
+/// title, then [child].
+class ContactCard extends StatelessWidget {
+  const ContactCard({super.key, required this.title, required this.child});
+
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return StickerBox(
+      padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              ExcludeSemantics(
+                child: SizedBox.square(
+                  dimension: 40,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: scheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
+                    ),
+                    child: Icon(
+                      Icons.call_outlined,
+                      size: 20,
+                      color: scheme.onPrimaryContainer,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Semantics(
+                  header: true,
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          child,
+        ],
+      ),
+    );
+  }
+}
 
 /// Contact: the number is fetched only when a signed-in person asks, and only
 /// kept while this screen is open.
@@ -83,14 +137,7 @@ class ContactSection extends ConsumerWidget {
       };
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        RegisterHeading(title: l10n.contactTitle),
-        const SizedBox(height: AppSpacing.sm),
-        body,
-      ],
-    );
+    return ContactCard(title: l10n.contactTitle, child: body);
   }
 
   static String _failureText(AppLocalizations l10n, MarketplaceFailure f) =>

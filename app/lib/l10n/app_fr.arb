@@ -405,64 +405,64 @@
   "flInvLimit": "20 invitations en attente au maximum.",
   "@flPriceFrom": {
     "placeholders": {
-        "price": {
-          "type": "String"
-        },
-        "unit": {
-          "type": "String"
-        }
+      "price": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
     }
   },
   "@flOpenItem": {
     "placeholders": {
-        "title": {
-          "type": "String"
-        }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "@flTestimonialProject": {
     "placeholders": {
-        "title": {
-          "type": "String"
-        }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "@flStars": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "@flErrTags": {
     "placeholders": {
-        "max": {
-          "type": "int"
-        }
+      "max": {
+        "type": "int"
+      }
     }
   },
   "@flPortCount": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        },
-        "max": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
     }
   },
   "@flInvShareText": {
     "placeholders": {
-        "url": {
-          "type": "String"
-        }
+      "url": {
+        "type": "String"
+      }
     }
   },
   "@flInvExpires": {
     "placeholders": {
-        "date": {
-          "type": "String"
-        }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "searchHint": "Rechercher un métier, un nom, une ville…",
@@ -1083,5 +1083,28 @@
   "chatYesterday": "Hier",
   "verifStepSend": "Documents envoyés",
   "verifStepReview": "Examen par l’équipe",
-  "verifStepBadge": "Badge sur votre profil"
+  "verifStepBadge": "Badge sur votre profil",
+  "worldTrades": "Artisans",
+  "worldDigital": "Freelance digital",
+  "homeNearbyTitle": "Pros près de vous",
+  "homeHeroFreelanceBody": "Montrez vos réalisations et trouvez des clients.",
+  "homeHeroDigitalCta": "Découvrir",
+  "priceFromShort": "dès {price}",
+  "@priceFromShort": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "docsVerified": "Documents vérifiés",
+  "identityVerified": "Identité vérifiée",
+  "yearsShort": "{count, plural, =1{1 an} other{{count} ans}}",
+  "@yearsShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

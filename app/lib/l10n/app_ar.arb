@@ -336,64 +336,64 @@
   "flInvLimit": "20 دعوة معلّقة كحد أقصى.",
   "@flPriceFrom": {
     "placeholders": {
-        "price": {
-          "type": "String"
-        },
-        "unit": {
-          "type": "String"
-        }
+      "price": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
     }
   },
   "@flOpenItem": {
     "placeholders": {
-        "title": {
-          "type": "String"
-        }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "@flTestimonialProject": {
     "placeholders": {
-        "title": {
-          "type": "String"
-        }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "@flStars": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "@flErrTags": {
     "placeholders": {
-        "max": {
-          "type": "int"
-        }
+      "max": {
+        "type": "int"
+      }
     }
   },
   "@flPortCount": {
     "placeholders": {
-        "count": {
-          "type": "int"
-        },
-        "max": {
-          "type": "int"
-        }
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
     }
   },
   "@flInvShareText": {
     "placeholders": {
-        "url": {
-          "type": "String"
-        }
+      "url": {
+        "type": "String"
+      }
     }
   },
   "@flInvExpires": {
     "placeholders": {
-        "date": {
-          "type": "String"
-        }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "searchHint": "ابحث عن مهنة أو اسم أو مدينة…",
@@ -790,5 +790,14 @@
   "chatYesterday": "أمس",
   "verifStepSend": "إرسال الوثائق",
   "verifStepReview": "مراجعة الفريق",
-  "verifStepBadge": "شارة على ملفك"
+  "verifStepBadge": "شارة على ملفك",
+  "worldTrades": "الحرفيون",
+  "worldDigital": "العمل الحر الرقمي",
+  "homeNearbyTitle": "حرفيون بالقرب منك",
+  "homeHeroFreelanceBody": "اعرض أعمالك واعثر على عملاء.",
+  "homeHeroDigitalCta": "اكتشف",
+  "priceFromShort": "ابتداءً من {price}",
+  "docsVerified": "وثائق موثّقة",
+  "identityVerified": "هوية موثّقة",
+  "yearsShort": "{count, plural, =1{سنة} =2{سنتان} few{{count} سنوات} many{{count} سنة} other{{count} سنة}}"
 }

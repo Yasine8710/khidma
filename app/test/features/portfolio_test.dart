@@ -501,6 +501,9 @@ void main() {
           300,
           scrollable: find.byType(Scrollable).first,
         );
+        // "Réalisations" is now a tab: it scrolls the photos into view.
+        await tester.tap(find.text('Réalisations'));
+        await tester.pumpAndSettle();
         expect(find.bySemanticsLabel('Photo 1 sur 2'), findsWidgets);
         await tester.tap(find.byType(InkWell).last, warnIfMissed: false);
       },

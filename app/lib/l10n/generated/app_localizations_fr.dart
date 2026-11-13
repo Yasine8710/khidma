@@ -2485,4 +2485,42 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get verifStepBadge => 'Badge sur votre profil';
+
+  @override
+  String get worldTrades => 'Artisans';
+
+  @override
+  String get worldDigital => 'Freelance digital';
+
+  @override
+  String get homeNearbyTitle => 'Pros près de vous';
+
+  @override
+  String get homeHeroFreelanceBody =>
+      'Montrez vos réalisations et trouvez des clients.';
+
+  @override
+  String get homeHeroDigitalCta => 'Découvrir';
+
+  @override
+  String priceFromShort(String price) {
+    return 'dès $price';
+  }
+
+  @override
+  String get docsVerified => 'Documents vérifiés';
+
+  @override
+  String get identityVerified => 'Identité vérifiée';
+
+  @override
+  String yearsShort(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ans',
+      one: '1 an',
+    );
+    return '$_temp0';
+  }
 }

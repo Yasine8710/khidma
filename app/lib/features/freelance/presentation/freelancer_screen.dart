@@ -9,8 +9,10 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/application/contact_providers.dart'
     show urlOpenerProvider;
+import '../../marketplace/presentation/calm_blocks.dart';
+import '../../marketplace/presentation/category_icon.dart';
 import '../../marketplace/presentation/professional_card.dart';
-import '../../marketplace/presentation/signal_blocks.dart';
+import '../../marketplace/presentation/sectioned_profile.dart';
 import '../../portfolio/presentation/portfolio_image.dart';
 import '../../trust/domain/trust_domain.dart';
 import '../../trust/presentation/report_sheet.dart';
@@ -55,29 +57,23 @@ class _FreelancerScreenState extends ConsumerState<FreelancerScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
     final async = ref.watch(freelancerProvider(id));
+    final loaded = async.value != null;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: scheme.primaryContainer,
-        foregroundColor: scheme.onPrimaryContainer,
-        shape: const Border(),
-        actions: [
-          ReportButton(target: ReportTarget.freelancer, targetId: id),
-          const SizedBox(width: AppSpacing.xs),
-        ],
-      ),
-      bottomNavigationBar: async.value == null
+      // The page draws its own band with round controls once loaded.
+      appBar: loaded ? null : AppBar(),
+      bottomNavigationBar: !loaded
           ? null
-          : ActionBar(
+          : BottomBar(
               child: FilledButton.icon(
                 onPressed: _toContact,
-                icon: const Icon(Icons.phone_outlined),
+                icon: const Icon(Icons.chat_bubble_outline_rounded),
                 label: Text(l10n.contactTitle),
               ),
             ),
       body: SafeArea(
         top: false,
+        bottom: false,
         child: async.when(
           loading: () => const SkeletonGroup(
             child: Padding(
@@ -116,141 +112,121 @@ class _Page extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context);
     final text = Theme.of(context).textTheme;
-    final scheme = Theme.of(context).colorScheme;
     final cats = ref.watch(digitalCategoriesProvider).value ?? const [];
-    final category = cats
-        .where((c) => c.id == f.categoryId)
-        .map((c) => c.nameFor(locale))
-        .firstOrNull;
+    final catIndex = cats.indexWhere((c) => c.id == f.categoryId);
+    final cat = catIndex < 0 ? null : cats[catIndex];
+    final category = cat?.nameFor(locale);
     final price = startingPriceText(l10n, locale, f);
     final years = f.yearsExperience;
+    final work = ref.watch(freelancerPortfolioProvider(f.id)).value ?? const [];
+    final rated = f.reviewCount > 0;
+    final stars = f.rating.isNaN ? 0.0 : f.rating.clamp(0.0, 5.0);
 
     return LayoutBuilder(
       builder: (context, box) {
         final side = box.maxWidth > 720 + AppSpacing.gutter * 2
             ? (box.maxWidth - 720) / 2
             : AppSpacing.gutter;
-        final rated = f.reviewCount > 0;
-        final stars = f.rating.isNaN ? 0.0 : f.rating.clamp(0.0, 5.0);
-        Widget stat(Widget child) => Expanded(
-          child: Padding(
-            padding: const EdgeInsetsDirectional.only(
-              end: AppInk.offset,
-              bottom: AppInk.offset,
-            ),
-            child: child,
-          ),
-        );
-        return ListView(
+        return SectionedProfile(
           controller: controller,
-          padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.xl),
-          children: [
-            ColorHeader(
-              name: f.name,
-              kicker: f.headline.isEmpty ? category : f.headline,
-              side: side,
-              avatar: SignalAvatar(
-                name: f.name,
-                imageUrl: f.avatarUrl,
-                size: 84,
+          side: side,
+          header: ProfileHeader(
+            name: f.name,
+            imageUrl: f.avatarUrl,
+            verified: f.isVerified,
+            subtitle: f.headline.isEmpty ? category : f.headline,
+            side: side,
+            actions: [
+              ReportButton(target: ReportTarget.freelancer, targetId: f.id),
+            ],
+            pills: [
+              // Digital freelancers: identity verification only.
+              if (f.isVerified)
+                InfoPill(
+                  label: l10n.identityVerified,
+                  icon: Icons.verified_user_outlined,
+                ),
+              AvailabilityPill(availability: f.availability),
+            ],
+          ),
+          stats: StatsCard(
+            items: [
+              rated
+                  ? StatItem(
+                      label: l10n.statRating,
+                      value: stars,
+                      fractionDigits: 1,
+                    )
+                  : StatItem(label: l10n.statRating),
+              StatItem(label: l10n.statReviews, value: f.reviewCount),
+              StatItem(
+                label: l10n.discFactExperience,
+                text: years == null || years == 0
+                    ? null
+                    : l10n.yearsShort(years),
               ),
-              below: Wrap(
-                spacing: AppSpacing.md,
-                runSpacing: AppSpacing.xs,
-                alignment: WrapAlignment.end,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  if (f.isVerified) const VerifiedStamp(),
-                  AvailabilityMark(availability: f.availability),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsetsDirectional.symmetric(horizontal: side),
+            ],
+          ),
+          sections: [
+            ProfileSection(
+              label: l10n.servicesTitle,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: AppSpacing.lg),
-                  if (f.headline.isNotEmpty && category != null)
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(
-                        bottom: AppSpacing.md,
-                      ),
-                      child: Text(
-                        category,
-                        style: text.titleMedium?.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      stat(
-                        StatBlock(
-                          value: stars,
-                          fractionDigits: 1,
-                          empty: !rated,
-                          label: rated ? l10n.statRating : l10n.ratingNone,
-                          color: scheme.primaryContainer,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.md),
-                      stat(
-                        StatBlock(
-                          value: f.reviewCount,
-                          label: l10n.statReviews,
-                        ),
-                      ),
-                    ],
+                  ServiceRow(
+                    icon: digitalCategoryIcon(cat?.icon ?? ''),
+                    tint: catIndex < 0 ? 0 : catIndex,
+                    title: category ?? l10n.flTitle,
+                    detail: price,
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  if (price != null)
-                    FactRow(
-                      label: l10n.flFactPrice,
-                      value: Text(price, style: text.titleSmall),
-                    ),
-                  FactRow(
-                    label: l10n.discFactExperience,
-                    value: Text(
-                      years == null || years == 0
-                          ? '—'
-                          : l10n.yearsExperience(years),
-                      style: text.titleSmall,
-                    ),
-                  ),
-                  if (f.languages.isNotEmpty)
-                    FactRow(
-                      label: l10n.flFactLanguages,
-                      value: Text(
-                        f.languages.join(', '),
-                        style: text.titleSmall,
-                      ),
-                    ),
                   if (f.skills.isNotEmpty) ...[
-                    const SizedBox(height: AppSpacing.xxl),
-                    RegisterHeading(title: l10n.flSkills),
                     const SizedBox(height: AppSpacing.sm),
+                    SectionTitle(title: l10n.flSkills, small: true),
                     Wrap(
                       spacing: AppSpacing.sm,
                       runSpacing: AppSpacing.sm,
-                      children: [for (final s in f.skills) TagBlock(s)],
+                      children: [for (final s in f.skills) SoftTag(s)],
                     ),
                   ],
+                ],
+              ),
+            ),
+            if (work.isNotEmpty)
+              ProfileSection(
+                label: l10n.flPortfolio,
+                child: _PortfolioGrid(freelancerId: f.id),
+              ),
+            ProfileSection(
+              label: l10n.reviewsTitle,
+              child: _Testimonials(freelancerId: f.id),
+            ),
+            ProfileSection(
+              label: l10n.aboutLabel,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
                   if (f.bio.isNotEmpty) ...[
-                    const SizedBox(height: AppSpacing.xxl),
-                    RegisterHeading(title: l10n.aboutLabel),
-                    const SizedBox(height: AppSpacing.xs),
                     Text(f.bio, style: text.bodyLarge),
+                    const SizedBox(height: AppSpacing.sm),
                   ],
-                  _PortfolioGrid(freelancerId: f.id),
-                  _Testimonials(freelancerId: f.id),
-                  const SizedBox(height: AppSpacing.xxl),
-                  FreelanceContactSection(freelancerId: f.id),
+                  InfoRow(
+                    label: l10n.discFactExperience,
+                    value: years == null || years == 0
+                        ? '—'
+                        : l10n.yearsExperience(years),
+                    last: f.languages.isEmpty,
+                  ),
+                  if (f.languages.isNotEmpty)
+                    InfoRow(
+                      label: l10n.flFactLanguages,
+                      value: f.languages.join(', '),
+                      last: true,
+                    ),
                 ],
               ),
             ),
           ],
+          footer: FreelanceContactSection(freelancerId: f.id),
         );
       },
     );
@@ -278,48 +254,37 @@ class _PortfolioGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
     final items = ref.watch(freelancerPortfolioProvider(freelancerId)).value;
     if (items == null || items.isEmpty) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(top: AppSpacing.xxl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          RegisterHeading(
-            title: l10n.flPortfolio,
-            figure: items.length.toString().padLeft(2, '0'),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          LayoutBuilder(
-            builder: (context, box) {
-              final columns = box.maxWidth >= 520 ? 4 : 3;
-              const gap = AppSpacing.sm;
-              final side = (box.maxWidth - gap * (columns - 1)) / columns;
-              return Wrap(
-                spacing: gap,
-                runSpacing: gap,
-                children: [
-                  for (final item in items)
-                    SizedBox(
-                      width: side,
-                      child: _Tile(item: item, side: side),
-                    ),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
+    return LayoutBuilder(
+      builder: (context, box) {
+        final columns = box.maxWidth >= 520 ? 4 : 3;
+        const gap = AppSpacing.md;
+        final side = (box.maxWidth - gap * (columns - 1)) / columns;
+        return Wrap(
+          spacing: gap,
+          runSpacing: gap,
+          children: [
+            for (var i = 0; i < items.length; i++)
+              SizedBox(
+                width: side,
+                child: _Tile(item: items[i], side: side, tint: i),
+              ),
+          ],
+        );
+      },
     );
   }
 }
 
 class _Tile extends ConsumerWidget {
-  const _Tile({required this.item, required this.side});
+  const _Tile({required this.item, required this.side, required this.tint});
 
   final FreelancePortfolioItem item;
   final double side;
+
+  /// Placeholder tint for items without a picture.
+  final int tint;
 
   Future<void> _open(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
@@ -373,7 +338,6 @@ class _Tile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
     final label = item.kind.opensInApp
         ? item.title
@@ -384,12 +348,7 @@ class _Tile extends ConsumerWidget {
             semanticLabel: item.title,
             cacheWidth: 360,
           )
-        : ColoredBox(
-            color: scheme.surfaceContainerHighest,
-            child: Center(
-              child: Icon(kindIcon(item.kind), color: scheme.onSurface),
-            ),
-          );
+        : TintTile(icon: kindIcon(item.kind), tint: tint, radius: 0);
     return Semantics(
       button: true,
       label: label,
@@ -397,25 +356,18 @@ class _Tile extends ConsumerWidget {
       onTap: () => _open(context, ref),
       child: Pressable(
         onTap: () => _open(context, ref),
-        depth: 2,
         button: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox.square(
               dimension: side,
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(end: 2, bottom: 2),
-                child: StickerBox(
-                  offset: 2,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(AppRadius.sm),
-                    child: visual,
-                  ),
-                ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                child: visual,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: AppSpacing.xs + 2),
             Text(
               item.title,
               style: text.bodySmall,
@@ -442,79 +394,82 @@ class _Testimonials extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
     final list = ref.watch(freelancerTestimonialsProvider(freelancerId)).value;
     if (list == null) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(top: AppSpacing.xxl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          RegisterHeading(
-            title: l10n.flTestimonials,
-            figure: list.isEmpty
-                ? null
-                : list.length.toString().padLeft(2, '0'),
-          ),
-          Text(
-            l10n.flTestimonialsNote,
-            style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          if (list.isEmpty)
-            Text(l10n.flTestimonialsEmpty, style: text.bodyMedium)
-          else
-            for (final t in list)
-              Padding(
-                padding: const EdgeInsetsDirectional.only(
-                  end: AppInk.offset,
-                  bottom: AppSpacing.lg,
-                ),
+    final muted = text.bodySmall?.copyWith(color: scheme.onSurfaceVariant);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Invited by the freelancer, not verified reviews: said plainly.
+        SectionTitle(title: l10n.flTestimonials, small: true),
+        Text(l10n.flTestimonialsNote, style: muted),
+        const SizedBox(height: AppSpacing.md),
+        if (list.isEmpty)
+          Text(l10n.flTestimonialsEmpty, style: text.bodyMedium)
+        else
+          for (var i = 0; i < list.length; i++)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.md),
+              child: StaggerIn(
+                index: i,
                 child: StickerBox(
-                  padding: const EdgeInsetsDirectional.all(AppSpacing.md),
+                  padding: const EdgeInsetsDirectional.fromSTEB(
+                    AppSpacing.lg,
+                    AppSpacing.md,
+                    AppSpacing.xs,
+                    AppSpacing.lg,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
+                          InitialsAvatar(name: list[i].authorName, size: 36),
+                          const SizedBox(width: AppSpacing.sm + 2),
                           Expanded(
-                            child: Text(
-                              l10n.flTestimonialLabel.toUpperCase(),
-                              style: text.labelSmall?.copyWith(
-                                color: scheme.onSurfaceVariant,
-                                letterSpacing: 1.2,
-                              ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  [
+                                    list[i].authorName,
+                                    if (list[i].createdAt != null)
+                                      formatDate(list[i].createdAt!, locale),
+                                  ].join(' · '),
+                                  style: text.titleSmall,
+                                ),
+                                Text(l10n.flTestimonialLabel, style: muted),
+                              ],
                             ),
                           ),
                           ReportButton(
                             target: ReportTarget.testimonial,
-                            targetId: t.id,
+                            targetId: list[i].id,
                             compact: true,
                           ),
                         ],
                       ),
-                      StarsMark(count: t.rating),
+                      const SizedBox(height: AppSpacing.sm),
+                      StarsMark(count: list[i].rating),
                       const SizedBox(height: AppSpacing.xs),
-                      Text(t.body, style: text.bodyMedium),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        [
-                          t.authorName,
-                          if (t.createdAt != null)
-                            formatDate(t.createdAt!, locale),
-                        ].join(' · '),
-                        style: text.labelMedium,
-                      ),
-                      if (t.projectTitle != null && t.projectTitle!.isNotEmpty)
-                        Text(
-                          l10n.flTestimonialProject(t.projectTitle!),
-                          style: text.bodySmall?.copyWith(
-                            color: scheme.onSurfaceVariant,
-                          ),
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(
+                          end: AppSpacing.md,
                         ),
+                        child: Text(list[i].body, style: text.bodyLarge),
+                      ),
+                      if (list[i].projectTitle != null &&
+                          list[i].projectTitle!.isNotEmpty) ...[
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          l10n.flTestimonialProject(list[i].projectTitle!),
+                          style: muted,
+                        ),
+                      ],
                     ],
                   ),
                 ),
               ),
-        ],
-      ),
+            ),
+      ],
     );
   }
 }
