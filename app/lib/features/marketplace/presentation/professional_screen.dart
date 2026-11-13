@@ -85,7 +85,7 @@ class _ProfessionalScreenState extends ConsumerState<ProfessionalScreen> {
                 children: [
                   Expanded(
                     flex: 2,
-                    child: FilledButton.tonalIcon(
+                    child: OutlinedButton.icon(
                       onPressed: _toContact,
                       icon: const Icon(Icons.chat_bubble_outline_rounded),
                       label: Text(

@@ -89,7 +89,7 @@ void main() {
       tester,
     ) async {
       await _open(tester, _Repo());
-      await tester.tap(find.widgetWithText(FilledButton, 'Contact'));
+      await tester.tap(find.widgetWithText(OutlinedButton, 'Contact'));
       await tester.pumpAndSettle();
       final screen = tester.view.physicalSize / tester.view.devicePixelRatio;
       final box = tester.getRect(find.text('Afficher le contact'));
