@@ -6,10 +6,10 @@ import '../../l10n/generated/app_localizations.dart';
 
 enum BadgeTone { neutral, info, success, warning, error }
 
-/// Small rectangular stamp, like the ink stamp on a trade licence: a heavy
-/// frame in the tone's colour around short text, flat on paper. Always carries text (and
-/// usually an icon): colour alone never conveys status. [filled] inks the
-/// whole stamp (used for "verified").
+/// Small rounded pill in a soft tint of its tone, like "Documents vérifiés"
+/// on a profile. Always carries text (and usually an icon): colour alone
+/// never conveys status. [filled] uses the solid tone with surface-coloured
+/// text, for the rare badge that must stand out.
 class AppBadge extends StatelessWidget {
   const AppBadge({
     super.key,
@@ -20,68 +20,68 @@ class AppBadge extends StatelessWidget {
   });
 
   /// Shown only when an admin has verified the professional. Callers must
-  /// not render it from unverified data. Olive, solid, with a check.
+  /// not render it from unverified data. Violet, with a check seal.
   factory AppBadge.verified(BuildContext context) => AppBadge(
     label: AppLocalizations.of(context).verified,
-    tone: BadgeTone.success,
+    tone: BadgeTone.info,
     icon: Icons.verified_rounded,
-    filled: true,
   );
 
   final String label;
   final BadgeTone tone;
   final IconData? icon;
 
-  /// Solid stamp: the tone colour as background, paper-coloured text.
+  /// Solid pill: the tone colour as background, surface-coloured text.
   final bool filled;
 
   /// Foreground color for [tone] in the given brightness.
   static Color foreground(BadgeTone tone, ColorScheme scheme) {
     final dark = scheme.brightness == Brightness.dark;
     return switch (tone) {
-      BadgeTone.neutral =>
-        dark ? scheme.onSurfaceVariant : AppColors.mutedStrong,
-      BadgeTone.info => dark ? AppColors.darkPrimary : AppColors.primary,
+      BadgeTone.neutral => scheme.onSurfaceVariant,
+      BadgeTone.info => scheme.primary,
       BadgeTone.success => dark ? AppColors.darkSuccess : AppColors.success,
       BadgeTone.warning => dark ? AppColors.darkWarning : AppColors.warning,
-      BadgeTone.error => dark ? AppColors.darkError : AppColors.error,
+      BadgeTone.error => scheme.error,
     };
   }
 
-  /// Background: flat paper (no tint).
-  static Color background(BadgeTone tone, ColorScheme scheme) => scheme.surface;
+  /// Background: a soft, opaque tint of the tone over the surface (light
+  /// enough that the tone text keeps 4.5:1).
+  static Color background(BadgeTone tone, ColorScheme scheme) =>
+      Color.alphaBlend(
+        foreground(tone, scheme).withValues(alpha: 0.06),
+        scheme.surface,
+      );
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final ink = foreground(tone, scheme);
-    // A solid stamp prints the surface colour on the tone (>= 4.5:1 for the
-    // success tone in both themes).
     final fg = filled ? scheme.surface : ink;
     final bg = filled ? ink : background(tone, scheme);
     return DecoratedBox(
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(2),
-        border: Border.all(color: ink, width: AppInk.border),
+        borderRadius: BorderRadius.circular(AppRadius.pill),
       ),
       child: Padding(
         padding: const EdgeInsetsDirectional.symmetric(
-          horizontal: AppSpacing.sm - 2,
-          vertical: 2,
+          horizontal: AppSpacing.sm + 2,
+          vertical: AppSpacing.xs,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              Icon(icon, size: 13, color: fg),
+              Icon(icon, size: 14, color: fg),
               const SizedBox(width: AppSpacing.xs),
             ],
             Flexible(
               child: Text(
                 label,
                 style: Theme.of(context).textTheme.labelSmall
-                    ?.copyWith(color: fg, letterSpacing: 0.6),
+                    ?.copyWith(color: fg, fontSize: 12),
               ),
             ),
           ],

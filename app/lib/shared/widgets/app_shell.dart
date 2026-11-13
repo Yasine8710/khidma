@@ -26,7 +26,11 @@ class AppShell extends StatelessWidget {
         ),
         items: [
           NavItem(Icons.home_outlined, Icons.home_rounded, l10n.navHome),
-          NavItem(Icons.search_rounded, Icons.manage_search_rounded, l10n.navExplore),
+          NavItem(
+            Icons.search_rounded,
+            Icons.manage_search_rounded,
+            l10n.navExplore,
+          ),
           NavItem(
             Icons.description_outlined,
             Icons.description_rounded,

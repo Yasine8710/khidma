@@ -85,18 +85,28 @@ class _Option extends StatelessWidget {
       label: '$title. $body',
       excludeSemantics: true,
       onTap: onTap,
-      // A sticker block: flooded with the world colour and a check when chosen.
+      // A soft card: soft violet with a violet edge and a filled radio when
+      // chosen.
       child: Pressable(
         onTap: onTap,
         button: false,
         child: StickerBox(
           color: selected ? scheme.primaryContainer : scheme.surface,
-          offset: selected ? AppInk.offset : 3,
+          borderColor: selected ? scheme.primary : null,
+          border: selected ? 1.5 : 1,
           padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, color: fg),
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: selected ? scheme.surface : scheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                ),
+                child: Icon(icon, color: scheme.primary, size: 22),
+              ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
@@ -114,20 +124,24 @@ class _Option extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
-              // A square tick box, empty until chosen.
+              // A radio circle, filled with a check when chosen.
               Container(
-                width: 24,
-                height: 24,
+                width: 22,
+                height: 22,
                 decoration: BoxDecoration(
-                  color: selected ? scheme.onSurface : scheme.surface,
-                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                  color: selected ? scheme.primary : scheme.surface,
+                  shape: BoxShape.circle,
                   border: Border.all(
-                    color: scheme.onSurface,
-                    width: AppInk.border,
+                    color: selected ? scheme.primary : scheme.outline,
+                    width: 1.5,
                   ),
                 ),
                 child: selected
-                    ? Icon(Icons.check_rounded, size: 16, color: scheme.surface)
+                    ? Icon(
+                        Icons.check_rounded,
+                        size: 15,
+                        color: scheme.onPrimary,
+                      )
                     : null,
               ),
             ],

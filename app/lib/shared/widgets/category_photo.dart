@@ -1,19 +1,49 @@
 import 'package:flutter/material.dart';
 
 import '../../core/motion/motion.dart';
+import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
-import '../../core/theme/app_typography.dart';
+import '../../features/marketplace/presentation/category_icon.dart';
 
 /// Photos no longer ship with the app (the owner supplies real ones later).
 /// Kept so older call sites compile: always null.
 String? categoryPhotoAsset(String? slug) => null;
 
-/// A flat tile standing in for a category picture: one giant Anton letter on
-/// a colour field with one flat geometric shape, chosen deterministically
-/// from the slug so a category always looks the same. Colours come only from
-/// the theme. Decoration: the name is always shown next to it, so it is
-/// hidden from screen readers. Keeps the old photo-widget API ([icon] is
-/// accepted for older call sites).
+/// The line icon for a category: from its stored icon name when known,
+/// otherwise from its slug (trades and digital categories), otherwise a
+/// generic tool.
+IconData categoryGlyph(String? slug, [String? icon]) {
+  if (icon != null && icon.isNotEmpty) {
+    final named = categoryIcon(icon);
+    if (named != Icons.handyman_rounded || icon == 'handyman') return named;
+  }
+  return switch (slug) {
+    'plumbing' => Icons.water_drop_outlined,
+    'electricity' => Icons.bolt_rounded,
+    'air-conditioning' => Icons.ac_unit_rounded,
+    'mechanics' => Icons.car_repair_rounded,
+    'painting' => Icons.format_paint_outlined,
+    'carpentry' => Icons.carpenter_rounded,
+    'cleaning' => Icons.cleaning_services_outlined,
+    'appliance-repair' => Icons.kitchen_outlined,
+    'construction' => Icons.construction_rounded,
+    'gardening' => Icons.yard_outlined,
+    'moving' => Icons.local_shipping_outlined,
+    'maintenance' => Icons.handyman_outlined,
+    'web-development' => Icons.code_rounded,
+    'mobile-development' => Icons.phone_iphone_rounded,
+    'design' => Icons.brush_outlined,
+    'video-editing' => Icons.movie_outlined,
+    'marketing' => Icons.campaign_outlined,
+    'content-writing' => Icons.edit_note_rounded,
+    _ => Icons.handyman_outlined,
+  };
+}
+
+/// A soft tinted tile standing in for a category picture: one line icon on
+/// a pale colour, chosen from the slug so a category always looks the same.
+/// Decoration: the name is always shown next to it, so it is hidden from
+/// screen readers. Keeps the old photo-widget API.
 class CategoryPhoto extends StatelessWidget {
   const CategoryPhoto({
     super.key,
@@ -27,11 +57,13 @@ class CategoryPhoto extends StatelessWidget {
 
   final String? slug;
 
-  /// Category icon name (unused by the glyph tile; kept for call sites).
+  /// Category icon name (see `categoryIcon`).
   final String? icon;
   final double? width;
   final double? height;
   final double radius;
+
+  /// Kept for older call sites (the icon is always centred).
   final Alignment alignment;
 
   @override
@@ -42,25 +74,37 @@ class CategoryPhoto extends StatelessWidget {
         height: height,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(radius),
-          child: GlyphTile(seed: slug ?? icon ?? '?', letterSource: slug),
+          child: GlyphTile(
+            seed: slug ?? icon ?? '?',
+            icon: categoryGlyph(slug, icon),
+          ),
         ),
       ),
     );
   }
 }
 
-/// A square-cornered colour block with a giant Anton letter and a flat shape.
-/// Public so other screens can use it for any text-only placeholder.
+/// A pale tinted block with a centred line icon. Public so other screens can
+/// use it for any placeholder (e.g. a pro card's picture area). Small tiles
+/// get an ink icon; large placeholders a quiet muted one.
 class GlyphTile extends StatelessWidget {
-  const GlyphTile({super.key, required this.seed, this.letterSource});
+  const GlyphTile({
+    super.key,
+    required this.seed,
+    this.letterSource,
+    this.icon,
+  });
 
-  /// Picks colours and shape (stable per seed).
+  /// Picks the tint (stable per seed).
   final String seed;
 
-  /// Text whose first letter is shown; defaults to [seed].
+  /// Kept for older call sites; letters are no longer drawn.
   final String? letterSource;
 
-  static int _hash(String s) {
+  /// The line icon; defaults to the glyph for [seed] as a category slug.
+  final IconData? icon;
+
+  static int hashOf(String s) {
     var h = 7;
     for (final u in s.codeUnits) {
       h = (h * 31 + u) & 0x7fffffff;
@@ -71,86 +115,32 @@ class GlyphTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final locale = Localizations.localeOf(context);
-    final h = _hash(seed);
-    final (bg, fg) = switch (h % 4) {
-      0 => (scheme.primaryContainer, scheme.onPrimaryContainer),
-      1 => (scheme.onSurface, scheme.tertiary),
-      2 => (scheme.secondary, scheme.onSecondary),
-      _ => (scheme.surfaceContainerHighest, scheme.onSurface),
-    };
-    final src = (letterSource ?? seed).trim();
-    final letter = src.isEmpty ? '?' : src.characters.first.toUpperCase();
-    final style = TextStyle(
-      fontFamily: AppTypography.displayFor(locale),
-      fontWeight: FontWeight.w400,
-      color: fg,
-      height: 1,
-    );
-    return DecoratedBox(
-      decoration: BoxDecoration(color: bg),
-      child: CustomPaint(
-        painter: _ShapePainter(
-          variant: (h ~/ 4) % 3,
-          color: fg.withValues(alpha: 0.18),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(6),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                letter,
-                textDirection: TextDirection.ltr,
-                textScaler: TextScaler.noScaling,
-                style: style.copyWith(fontSize: 120),
-              ),
+    final glyph = icon ?? categoryGlyph(seed);
+    return ColoredBox(
+      color: AppColors.tint(hashOf(seed), scheme.brightness),
+      child: LayoutBuilder(
+        builder: (context, box) {
+          final side = box.biggest.shortestSide.isFinite
+              ? box.biggest.shortestSide
+              : 48.0;
+          final big = side >= 96;
+          return Center(
+            child: Icon(
+              glyph,
+              size: (side * (big ? 0.3 : 0.42)).clamp(14.0, 64.0),
+              color: big
+                  ? scheme.onSurfaceVariant.withValues(alpha: 0.7)
+                  : scheme.onSurface,
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
 }
 
-class _ShapePainter extends CustomPainter {
-  const _ShapePainter({required this.variant, required this.color});
-
-  final int variant;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final fill = Paint()..color = color;
-    final w = size.width;
-    final h = size.height;
-    switch (variant) {
-      case 0: // a quarter disc from the bottom-end corner
-        canvas.drawCircle(Offset(w, h), w * 0.62, fill);
-      case 1: // a diagonal slab
-        canvas.drawPath(
-          Path()
-            ..moveTo(0, h)
-            ..lineTo(w * 0.55, h)
-            ..lineTo(w, h * 0.45)
-            ..lineTo(w, h * 0.1)
-            ..close(),
-          fill,
-        );
-      default: // a bar along the bottom
-        canvas.drawRect(Rect.fromLTWH(0, h * 0.72, w, h * 0.28), fill);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_ShapePainter old) =>
-      old.variant != variant || old.color != color;
-}
-
-/// A category as a sticker tile: the glyph block above, its name on a label
-/// strip below, inside a heavy ink frame with a hard shadow. [selected] fills
-/// the strip with ink and adds a check (and the tile sinks), like a selected
-/// chip.
+/// A category as a tile: a soft tinted rounded square with its icon, and the
+/// name under it. [selected] adds a violet edge, a check and a violet name.
 class CategoryTile extends StatelessWidget {
   const CategoryTile({
     super.key,
@@ -174,7 +164,6 @@ class CategoryTile extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final on = selected ?? false;
     final reduce = Motion.reduced(context);
-    final labelColor = on ? scheme.surface : scheme.onSurface;
     return Semantics(
       button: true,
       selected: selected,
@@ -184,52 +173,66 @@ class CategoryTile extends StatelessWidget {
       child: Pressable(
         onTap: onTap,
         button: false,
-        child: StickerBox(
-          offset: on ? 0 : AppInk.offset,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadius.md - 1),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: CategoryPhoto(slug: slug, icon: icon, radius: 0),
-                ),
-                AnimatedContainer(
-                  duration: reduce ? Duration.zero : Motion.fast,
-                  decoration: BoxDecoration(
-                    color: on ? scheme.onSurface : scheme.surface,
-                    border: Border(
-                      top: BorderSide(
-                        color: scheme.onSurface,
-                        width: AppInk.border,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: CategoryPhoto(
+                      slug: slug,
+                      icon: icon,
+                      radius: AppRadius.lg,
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: AnimatedContainer(
+                        duration: reduce ? Duration.zero : Motion.fast,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(AppRadius.lg),
+                          border: Border.all(
+                            color: on ? scheme.primary : Colors.transparent,
+                            width: 2,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  padding: const EdgeInsetsDirectional.symmetric(
-                    horizontal: AppSpacing.sm,
-                    vertical: AppSpacing.xs + 1,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.labelSmall
-                              ?.copyWith(color: labelColor),
+                  if (on)
+                    PositionedDirectional(
+                      top: 6,
+                      end: 6,
+                      child: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: scheme.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.check_rounded,
+                          size: 14,
+                          color: scheme.onPrimary,
                         ),
                       ),
-                      if (on) ...[
-                        const SizedBox(width: AppSpacing.xs),
-                        Icon(Icons.check_rounded, size: 14, color: labelColor),
-                      ],
-                    ],
-                  ),
-                ),
-              ],
+                    ),
+                ],
+              ),
             ),
-          ),
+            const SizedBox(height: AppSpacing.xs + 2),
+            Text(
+              name,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: on ? scheme.primary : scheme.onSurface,
+                fontWeight: on ? FontWeight.w700 : FontWeight.w500,
+              ),
+            ),
+          ],
         ),
       ),
     );

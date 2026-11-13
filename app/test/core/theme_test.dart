@@ -39,8 +39,29 @@ void main() {
       AppTypography.arabicFamily,
     );
     expect(
-      AppTheme.dark(const Locale('fr')).textTheme.bodyMedium!.fontFamily,
-      AppTypography.latinFamily,
+      AppTheme.dark(const Locale('ar')).textTheme.titleLarge!.fontFamily,
+      AppTypography.arabicFamily,
     );
+  });
+
+  test('Latin locales use the platform font, never Tajawal', () {
+    // No family is forced, so Flutter uses the platform's own font (San
+    // Francisco on iOS, Roboto on Android).
+    expect(AppTypography.familyFor(const Locale('fr')), isNull);
+    expect(AppTypography.familyFor(const Locale('en')), isNull);
+    for (final lang in ['fr', 'en']) {
+      for (final theme in [
+        AppTheme.light(Locale(lang)),
+        AppTheme.dark(Locale(lang)),
+      ]) {
+        final family = theme.textTheme.bodyMedium!.fontFamily;
+        expect(family, isNot(AppTypography.arabicFamily), reason: lang);
+        expect(
+          family,
+          anyOf(isNull, 'Roboto', 'CupertinoSystemText', '.SF Pro Text'),
+          reason: lang,
+        );
+      }
+    }
   });
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 
@@ -41,7 +42,9 @@ abstract final class AppTheme {
       onSecondaryContainer: ink,
       tertiary: AppColors.star,
       onTertiary: AppColors.ink,
-      tertiaryContainer: dark ? const Color(0xFF3A2E10) : const Color(0xFFFFF4D6),
+      tertiaryContainer: dark
+          ? const Color(0xFF3A2E10)
+          : const Color(0xFFFFF4D6),
       onTertiaryContainer: dark ? AppColors.darkWarning : AppColors.warning,
       error: dark ? AppColors.darkError : AppColors.error,
       onError: dark ? AppColors.ink : Colors.white,
@@ -63,7 +66,14 @@ abstract final class AppTheme {
       inversePrimary: dark ? AppColors.violet : AppColors.violetLight,
     );
 
-    final text = AppTypography.textTheme(locale, ink);
+    // Component themes (buttons, chips, inputs...) take these styles as they
+    // are, so resolve the platform font here: a null family there would
+    // otherwise fall back to the engine's default font instead of the one
+    // ThemeData gives ordinary text (Roboto / San Francisco).
+    final typo = Typography.material2021(platform: defaultTargetPlatform);
+    final text = (dark ? typo.white : typo.black).merge(
+      AppTypography.textTheme(locale, ink),
+    );
     final buttonShape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(AppRadius.md),
     );

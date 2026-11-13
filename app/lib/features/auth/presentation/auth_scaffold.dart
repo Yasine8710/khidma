@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../shared/widgets/fade_in.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/khidma_logo.dart';
 import '../application/auth_providers.dart';
 import 'auth_texts.dart';
 import '../domain/auth_domain.dart';
 
-/// Shared frame for the auth screens: back button, then a flat colour header
-/// block (world colour, ink rule under it) holding the logo and a giant Anton
-/// title with its subtitle, then the form in a phone-width column, plus an
-/// honest notice when accounts are not available (no backend configured).
+/// Shared frame for the auth screens, like the sign-in screens people know:
+/// back button, the logo, a bold title with a muted subtitle, then the form
+/// in a phone-width column, plus an honest notice when accounts are not
+/// available (no backend configured). The header fades in once.
 class AuthScaffold extends ConsumerWidget {
   const AuthScaffold({
     super.key,
@@ -31,88 +31,55 @@ class AuthScaffold extends ConsumerWidget {
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final available = ref.watch(authAvailableProvider);
-    // The giant title keeps a ceiling on text scaling so it wraps, not clips.
-    final scaler = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.4);
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
+        top: false,
         child: Align(
           alignment: Alignment.topCenter,
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 480),
             child: SingleChildScrollView(
-              padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.xxl),
+              padding: const EdgeInsetsDirectional.fromSTEB(
+                AppSpacing.gutter,
+                AppSpacing.sm,
+                AppSpacing.gutter,
+                AppSpacing.xxl,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: scheme.primaryContainer,
-                      border: Border(
-                        bottom: BorderSide(
-                          color: scheme.onSurface,
-                          width: AppInk.border,
-                        ),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(
-                        AppSpacing.gutter,
-                        AppSpacing.lg,
-                        AppSpacing.gutter,
-                        AppSpacing.xl,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const KhidmaLogo(markSize: 30),
-                          const SizedBox(height: AppSpacing.xl),
-                          _SlamIn(
-                            child: Semantics(
-                              header: true,
-                              child: Text(
-                                title,
-                                textScaler: scaler,
-                                style: text.displaySmall?.copyWith(
-                                  color: scheme.onPrimaryContainer,
-                                ),
-                              ),
-                            ),
-                          ),
-                          if (subtitle != null) ...[
-                            const SizedBox(height: AppSpacing.sm),
-                            Text(
-                              subtitle!,
-                              style: text.bodyLarge?.copyWith(
-                                color: scheme.onPrimaryContainer,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  Padding(
-                    padding: const EdgeInsetsDirectional.symmetric(
-                      horizontal: AppSpacing.gutter,
-                    ),
+                  FadeIn(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (!available) ...[
-                          InlineNotice(
-                            message: l10n.failureText(
-                              AuthFailure.notConfigured,
+                        const KhidmaLogo(markSize: 36),
+                        const SizedBox(height: AppSpacing.xl + 4),
+                        Semantics(
+                          header: true,
+                          child: Text(title, style: text.headlineSmall),
+                        ),
+                        if (subtitle != null) ...[
+                          const SizedBox(height: AppSpacing.xs + 2),
+                          Text(
+                            subtitle!,
+                            style: text.bodyLarge?.copyWith(
+                              color: scheme.onSurfaceVariant,
                             ),
-                            tone: NoticeTone.info,
                           ),
-                          const SizedBox(height: AppSpacing.lg),
                         ],
-                        ...children,
                       ],
                     ),
                   ),
+                  const SizedBox(height: AppSpacing.xl + 4),
+                  if (!available) ...[
+                    InlineNotice(
+                      message: l10n.failureText(AuthFailure.notConfigured),
+                      tone: NoticeTone.info,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                  ],
+                  ...children,
                 ],
               ),
             ),
@@ -123,35 +90,10 @@ class AuthScaffold extends ConsumerWidget {
   }
 }
 
-/// The title slams in once (rise + overshoot); instant with Reduce Motion.
-class _SlamIn extends StatelessWidget {
-  const _SlamIn({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    if (Motion.reduced(context)) return child;
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: 1),
-      duration: Motion.slow,
-      curve: Motion.slam,
-      builder: (context, t, child) => Opacity(
-        opacity: t.clamp(0.0, 1.0),
-        child: Transform.translate(
-          offset: Offset(0, (1 - t) * 28),
-          child: child,
-        ),
-      ),
-      child: child,
-    );
-  }
-}
-
 enum NoticeTone { error, info }
 
-/// A short message in a heavy-framed slip with an icon (never color alone). Announced
-/// to screen readers when it appears.
+/// A short message on a soft tinted rounded block with an icon (never colour
+/// alone). Announced to screen readers when it appears.
 class InlineNotice extends StatelessWidget {
   const InlineNotice({
     super.key,
@@ -166,17 +108,17 @@ class InlineNotice extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final error = tone == NoticeTone.error;
-    // A flat paper slip in a heavy frame: error in the error ink, info in
-    // plain ink on sunken paper.
-    final fg = error ? scheme.error : scheme.onSurface;
-    final bg = error ? scheme.surface : scheme.surfaceContainerHighest;
+    final bg = error ? scheme.errorContainer : scheme.primaryContainer;
+    final icon = error ? scheme.error : scheme.primary;
+    final fg = error ? scheme.onSurface : scheme.onPrimaryContainer;
     return Semantics(
       liveRegion: true,
       container: true,
-      child: StickerBox(
-        color: bg,
-        offset: 0,
-        borderColor: error ? scheme.error : scheme.onSurface,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
         child: Padding(
           padding: const EdgeInsetsDirectional.all(AppSpacing.md),
           child: Row(
@@ -186,7 +128,7 @@ class InlineNotice extends StatelessWidget {
                 error
                     ? Icons.error_outline_rounded
                     : Icons.info_outline_rounded,
-                color: fg,
+                color: icon,
                 size: 20,
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -194,7 +136,7 @@ class InlineNotice extends StatelessWidget {
                 child: Text(
                   message,
                   style: Theme.of(context).textTheme.bodyMedium
-                      ?.copyWith(color: scheme.onSurface),
+                      ?.copyWith(color: fg),
                 ),
               ),
             ],

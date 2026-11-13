@@ -113,20 +113,20 @@ class AvatarEditor extends ConsumerWidget {
               PositionedDirectional(
                 end: 0,
                 bottom: 0,
-                // A small ink stamp: says "you can change this" without
-                // competing with the screen's one loud action.
+                // A small violet camera dot: says "you can change this"
+                // without competing with the screen's main action.
                 child: Container(
                   width: badge,
                   height: badge,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: scheme.onSurface,
+                    color: scheme.primary,
                     border: Border.all(color: scheme.surface, width: 2),
                   ),
                   child: Icon(
                     Icons.photo_camera_outlined,
                     size: badge * 0.5,
-                    color: scheme.surface,
+                    color: scheme.onPrimary,
                   ),
                 ),
               ),

@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_spacing.dart';
 
-/// One onboarding page, set like a poster: a giant Anton step numeral, a
-/// sticker glyph, a huge headline that slams in when the page becomes
-/// [active], and a short body. The page sits on a flat colour field chosen by
-/// the screen: [foreground] is the ink for that field. Scrolls on small
-/// screens or large text.
+/// One onboarding page: an optional soft illustration (or a [leading] widget
+/// such as the logo), a short title, one line of body and an optional
+/// [extra] (the language list). Content fades and rises in quietly each time
+/// the page becomes [active]. Scrolls on small screens or large text.
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({
     super.key,
     this.icon,
     this.photo,
     this.leading,
+    this.illustration,
     this.step,
     this.active = true,
     this.foreground,
@@ -23,22 +23,25 @@ class OnboardingPage extends StatelessWidget {
     this.hideIconWhenCompact = false,
   });
 
-  /// Glyph in the sticker block.
+  /// Kept for older call sites; [illustration] replaces it.
   final IconData? icon;
 
   /// Ignored (photos are no longer shipped); kept for older call sites.
   final String? photo;
 
-  /// Replaces the glyph (e.g. the brand logo on the first page).
+  /// Shown above the title instead of an illustration (e.g. the logo).
   final Widget? leading;
 
-  /// Giant numeral printed at the top ("01"). Null prints none.
+  /// A drawing above the title, made of simple shapes and icons.
+  final Widget? illustration;
+
+  /// Ignored (the step numerals are gone); kept for older call sites.
   final String? step;
 
   /// True while this is the visible page: the entrance plays once it is.
   final bool active;
 
-  /// Ink for the page's colour field; defaults to the theme's text colour.
+  /// Text colour; defaults to the theme's.
   final Color? foreground;
   final String title;
   final String body;
@@ -47,34 +50,6 @@ class OnboardingPage extends StatelessWidget {
   /// On short screens or large text, drop the decoration so the content
   /// (e.g. the language list) is reachable without scrolling.
   final bool hideIconWhenCompact;
-
-  /// Largest size (<= [max]) at which the longest word of [text] fits on one
-  /// line of [width], so a giant headline wraps between words only.
-  static double fitSize(
-    String text,
-    TextStyle style,
-    double width,
-    TextScaler scaler, {
-    double max = 56,
-    double min = 22,
-  }) {
-    final words = text.split(RegExp(r'\s+')).where((w) => w.isNotEmpty);
-    var size = max;
-    for (final w in words) {
-      final p = TextPainter(
-        text: TextSpan(
-          text: w,
-          style: style.copyWith(fontSize: size),
-        ),
-        textDirection: TextDirection.ltr,
-        textScaler: scaler,
-      )..layout();
-      final wpx = p.width;
-      p.dispose();
-      if (wpx > width && wpx > 0) size = size * width / wpx;
-    }
-    return size.clamp(min, max).toDouble();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,12 +60,13 @@ class OnboardingPage extends StatelessWidget {
     final compact = media.size.height < 700 || media.textScaler.scale(10) > 13;
     final tight = media.size.height < 560 || media.textScaler.scale(10) > 13;
     final hideDecor = tight && hideIconWhenCompact;
+    // A page with a list (language) reads from the start edge; the value
+    // pages are centred like most onboarding screens.
+    final centred = extra == null;
+    final align = centred ? TextAlign.center : TextAlign.start;
 
     return LayoutBuilder(
       builder: (context, box) {
-        final inner = box.maxWidth - AppSpacing.gutter * 2;
-        final headStyle = text.displayLarge!.copyWith(color: fg);
-        final size = fitSize(title, headStyle, inner, media.textScaler);
         return SingleChildScrollView(
           padding: const EdgeInsetsDirectional.symmetric(
             horizontal: AppSpacing.gutter,
@@ -103,79 +79,57 @@ class OnboardingPage extends StatelessWidget {
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: centred
+                    ? CrossAxisAlignment.center
+                    : CrossAxisAlignment.stretch,
                 children: [
-                  if (!hideDecor &&
-                      (step != null || leading != null || icon != null)) ...[
-                    _Slam(
+                  if (!hideDecor && (leading != null || illustration != null))
+                    _Rise(
                       active: active,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          if (leading != null)
-                            Flexible(child: leading!)
-                          else if (step != null)
-                            Flexible(
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.only(
+                          bottom: compact ? AppSpacing.lg : AppSpacing.xl + 8,
+                        ),
+                        child: leading != null
+                            ? Align(
                                 alignment: AlignmentDirectional.centerStart,
-                                child: Text(
-                                  step!,
-                                  textDirection: TextDirection.ltr,
-                                  textScaler: TextScaler.noScaling,
-                                  style: text.displayLarge?.copyWith(
-                                    fontSize: compact ? 96 : 144,
-                                    height: 0.9,
-                                    color: fg,
-                                  ),
+                                child: leading,
+                              )
+                            : ExcludeSemantics(
+                                child: SizedBox(
+                                  height: compact ? 170 : 250,
+                                  child: illustration,
                                 ),
                               ),
-                            ),
-                          if (leading == null) const Spacer(),
-                          if (icon != null && leading == null)
-                            ExcludeSemantics(
-                              child: StickerBox(
-                                color: scheme.surface,
-                                padding: const EdgeInsetsDirectional.all(
-                                  AppSpacing.md,
-                                ),
-                                child: Icon(
-                                  icon,
-                                  size: 36,
-                                  color: scheme.onSurface,
-                                ),
-                              ),
-                            ),
-                        ],
                       ),
                     ),
-                    SizedBox(height: compact ? AppSpacing.lg : AppSpacing.xl),
-                  ],
-                  _Slam(
+                  _Rise(
                     active: active,
-                    delay: 0.15,
+                    step: 1,
                     child: Semantics(
                       header: true,
                       child: Text(
                         title,
-                        style: headStyle.copyWith(fontSize: size),
-                        textAlign: TextAlign.start,
+                        style: text.headlineSmall?.copyWith(color: fg),
+                        textAlign: align,
                       ),
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.md),
-                  _Slam(
+                  const SizedBox(height: AppSpacing.sm),
+                  _Rise(
                     active: active,
-                    delay: 0.3,
+                    step: 2,
                     child: Text(
                       body,
-                      style: text.bodyLarge?.copyWith(color: fg),
-                      textAlign: TextAlign.start,
+                      style: text.bodyLarge?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                      textAlign: align,
                     ),
                   ),
                   if (extra != null) ...[
                     const SizedBox(height: AppSpacing.xl),
-                    _Slam(active: active, delay: 0.45, child: extra!),
+                    _Rise(active: active, step: 3, child: extra!),
                   ],
                 ],
               ),
@@ -187,37 +141,32 @@ class OnboardingPage extends StatelessWidget {
   }
 }
 
-/// Slams its child in (rise + overshoot + fade) when [active] turns true and
-/// resets when it turns false. [delay] is a 0..1 fraction of the duration.
-/// With Reduce Motion the final state shows at once.
-class _Slam extends StatelessWidget {
-  const _Slam({required this.active, required this.child, this.delay = 0});
+/// Fades its child in with a 12 px rise when [active] turns true, slightly
+/// later for a higher [step]; resets when it turns false. With Reduce Motion
+/// the final state shows at once.
+class _Rise extends StatelessWidget {
+  const _Rise({required this.active, required this.child, this.step = 0});
 
   final bool active;
   final Widget child;
-  final double delay;
+  final int step;
 
   @override
   Widget build(BuildContext context) {
     if (Motion.reduced(context)) return child;
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: active ? 1 : 0),
-      duration: active ? Motion.slow + Motion.base * delay : Duration.zero,
-      curve: Motion.slam,
-      builder: (context, t, child) {
-        final v = t.clamp(0.0, 1.0);
-        return Opacity(
-          opacity: v,
-          child: Transform.translate(
-            offset: Offset(0, (1 - t) * 36),
-            child: Transform.scale(
-              scale: 0.9 + 0.1 * t,
-              alignment: AlignmentDirectional.centerStart,
-              child: child,
-            ),
-          ),
-        );
-      },
+      duration: active
+          ? Motion.slow + Duration(milliseconds: 60 * step)
+          : Duration.zero,
+      curve: Interval(step * 0.1, 1, curve: Motion.enter),
+      builder: (context, t, child) => Opacity(
+        opacity: t.clamp(0.0, 1.0),
+        child: Transform.translate(
+          offset: Offset(0, (1 - t) * 12),
+          child: child,
+        ),
+      ),
       child: child,
     );
   }
