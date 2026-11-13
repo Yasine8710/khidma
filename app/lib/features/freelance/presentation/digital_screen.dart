@@ -10,7 +10,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_chip.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/skeleton.dart';
-import '../../marketplace/presentation/professional_card.dart';
+import '../../marketplace/presentation/calm_blocks.dart';
 import '../application/freelance_providers.dart';
 import '../domain/freelance_domain.dart';
 import 'freelance_widgets.dart';
@@ -80,10 +80,13 @@ class _DigitalScreenState extends ConsumerState<DigitalScreen> {
             ),
             children: [
               if (repo.isDemo) ...[
-                Stamp(
-                  label: l10n.demoBannerTitle,
-                  icon: Icons.science_outlined,
-                  color: AppBadge.foreground(BadgeTone.warning, scheme),
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: AppBadge(
+                    label: l10n.demoBannerTitle,
+                    icon: Icons.science_outlined,
+                    tone: BadgeTone.warning,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.md),
               ],
@@ -99,8 +102,7 @@ class _DigitalScreenState extends ConsumerState<DigitalScreen> {
                 },
               ),
               const SizedBox(height: AppSpacing.xl),
-              RegisterHeading(title: l10n.flCategories),
-              const SizedBox(height: AppSpacing.sm),
+              SectionTitle(title: l10n.flCategories),
               Wrap(
                 spacing: AppSpacing.sm,
                 runSpacing: AppSpacing.xs,
@@ -120,12 +122,7 @@ class _DigitalScreenState extends ConsumerState<DigitalScreen> {
                 ],
               ),
               const SizedBox(height: AppSpacing.xl),
-              RegisterHeading(
-                title: l10n.flResultsTitle,
-                figure: results.value == null || results.value!.isEmpty
-                    ? null
-                    : results.value!.length.toString().padLeft(2, '0'),
-              ),
+              SectionTitle(title: l10n.flResultsTitle),
               results.when(
                 loading: () => const SkeletonGroup(
                   child: Padding(

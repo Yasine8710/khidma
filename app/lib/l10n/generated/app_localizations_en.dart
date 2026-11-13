@@ -2421,4 +2421,41 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get verifFailImage =>
       'This file is not a readable photo (JPEG, PNG or WebP).';
+
+  @override
+  String get worldTrades => 'Trades';
+
+  @override
+  String get worldDigital => 'Digital freelance';
+
+  @override
+  String get homeNearbyTitle => 'Pros near you';
+
+  @override
+  String get homeHeroFreelanceBody => 'Show your work and find clients.';
+
+  @override
+  String get homeHeroDigitalCta => 'Explore';
+
+  @override
+  String priceFromShort(String price) {
+    return 'from $price';
+  }
+
+  @override
+  String get docsVerified => 'Documents verified';
+
+  @override
+  String get identityVerified => 'Identity verified';
+
+  @override
+  String yearsShort(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count yrs',
+      one: '1 yr',
+    );
+    return '$_temp0';
+  }
 }

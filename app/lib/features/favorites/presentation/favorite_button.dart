@@ -60,14 +60,29 @@ class FavoriteButton extends ConsumerWidget {
       },
       isSelected: saved,
       icon: Icon(Icons.favorite_border_rounded, color: scheme.onSurface),
-      selectedIcon: SlamSwitcher(
-        child: Icon(
-          Icons.favorite_rounded,
-          key: const ValueKey('saved'),
-          color: scheme.error,
-        ),
+      selectedIcon: _Pop(
+        child: Icon(Icons.favorite_rounded, color: scheme.error),
       ),
       onPressed: onPressed,
+    );
+  }
+}
+
+/// The filled heart pops in once (a small overshoot), unless Reduce Motion.
+class _Pop extends StatelessWidget {
+  const _Pop({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (Motion.reduced(context)) return child;
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.6, end: 1),
+      duration: Motion.base,
+      curve: Motion.settle,
+      builder: (context, s, child) => Transform.scale(scale: s, child: child),
+      child: child,
     );
   }
 }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -211,7 +210,10 @@ void main() {
       await host(tester, const FreelancerScreen(id: 'f1'), repo: repo0());
       expect(find.text('Amine Test'), findsOneWidget);
       expect(find.text('Développeur web React'), findsOneWidget);
-      expect(find.text('Vérifié'), findsOneWidget);
+      // Digital freelancers show identity verification (a pill) and the
+      // verified tick after the name.
+      expect(find.text('Identité vérifiée'), findsOneWidget);
+      expect(find.byIcon(Icons.verified_rounded), findsOneWidget);
       expect(find.text('Disponible'), findsOneWidget);
       expect(find.text('à partir de 300 DT / projet'), findsOneWidget);
       expect(find.text("6 ans d'expérience"), findsOneWidget);
@@ -223,7 +225,8 @@ void main() {
 
     testWidgets('testimonials are labelled and explained', (tester) async {
       await host(tester, const FreelancerScreen(id: 'f1'), repo: repo0());
-      expect(find.text('TÉMOIGNAGE CLIENT'), findsOneWidget);
+      // Sentence case now (no forced capitals).
+      expect(find.text('Témoignage client'), findsOneWidget);
       expect(find.text('Témoignages clients'), findsOneWidget);
       expect(find.textContaining('invités par le freelance'), findsOneWidget);
       expect(find.textContaining('avis vérifiés'), findsOneWidget);

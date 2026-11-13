@@ -7,9 +7,8 @@ import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/rating_stars.dart';
+import '../../marketplace/presentation/calm_blocks.dart';
 import '../../marketplace/presentation/professional_card.dart';
-import '../../marketplace/presentation/signal_blocks.dart';
 import '../domain/freelance_domain.dart';
 
 String priceUnitLabel(AppLocalizations l10n, PriceUnit u) => switch (u) {
@@ -76,30 +75,21 @@ class FreelancerRow extends StatelessWidget {
     final price = startingPriceText(l10n, locale, f);
 
     final row = Padding(
-      padding: const EdgeInsetsDirectional.only(
-        end: AppInk.offset,
-        bottom: AppSpacing.lg,
-      ),
+      padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.md),
       child: StickerBox(
-        color: scheme.surface,
         padding: const EdgeInsetsDirectional.all(AppSpacing.md),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SignalAvatar(
-              name: f.name,
-              imageUrl: f.avatarUrl,
-              size: 60,
-              offset: 0,
-            ),
-            const SizedBox(width: AppSpacing.md + 2),
+            InitialsAvatar(name: f.name, imageUrl: f.avatarUrl, size: 56),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     f.name,
-                    style: text.titleLarge,
+                    style: text.titleMedium,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -122,21 +112,21 @@ class FreelancerRow extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                  const SizedBox(height: AppSpacing.xs + 2),
-                  RatingStars(
+                  const SizedBox(height: AppSpacing.sm),
+                  RatingInline(
                     rating: f.rating,
                     reviewCount: f.reviewCount,
-                    size: 13,
+                    size: 14,
                   ),
                   if (price != null || f.isVerified) ...[
-                    const SizedBox(height: AppSpacing.xs + 2),
+                    const SizedBox(height: AppSpacing.sm),
                     Wrap(
                       spacing: AppSpacing.md,
                       runSpacing: AppSpacing.xs,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         if (f.isVerified) const VerifiedStamp(),
-                        if (price != null) Text(price, style: text.labelLarge),
+                        if (price != null) Text(price, style: text.titleSmall),
                       ],
                     ),
                   ],

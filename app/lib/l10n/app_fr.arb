@@ -1061,5 +1061,16 @@
   "verifFailVerified": "Votre profil est déjà vérifié.",
   "verifFailLimit": "Trop de demandes ces 30 derniers jours. Réessayez plus tard.",
   "verifFailGeneric": "L’envoi a échoué. Vérifiez votre connexion et réessayez.",
-  "verifFailImage": "Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP)."
+  "verifFailImage": "Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).",
+  "worldTrades": "Artisans",
+  "worldDigital": "Freelance digital",
+  "homeNearbyTitle": "Pros près de vous",
+  "homeHeroFreelanceBody": "Montrez vos réalisations et trouvez des clients.",
+  "homeHeroDigitalCta": "Découvrir",
+  "priceFromShort": "dès {price}",
+  "@priceFromShort": {"placeholders": {"price": {"type": "String"}}},
+  "docsVerified": "Documents vérifiés",
+  "identityVerified": "Identité vérifiée",
+  "yearsShort": "{count, plural, =1{1 an} other{{count} ans}}",
+  "@yearsShort": {"placeholders": {"count": {"type": "int"}}}
 }

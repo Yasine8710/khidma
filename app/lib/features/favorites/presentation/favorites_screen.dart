@@ -73,17 +73,19 @@ class FavoritesScreen extends ConsumerWidget {
               ),
               itemCount: shown.length + 1,
               itemBuilder: (context, i) {
-                // A ruled count line heads the list, like a register page.
+                // A quiet count line heads the list.
                 if (i == 0) {
                   return Padding(
                     padding: const EdgeInsetsDirectional.only(
-                      bottom: AppSpacing.lg,
+                      bottom: AppSpacing.md,
                     ),
                     child: Semantics(
                       header: true,
                       child: Text(
                         l10n.professionalsCount(shown.length),
-                        style: Theme.of(context).textTheme.displaySmall,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ),
                   );

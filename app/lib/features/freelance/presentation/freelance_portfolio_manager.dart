@@ -7,7 +7,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/register_row.dart';
 import '../../../shared/widgets/skeleton.dart';
-import '../../marketplace/presentation/professional_card.dart';
+import '../../marketplace/presentation/calm_blocks.dart';
 import '../application/freelance_providers.dart';
 import '../domain/freelance_domain.dart';
 import 'freelance_widgets.dart';
@@ -51,7 +51,7 @@ class FreelancePortfolioManager extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        RegisterHeading(title: l10n.flPortfolio),
+        SectionTitle(title: l10n.flPortfolio),
         Semantics(
           liveRegion: true,
           child: Text(

@@ -190,14 +190,84 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         where == null;
 
     final scheme = Theme.of(context).colorScheme;
-    OutlineInputBorder outline(double width) => OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppRadius.md),
-      borderSide: BorderSide(color: scheme.onSurface, width: width),
+    final categories =
+        ref.watch(categoriesProvider).value ?? const <ServiceCategory>[];
+    final n = _filters.activeCount;
+    final filterLabel = n == 0
+        ? l10n.filtersAction
+        : '${l10n.filtersAction} ($n)';
+    // An icon-only filter button on narrow screens or with large text.
+    final compact =
+        MediaQuery.sizeOf(context).width < 360 ||
+        MediaQuery.textScalerOf(context).scale(10) > 13;
+    final filterButton = Semantics(
+      label: l10n.filtersActive(n),
+      excludeSemantics: true,
+      button: true,
+      onTap: _openFilters,
+      child: compact
+          ? Badge(
+              isLabelVisible: n > 0,
+              label: Text('$n'),
+              child: IconButton.filled(
+                onPressed: _openFilters,
+                style: IconButton.styleFrom(
+                  backgroundColor: scheme.primary,
+                  foregroundColor: scheme.onPrimary,
+                  fixedSize: const Size(52, 52),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                  ),
+                ),
+                icon: const Icon(Icons.tune_rounded),
+              ),
+            )
+          : FilledButton.icon(
+              onPressed: _openFilters,
+              style: FilledButton.styleFrom(
+                minimumSize: const Size(52, 52),
+                padding: const EdgeInsetsDirectional.symmetric(
+                  horizontal: AppSpacing.lg,
+                ),
+              ),
+              icon: const Icon(Icons.tune_rounded),
+              label: Text(filterLabel),
+            ),
+    );
+
+    void setCategory(int? id) => setState(() {
+      _filters = SearchFilters(
+        categoryId: id,
+        minRating: _filters.minRating,
+        availableOnly: _filters.availableOnly,
+        sort: _filters.sort,
+        radiusKm: _filters.radiusKm,
+      );
+      _pages = 1;
+    });
+
+    Widget chipRow(List<Widget> chips) => SizedBox(
+      width: double.infinity,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: AppSpacing.gutter,
+        ),
+        child: Row(
+          children: [
+            for (var i = 0; i < chips.length; i++) ...[
+              if (i > 0) const SizedBox(width: AppSpacing.sm),
+              chips[i],
+            ],
+          ],
+        ),
+      ),
     );
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: !widget.asTab,
+        title: widget.asTab ? Text(l10n.navExplore) : null,
         actions: [
           if (mapAvailable)
             IconButton(
@@ -206,29 +276,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               onPressed: () => setState(() => _map = !_map),
             ),
         ],
-        title: TextField(
-          controller: _controller,
-          autofocus: !widget.asTab &&
-              widget.categoryId == null &&
-              widget.initialText.isEmpty,
-          textInputAction: TextInputAction.search,
-          maxLength: 100,
-          buildCounter: (
-            _, {
-            required currentLength,
-            required isFocused,
-            maxLength,
-          }) => null,
-          decoration: InputDecoration(
-            hintText: l10n.searchHint,
-            isDense: true,
-            prefixIcon: Icon(Icons.search_rounded, color: scheme.onSurface),
-            border: outline(1.2),
-            enabledBorder: outline(1.2),
-            focusedBorder: outline(2),
-          ),
-          onChanged: _changed,
-        ),
       ),
       body: SafeArea(
         child: Column(
@@ -236,55 +283,76 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(
                 AppSpacing.gutter,
-                AppSpacing.sm,
+                AppSpacing.xs,
                 AppSpacing.gutter,
-                AppSpacing.sm,
+                AppSpacing.md,
               ),
-              // One scrolling row, aligned to the gutter (a Wrap inside a
-              // Column shrank to its content and floated to the middle).
-              child: SizedBox(
-                width: double.infinity,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      Semantics(
-                        label: l10n.filtersActive(_filters.activeCount),
-                        excludeSemantics: true,
-                        button: true,
-                        onTap: _openFilters,
-                        child: AppChip(
-                          icon: Icons.tune_rounded,
-                          label: _filters.activeCount == 0
-                              ? l10n.filtersAction
-                              : '${l10n.filtersAction} (${_filters.activeCount})',
-                          selected: _filters.activeCount > 0,
-                          onSelected: (_) => _openFilters(),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      autofocus:
+                          !widget.asTab &&
+                          widget.categoryId == null &&
+                          widget.initialText.isEmpty,
+                      textInputAction: TextInputAction.search,
+                      maxLength: 100,
+                      buildCounter: (
+                        _, {
+                        required currentLength,
+                        required isFocused,
+                        maxLength,
+                      }) => null,
+                      decoration: InputDecoration(
+                        hintText: l10n.searchHint,
+                        prefixIcon: Icon(
+                          Icons.search_rounded,
+                          color: scheme.onSurfaceVariant,
                         ),
                       ),
-                      const SizedBox(width: AppSpacing.sm),
-                      AppChip(
-                        icon: Icons.place_outlined,
-                        label: placeLabel(l10n, locale, place, govs, cities),
-                        selected: place != null,
-                        onSelected: (_) async {
-                          await showPlaceSheet(context);
-                          if (mounted) setState(() => _pages = 1);
-                        },
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      AppChip(
-                        icon: Icons.my_location_rounded,
-                        label: l10n.nearMe,
-                        selected: where != null,
-                        onSelected: _toggleNearMe,
-                      ),
-                    ],
+                      onChanged: _changed,
+                    ),
                   ),
-                ),
+                  const SizedBox(width: AppSpacing.sm + 2),
+                  filterButton,
+                ],
               ),
             ),
-            Divider(color: scheme.outlineVariant),
+            // The trades as chips: one tap filters, "Toutes" clears it.
+            chipRow([
+              AppChip(
+                label: l10n.flAllCategories,
+                selected: _filters.categoryId == null,
+                onSelected: (_) => setCategory(null),
+              ),
+              for (final c in categories)
+                AppChip(
+                  label: c.nameFor(locale),
+                  selected: _filters.categoryId == c.id,
+                  onSelected: (on) => setCategory(on ? c.id : null),
+                ),
+            ]),
+            const SizedBox(height: AppSpacing.sm),
+            chipRow([
+              AppChip(
+                icon: Icons.place_outlined,
+                label: placeLabel(l10n, locale, place, govs, cities),
+                selected: place != null,
+                onSelected: (_) async {
+                  await showPlaceSheet(context);
+                  if (mounted) setState(() => _pages = 1);
+                },
+              ),
+              AppChip(
+                icon: Icons.my_location_rounded,
+                label: l10n.nearMe,
+                selected: where != null,
+                onSelected: _toggleNearMe,
+              ),
+            ]),
+            const SizedBox(height: AppSpacing.sm),
+            Divider(height: 1, color: scheme.outlineVariant),
             Expanded(
               child: browsing
                   ? EmptyState(
@@ -391,7 +459,7 @@ class _Results extends ConsumerWidget {
     return ListView.builder(
       padding: const EdgeInsetsDirectional.fromSTEB(
         AppSpacing.gutter,
-        0,
+        AppSpacing.lg,
         AppSpacing.gutter,
         AppSpacing.gutter,
       ),

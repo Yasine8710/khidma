@@ -778,5 +778,14 @@
   "verifFailVerified": "حسابك موثّق بالفعل.",
   "verifFailLimit": "طلبات كثيرة خلال آخر 30 يومًا. حاول لاحقًا.",
   "verifFailGeneric": "فشل الإرسال. تحقق من اتصالك وحاول مجددًا.",
-  "verifFailImage": "هذا الملف ليس صورة قابلة للقراءة (JPEG أو PNG أو WebP)."
+  "verifFailImage": "هذا الملف ليس صورة قابلة للقراءة (JPEG أو PNG أو WebP).",
+  "worldTrades": "الحرفيون",
+  "worldDigital": "العمل الحر الرقمي",
+  "homeNearbyTitle": "حرفيون بالقرب منك",
+  "homeHeroFreelanceBody": "اعرض أعمالك واعثر على عملاء.",
+  "homeHeroDigitalCta": "اكتشف",
+  "priceFromShort": "ابتداءً من {price}",
+  "docsVerified": "وثائق موثّقة",
+  "identityVerified": "هوية موثّقة",
+  "yearsShort": "{count, plural, =1{سنة} =2{سنتان} few{{count} سنوات} many{{count} سنة} other{{count} سنة}}"
 }

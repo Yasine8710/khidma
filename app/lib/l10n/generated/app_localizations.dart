@@ -4401,6 +4401,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).'**
   String get verifFailImage;
+
+  /// No description provided for @worldTrades.
+  ///
+  /// In fr, this message translates to:
+  /// **'Artisans'**
+  String get worldTrades;
+
+  /// No description provided for @worldDigital.
+  ///
+  /// In fr, this message translates to:
+  /// **'Freelance digital'**
+  String get worldDigital;
+
+  /// No description provided for @homeNearbyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pros près de vous'**
+  String get homeNearbyTitle;
+
+  /// No description provided for @homeHeroFreelanceBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montrez vos réalisations et trouvez des clients.'**
+  String get homeHeroFreelanceBody;
+
+  /// No description provided for @homeHeroDigitalCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Découvrir'**
+  String get homeHeroDigitalCta;
+
+  /// No description provided for @priceFromShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'dès {price}'**
+  String priceFromShort(String price);
+
+  /// No description provided for @docsVerified.
+  ///
+  /// In fr, this message translates to:
+  /// **'Documents vérifiés'**
+  String get docsVerified;
+
+  /// No description provided for @identityVerified.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identité vérifiée'**
+  String get identityVerified;
+
+  /// No description provided for @yearsShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 an} other{{count} ans}}'**
+  String yearsShort(int count);
 }
 
 class _AppLocalizationsDelegate

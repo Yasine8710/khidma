@@ -13,6 +13,7 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
+import '../../marketplace/presentation/calm_blocks.dart';
 import '../../marketplace/presentation/professional_card.dart';
 import '../application/freelance_providers.dart';
 import '../domain/freelance_domain.dart';
@@ -206,7 +207,7 @@ class _EditorState extends ConsumerState<_Editor> {
       ),
       children: [
         // Identity and publication first: they decide what the rest is for.
-        RegisterHeading(title: l10n.flIdentityTitle),
+        SectionTitle(title: l10n.flIdentityTitle),
         Row(
           children: [
             if (me.isVerified)
@@ -246,7 +247,7 @@ class _EditorState extends ConsumerState<_Editor> {
           onChanged: canToggle && !busy ? _togglePublish : null,
         ),
         const SizedBox(height: AppSpacing.xl),
-        RegisterHeading(title: l10n.flSectionProfile),
+        SectionTitle(title: l10n.flSectionProfile),
         Form(
           key: _formKey,
           child: Column(
