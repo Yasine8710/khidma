@@ -138,6 +138,38 @@ export type ReportRow = {
   subject_is_professional: boolean;
   subject_suspended: boolean;
 };
+export type BillingSummary = {
+  mrr_millimes: number;
+  active: number;
+  past_due: number;
+  expired: number;
+  cancelled: number;
+  orders_waiting: number;
+  orders_waiting_48h: number;
+};
+export type SubscriptionRow = {
+  user_id: string;
+  business_name: string | null;
+  plan_code: string;
+  status: 'active' | 'past_due' | 'expired' | 'cancelled';
+  current_period_end: string;
+  amount_millimes: number;
+  last_paid_at: string | null;
+};
+export type BillingDetail = {
+  subscription: { plan_code: string; status: string; current_period_end: string; created_at: string } | null;
+  orders: {
+    id: string;
+    reference: string;
+    plan_code: string;
+    method: string;
+    status: string;
+    amount_millimes: number;
+    created_at: string;
+    paid_at: string | null;
+    admin_note: string | null;
+  }[];
+};
 export type AppealRow = {
   id: string;
   professional_id: string;
@@ -218,6 +250,15 @@ export function createApi(rpc: Rpc) {
     reports: (status: string, offset: number) =>
       call<ReportRow[]>('admin_list_reports', { p_status: status, ...page(offset) }),
     reportContext: (id: string) => call<Record<string, unknown>>('admin_report_context', { p_report: id }),
+    billingSummary: () => call<BillingSummary>('admin_billing_summary'),
+    subscriptions: (status: string | null, offset: number) =>
+      call<SubscriptionRow[]>('admin_list_subscriptions', { p_status: status, ...page(offset) }),
+    billingDetail: (user: string) => call<BillingDetail>('admin_billing_detail', { p_user: user }),
+    /** Extend grace or comp a period (1-60 days, reason required, audited). */
+    extendSubscription: (user: string, days: number, reason: string) =>
+      call<string>('admin_extend_subscription', { p_user: user, p_days: days, p_reason: reason.trim() }),
+    setSubscriptionStatus: (user: string, status: 'active' | 'cancelled', reason: string) =>
+      call<void>('admin_set_subscription_status', { p_user: user, p_status: status, p_reason: reason.trim() }),
     appeals: (status: string, offset: number) =>
       call<AppealRow[]>('admin_list_appeals', { p_status: status, ...page(offset) }),
     paymentOrders: (status: string, offset: number) =>

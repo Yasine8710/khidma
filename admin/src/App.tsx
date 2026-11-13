@@ -7,11 +7,13 @@ import { Appeals } from './pages/Appeals';
 import { Audit, Professionals, Requests, Reviews, Users } from './pages/Lists';
 import { Categories } from './pages/Categories';
 import { Payments } from './pages/Payments';
+import { Billing } from './pages/Billing';
 
 const PAGES: { id: string; label: string; render: () => ReactElement }[] = [
   { id: 'overview', label: 'Overview', render: () => <Overview /> },
   { id: 'verification', label: 'Verification', render: () => <Verification /> },
   { id: 'payments', label: 'Paiements', render: () => <Payments /> },
+  { id: 'billing', label: 'Billing', render: () => <Billing /> },
   { id: 'reports', label: 'Reports', render: () => <Reports /> },
   { id: 'appeals', label: 'Appeals', render: () => <Appeals /> },
   { id: 'professionals', label: 'Professionals', render: () => <Professionals /> },

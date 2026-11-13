@@ -250,6 +250,9 @@ describe('sequence and function exposure', () => {
       'my_account_status', 'report_message', 'submit_appeal', 'tunis_today',
       // freelance moderation
       'admin_hold_freelancer', 'admin_release_freelancer',
+      // admin billing
+      'admin_billing_detail', 'admin_billing_summary', 'admin_extend_subscription', 'admin_list_subscriptions',
+      'admin_set_subscription_status',
     ].sort());
   });
 

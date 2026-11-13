@@ -169,6 +169,11 @@ Known residuals, all waiting on the server-side worker of #32 or a real Supabase
 - Prohibited services (illegal services, academic cheating, fake documents, plagiarised portfolios, selling accounts or fake reviews) are listed in the app in FR/AR/EN: agreed to before every publication and linked from the report form for freelance listings and testimonials.
 - `admin_hold_freelancer(user, reason, report?)` unpublishes a freelance listing and puts it on hold (`admin_hold_reason`, shown to the owner only: a held listing is unpublished, so no one else can read its row, and visitors have no grant). A trigger refuses republishing while held; `admin_release_freelancer` lifts it. From a report, the report is closed as actioned and its reporter told. Both actions are audited and send the owner a notice. The local professional profile is not touched (that is what suspension is for).
 
+### Admin billing (#65, migration 2200)
+- `admin_billing_summary()` (MRR = running subscriptions normalised to 30 days, in millimes; active, past_due, expired, cancelled; payments waiting and waiting over 48 h), `admin_list_subscriptions(status)`, `admin_billing_detail(user)` (subscription + last 50 orders). A period that ended counts as past_due even before the daily job.
+- Corrective actions, reason required and audited: `admin_extend_subscription(user, 1-60 days)` (extend grace, comp a month; starts a subscription on the cheapest plan if there is none) and `admin_set_subscription_status(user, active | cancelled)` (reactivating is refused once the period is over: extend instead).
+- All refuse non-admins and visitors (admin_billing tests and the rls_matrix admin sweep). Admin panel: Billing tab.
+
 ## Security audit (#55, 2026-11-13)
 
 ### Threat model (STRIDE)
