@@ -778,5 +778,15 @@
   "verifFailVerified": "حسابك موثّق بالفعل.",
   "verifFailLimit": "طلبات كثيرة خلال آخر 30 يومًا. حاول لاحقًا.",
   "verifFailGeneric": "فشل الإرسال. تحقق من اتصالك وحاول مجددًا.",
-  "verifFailImage": "هذا الملف ليس صورة قابلة للقراءة (JPEG أو PNG أو WebP)."
+  "verifFailImage": "هذا الملف ليس صورة قابلة للقراءة (JPEG أو PNG أو WebP).",
+  "reqFilterAll": "الكل",
+  "reqFilterOpen": "المفتوحة",
+  "reqFilterClosed": "المنتهية",
+  "reqFilterEmpty": "لا توجد طلبات في هذه القائمة.",
+  "reqFormProgress": "{done} من {total} خطوات مكتملة",
+  "chatToday": "اليوم",
+  "chatYesterday": "أمس",
+  "verifStepSend": "إرسال الوثائق",
+  "verifStepReview": "مراجعة الفريق",
+  "verifStepBadge": "شارة على ملفك"
 }

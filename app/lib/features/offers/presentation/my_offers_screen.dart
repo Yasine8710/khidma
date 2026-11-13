@@ -11,7 +11,7 @@ import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
-import '../../requests/presentation/ledger_widgets.dart';
+import '../../requests/presentation/flow_widgets.dart';
 import '../../requests/presentation/requests_texts.dart';
 import '../../reviews/application/reviews_providers.dart';
 import '../../reviews/presentation/review_widgets.dart';
@@ -37,12 +37,13 @@ class MyOffersScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context);
     final text = Theme.of(context).textTheme;
+    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
     final async = ref.watch(myOffersProvider);
     final list = async.value;
     final Widget body;
     if (list != null) {
       body = list.isEmpty
-          ? TypeEmpty(
+          ? CalmEmpty(
               icon: Icons.local_offer_outlined,
               title: l10n.offersTitle,
               body: l10n.offersEmpty,
@@ -55,45 +56,54 @@ class MyOffersScreen extends ConsumerWidget {
                 itemBuilder: (context, i) {
                   if (i == 0) return const SizedBox(height: AppSpacing.sm);
                   final o = list[i - 1];
-                  return LedgerRow(
+                  return FlowCard(
                     index: i - 1,
                     semanticLabel: o.requestTitle,
                     onTap: () =>
                         context.push(AppRoutes.proRequestPath(o.requestId)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
                       children: [
-                        LedgerKicker(
-                          '${ledgerRef(l10n, o.id)} · '
-                          '${formatDate(o.createdAt, locale)}',
-                        ),
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(
-                          o.requestTitle,
-                          style: text.titleMedium,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        Wrap(
-                          spacing: AppSpacing.md,
-                          runSpacing: AppSpacing.xs,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            Directionality(
-                              textDirection: TextDirection.ltr,
-                              child: Text(
-                                formatTnd(o.priceTnd, locale),
-                                style: text.headlineSmall,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                o.requestTitle,
+                                style: text.titleMedium,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                            LedgerStamp(
-                              big: true,
-                              label: offerStatusLabel(l10n, o.status),
-                              tone: offerStatusTone(o.status),
-                            ),
-                          ],
+                              const SizedBox(height: 2),
+                              Text(
+                                formatDate(o.createdAt, locale),
+                                style: text.bodySmall?.copyWith(color: muted),
+                              ),
+                              const SizedBox(height: AppSpacing.sm + 2),
+                              Wrap(
+                                spacing: AppSpacing.md,
+                                runSpacing: AppSpacing.xs,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  StatusPill(
+                                    label: offerStatusLabel(l10n, o.status),
+                                    tone: offerStatusTone(o.status),
+                                  ),
+                                  Directionality(
+                                    textDirection: TextDirection.ltr,
+                                    child: Text(
+                                      formatTnd(o.priceTnd, locale),
+                                      style: text.titleMedium?.copyWith(
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
+                        const SizedBox(width: AppSpacing.xs),
+                        const EndChevron(),
                       ],
                     ),
                   );
@@ -175,7 +185,7 @@ class JobsScreen extends ConsumerWidget {
     final Widget body;
     if (list != null) {
       body = list.isEmpty
-          ? TypeEmpty(
+          ? CalmEmpty(
               icon: Icons.handyman_outlined,
               title: l10n.jobsTitle,
               body: l10n.jobsEmpty,
@@ -188,17 +198,20 @@ class JobsScreen extends ConsumerWidget {
                 itemBuilder: (context, i) {
                   if (i == 0) return const SizedBox(height: AppSpacing.sm);
                   final j = list[i - 1];
-                  return LedgerRow(
+                  return FlowCard(
                     index: i - 1,
-                    onTap: null,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        LedgerKicker(
-                          '${ledgerRef(l10n, j.id)} · '
-                          '${formatDate(j.createdAt, locale)}',
+                        Text(
+                          formatDate(j.createdAt, locale),
+                          style: text.bodySmall?.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant,
+                          ),
                         ),
-                        const SizedBox(height: AppSpacing.xs),
+                        const SizedBox(height: 2),
                         Text(
                           j.requestTitle,
                           style: text.titleMedium,
@@ -304,8 +317,7 @@ class _JobReview extends ConsumerWidget {
     if (reviewed.contains(bookingId)) {
       return Padding(
         padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
-        child: LedgerStamp(
-          big: true,
+        child: StatusPill(
           label: l10n.reviewDone,
           tone: BadgeTone.success,
           icon: Icons.check_rounded,

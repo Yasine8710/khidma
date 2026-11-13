@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/format/dates.dart';
+import '../../../core/motion/motion.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -10,7 +11,7 @@ import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../auth/presentation/signed_out_prompt.dart';
-import '../../requests/presentation/ledger_widgets.dart';
+import '../../requests/presentation/flow_widgets.dart';
 import '../application/messages_providers.dart';
 import '../domain/messages_domain.dart';
 
@@ -36,7 +37,7 @@ class MessagesScreen extends ConsumerWidget {
     final Widget body;
     if (list != null) {
       body = list.isEmpty
-          ? TypeEmpty(
+          ? CalmEmpty(
               icon: Icons.chat_bubble_outline_rounded,
               title: l10n.messagesEmptyTitle,
               body: l10n.messagesEmptyBody,
@@ -48,17 +49,18 @@ class MessagesScreen extends ConsumerWidget {
                   await ref.read(conversationsProvider.future);
                 } catch (_) {}
               },
-              child: ListView.builder(
-                padding: const EdgeInsetsDirectional.fromSTEB(
-                  AppSpacing.gutter,
-                  AppSpacing.sm,
-                  AppSpacing.gutter,
-                  AppSpacing.lg,
+              child: ListView.separated(
+                padding: const EdgeInsetsDirectional.only(
+                  top: AppSpacing.xs,
+                  bottom: AppSpacing.lg,
                 ),
-                itemCount: list.length + 1,
-                itemBuilder: (context, i) => i == 0
-                    ? const SizedBox(height: AppSpacing.sm)
-                    : _Row(conversation: list[i - 1], index: i - 1),
+                itemCount: list.length,
+                // Hairlines start under the text, like a phone's inbox.
+                separatorBuilder: (_, _) => const Hairline(
+                  indent: AppSpacing.gutter + _avatar + AppSpacing.md,
+                ),
+                itemBuilder: (context, i) =>
+                    _Row(conversation: list[i], index: i),
               ),
             );
     } else if (async.hasError) {
@@ -87,7 +89,7 @@ class MessagesScreen extends ConsumerWidget {
                 header: true,
                 child: Text(
                   l10n.navMessages,
-                  style: Theme.of(context).textTheme.displaySmall,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
             ),
@@ -116,6 +118,12 @@ String _when(DateTime at, Locale locale) {
   return today ? formatTime(local, locale) : formatDate(local, locale);
 }
 
+/// Avatar size in the inbox.
+const double _avatar = 52;
+
+/// One conversation, like a phone's inbox: avatar, name and time, what the
+/// request is, the last message and the unread count. The whole row opens
+/// the chat and is one button for assistive tech.
 class _Row extends StatelessWidget {
   const _Row({required this.conversation, this.index = 0});
 
@@ -127,7 +135,8 @@ class _Row extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context);
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    final scheme = Theme.of(context).colorScheme;
+    final muted = scheme.onSurfaceVariant;
     final c = conversation;
     final title = conversationTitle(l10n, c);
     final preview =
@@ -135,67 +144,99 @@ class _Row extends StatelessWidget {
         ? l10n.chatImageSent
         : (c.lastBody ?? '');
     final unread = c.unread > 0;
-    return LedgerRow(
-      semanticLabel:
-          '$title, ${c.requestTitle}'
-          '${unread ? ', ${l10n.chatUnread(c.unread)}' : ''}',
-      index: index,
-      onTap: () => context.push(AppRoutes.chatPath(c.id)),
-      leading: InitialsBlock(name: title, size: 44),
-      child: Column(
+    void open() => context.push(AppRoutes.chatPath(c.id));
+
+    final row = Padding(
+      padding: const EdgeInsetsDirectional.symmetric(
+        horizontal: AppSpacing.gutter,
+        vertical: AppSpacing.md,
+      ),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(
-                  title,
-                  style: unread
-                      ? text.titleMedium?.copyWith(fontWeight: FontWeight.w800)
-                      : text.titleMedium?.copyWith(fontWeight: FontWeight.w500),
+          PersonAvatar(name: title, size: _avatar),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: text.titleMedium?.copyWith(
+                          fontWeight: unread
+                              ? FontWeight.w700
+                              : FontWeight.w600,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (c.lastAt != null) ...[
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(
+                        _when(c.lastAt!, locale),
+                        style: text.bodySmall?.copyWith(
+                          color: unread ? scheme.primary : muted,
+                          fontWeight: unread ? FontWeight.w600 : null,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                Text(
+                  c.requestTitle,
+                  style: text.bodySmall?.copyWith(color: muted),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              if (c.lastAt != null) ...[
-                const SizedBox(width: AppSpacing.sm),
-                Text(
-                  _when(c.lastAt!, locale),
-                  style: text.labelSmall?.copyWith(color: muted),
-                ),
-              ],
-            ],
-          ),
-          Text(
-            c.requestTitle,
-            style: text.bodySmall?.copyWith(color: muted),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          if (preview.isNotEmpty || unread) ...[
-            const SizedBox(height: AppSpacing.xs),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    preview,
-                    style: unread
-                        ? text.bodyMedium?.copyWith(fontWeight: FontWeight.w700)
-                        : text.bodyMedium,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                if (preview.isNotEmpty || unread) ...[
+                  const SizedBox(height: 2),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          preview,
+                          style: unread
+                              ? text.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                )
+                              : text.bodyMedium?.copyWith(color: muted),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (unread) ...[
+                        const SizedBox(width: AppSpacing.sm),
+                        ExcludeSemantics(child: UnreadBadge(count: c.unread)),
+                      ],
+                    ],
                   ),
-                ),
-                if (unread) ...[
-                  const SizedBox(width: AppSpacing.sm),
-                  ExcludeSemantics(child: CountStamp(count: c.unread)),
                 ],
               ],
             ),
-          ],
+          ),
         ],
+      ),
+    );
+
+    return StaggerIn(
+      index: index,
+      child: Semantics(
+        container: true,
+        button: true,
+        label:
+            '$title, ${c.requestTitle}'
+            '${unread ? ', ${l10n.chatUnread(c.unread)}' : ''}',
+        onTap: open,
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(onTap: open, excludeFromSemantics: true, child: row),
+        ),
       ),
     );
   }

@@ -11,7 +11,7 @@ import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
-import '../../requests/presentation/ledger_widgets.dart';
+import '../../requests/presentation/flow_widgets.dart';
 import '../application/billing_providers.dart';
 import '../domain/billing_domain.dart';
 import 'billing_text.dart';
@@ -93,7 +93,7 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
     final plans = ref.watch(subscriptionPlansProvider);
     final Widget body;
     if (_notProfessional) {
-      body = TypeEmpty(
+      body = CalmEmpty(
         icon: Icons.storefront_outlined,
         title: l10n.billNotProTitle,
         body: l10n.billNotProBody,
@@ -131,23 +131,7 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
     final chosen = plans.isEmpty
         ? null
         : plans.firstWhere((p) => p.code == _plan, orElse: () => plans.first);
-    const gap = SizedBox(height: AppSpacing.xxl);
-
-    Widget choice({
-      required bool selected,
-      required String title,
-      String? subtitle,
-      PriceTag? price,
-      required VoidCallback onTap,
-      int index = 0,
-    }) => _ChoiceBlock(
-      selected: selected,
-      title: title,
-      subtitle: subtitle,
-      price: price,
-      onTap: onTap,
-      index: index,
-    );
+    const gap = SizedBox(height: AppSpacing.xl);
 
     String methodHint(PaymentMethod m) => switch (m) {
       PaymentMethod.flouci => l10n.billMethodFlouciHint,
@@ -163,12 +147,12 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
         AppSpacing.xl,
       ),
       children: [
-        WorkOrderHeading(number: 1, title: l10n.billCurrent),
+        SectionTitle(title: l10n.billCurrent),
         const _CurrentSubscription(),
         gap,
-        WorkOrderHeading(number: 2, title: l10n.billChoosePlan),
+        SectionTitle(title: l10n.billChoosePlan),
         for (var i = 0; i < plans.length; i++)
-          choice(
+          _PlanCard(
             index: i,
             selected: plans[i].code == chosen?.code,
             title: plans[i].name(lang),
@@ -177,28 +161,45 @@ class _BillingScreenState extends ConsumerState<BillingScreen> {
             onTap: () => setState(() => _plan = plans[i].code),
           ),
         gap,
-        WorkOrderHeading(number: 3, title: l10n.billChooseMethod),
-        for (final m in PaymentMethod.values)
-          choice(
-            index: m.index,
-            selected: m == _method,
-            title: paymentMethodText(l10n, m),
-            subtitle: methodHint(m),
-            onTap: () => setState(() => _method = m),
+        SectionTitle(title: l10n.billChooseMethod),
+        FlowCard(
+          padding: EdgeInsetsDirectional.zero,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final m in PaymentMethod.values) ...[
+                if (m.index > 0) const Hairline(),
+                _MethodRow(
+                  selected: m == _method,
+                  icon: _methodIcon(m),
+                  seed: m.index,
+                  title: paymentMethodText(l10n, m),
+                  subtitle: methodHint(m),
+                  onTap: () => setState(() => _method = m),
+                ),
+              ],
+            ],
           ),
-        const SizedBox(height: AppSpacing.md),
+        ),
+        const SizedBox(height: AppSpacing.sm),
         AppButton(
           label: l10n.billPay,
           isLoading: busy,
           onPressed: chosen == null ? null : () => _pay(chosen.code),
         ),
         gap,
-        WorkOrderHeading(number: 4, title: l10n.billMyPayments),
+        SectionTitle(title: l10n.billMyPayments),
         const _Orders(),
       ],
     );
   }
 }
+
+IconData _methodIcon(PaymentMethod m) => switch (m) {
+  PaymentMethod.flouci => Icons.account_balance_wallet_outlined,
+  PaymentMethod.d17 => Icons.smartphone_outlined,
+  PaymentMethod.bankTransfer => Icons.account_balance_outlined,
+};
 
 /// A price to show big: whole TND counts up, other amounts print as is.
 class PriceTag {
@@ -208,23 +209,51 @@ class PriceTag {
   final String lang;
 }
 
-/// A chunky choice (plan or payment method): a sticker block that sinks when
-/// pressed; the chosen one is flooded with the world colour. Plans carry a big
-/// ruled price block under the name.
-class _ChoiceBlock extends StatelessWidget {
-  const _ChoiceBlock({
+/// A round radio mark (the row carries the selected state for assistive
+/// tech, so this is decoration).
+class _RadioMark extends StatelessWidget {
+  const _RadioMark({required this.selected});
+
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return ExcludeSemantics(
+      child: AnimatedContainer(
+        duration: Motion.reduced(context) ? Duration.zero : Motion.fast,
+        width: 22,
+        height: 22,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: selected ? scheme.primary : scheme.outline,
+            width: selected ? 6.5 : 1.5,
+          ),
+          color: scheme.surface,
+        ),
+      ),
+    );
+  }
+}
+
+/// A plan to choose: name and period with a radio mark, the price large and
+/// bold. The chosen plan gets a violet outline and a soft violet fill.
+class _PlanCard extends StatelessWidget {
+  const _PlanCard({
     required this.selected,
     required this.title,
+    required this.subtitle,
+    required this.price,
     required this.onTap,
-    this.subtitle,
-    this.price,
     this.index = 0,
   });
 
   final bool selected;
   final String title;
-  final String? subtitle;
-  final PriceTag? price;
+  final String subtitle;
+  final PriceTag price;
   final VoidCallback onTap;
   final int index;
 
@@ -233,79 +262,144 @@ class _ChoiceBlock extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
     final fg = selected ? scheme.onPrimaryContainer : scheme.onSurface;
-    final p = price;
-    Widget? amount;
-    if (p != null) {
-      final style = text.displaySmall?.copyWith(color: fg);
-      final whole = p.millimes % 1000 == 0;
-      // Prices read left to right with Western digits in every language.
-      amount = Directionality(
-        textDirection: TextDirection.ltr,
-        child: whole
-            ? CountUp(value: p.millimes ~/ 1000, suffix: ' TND', style: style)
-            : Text(
-                formatTndAmount(p.millimes, languageCode: p.lang),
-                style: style,
-              ),
-      );
-    }
+    final style = text.headlineMedium?.copyWith(color: fg);
+    final whole = price.millimes % 1000 == 0;
+    // Prices read left to right with Western digits in every language.
+    final amount = Directionality(
+      textDirection: TextDirection.ltr,
+      child: whole
+          ? CountUp(value: price.millimes ~/ 1000, suffix: ' TND', style: style)
+          : Text(
+              formatTndAmount(price.millimes, languageCode: price.lang),
+              style: style,
+            ),
+    );
     return StaggerIn(
       index: index,
       child: Semantics(
         selected: selected,
         inMutuallyExclusiveGroup: true,
         child: Padding(
-          padding: const EdgeInsetsDirectional.only(
-            end: AppInk.offset,
-            bottom: AppInk.offset + AppSpacing.md,
-          ),
+          padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.md),
           child: Pressable(
             onTap: onTap,
-            child: StickerBox(
-              color: selected ? scheme.primaryContainer : scheme.surface,
+            child: AnimatedContainer(
+              duration: Motion.reduced(context) ? Duration.zero : Motion.fast,
               padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+              decoration: BoxDecoration(
+                color: selected ? scheme.primaryContainer : scheme.surface,
+                borderRadius: BorderRadius.circular(AppRadius.lg),
+                border: Border.all(
+                  color: selected ? scheme.primary : scheme.outlineVariant,
+                  width: selected ? 1.5 : 1,
+                ),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        child: Text(
-                          title,
-                          style: text.headlineSmall?.copyWith(color: fg),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: text.titleMedium?.copyWith(color: fg),
+                            ),
+                            Text(
+                              subtitle,
+                              style: text.bodySmall?.copyWith(
+                                color: selected ? fg : scheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(width: AppSpacing.sm),
-                      Icon(
-                        selected
-                            ? Icons.check_box_rounded
-                            : Icons.check_box_outline_blank_rounded,
-                        color: fg,
+                      _RadioMark(selected: selected),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: AlignmentDirectional.centerStart,
+                      child: amount,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A way to pay, as a row of a grouped list: tinted icon, name and hint,
+/// radio mark on the end side.
+class _MethodRow extends StatelessWidget {
+  const _MethodRow({
+    required this.selected,
+    required this.icon,
+    required this.seed,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final bool selected;
+  final IconData icon;
+  final int seed;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    return Semantics(
+      selected: selected,
+      inMutuallyExclusiveGroup: true,
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: onTap,
+          child: AnimatedContainer(
+            duration: Motion.reduced(context) ? Duration.zero : Motion.fast,
+            color: selected
+                ? scheme.primaryContainer.withValues(alpha: 0.5)
+                : Colors.transparent,
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.md,
+            ),
+            child: Row(
+              children: [
+                IconTile(icon: icon, seed: seed, size: 40),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: text.titleSmall),
+                      Text(
+                        subtitle,
+                        style: text.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
-                  if (amount != null) ...[
-                    const SizedBox(height: AppSpacing.sm),
-                    Container(height: 3, color: fg),
-                    const SizedBox(height: AppSpacing.sm),
-                    Align(
-                      alignment: AlignmentDirectional.centerStart,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: AlignmentDirectional.centerStart,
-                        child: amount,
-                      ),
-                    ),
-                  ],
-                  if (subtitle != null) ...[
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      subtitle!,
-                      style: text.bodyMedium?.copyWith(color: fg),
-                    ),
-                  ],
-                ],
-              ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                _RadioMark(selected: selected),
+              ],
             ),
           ),
         ),
@@ -322,17 +416,15 @@ class _CurrentSubscription extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context);
     final async = ref.watch(mySubscriptionProvider);
-    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    final muted = scheme.onSurfaceVariant;
 
     Widget fact(String label, Widget value) => Padding(
       padding: const EdgeInsetsDirectional.symmetric(vertical: AppSpacing.md),
       child: Row(
         children: [
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodyMedium
-                ?.copyWith(color: muted),
-          ),
+          Text(label, style: text.bodyMedium?.copyWith(color: muted)),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Align(
@@ -364,70 +456,71 @@ class _CurrentSubscription extends ConsumerWidget {
         ],
       ),
       data: (sub) {
-        if (sub == null) return Text(l10n.billNone);
-        final scheme = Theme.of(context).colorScheme;
-        final text = Theme.of(context).textTheme;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (sub.state == SubscriptionState.active)
-              Padding(
-                padding: const EdgeInsetsDirectional.only(
-                  end: AppInk.offset,
-                  bottom: AppInk.offset + AppSpacing.md,
-                ),
-                child: StickerBox(
-                  color: scheme.primaryContainer,
-                  padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+        if (sub == null) {
+          return Text(
+            l10n.billNone,
+            style: text.bodyMedium?.copyWith(color: muted),
+          );
+        }
+        return FlowCard(
+          gap: 0,
+          padding: const EdgeInsetsDirectional.fromSTEB(
+            AppSpacing.lg,
+            AppSpacing.sm,
+            AppSpacing.lg,
+            AppSpacing.sm,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (sub.state == SubscriptionState.active) ...[
+                Padding(
+                  padding: const EdgeInsetsDirectional.symmetric(
+                    vertical: AppSpacing.md,
+                  ),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
+                      const IconTile(
+                        icon: Icons.workspace_premium_outlined,
+                        brand: true,
+                      ),
+                      const SizedBox(width: AppSpacing.md),
                       Directionality(
                         textDirection: TextDirection.ltr,
                         child: CountUp(
                           value: sub.daysLeft,
-                          style: text.displayLarge?.copyWith(
-                            color: scheme.onPrimaryContainer,
-                          ),
+                          style: text.headlineMedium,
                         ),
                       ),
-                      const SizedBox(width: AppSpacing.md),
+                      const SizedBox(width: AppSpacing.sm),
                       Expanded(
-                        child: Padding(
-                          padding: const EdgeInsetsDirectional.only(
-                            bottom: AppSpacing.sm,
-                          ),
-                          child: Text(
-                            l10n.billDaysLeftLabel,
-                            style: text.titleMedium?.copyWith(
-                              color: scheme.onPrimaryContainer,
-                            ),
-                          ),
+                        child: Text(
+                          l10n.billDaysLeftLabel,
+                          style: text.bodyMedium?.copyWith(color: muted),
                         ),
                       ),
                     ],
                   ),
                 ),
+                const Hairline(),
+              ],
+              fact(
+                l10n.billStatusLabel,
+                StatusPill(
+                  label: subscriptionStateText(l10n, sub.state),
+                  tone: subscriptionTone(sub.state),
+                ),
               ),
-            const LedgerRule(strong: true),
-            fact(
-              l10n.billStatusLabel,
-              LedgerStamp(
-                big: true,
-                label: subscriptionStateText(l10n, sub.state),
-                tone: subscriptionTone(sub.state),
+              const Hairline(),
+              fact(
+                l10n.billValidUntil,
+                Text(
+                  formatDate(sub.currentPeriodEnd, locale),
+                  style: text.titleSmall,
+                ),
               ),
-            ),
-            const LedgerRule(),
-            fact(
-              l10n.billValidUntil,
-              Text(
-                formatDate(sub.currentPeriodEnd, locale),
-                style: text.titleSmall,
-              ),
-            ),
-            const LedgerRule(strong: true),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -440,8 +533,8 @@ class _Orders extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final locale = Localizations.localeOf(context);
     final async = ref.watch(myPaymentOrdersProvider);
+    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
     return async.when(
       loading: () => const SkeletonGroup(child: Skeleton(height: 72)),
       error: (e, _) => Row(
@@ -462,54 +555,89 @@ class _Orders extends ConsumerWidget {
         ],
       ),
       data: (orders) {
-        if (orders == null || orders.isEmpty) return Text(l10n.billNoPayments);
         final text = Theme.of(context).textTheme;
+        if (orders == null || orders.isEmpty) {
+          return Text(
+            l10n.billNoPayments,
+            style: text.bodyMedium?.copyWith(color: muted),
+          );
+        }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: AppSpacing.sm),
             for (var i = 0; i < orders.length; i++)
-              LedgerRow(
-                index: i,
-                // An unpaid manual order can be reopened to pay or cancel it.
-                onTap: orders[i].status.isOpen && orders[i].method.isManual
-                    ? () => Navigator.of(context).push<void>(
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              PaymentInstructionsScreen(order: orders[i]),
-                        ),
-                      )
-                    : null,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${orders[i].reference} · ${formatTndAmount(orders[i].amountMillimes, languageCode: locale.languageCode)}',
-                      style: text.titleMedium,
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      [
-                        paymentMethodText(l10n, orders[i].method),
-                        if (orders[i].createdAt != null)
-                          formatDate(orders[i].createdAt!, locale),
-                      ].join(' · '),
-                      style: text.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    LedgerStamp(
-                      big: true,
-                      label: orderStatusText(l10n, orders[i].status),
-                      tone: orderTone(orders[i].status),
-                    ),
-                  ],
-                ),
-              ),
+              _OrderCard(order: orders[i], index: i),
           ],
         );
       },
+    );
+  }
+}
+
+class _OrderCard extends StatelessWidget {
+  const _OrderCard({required this.order, this.index = 0});
+
+  final PaymentOrder order;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context);
+    final text = Theme.of(context).textTheme;
+    // An unpaid manual order can be reopened to pay or cancel it.
+    final open = order.status.isOpen && order.method.isManual;
+    return FlowCard(
+      index: index,
+      padding: const EdgeInsetsDirectional.all(AppSpacing.md + 2),
+      onTap: open
+          ? () => Navigator.of(context).push<void>(
+              MaterialPageRoute(
+                builder: (_) => PaymentInstructionsScreen(order: order),
+              ),
+            )
+          : null,
+      child: Row(
+        children: [
+          IconTile(
+            icon: _methodIcon(order.method),
+            seed: order.method.index,
+            size: 40,
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${order.reference} · ${formatTndAmount(order.amountMillimes, languageCode: locale.languageCode)}',
+                  style: text.titleSmall,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  [
+                    paymentMethodText(l10n, order.method),
+                    if (order.createdAt != null)
+                      formatDate(order.createdAt!, locale),
+                  ].join(' · '),
+                  style: text.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                StatusPill(
+                  label: orderStatusText(l10n, order.status),
+                  tone: orderTone(order.status),
+                ),
+              ],
+            ),
+          ),
+          if (open) ...[
+            const SizedBox(width: AppSpacing.xs),
+            const EndChevron(),
+          ],
+        ],
+      ),
     );
   }
 }

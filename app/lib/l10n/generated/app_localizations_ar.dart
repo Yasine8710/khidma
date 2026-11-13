@@ -2407,4 +2407,36 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get verifFailImage =>
       'هذا الملف ليس صورة قابلة للقراءة (JPEG أو PNG أو WebP).';
+
+  @override
+  String get reqFilterAll => 'الكل';
+
+  @override
+  String get reqFilterOpen => 'المفتوحة';
+
+  @override
+  String get reqFilterClosed => 'المنتهية';
+
+  @override
+  String get reqFilterEmpty => 'لا توجد طلبات في هذه القائمة.';
+
+  @override
+  String reqFormProgress(int done, int total) {
+    return '$done من $total خطوات مكتملة';
+  }
+
+  @override
+  String get chatToday => 'اليوم';
+
+  @override
+  String get chatYesterday => 'أمس';
+
+  @override
+  String get verifStepSend => 'إرسال الوثائق';
+
+  @override
+  String get verifStepReview => 'مراجعة الفريق';
+
+  @override
+  String get verifStepBadge => 'شارة على ملفك';
 }

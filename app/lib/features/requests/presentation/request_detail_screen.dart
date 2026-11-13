@@ -3,22 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/format/dates.dart';
 import '../../../core/format/money.dart';
-import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/application/marketplace_providers.dart';
+import '../../marketplace/presentation/category_icon.dart';
 import '../../portfolio/presentation/portfolio_image.dart';
 import '../application/requests_providers.dart';
 import '../domain/requests_domain.dart';
-import 'ledger_widgets.dart';
+import 'flow_widgets.dart';
 import 'received_offers_section.dart';
 import 'requests_texts.dart';
 
-/// One request as a work order: reference, title and status stamp, the facts
-/// as ruled rows, photos; then the quotes received and the job.
+/// One request: a clean header card (category, title, status, description
+/// and the facts), the photos, then the quotes received and the job.
 class RequestDetailScreen extends ConsumerWidget {
   const RequestDetailScreen({super.key, required this.id});
 
@@ -38,14 +38,13 @@ class RequestDetailScreen extends ConsumerWidget {
       body = const SkeletonGroup(
         child: Padding(
           padding: EdgeInsetsDirectional.all(AppSpacing.gutter),
-          child: Skeleton(height: 160, radius: AppRadius.md),
+          child: Skeleton(height: 160, radius: AppRadius.lg),
         ),
       );
     } else {
-      body = TypeEmpty(
+      body = CalmEmpty(
         icon: Icons.assignment_late_outlined,
         title: l10n.reqNotFound,
-        body: '',
       );
     }
     return Scaffold(
@@ -55,11 +54,11 @@ class RequestDetailScreen extends ConsumerWidget {
   }
 }
 
-/// The head of a work order, shared by the customer's and the
-/// professional's view of a request: reference line with the status stamp,
-/// title, description, then the facts.
-class WorkOrderHeader extends ConsumerWidget {
-  const WorkOrderHeader({
+/// The head of a request, shared by the customer's and the professional's
+/// view: category tile, reference and date, title, status, description, then
+/// the facts as hairline rows, all on one white card.
+class RequestHeaderCard extends ConsumerWidget {
+  const RequestHeaderCard({
     super.key,
     required this.id,
     required this.title,
@@ -71,7 +70,7 @@ class WorkOrderHeader extends ConsumerWidget {
     this.budgetTnd,
     this.neededBy,
     this.expiresAt,
-    this.stamp,
+    this.status,
   });
 
   final String id;
@@ -87,18 +86,19 @@ class WorkOrderHeader extends ConsumerWidget {
   /// Shown while the request can still receive offers.
   final DateTime? expiresAt;
 
-  /// Status stamp at the end of the reference line.
-  final Widget? stamp;
+  /// Status pill under the title.
+  final Widget? status;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context);
     final text = Theme.of(context).textTheme;
-    final category = (ref.watch(categoriesProvider).value ?? const [])
+    final scheme = Theme.of(context).colorScheme;
+    final cat = (ref.watch(categoriesProvider).value ?? const [])
         .where((c) => c.id == categoryId)
-        .map((c) => c.nameFor(locale))
         .firstOrNull;
+    final category = cat?.nameFor(locale);
     final governorate = (ref.watch(governoratesProvider).value ?? const [])
         .where((g) => g.id == governorateId)
         .map((g) => g.nameFor(locale))
@@ -110,85 +110,74 @@ class WorkOrderHeader extends ConsumerWidget {
               .map((c) => c.nameFor(locale))
               .firstOrNull;
     final place = [?city, ?governorate].join(', ');
+    final facts = [
+      if (category != null) (l10n.flowSecService, category),
+      if (place.isNotEmpty) (l10n.flowFactPlace, place),
+      if (budgetTnd != null)
+        (l10n.flowFactBudget, formatTnd(budgetTnd!, locale)),
+      if (neededBy != null)
+        (l10n.flowFactNeededBy, formatDate(neededBy!, locale)),
+      if (expiresAt != null)
+        (l10n.flowFactExpires, formatDate(expiresAt!, locale)),
+    ];
 
-    final scheme = Theme.of(context).colorScheme;
-    final onWorld = scheme.onPrimaryContainer;
-    final scaler = MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.4);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // The colour header block: reference, stamp, the title in big type.
-        Padding(
-          padding: const EdgeInsetsDirectional.only(
-            end: AppInk.offset,
-            bottom: AppInk.offset + AppSpacing.lg,
-          ),
-          child: StickerBox(
-            color: scheme.primaryContainer,
-            padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+    return FlowCard(
+      gap: 0,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconTile(icon: categoryIcon(cat?.icon ?? ''), seed: categoryId),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: LedgerKicker(
-                        '${ledgerRef(l10n, id)} · ${formatDate(createdAt, locale)}',
-                        color: onWorld,
+                    Text(
+                      '${ledgerRef(l10n, id)} · ${formatDate(createdAt, locale)}',
+                      style: text.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
-                    if (stamp != null) ...[
-                      const SizedBox(width: AppSpacing.sm),
-                      Flexible(child: stamp!),
+                    const SizedBox(height: 2),
+                    Semantics(
+                      header: true,
+                      child: Text(title, style: text.titleLarge),
+                    ),
+                    if (status != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      status!,
                     ],
                   ],
                 ),
-                const SizedBox(height: AppSpacing.md),
-                Semantics(
-                  header: true,
-                  child: Text(
-                    title,
-                    textScaler: scaler,
-                    style: text.headlineMedium?.copyWith(color: onWorld),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  description,
-                  style: text.bodyLarge?.copyWith(color: onWorld),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ),
-        FactTable(
-          facts: [
-            if (category != null) (l10n.flowSecService, category),
-            if (place.isNotEmpty) (l10n.flowFactPlace, place),
-            if (budgetTnd != null)
-              (l10n.flowFactBudget, formatTnd(budgetTnd!, locale)),
-            if (neededBy != null)
-              (l10n.flowFactNeededBy, formatDate(neededBy!, locale)),
-            if (expiresAt != null)
-              (l10n.flowFactExpires, formatDate(expiresAt!, locale)),
+          const SizedBox(height: AppSpacing.sm),
+          Text(description, style: text.bodyMedium),
+          if (facts.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.sm),
+            const Hairline(),
+            FactRows(facts: facts),
           ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
 
-/// The photos of a request: framed squares in a strip, or a retry line.
-class RequestPhotoStrip extends ConsumerWidget {
-  const RequestPhotoStrip({super.key, required this.requestId});
+/// The photos of a request in a grid of rounded squares, three per line,
+/// or a retry line.
+class RequestPhotos extends ConsumerWidget {
+  const RequestPhotos({super.key, required this.requestId});
 
   final String requestId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
     final photosAsync = ref.watch(requestPhotosProvider(requestId));
     final photos = photosAsync.value ?? const <RequestPhoto>[];
     if (photosAsync.hasError && !photosAsync.hasValue) {
@@ -210,34 +199,30 @@ class RequestPhotoStrip extends ConsumerWidget {
     if (photos.isEmpty) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsetsDirectional.only(top: AppSpacing.lg),
-      child: SizedBox(
-        height: 96,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemCount: photos.length,
-          separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.sm),
-          itemBuilder: (context, i) => AspectRatio(
-            aspectRatio: 1,
-            child: DecoratedBox(
-              position: DecorationPosition.foreground,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(AppRadius.sm),
-                border: Border.all(
-                  color: scheme.onSurface,
-                  width: AppInk.border,
+      child: LayoutBuilder(
+        builder: (context, box) {
+          const gap = AppSpacing.sm;
+          final side = ((box.maxWidth - 2 * gap) / 3).floorToDouble();
+          return Wrap(
+            spacing: gap,
+            runSpacing: gap,
+            children: [
+              for (var i = 0; i < photos.length; i++)
+                SizedBox(
+                  width: side,
+                  height: side,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                    child: PortfolioImage(
+                      url: photos[i].url,
+                      semanticLabel: l10n.reqPhotoLabel(i + 1, photos.length),
+                      cacheWidth: 360,
+                    ),
+                  ),
                 ),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(AppRadius.sm),
-                child: PortfolioImage(
-                  url: photos[i].url,
-                  semanticLabel: l10n.reqPhotoLabel(i + 1, photos.length),
-                  cacheWidth: 288,
-                ),
-              ),
-            ),
-          ),
-        ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -302,7 +287,7 @@ class _Details extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          WorkOrderHeader(
+          RequestHeaderCard(
             id: request.id,
             title: request.title,
             description: request.description,
@@ -313,14 +298,14 @@ class _Details extends ConsumerWidget {
             budgetTnd: request.budgetTnd,
             neededBy: request.neededBy,
             expiresAt: request.isOpen ? request.expiresAt : null,
-            stamp: LedgerStamp(
-              big: true,
+            status: StatusPill(
               label: statusLabel(l10n, request.status),
               tone: statusTone(request.status),
+              icon: statusIcon(request.status),
             ),
           ),
-          RequestPhotoStrip(requestId: request.id),
-          const SizedBox(height: AppSpacing.xl),
+          RequestPhotos(requestId: request.id),
+          const SizedBox(height: AppSpacing.lg),
           ReceivedOffersSection(request: request),
           if (request.status == RequestStatus.awarded)
             BookingSection(requestId: request.id),

@@ -12,8 +12,9 @@ import '../../../shared/widgets/app_chip.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/application/marketplace_providers.dart';
+import '../../marketplace/presentation/category_icon.dart';
 import '../../professional/application/professional_providers.dart';
-import '../../requests/presentation/ledger_widgets.dart';
+import '../../requests/presentation/flow_widgets.dart';
 import '../application/offers_providers.dart';
 import '../domain/offers_domain.dart';
 import 'offers_texts.dart';
@@ -60,7 +61,7 @@ class _ProInboxScreenState extends ConsumerState<ProInboxScreen> {
               ),
             );
     } else if (!published) {
-      body = TypeEmpty(
+      body = CalmEmpty(
         icon: Icons.visibility_off_outlined,
         title: l10n.proInboxTitle,
         body: l10n.proInboxNeedsPublished,
@@ -80,7 +81,7 @@ class _ProInboxScreenState extends ConsumerState<ProInboxScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Filters, then the register's ink head rule.
+            // Filters over a hairline.
             SizedBox(
               height: 64,
               child: ListView(
@@ -126,7 +127,7 @@ class _ProInboxScreenState extends ConsumerState<ProInboxScreen> {
               padding: EdgeInsetsDirectional.symmetric(
                 horizontal: AppSpacing.gutter,
               ),
-              child: LedgerRule(strong: true),
+              child: Hairline(),
             ),
             Expanded(child: body),
           ],
@@ -192,7 +193,7 @@ class _Pages extends ConsumerWidget {
       }
       final list = async.requireValue;
       if (page == 0 && list.isEmpty) {
-        return TypeEmpty(
+        return CalmEmpty(
           icon: Icons.inbox_outlined,
           title: l10n.proInboxEmptyTitle,
           body: l10n.proInboxEmptyBody,
@@ -243,56 +244,81 @@ class _RequestCard extends ConsumerWidget {
     final locale = Localizations.localeOf(context);
     final text = Theme.of(context).textTheme;
     final muted = Theme.of(context).colorScheme.onSurfaceVariant;
-    final category = (ref.watch(categoriesProvider).value ?? const [])
+    final scheme = Theme.of(context).colorScheme;
+    final cat = (ref.watch(categoriesProvider).value ?? const [])
         .where((c) => c.id == request.categoryId)
-        .map((c) => c.nameFor(locale))
         .firstOrNull;
     final place = (ref.watch(governoratesProvider).value ?? const [])
         .where((g) => g.id == request.governorateId)
         .map((g) => g.nameFor(locale))
         .firstOrNull;
     final mineStatus = request.myOfferStatus;
-    final kicker = [
-      ledgerRef(l10n, request.id),
+    final meta = [
       formatDate(request.createdAt, locale),
-      ?category,
+      ?cat?.nameFor(locale),
       ?place,
     ].join(' · ');
-    return LedgerRow(
+    return FlowCard(
       index: index,
       semanticLabel: request.title,
       onTap: () => context.push(AppRoutes.proRequestPath(request.id)),
-      child: Column(
+      padding: const EdgeInsetsDirectional.all(AppSpacing.md + 2),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LedgerKicker(kicker),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            request.title,
-            style: text.titleMedium,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+          IconTile(
+            icon: categoryIcon(cat?.icon ?? ''),
+            seed: request.categoryId,
           ),
-          const SizedBox(height: AppSpacing.sm),
-          Wrap(
-            spacing: AppSpacing.md,
-            runSpacing: AppSpacing.xs,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              if (mineStatus != null)
-                LedgerStamp(
-                  big: true,
-                  label: l10n.offerYours(offerStatusLabel(l10n, mineStatus)),
-                  tone: offerStatusTone(mineStatus),
-                ),
-              Text(l10n.reqOffers(request.offersCount), style: text.titleSmall),
-              if (request.budgetTnd != null)
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
-                  l10n.reqBudget(formatTnd(request.budgetTnd!, locale)),
-                  style: text.bodyMedium?.copyWith(color: muted),
+                  request.title,
+                  style: text.titleMedium,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-            ],
+                const SizedBox(height: 2),
+                Text(
+                  meta,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: text.bodySmall?.copyWith(color: muted),
+                ),
+                const SizedBox(height: AppSpacing.sm + 2),
+                Wrap(
+                  spacing: AppSpacing.md,
+                  runSpacing: AppSpacing.xs,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    if (mineStatus != null)
+                      StatusPill(
+                        label: l10n.offerYours(
+                          offerStatusLabel(l10n, mineStatus),
+                        ),
+                        tone: offerStatusTone(mineStatus),
+                      ),
+                    Text(
+                      l10n.reqOffers(request.offersCount),
+                      style: request.offersCount > 0
+                          ? text.labelLarge?.copyWith(color: scheme.primary)
+                          : text.bodyMedium?.copyWith(color: muted),
+                    ),
+                    if (request.budgetTnd != null)
+                      Text(
+                        l10n.reqBudget(formatTnd(request.budgetTnd!, locale)),
+                        style: text.bodyMedium?.copyWith(color: muted),
+                      ),
+                  ],
+                ),
+              ],
+            ),
           ),
+          const SizedBox(width: AppSpacing.xs),
+          const EndChevron(),
         ],
       ),
     );

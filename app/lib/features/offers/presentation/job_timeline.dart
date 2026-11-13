@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../requests/presentation/ledger_widgets.dart';
+import '../../requests/presentation/flow_widgets.dart';
 import '../domain/offers_domain.dart';
 import 'offers_texts.dart';
 
@@ -31,8 +31,8 @@ class JobTimeline extends StatelessWidget {
   }
 }
 
-/// The compact form for a list row: the step squares, then the current
-/// status as a stamp (a cancelled job shows only its stamp).
+/// The compact form for a list row: the step dots, then the current status
+/// as a pill (a cancelled job shows only its pill).
 class JobTrack extends StatelessWidget {
   const JobTrack({super.key, required this.status});
 
@@ -41,8 +41,7 @@ class JobTrack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final stamp = LedgerStamp(
-      big: true,
+    final stamp = StatusPill(
       label: jobStatusLabel(l10n, status),
       tone: jobStatusTone(status),
     );
