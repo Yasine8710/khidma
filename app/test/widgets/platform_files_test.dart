@@ -102,13 +102,13 @@ void main() {
       await tester.runAsync(() async {
         for (final n in [192, 512]) {
           final i = await _decode('web/icons/Icon-maskable-$n.png');
-          // Background is brand violet 5B3CC4; anything else is the mark.
+          // Background is the brand black 141414; anything else is the mark.
           final r = _maxRadius(
             i,
             (r, g, b, a) =>
-                (r - 0x5B).abs() < 6 &&
-                (g - 0x3C).abs() < 6 &&
-                (b - 0xC4).abs() < 6,
+                (r - 0x14).abs() < 6 &&
+                (g - 0x14).abs() < 6 &&
+                (b - 0x14).abs() < 6,
           );
           expect(r, lessThanOrEqualTo(0.40), reason: 'Icon-maskable-$n');
         }
@@ -165,7 +165,7 @@ void main() {
         svg,
         contains('<rect x="20" y="20" width="80" height="80" rx="20"'),
       );
-      expect(svg, contains('fill="#5B3CC4"'));
+      expect(svg, contains('fill="#141414"'));
       expect(svg, contains('stroke="#FFFFFF" stroke-width="9"'));
       // The K's three strokes: the same in the painter and the script, and
       // offset by 20 into the SVG's 120 grid.

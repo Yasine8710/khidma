@@ -4,27 +4,29 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 
-/// The Khidma mark: a brand rounded square with a white "K" drawn in three
+/// The Khidma mark: a black rounded square with a white "K" drawn in three
 /// round-capped strokes. The same drawing as the app icon and the SVG
-/// (`scripts/make_brand_assets.py`, same geometry). Brand colours are fixed,
-/// not themed, so the mark looks the same everywhere.
+/// (`scripts/make_brand_assets.py`, same geometry). In dark mode it inverts
+/// (light square, black K) so it never melts into the dark background.
 class KhidmaMark extends StatelessWidget {
   const KhidmaMark({super.key, this.size = 48, this.color});
 
   final double size;
 
-  /// Square colour; defaults to the brand brand.
+  /// Square colour; defaults to the brand black (light grey in dark mode).
   final Color? color;
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final invert = color == null && scheme.brightness == Brightness.dark;
     return ExcludeSemantics(
       child: SizedBox.square(
         dimension: size,
         child: CustomPaint(
           painter: KhidmaMarkPainter(
-            block: color ?? AppColors.brand,
-            glyph: AppColors.paper,
+            block: color ?? (invert ? scheme.primary : AppColors.brand),
+            glyph: invert ? scheme.onPrimary : AppColors.paper,
           ),
         ),
       ),

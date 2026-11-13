@@ -1,7 +1,7 @@
-"""Generates Khidma brand rasters and the SVG mark (calm violet identity).
+"""Generates Khidma brand rasters and the SVG mark (black and white identity).
 
-Mark: a violet rounded square with a white "K" drawn in three round-capped
-strokes (no font needed). The app icon is the white K on a full violet field.
+Mark: a black (#141414) rounded square with a white "K" drawn in three round-capped
+strokes (no font needed). The app icon is the white K on a full black field.
 
 Run from the repo root (pip install -r scripts/requirements.txt):
   python scripts/make_brand_assets.py              # source rasters + SVG
@@ -9,9 +9,9 @@ Run from the repo root (pip install -r scripts/requirements.txt):
   python scripts/make_brand_assets.py --maskable   # padded web maskable icons
 
 Outputs in app/assets/brand/: icon-1024.png (opaque, iOS/web), icon-foreground.png
-(transparent white K, Android adaptive; adaptive_icon_background is VIOLET in
+(transparent white K, Android adaptive; adaptive_icon_background is #141414 in
 pubspec), icon-monochrome.png (Android themed icons), mark-splash.png
-(transparent: the violet square with the K), logo-mark.svg. `--maskable`
+(transparent: the black square with the K), logo-mark.svg. `--maskable`
 writes app/web/icons/Icon-maskable-{192,512}.png after the launcher-icons
 step, because that tool would otherwise reuse the full-bleed artwork, which
 the W3C maskable safe zone (80% circle) clips.
@@ -24,7 +24,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
-VIOLET = (0x5B, 0x3C, 0xC4, 255)
+BRAND = (0x14, 0x14, 0x14, 255)
 WHITE = (255, 255, 255, 255)
 CLEAR = (0, 0, 0, 0)
 
@@ -69,7 +69,7 @@ def render(size, background, scale, square=True, k=WHITE):
         ox = oy = (big - SIDE * s) / 2
         d.rounded_rectangle(
             [ox, oy, ox + SIDE * s, oy + SIDE * s], radius=RADIUS * s,
-            fill=VIOLET)
+            fill=BRAND)
     else:
         cx = (K_BOX[0] + K_BOX[2]) / 2
         cy = (K_BOX[1] + K_BOX[3]) / 2
@@ -85,8 +85,8 @@ def k_height():
 
 def write_sources():
     OUT.mkdir(parents=True, exist_ok=True)
-    # iOS / web icon: opaque full violet field, the K ~46% of the height.
-    render(1024, VIOLET, 1024 * 0.46 / k_height(), square=False).convert(
+    # iOS / web icon: opaque full black field, the K ~46% of the height.
+    render(1024, BRAND, 1024 * 0.46 / k_height(), square=False).convert(
         'RGB').save(OUT / 'icon-1024.png')
     # Android adaptive foreground: transparent white K inside the safe zone.
     render(1024, CLEAR, 1024 * 0.32 / k_height(), square=False).save(
@@ -94,7 +94,7 @@ def write_sources():
     # Android 13+ themed icon: the same single-colour K silhouette.
     render(1024, CLEAR, 1024 * 0.32 / k_height(), square=False).save(
         OUT / 'icon-monochrome.png')
-    # Splash mark: transparent, the violet square inside the Android 12 mask.
+    # Splash mark: transparent, the black square inside the Android 12 mask.
     render(768, CLEAR, 768 * 0.44 / SIDE).save(OUT / 'mark-splash.png')
     off = 20  # the SVG puts the 80-unit square in a 120 grid
     lines = '\n'.join(
@@ -102,7 +102,7 @@ def write_sources():
         for x0, y0, x1, y1 in STROKES)
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
   <title>Khidma</title>
-  <rect x="{off}" y="{off}" width="{SIDE}" height="{SIDE}" rx="{RADIUS}" fill="#5B3CC4"/>
+  <rect x="{off}" y="{off}" width="{SIDE}" height="{SIDE}" rx="{RADIUS}" fill="#141414"/>
   <g stroke="#FFFFFF" stroke-width="{STROKE}" stroke-linecap="round" fill="none">
 {lines}
   </g>
@@ -115,7 +115,7 @@ def write_maskable():
     """Opaque icons with the K well inside the 80% maskable safe circle."""
     WEB_ICONS.mkdir(parents=True, exist_ok=True)
     for size in (192, 512):
-        render(size, VIOLET, size * 0.36 / k_height(), square=False).convert(
+        render(size, BRAND, size * 0.36 / k_height(), square=False).convert(
             'RGB').save(WEB_ICONS / f'Icon-maskable-{size}.png')
 
 

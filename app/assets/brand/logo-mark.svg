@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
   <title>Khidma</title>
-  <rect x="20" y="20" width="80" height="80" rx="20" fill="#5B3CC4"/>
+  <rect x="20" y="20" width="80" height="80" rx="20" fill="#141414"/>
   <g stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" fill="none">
     <line x1="48" y1="42" x2="48" y2="78"/>
     <line x1="48" y1="66" x2="72" y2="42"/>

@@ -127,19 +127,19 @@ flutter_launcher_icons:
   ios: true
   image_path: assets/brand/icon-1024.png
   remove_alpha_ios: true
-  adaptive_icon_background: "#5B3CC4"
+  adaptive_icon_background: "#141414"
   adaptive_icon_foreground: assets/brand/icon-foreground.png
   adaptive_icon_monochrome: assets/brand/icon-monochrome.png
   web:
     generate: true
     image_path: assets/brand/icon-1024.png
-    background_color: "#FAF9FC"
-    theme_color: "#5B3CC4"
+    background_color: "#FFFFFF"
+    theme_color: "#141414"
 
 flutter_native_splash:
-  color: "#FAF9FC"
+  color: "#FFFFFF"
   image: assets/brand/mark-splash.png
   android_12:
-    color: "#FAF9FC"
+    color: "#FFFFFF"
     image: assets/brand/mark-splash.png
   web: true
