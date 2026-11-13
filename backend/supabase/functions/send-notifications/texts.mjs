@@ -7,7 +7,7 @@ export const KINDS = [
   'offer_received', 'offer_accepted', 'message',
   'job_started', 'job_done', 'job_completed', 'job_cancelled',
   'report_actioned', 'report_dismissed', 'account_suspended', 'account_restored',
-  'appeal_rejected', 'verification_expired',
+  'appeal_rejected', 'verification_expired', 'listing_held', 'listing_released',
 ];
 
 const TEXTS = {
@@ -76,6 +76,16 @@ const TEXTS = {
     ar: ['انتهت صلاحية الشارة', 'انتهت صلاحية التحقق. جدّده لاستعادة الشارة.'],
     en: ['Badge expired', 'Your verification expired. Renew it to get the badge back.'],
   },
+  listing_held: {
+    fr: ['Annonce retirée', 'Votre annonce freelance a été retirée. Ouvrez l’app pour voir pourquoi.'],
+    ar: ['تم سحب إعلانك', 'تم سحب إعلانك الحر. افتح التطبيق لمعرفة السبب.'],
+    en: ['Listing taken down', 'Your freelance listing was taken down. Open the app to see why.'],
+  },
+  listing_released: {
+    fr: ['Annonce débloquée', 'Vous pouvez de nouveau publier votre annonce freelance.'],
+    ar: ['تم رفع الحظر عن إعلانك', 'يمكنك نشر إعلانك الحر من جديد.'],
+    en: ['Listing unlocked', 'You can publish your freelance listing again.'],
+  },
 };
 
 /** The title and body for a kind, in `language` (French when unknown). */
@@ -108,6 +118,9 @@ export function notificationRoute(kind, payload) {
       return '/pro';
     case 'verification_expired':
       return '/pro/verification';
+    case 'listing_held':
+    case 'listing_released':
+      return '/pro/freelance';
     default:
       return '/home';
   }

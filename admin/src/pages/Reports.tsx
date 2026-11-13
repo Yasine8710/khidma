@@ -40,8 +40,18 @@ function Context({ report }: { report: ReportRow }) {
     );
   }
   const messages = Array.isArray(ctx['messages']) ? (ctx['messages'] as Record<string, unknown>[]) : null;
+  const held = report.target_type === 'freelancer' && typeof ctx['admin_hold_reason'] === 'string';
   return (
     <div className="context">
+      {held && (
+        <QuickAction
+          label="Release listing"
+          onRun={async () => {
+            await api.releaseFreelancer(report.target_id);
+            setCtx({ ...ctx, admin_hold_reason: null });
+          }}
+        />
+      )}
       {messages ? (
         <ol>
           {messages.map((m, i) => (
@@ -95,6 +105,10 @@ export function Reports() {
     await api.handleReport(r.id, s, note);
     paged.reload();
   };
+  const hold = (r: ReportRow) => async (reason: string) => {
+    await api.holdFreelancer(r.target_id, reason, r.id);
+    paged.reload();
+  };
   // One step from the queue: suspends the person and closes all their open reports.
   const suspend = (r: ReportRow, days: number | null) => async (reason: string) => {
     await api.suspend(r.subject_id!, days, reason, r.id);
@@ -144,6 +158,9 @@ export function Reports() {
                   <>
                     <NoteAction label="Action taken" prompt="What was done (optional)" onSubmit={handle(r, 'actioned')} />
                     <NoteAction label="Dismiss" prompt="Why (optional)" onSubmit={handle(r, 'dismissed')} />
+                    {r.target_type === 'freelancer' && (
+                      <NoteAction label="Unpublish listing" prompt="Reason (shown to the freelancer)" danger required onSubmit={hold(r)} />
+                    )}
                     {r.subject_id && r.subject_is_professional && !r.subject_suspended && (
                       <>
                         <NoteAction label="Suspend 7 days" prompt="Reason (shown to the professional)" danger required onSubmit={suspend(r, 7)} />

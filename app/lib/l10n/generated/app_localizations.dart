@@ -4761,6 +4761,78 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Identité vérifiée, valable jusqu’au {date}'**
   String verifiedUntil(String date);
+
+  /// No description provided for @flPolicyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Services interdits'**
+  String get flPolicyTitle;
+
+  /// No description provided for @flPolicyIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une annonce qui propose l’un de ces services est retirée, et le compte peut être suspendu.'**
+  String get flPolicyIntro;
+
+  /// No description provided for @flPolicyIllegal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout service illégal en Tunisie, ou qui aide à contourner la loi.'**
+  String get flPolicyIllegal;
+
+  /// No description provided for @flPolicyAcademic.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faire à la place d’un élève ou d’un étudiant un devoir, un mémoire ou un examen.'**
+  String get flPolicyAcademic;
+
+  /// No description provided for @flPolicyDocuments.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faux documents : diplômes, attestations, pièces d’identité, factures.'**
+  String get flPolicyDocuments;
+
+  /// No description provided for @flPolicyPlagiarism.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un portfolio avec le travail de quelqu’un d’autre présenté comme le vôtre.'**
+  String get flPolicyPlagiarism;
+
+  /// No description provided for @flPolicyAccounts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente de comptes, de faux avis, d’abonnés ou de « likes ».'**
+  String get flPolicyAccounts;
+
+  /// No description provided for @flPolicyAccept.
+  ///
+  /// In fr, this message translates to:
+  /// **'J’accepte et je publie'**
+  String get flPolicyAccept;
+
+  /// No description provided for @flPolicyLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les services interdits'**
+  String get flPolicyLink;
+
+  /// No description provided for @flOnHoldTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annonce retirée par l’équipe'**
+  String get flOnHoldTitle;
+
+  /// No description provided for @flOnHoldReason.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif : {reason}. Corrigez votre annonce puis contactez le support pour la remettre en ligne.'**
+  String flOnHoldReason(String reason);
+
+  /// No description provided for @flErrOnHold.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre annonce est retirée : elle ne peut pas être publiée pour l’instant.'**
+  String get flErrOnHold;
 }
 
 class _AppLocalizationsDelegate

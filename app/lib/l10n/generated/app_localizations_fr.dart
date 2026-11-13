@@ -2658,4 +2658,49 @@ class AppLocalizationsFr extends AppLocalizations {
   String verifiedUntil(String date) {
     return 'Identité vérifiée, valable jusqu’au $date';
   }
+
+  @override
+  String get flPolicyTitle => 'Services interdits';
+
+  @override
+  String get flPolicyIntro =>
+      'Une annonce qui propose l’un de ces services est retirée, et le compte peut être suspendu.';
+
+  @override
+  String get flPolicyIllegal =>
+      'Tout service illégal en Tunisie, ou qui aide à contourner la loi.';
+
+  @override
+  String get flPolicyAcademic =>
+      'Faire à la place d’un élève ou d’un étudiant un devoir, un mémoire ou un examen.';
+
+  @override
+  String get flPolicyDocuments =>
+      'Faux documents : diplômes, attestations, pièces d’identité, factures.';
+
+  @override
+  String get flPolicyPlagiarism =>
+      'Un portfolio avec le travail de quelqu’un d’autre présenté comme le vôtre.';
+
+  @override
+  String get flPolicyAccounts =>
+      'Vente de comptes, de faux avis, d’abonnés ou de « likes ».';
+
+  @override
+  String get flPolicyAccept => 'J’accepte et je publie';
+
+  @override
+  String get flPolicyLink => 'Voir les services interdits';
+
+  @override
+  String get flOnHoldTitle => 'Annonce retirée par l’équipe';
+
+  @override
+  String flOnHoldReason(String reason) {
+    return 'Motif : $reason. Corrigez votre annonce puis contactez le support pour la remettre en ligne.';
+  }
+
+  @override
+  String get flErrOnHold =>
+      'Votre annonce est retirée : elle ne peut pas être publiée pour l’instant.';
 }

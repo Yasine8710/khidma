@@ -55,7 +55,7 @@ const COLUMN_GRANTS = {
   'freelancer_portfolio_items authenticated SELECT': 'created_at description freelancer_id id kind path sort_order title url',
   'freelancer_portfolio_items authenticated UPDATE': 'description sort_order title',
   'freelancer_profiles anon SELECT': 'availability bio created_at display_name headline is_published languages price_unit primary_category_id rating_avg review_count skills starting_price_millimes user_id years_experience',
-  'freelancer_profiles authenticated SELECT': 'availability bio created_at display_name headline is_published languages price_unit primary_category_id rating_avg review_count skills starting_price_millimes user_id years_experience',
+  'freelancer_profiles authenticated SELECT': 'admin_hold_reason availability bio created_at display_name headline is_published languages price_unit primary_category_id rating_avg review_count skills starting_price_millimes user_id years_experience',
   'freelancer_profiles authenticated UPDATE': 'availability bio display_name headline is_published languages price_unit primary_category_id skills starting_price_millimes years_experience',
   'governorates anon SELECT': 'code id latitude longitude name_ar name_en name_fr',
   'governorates authenticated SELECT': 'code id latitude longitude name_ar name_en name_fr',

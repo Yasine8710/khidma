@@ -20,6 +20,7 @@ import '../domain/freelance_domain.dart';
 import 'freelance_invites_section.dart';
 import 'freelance_portfolio_manager.dart';
 import 'freelance_widgets.dart';
+import 'prohibited_policy.dart';
 
 /// The owner's freelance space: become a freelancer, edit the page, check the
 /// identity, publish, manage work and testimonial invitations.
@@ -177,6 +178,9 @@ class _EditorState extends ConsumerState<_Editor> {
 
   Future<void> _togglePublish(bool on) async {
     final l10n = AppLocalizations.of(context);
+    // The rules are agreed to before every publication.
+    if (on && !await showProhibitedPolicy(context, confirm: true)) return;
+    if (!mounted) return;
     // What is on screen is saved first, so publishing checks the same page.
     if (on && !await _save(announce: false)) return;
     final f = await ref
@@ -195,7 +199,7 @@ class _EditorState extends ConsumerState<_Editor> {
     final busy = ref.watch(freelanceActionsProvider);
     final cats = ref.watch(digitalCategoriesProvider).value ?? const [];
     final me = widget.me;
-    final canToggle = me.isVerified || me.isPublished;
+    final canToggle = (me.isVerified && !me.isOnHold) || me.isPublished;
     const gap = SizedBox(height: AppSpacing.md);
 
     return ListView(
@@ -233,6 +237,10 @@ class _EditorState extends ConsumerState<_Editor> {
           ),
         ],
         const SizedBox(height: AppSpacing.md),
+        if (me.isOnHold) ...[
+          _HoldNotice(reason: me.holdReason!),
+          const SizedBox(height: AppSpacing.md),
+        ],
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(l10n.flPublish),
@@ -245,6 +253,10 @@ class _EditorState extends ConsumerState<_Editor> {
           ),
           value: me.isPublished,
           onChanged: canToggle && !busy ? _togglePublish : null,
+        ),
+        const Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: ProhibitedPolicyLink(),
         ),
         const SizedBox(height: AppSpacing.xl),
         SectionTitle(title: l10n.flSectionProfile),
@@ -387,6 +399,51 @@ class _EditorState extends ConsumerState<_Editor> {
         const SizedBox(height: AppSpacing.xxl),
         const FreelanceInvitesSection(),
       ],
+    );
+  }
+}
+
+/// The admin's reason when the listing was taken down.
+class _HoldNotice extends StatelessWidget {
+  const _HoldNotice({required this.reason});
+
+  final String reason;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
+    return Semantics(
+      container: true,
+      liveRegion: true,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: scheme.errorContainer,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                l10n.flOnHoldTitle,
+                style: text.titleMedium?.copyWith(
+                  color: scheme.onErrorContainer,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                l10n.flOnHoldReason(reason),
+                style: text.bodyMedium?.copyWith(
+                  color: scheme.onErrorContainer,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

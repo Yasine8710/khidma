@@ -248,6 +248,8 @@ describe('sequence and function exposure', () => {
       // trust v2
       'admin_decide_appeal', 'admin_list_appeals', 'admin_revoke_verification', 'admin_suspend', 'badge_valid',
       'my_account_status', 'report_message', 'submit_appeal', 'tunis_today',
+      // freelance moderation
+      'admin_hold_freelancer', 'admin_release_freelancer',
     ].sort());
   });
 

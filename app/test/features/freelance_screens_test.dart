@@ -369,12 +369,56 @@ void main() {
       expect(find.text('Vérifié'), findsOneWidget);
       await tester.tap(find.byType(SwitchListTile));
       await tester.pumpAndSettle();
+      // the rules come first; closing them publishes nothing
+      expect(find.text('Services interdits'), findsOneWidget);
+      await tester.tapAt(const Offset(10, 10));
+      await tester.pumpAndSettle();
+      expect(repo.publishCalls, isEmpty);
+      expect(repo.saved, isEmpty);
+      await tester.tap(find.byType(SwitchListTile));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('J’accepte et je publie'));
+      await tester.pumpAndSettle();
       expect(repo.saved, hasLength(1));
       expect(repo.publishCalls, [true]);
       expect(
         tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
         isTrue,
       );
+    });
+
+    testWidgets('a listing on hold shows why and cannot be published', (
+      tester,
+    ) async {
+      final repo = FakeFreelanceRepository(
+        me: MyFreelancer(
+          name: _verifiedMe.name,
+          headline: _verifiedMe.headline,
+          bio: _verifiedMe.bio,
+          categoryId: _verifiedMe.categoryId,
+          verification: _verifiedMe.verification,
+          holdReason: 'Portfolio copié',
+        ),
+      );
+      await host(tester, const FreelanceManageScreen(), repo: repo);
+      expect(find.text('Annonce retirée par l’équipe'), findsOneWidget);
+      expect(find.textContaining('Motif : Portfolio copié'), findsOneWidget);
+      expect(
+        tester.widget<SwitchListTile>(find.byType(SwitchListTile)).onChanged,
+        isNull,
+      );
+    });
+
+    testWidgets('the prohibited services can be read from the workspace', (
+      tester,
+    ) async {
+      final repo = FakeFreelanceRepository(me: _verifiedMe);
+      await host(tester, const FreelanceManageScreen(), repo: repo);
+      await tester.ensureVisible(find.text('Voir les services interdits'));
+      await tester.tap(find.text('Voir les services interdits'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Faux documents'), findsOneWidget);
+      expect(find.text('J’accepte et je publie'), findsNothing);
     });
 
     testWidgets('the form checks lengths before saving', (tester) async {
@@ -411,6 +455,8 @@ void main() {
       await host(tester, const FreelanceManageScreen(), repo: repo);
       repo.failNext = FreelanceFailure.incomplete;
       await tester.tap(find.byType(SwitchListTile));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('J’accepte et je publie'));
       await tester.pumpAndSettle();
       expect(
         find.textContaining('numéro de téléphone de contact'),

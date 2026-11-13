@@ -2613,4 +2613,47 @@ class AppLocalizationsAr extends AppLocalizations {
   String verifiedUntil(String date) {
     return 'هوية موثّقة، صالحة حتى $date';
   }
+
+  @override
+  String get flPolicyTitle => 'خدمات ممنوعة';
+
+  @override
+  String get flPolicyIntro =>
+      'يُسحب كل إعلان يعرض إحدى هذه الخدمات، وقد يُعلَّق الحساب.';
+
+  @override
+  String get flPolicyIllegal =>
+      'أي خدمة غير قانونية في تونس أو تساعد على التحايل على القانون.';
+
+  @override
+  String get flPolicyAcademic =>
+      'إنجاز واجب أو مذكرة أو امتحان بدلًا من تلميذ أو طالب.';
+
+  @override
+  String get flPolicyDocuments =>
+      'وثائق مزوّرة: شهادات، إفادات، بطاقات هوية، فواتير.';
+
+  @override
+  String get flPolicyPlagiarism => 'ملف أعمال يقدّم عمل شخص آخر على أنه عملك.';
+
+  @override
+  String get flPolicyAccounts =>
+      'بيع حسابات أو تقييمات مزيفة أو متابعين أو إعجابات.';
+
+  @override
+  String get flPolicyAccept => 'أوافق وأنشر';
+
+  @override
+  String get flPolicyLink => 'عرض الخدمات الممنوعة';
+
+  @override
+  String get flOnHoldTitle => 'سحب الفريق إعلانك';
+
+  @override
+  String flOnHoldReason(String reason) {
+    return 'السبب: $reason. صحّح إعلانك ثم اتصل بالدعم لإعادة نشره.';
+  }
+
+  @override
+  String get flErrOnHold => 'إعلانك مسحوب: لا يمكن نشره حاليًا.';
 }

@@ -2628,4 +2628,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String verifiedUntil(String date) {
     return 'Identity verified, valid until $date';
   }
+
+  @override
+  String get flPolicyTitle => 'Prohibited services';
+
+  @override
+  String get flPolicyIntro =>
+      'A listing that offers any of these is taken down, and the account can be suspended.';
+
+  @override
+  String get flPolicyIllegal =>
+      'Anything illegal in Tunisia, or that helps get around the law.';
+
+  @override
+  String get flPolicyAcademic =>
+      'Doing homework, a thesis or an exam in a student’s place.';
+
+  @override
+  String get flPolicyDocuments =>
+      'Fake documents: diplomas, certificates, ID papers, invoices.';
+
+  @override
+  String get flPolicyPlagiarism =>
+      'A portfolio showing someone else’s work as yours.';
+
+  @override
+  String get flPolicyAccounts =>
+      'Selling accounts, fake reviews, followers or likes.';
+
+  @override
+  String get flPolicyAccept => 'I agree and publish';
+
+  @override
+  String get flPolicyLink => 'See prohibited services';
+
+  @override
+  String get flOnHoldTitle => 'Listing taken down by the team';
+
+  @override
+  String flOnHoldReason(String reason) {
+    return 'Reason: $reason. Fix your listing, then contact support to put it back online.';
+  }
+
+  @override
+  String get flErrOnHold =>
+      'Your listing is taken down: it cannot be published for now.';
 }

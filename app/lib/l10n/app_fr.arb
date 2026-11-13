@@ -1177,5 +1177,24 @@
         "type": "String"
       }
     }
-  }
+  },
+  "flPolicyTitle": "Services interdits",
+  "flPolicyIntro": "Une annonce qui propose l’un de ces services est retirée, et le compte peut être suspendu.",
+  "flPolicyIllegal": "Tout service illégal en Tunisie, ou qui aide à contourner la loi.",
+  "flPolicyAcademic": "Faire à la place d’un élève ou d’un étudiant un devoir, un mémoire ou un examen.",
+  "flPolicyDocuments": "Faux documents : diplômes, attestations, pièces d’identité, factures.",
+  "flPolicyPlagiarism": "Un portfolio avec le travail de quelqu’un d’autre présenté comme le vôtre.",
+  "flPolicyAccounts": "Vente de comptes, de faux avis, d’abonnés ou de « likes ».",
+  "flPolicyAccept": "J’accepte et je publie",
+  "flPolicyLink": "Voir les services interdits",
+  "flOnHoldTitle": "Annonce retirée par l’équipe",
+  "flOnHoldReason": "Motif : {reason}. Corrigez votre annonce puis contactez le support pour la remettre en ligne.",
+  "@flOnHoldReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "flErrOnHold": "Votre annonce est retirée : elle ne peut pas être publiée pour l’instant."
 }

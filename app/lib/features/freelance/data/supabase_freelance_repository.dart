@@ -47,6 +47,7 @@ FreelanceFailure mapFreelanceException(Object error) {
         final m = error.message;
         if (m.contains('not_verified')) return FreelanceFailure.notVerified;
         if (m.contains('incomplete')) return FreelanceFailure.incomplete;
+        if (m.contains('on_hold')) return FreelanceFailure.onHold;
         if (m.contains('suspended')) return FreelanceFailure.suspended;
         if (m.contains('limit_reached')) return FreelanceFailure.limitReached;
         if (m.contains('invalid_input')) return FreelanceFailure.invalidInput;
@@ -206,7 +207,8 @@ class SupabaseFreelanceRepository implements FreelanceRepository {
     final uid = _uid();
     final row = await _client
         .from('freelancer_profiles')
-        .select(_withPro)
+        // the hold reason is only ever read by the owner
+        .select('$_withPro, admin_hold_reason')
         .eq('user_id', uid)
         .maybeSingle();
     if (row == null) return null;
@@ -224,6 +226,7 @@ class SupabaseFreelanceRepository implements FreelanceRepository {
       availability: s.availability,
       isPublished: row['is_published'] == true,
       verification: s.verification,
+      holdReason: row['admin_hold_reason'] as String?,
     );
   });
 

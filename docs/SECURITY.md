@@ -165,6 +165,10 @@ Known residuals, all waiting on the server-side worker of #32 or a real Supabase
 - Badge: verification is valid 365 days (`verified_until`, a Tunis date, public). `badge_valid()` gates the search output and freelance visibility, the app hides a badge past its date, and `service_expire_verifications()` (service role, daily) turns expired ones back to unverified with a notice. Admins can revoke a badge (`revoked`, reason required, audited). The profile shows "Identity verified, valid until ..."; no document data is ever shown.
 - Owner step: enable `pg_cron` (Database > Extensions) **before** running migration 2000 so the two jobs are scheduled; otherwise schedule both `service_*` functions with any daily or 15-minute cron.
 
+### Freelance moderation (#67, migration 2100)
+- Prohibited services (illegal services, academic cheating, fake documents, plagiarised portfolios, selling accounts or fake reviews) are listed in the app in FR/AR/EN: agreed to before every publication and linked from the report form for freelance listings and testimonials.
+- `admin_hold_freelancer(user, reason, report?)` unpublishes a freelance listing and puts it on hold (`admin_hold_reason`, shown to the owner only: a held listing is unpublished, so no one else can read its row, and visitors have no grant). A trigger refuses republishing while held; `admin_release_freelancer` lifts it. From a report, the report is closed as actioned and its reporter told. Both actions are audited and send the owner a notice. The local professional profile is not touched (that is what suspension is for).
+
 ## Security audit (#55, 2026-11-13)
 
 ### Threat model (STRIDE)

@@ -41,6 +41,7 @@ String freelanceFailureText(
   FreelanceFailure.notVerified => l10n.flErrNotVerified,
   FreelanceFailure.incomplete => l10n.flErrIncomplete,
   FreelanceFailure.suspended => l10n.flErrSuspended,
+  FreelanceFailure.onHold => l10n.flErrOnHold,
   FreelanceFailure.limitReached => limit ?? l10n.flPortLimit,
   FreelanceFailure.tooLarge => l10n.flPortTooLarge,
   FreelanceFailure.unsupportedFormat => l10n.flPortBadFormat,

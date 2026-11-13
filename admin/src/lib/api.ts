@@ -241,6 +241,11 @@ export function createApi(rpc: Rpc) {
       call<void>('admin_suspend', { p_user: user, p_days: days, p_reason: reason.trim(), p_report: report ?? null }),
     decideAppeal: (id: string, lift: boolean, note?: string) =>
       call<void>('admin_decide_appeal', { p_appeal: id, p_lift: lift, p_note: note?.trim() || null }),
+    /** Takes a freelance listing down (the reason is shown to the freelancer). */
+    holdFreelancer: (user: string, reason: string, report?: string) =>
+      call<void>('admin_hold_freelancer', { p_user: user, p_reason: reason.trim(), p_report: report ?? null }),
+    releaseFreelancer: (user: string, note?: string) =>
+      call<void>('admin_release_freelancer', { p_user: user, p_note: note?.trim() || null }),
     revokeVerification: (user: string, reason: string) =>
       call<void>('admin_revoke_verification', { p_user: user, p_reason: reason.trim() }),
     setReviewStatus: (id: string, status: 'published' | 'hidden', note?: string) =>

@@ -290,6 +290,7 @@ class MyFreelancer {
     this.availability = Availability.available,
     this.isPublished = false,
     this.verification = Verification.unverified,
+    this.holdReason,
   });
 
   final String? name;
@@ -307,7 +308,11 @@ class MyFreelancer {
   /// One identity check shared with the local professional profile.
   final Verification verification;
 
+  /// Why an admin took the listing down (null when it is not on hold).
+  final String? holdReason;
+
   bool get isVerified => verification == Verification.verified;
+  bool get isOnHold => holdReason != null;
 }
 
 /// The editable fields, as saved.
@@ -381,6 +386,9 @@ enum FreelanceFailure {
   /// Publishing needs a contact phone and a complete page.
   incomplete,
   suspended,
+
+  /// An admin took the listing down; it cannot be republished until lifted.
+  onHold,
 
   /// 24 portfolio items, or 20 open invitations.
   limitReached,

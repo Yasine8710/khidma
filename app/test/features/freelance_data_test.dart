@@ -147,6 +147,7 @@ void main() {
       expect(map('P0001', 'not_verified'), FreelanceFailure.notVerified);
       expect(map('P0001', 'incomplete'), FreelanceFailure.incomplete);
       expect(map('P0001', 'suspended'), FreelanceFailure.suspended);
+      expect(map('P0001', 'on_hold'), FreelanceFailure.onHold);
       expect(map('P0001', 'limit_reached'), FreelanceFailure.limitReached);
       expect(map('P0001', 'invalid_input'), FreelanceFailure.invalidInput);
       expect(map('P0001', 'rate_limited'), FreelanceFailure.rateLimited);

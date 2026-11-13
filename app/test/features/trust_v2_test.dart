@@ -16,6 +16,7 @@ import 'package:khidma/features/requests/domain/requests_domain.dart';
 import 'package:khidma/features/trust/application/trust_providers.dart';
 import 'package:khidma/features/trust/data/supabase_trust_repository.dart';
 import 'package:khidma/features/trust/domain/trust_domain.dart';
+import 'package:khidma/features/trust/presentation/report_sheet.dart';
 import 'package:khidma/features/trust/presentation/suspension_card.dart';
 import 'package:khidma/l10n/generated/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
@@ -372,6 +373,43 @@ void main() {
       expect(trust.reports.single.$2, '7');
       expect(trust.reports.single.$3, ReportReason.payOutside);
     });
+  });
+
+  testWidgets('reporting a freelancer links to the prohibited services', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(800, 1800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final c = ProviderContainer(
+      overrides: [
+        trustRepositoryProvider.overrideWithValue(FakeTrustRepository()),
+      ],
+    );
+    addTearDown(c.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: c,
+        child: MaterialApp(
+          locale: const Locale('fr'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const Scaffold(
+            body: Center(
+              child: ReportButton(
+                target: ReportTarget.freelancer,
+                targetId: 'f1',
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.byType(ReportButton));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Voir les services interdits'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Faire à la place d’un élève'), findsOneWidget);
   });
 
   testWidgets('every new string exists in Arabic and English', (tester) async {

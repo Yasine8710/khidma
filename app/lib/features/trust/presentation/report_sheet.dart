@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../freelance/presentation/prohibited_policy.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -148,6 +149,13 @@ class _ReportSheetState extends ConsumerState<_ReportSheet> {
             l10n.reportHint,
             style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
           ),
+          // Freelance listings: what is not allowed, to help pick a reason.
+          if (widget.target == ReportTarget.freelancer ||
+              widget.target == ReportTarget.testimonial)
+            const Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: ProhibitedPolicyLink(),
+            ),
           const SizedBox(height: AppSpacing.md),
           // Reasons as a grouped list of radio rows.
           FlowCard(

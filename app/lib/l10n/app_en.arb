@@ -838,5 +838,17 @@
   "appealRejected": "Your last appeal was rejected.",
   "appealFailRate": "Wait a week after a rejection before appealing again.",
   "appealFailGeneric": "The appeal could not be sent. Try again.",
-  "verifiedUntil": "Identity verified, valid until {date}"
+  "verifiedUntil": "Identity verified, valid until {date}",
+  "flPolicyTitle": "Prohibited services",
+  "flPolicyIntro": "A listing that offers any of these is taken down, and the account can be suspended.",
+  "flPolicyIllegal": "Anything illegal in Tunisia, or that helps get around the law.",
+  "flPolicyAcademic": "Doing homework, a thesis or an exam in a student’s place.",
+  "flPolicyDocuments": "Fake documents: diplomas, certificates, ID papers, invoices.",
+  "flPolicyPlagiarism": "A portfolio showing someone else’s work as yours.",
+  "flPolicyAccounts": "Selling accounts, fake reviews, followers or likes.",
+  "flPolicyAccept": "I agree and publish",
+  "flPolicyLink": "See prohibited services",
+  "flOnHoldTitle": "Listing taken down by the team",
+  "flOnHoldReason": "Reason: {reason}. Fix your listing, then contact support to put it back online.",
+  "flErrOnHold": "Your listing is taken down: it cannot be published for now."
 }

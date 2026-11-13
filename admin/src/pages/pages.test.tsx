@@ -155,6 +155,30 @@ describe('Reports: trust v2', () => {
   });
 });
 
+describe('Reports: freelance listings', () => {
+  it('a reported listing can be unpublished with a reason, and released from its context', async () => {
+    const holdFreelancer = vi.fn().mockResolvedValue(undefined);
+    const releaseFreelancer = vi.fn().mockResolvedValue(undefined);
+    const reportContext = vi.fn().mockResolvedValue({ display_name: 'Sami', admin_hold_reason: 'Plagiat' });
+    const reports = vi.fn().mockResolvedValue([rep({ target_type: 'freelancer', target_id: 'f1aaaaaaaa' })]);
+    renderWith(<Reports />, { api: fakeApi({ reports, holdFreelancer, releaseFreelancer, reportContext }) });
+    const user = userEvent.setup();
+    await user.click(await screen.findByRole('button', { name: 'Unpublish listing' }));
+    await user.type(screen.getByLabelText('Reason (shown to the freelancer)'), 'Plagiat');
+    await user.click(screen.getByRole('button', { name: 'Confirm: Unpublish listing' }));
+    await waitFor(() => expect(holdFreelancer).toHaveBeenCalledWith('f1aaaaaaaa', 'Plagiat', 'r1'));
+    await user.click(screen.getByRole('button', { name: 'Show details' }));
+    await user.click(await screen.findByRole('button', { name: 'Release listing' }));
+    await waitFor(() => expect(releaseFreelancer).toHaveBeenCalledWith('f1aaaaaaaa'));
+  });
+
+  it('other targets have no unpublish button', async () => {
+    renderWith(<Reports />, { api: fakeApi({ reports: vi.fn().mockResolvedValue([rep()]) }) });
+    await screen.findByRole('button', { name: 'Dismiss' });
+    expect(screen.queryByRole('button', { name: 'Unpublish listing' })).toBeNull();
+  });
+});
+
 describe('Appeals', () => {
   it('lists open appeals; lifting or keeping sends the decision', async () => {
     const appeals = vi.fn().mockResolvedValue([

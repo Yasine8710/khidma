@@ -10,7 +10,7 @@ export function fakeApi(over: Partial<Record<keyof Api, unknown>> = {}): Api {
     'isAdmin', 'overview', 'stats', 'users', 'professionals', 'requests', 'reviews', 'verifications',
     'reports', 'reportContext', 'audit', 'reviewVerification', 'handleReport', 'setSuspended',
     'setReviewStatus', 'upsertCategory', 'paymentOrders', 'confirmPayment', 'rejectPayment', 'setPaymentSetting',
-    'appeals', 'suspend', 'decideAppeal', 'revokeVerification',
+    'appeals', 'suspend', 'decideAppeal', 'revokeVerification', 'holdFreelancer', 'releaseFreelancer',
   ] as const;
   const api: Record<string, unknown> = {};
   for (const n of names) {
