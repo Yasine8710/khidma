@@ -45,7 +45,7 @@ class SupabaseCustomerOffersRepository implements CustomerOffersRepository {
       final rows = await _client
           .from('quote_offers')
           .select(
-            'id, professional_id, price_tnd, message, estimated_days, status, created_at',
+            'id, professional_id, price_tnd, message, estimated_days, revisions, status, created_at',
           )
           .eq('request_id', requestId)
           .order('created_at', ascending: false)
@@ -61,6 +61,7 @@ class SupabaseCustomerOffersRepository implements CustomerOffersRepository {
             createdAt: DateTime.parse(r['created_at'] as String),
             message: r['message'] as String?,
             estimatedDays: (r['estimated_days'] as num?)?.toInt(),
+            revisions: (r['revisions'] as num?)?.toInt(),
           ),
         );
       }

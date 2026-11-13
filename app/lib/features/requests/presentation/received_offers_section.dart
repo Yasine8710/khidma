@@ -32,9 +32,16 @@ enum _Sort { price, rating, delay }
 /// behind each (name, rating, verified only when verified). The customer
 /// accepts or declines here; accepting awards the request.
 class ReceivedOffersSection extends ConsumerStatefulWidget {
-  const ReceivedOffersSection({super.key, required this.request});
+  const ReceivedOffersSection({
+    super.key,
+    required this.request,
+    this.remote = false,
+  });
 
   final QuoteRequest request;
+
+  /// A remote project: accepting shows the payment terms first.
+  final bool remote;
 
   @override
   ConsumerState<ReceivedOffersSection> createState() =>
@@ -92,11 +99,29 @@ class _ReceivedOffersSectionState extends ConsumerState<ReceivedOffersSection> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(accept ? l10n.offerAcceptTitle : l10n.offerDeclineTitle),
-        content: Text(
-          accept
-              ? l10n.offerAcceptBody(proName, formatTnd(offer.priceTnd, locale))
-              : l10n.offerDeclineBody,
-        ),
+        content: accept && widget.remote
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.offerAcceptBody(
+                      proName,
+                      formatTnd(offer.priceTnd, locale),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Text(l10n.projTerms),
+                ],
+              )
+            : Text(
+                accept
+                    ? l10n.offerAcceptBody(
+                        proName,
+                        formatTnd(offer.priceTnd, locale),
+                      )
+                    : l10n.offerDeclineBody,
+              ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
@@ -370,6 +395,11 @@ class _OfferCard extends StatelessWidget {
                 StatusPill(
                   label: offerStatusLabel(l10n, offer.status),
                   tone: offerStatusTone(offer.status),
+                ),
+              if (offer.revisions != null)
+                StatusPill(
+                  label: l10n.projRevisionsIncluded(offer.revisions!),
+                  icon: Icons.replay_rounded,
                 ),
               if (offer.estimatedDays != null)
                 Row(

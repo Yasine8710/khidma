@@ -27,7 +27,7 @@ const TABLES = {
   storage_cleanup_queue: 'closed', admin_audit_log: 'closed', admin_users: 'closed',
   verification_requests: 'closed', verification_documents: 'closed', reports: 'closed',
   admin_config: 'closed', payment_events: 'closed', payment_settings: 'closed', suspension_appeals: 'closed',
-  payment_proofs: 'closed',
+  payment_proofs: 'closed', job_deliveries: 'closed', delivery_files: 'closed',
 };
 
 /** For "public" tables: the column naming the owner, to look for a hidden owner's rows. */
@@ -40,7 +40,7 @@ const OWNER_COL = {
 /** Every column a client role may read or write, reviewed in #55. A new or
  * widened grant fails here until it is reviewed and added. */
 const COLUMN_GRANTS = {
-  'bookings authenticated SELECT': 'cancelled_at cancelled_by completed_at created_at customer_id done_at id offer_id price_tnd professional_id request_id started_at status updated_at',
+  'bookings authenticated SELECT': 'cancelled_at cancelled_by completed_at created_at customer_id done_at id offer_id price_tnd professional_id request_id revisions_used started_at status updated_at',
   'cities anon SELECT': 'governorate_id id latitude longitude name_ar name_en name_fr',
   'cities authenticated SELECT': 'governorate_id id latitude longitude name_ar name_en name_fr',
   'conversations authenticated SELECT': 'created_at id last_message_at offer_id',
@@ -77,8 +77,8 @@ const COLUMN_GRANTS = {
   'professional_services authenticated SELECT': 'category_id created_at professional_id',
   'profiles authenticated SELECT': 'avatar_path avatar_url created_at full_name id is_customer is_professional phone preferred_language updated_at',
   'profiles authenticated UPDATE': 'avatar_path avatar_url full_name phone preferred_language',
-  'quote_offers authenticated SELECT': 'created_at estimated_days id message price_tnd professional_id request_id status updated_at',
-  'quote_requests authenticated SELECT': 'budget_tnd category_id city_id created_at description expires_at governorate_id id needed_by status title updated_at',
+  'quote_offers authenticated SELECT': 'created_at estimated_days id message price_tnd professional_id request_id revisions status updated_at',
+  'quote_requests authenticated SELECT': 'budget_max_tnd budget_tnd category_id city_id created_at deliverables description digital_category_id expires_at governorate_id id kind needed_by reference_links status title updated_at',
   'request_photos authenticated INSERT': 'created_at id path request_id',
   'request_photos authenticated SELECT': 'created_at id path request_id',
   'reviews anon SELECT': 'comment id rating reviewed_month seq status subject_id',
@@ -158,6 +158,12 @@ describe('RLS and API pen-test across every table', () => {
     await call(p, 'select public.mark_booking_done($1)', ids.booking);
     await call(c, 'select public.confirm_booking_completed($1)', ids.booking);
     ids.review = (await call(c, 'select public.submit_review($1, 5::smallint, $2) as id', ids.booking, 'Tres bien')).id;
+    ids.remote = (await call(c, `select public.create_remote_request('Logo', 'Un logo pour ma boutique.', 1::smallint, 'Fichiers PNG et SVG') as id`)).id;
+    ids.remoteOffer = (await call(p, 'select public.submit_remote_offer($1, 300::numeric, 5::smallint, 2::smallint) as id', ids.remote)).id;
+    ids.remoteBooking = (await call(c, 'select public.accept_offer($1) as id', ids.remoteOffer)).id;
+    await call(p, 'select public.start_booking($1)', ids.remoteBooking);
+    await user(db, p).query(`insert into storage.objects (bucket_id, name, owner) values ('deliveries', $1, $2)`, [`${ids.remoteBooking}/logo.png`, p]);
+    await call(p, 'select public.deliver_booking($1, $2, null, $3::text[])', ids.remoteBooking, 'Voici le logo', [`${ids.remoteBooking}/logo.png`]);
     ids.photoRequest = (await call(c, `select public.create_quote_request('Peinture', 'Repeindre une chambre.', 1::smallint, 11::smallint) as id`)).id;
     await db.query(`insert into public.request_photos (request_id, path) values ($1, $2)`, [ids.photoRequest, `${randomUUID()}/p.jpg`]);
 
@@ -368,7 +374,7 @@ describe('RLS and API pen-test across every table', () => {
         where n.nspname = 'public' and p.proname not like 'admin\\_%' and p.pronargs = 1
           and p.proargtypes[0] = 'uuid'::regtype
           and has_function_privilege('authenticated', p.oid, 'execute')`)).rows.map((x) => x.proname).sort();
-    const targets = [ids.request, ids.offer, ids.booking, ids.conversation, ids.order, ids.review, ids.photoRequest, p, c];
+    const targets = [ids.request, ids.offer, ids.booking, ids.conversation, ids.order, ids.review, ids.photoRequest, ids.remote, ids.remoteBooking, p, c];
     const snapshot = async () => JSON.stringify((await db.query(
       `select (select json_agg(r order by r.id) from public.quote_requests r) as r,
               (select json_agg(o order by o.id) from public.quote_offers o) as o,

@@ -11,6 +11,7 @@ class ReceivedOffer {
     required this.createdAt,
     this.message,
     this.estimatedDays,
+    this.revisions,
   });
 
   final String id;
@@ -20,6 +21,9 @@ class ReceivedOffer {
   final DateTime createdAt;
   final String? message;
   final int? estimatedDays;
+
+  /// Revisions included (remote projects only).
+  final int? revisions;
 
   bool get isPending => status == OfferStatus.pending;
 }

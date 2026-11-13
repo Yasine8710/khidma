@@ -2698,4 +2698,184 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get reqFailSubscription =>
       'اشتراكك غير مسدّد: لا يمكنك إرسال عرض حاليًا.';
+
+  @override
+  String get projNewTitle => 'مشروع عن بُعد';
+
+  @override
+  String get projNewCta => 'انشر مشروعًا عن بُعد';
+
+  @override
+  String get projMine => 'مشاريعي عن بُعد';
+
+  @override
+  String get projFieldTitle => 'عنوان المشروع';
+
+  @override
+  String get projFieldCategory => 'نوع العمل';
+
+  @override
+  String get projFieldBrief => 'الوصف: اشرح حاجتك';
+
+  @override
+  String get projFieldDeliverables => 'المخرجات المطلوبة';
+
+  @override
+  String get projDeliverablesHint => 'مثال: شعار بصيغتي PNG وSVG، 3 مقترحات';
+
+  @override
+  String get projFieldBudgetMin => 'الميزانية الدنيا (د.ت)';
+
+  @override
+  String get projFieldBudgetMax => 'الميزانية القصوى (د.ت)';
+
+  @override
+  String get projFieldDeadline => 'آخر أجل (اختياري)';
+
+  @override
+  String get projFieldLink => 'رابط مرجعي (https)';
+
+  @override
+  String get projAddLink => 'أضف رابطًا';
+
+  @override
+  String get projErrLink => 'تُقبل روابط https:// فقط.';
+
+  @override
+  String get projErrBudget =>
+      'يجب أن تكون الميزانية القصوى أكبر من الدنيا أو مساوية لها.';
+
+  @override
+  String get projErrRequired => '3 أحرف على الأقل.';
+
+  @override
+  String get projErrBrief => '10 أحرف على الأقل.';
+
+  @override
+  String get projErrCategory => 'اختر نوع العمل.';
+
+  @override
+  String get projSubmit => 'انشر المشروع';
+
+  @override
+  String get projCreated => 'تم نشر المشروع. يمكن للمستقلين تقديم عروض.';
+
+  @override
+  String get projEmpty => 'لا توجد مشاريع عن بُعد حاليًا.';
+
+  @override
+  String get projEmptyOpen => 'لا توجد مشاريع مفتوحة حاليًا.';
+
+  @override
+  String get projRemote => 'عن بُعد';
+
+  @override
+  String projBudget(String range) {
+    return 'الميزانية: $range';
+  }
+
+  @override
+  String projDeadline(String date) {
+    return 'التسليم قبل $date';
+  }
+
+  @override
+  String get projDeliverables => 'المخرجات';
+
+  @override
+  String get projLinks => 'مراجع';
+
+  @override
+  String get projTerms =>
+      'خدمة لا تحتفظ بالمال: يتم الدفع مباشرة بينك وبين المستقل. اتفقا في المحادثة ولا تدفع المبلغ كاملًا مسبقًا أبدًا.';
+
+  @override
+  String get projOpenTitle => 'مشاريع مفتوحة';
+
+  @override
+  String get projOfferTitle => 'عرضك';
+
+  @override
+  String get projOfferPrice => 'السعر (د.ت)';
+
+  @override
+  String get projOfferDays => 'مدة التسليم (أيام)';
+
+  @override
+  String get projOfferRevisions => 'عدد التعديلات المشمولة';
+
+  @override
+  String get projOfferMessage => 'رسالة (اختيارية)';
+
+  @override
+  String get projOfferSend => 'أرسل العرض';
+
+  @override
+  String get projOfferSent => 'تم إرسال العرض.';
+
+  @override
+  String get projErrOffer =>
+      'السعر ≥ 1، المدة من 1 إلى 365 يومًا، ومن 0 إلى 20 تعديلًا.';
+
+  @override
+  String projRevisionsIncluded(int count) {
+    return '$count تعديل(ات) مشمولة';
+  }
+
+  @override
+  String get projDeliverTitle => 'سلّم العمل';
+
+  @override
+  String get projDeliverNote => 'رسالة التسليم';
+
+  @override
+  String get projDeliverLink => 'رابط (Drive، WeTransfer، Figma…)';
+
+  @override
+  String get projDeliverAddPhoto => 'أضف صورة';
+
+  @override
+  String projDeliverPhotos(int count) {
+    return '$count صورة مرفقة';
+  }
+
+  @override
+  String get projDeliverSend => 'سلّم';
+
+  @override
+  String get projDelivered => 'تم تسليم العمل. سيتحقق الزبون منه.';
+
+  @override
+  String get projDeliverEmpty => 'أضف رسالة أو رابطًا أو صورة.';
+
+  @override
+  String get projDeliveriesTitle => 'التسليمات';
+
+  @override
+  String projDeliveryFile(int n) {
+    return 'ملف $n';
+  }
+
+  @override
+  String get projNoDelivery => 'لم يُسلَّم أي شيء بعد.';
+
+  @override
+  String get projRevisionAsk => 'اطلب تعديلًا';
+
+  @override
+  String get projRevisionHint => 'ما الذي يجب تغييره';
+
+  @override
+  String projRevisionLeft(int count) {
+    return '$count تعديل(ات) متبقية';
+  }
+
+  @override
+  String get projRevisionSent => 'تم إرسال طلب التعديل.';
+
+  @override
+  String get projOpenFileFailed => 'تعذّر فتح الملف.';
+
+  @override
+  String get projStartJob => 'ابدأ العمل';
 }

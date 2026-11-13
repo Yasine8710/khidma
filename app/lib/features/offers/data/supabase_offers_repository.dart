@@ -118,7 +118,10 @@ class SupabaseOffersRepository implements OffersRepository {
 
   static const _offerCols =
       'id, request_id, price_tnd, message, estimated_days, status, created_at, '
-      'quote_requests(title)';
+      'quote_requests(title, kind)';
+
+  static bool _remote(Object? request) =>
+      request is Map && request['kind'] == 'remote';
 
   MyOffer _myOffer(Map<String, dynamic> r) => MyOffer(
     id: r['id'] as String,
@@ -129,6 +132,7 @@ class SupabaseOffersRepository implements OffersRepository {
     createdAt: DateTime.parse(r['created_at'] as String),
     message: r['message'] as String?,
     estimatedDays: (r['estimated_days'] as num?)?.toInt(),
+    remote: _remote(r['quote_requests']),
   );
 
   /// Pending offers first (at most 50 exist), then the 50 most recent others:
@@ -177,7 +181,7 @@ class SupabaseOffersRepository implements OffersRepository {
   Future<List<Job>> myJobs() => _guard(() async {
     final uid = _uid();
     const cols =
-        'id, request_id, price_tnd, status, created_at, quote_requests(title)';
+        'id, request_id, price_tnd, status, created_at, quote_requests(title, kind)';
     final active = await _client
         .from('bookings')
         .select(cols)
@@ -200,6 +204,7 @@ class SupabaseOffersRepository implements OffersRepository {
           priceTnd: (r['price_tnd'] as num).toDouble(),
           status: _bookingStatus(r['status']),
           createdAt: DateTime.parse(r['created_at'] as String),
+          remote: _remote(r['quote_requests']),
         ),
     ];
   });

@@ -59,8 +59,11 @@ class MyOffersScreen extends ConsumerWidget {
                   return FlowCard(
                     index: i - 1,
                     semanticLabel: o.requestTitle,
-                    onTap: () =>
-                        context.push(AppRoutes.proRequestPath(o.requestId)),
+                    onTap: () => context.push(
+                      o.remote
+                          ? AppRoutes.proProjectPath(o.requestId)
+                          : AppRoutes.proRequestPath(o.requestId),
+                    ),
                     child: Row(
                       children: [
                         Expanded(
@@ -253,7 +256,16 @@ class JobsScreen extends ConsumerWidget {
                                               .start(j.id),
                                         ),
                                 ),
-                              if (j.canMarkDone)
+                              // Remote work is handed in with its files.
+                              if (j.canMarkDone && j.remote)
+                                AppButton(
+                                  label: l10n.projDeliverTitle,
+                                  expand: false,
+                                  onPressed: () => context.push(
+                                    AppRoutes.proProjectPath(j.requestId),
+                                  ),
+                                ),
+                              if (j.canMarkDone && !j.remote)
                                 AppButton(
                                   label: l10n.jobDone,
                                   expand: false,

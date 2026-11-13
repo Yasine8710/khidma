@@ -176,9 +176,12 @@ Job sampleJob({
   String id = 'j1',
   BookingStatus status = BookingStatus.scheduled,
   String title = 'Chauffe-eau en panne',
+  String? requestId,
+  bool remote = false,
 }) => Job(
   id: id,
-  requestId: 'r-$id',
+  requestId: requestId ?? 'r-$id',
+  remote: remote,
   requestTitle: title,
   priceTnd: 130,
   status: status,

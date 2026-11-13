@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_badge.dart';
@@ -64,7 +66,22 @@ class _DigitalScreenState extends ConsumerState<DigitalScreen> {
     final cats = categories.value ?? const <DigitalCategory>[];
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.flTitle)),
+      appBar: AppBar(
+        title: Text(l10n.flTitle),
+        actions: [
+          IconButton(
+            tooltip: l10n.projMine,
+            icon: const Icon(Icons.folder_open_outlined),
+            onPressed: () => context.push(AppRoutes.myProjects),
+          ),
+        ],
+      ),
+      // Customers can also post a project for freelancers to answer.
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => context.push(AppRoutes.newProject),
+        icon: const Icon(Icons.add_rounded),
+        label: Text(l10n.projNewCta),
+      ),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {

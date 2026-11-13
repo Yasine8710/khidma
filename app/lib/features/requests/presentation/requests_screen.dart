@@ -141,6 +141,14 @@ class _RequestsScreenState extends ConsumerState<RequestsScreen> {
                         expand: false,
                         onPressed: () => context.push(AppRoutes.newRequest),
                       ),
+                    // Remote projects live on their own screen.
+                    AppButton(
+                      label: l10n.projMine,
+                      icon: Icons.public_rounded,
+                      variant: AppButtonVariant.text,
+                      expand: false,
+                      onPressed: () => context.push(AppRoutes.myProjects),
+                    ),
                   ],
                 ),
                 if (empty) ...[

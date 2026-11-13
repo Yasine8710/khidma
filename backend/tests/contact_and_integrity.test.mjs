@@ -258,6 +258,10 @@ describe('sequence and function exposure', () => {
       'payment_proof_unattached',
       // subscription enforcement
       'admin_billing_config', 'admin_set_billing_config', 'listing_allowed', 'my_listing_status',
+      // remote jobs
+      'booking_deliveries', 'create_remote_request', 'deliver_booking', 'delivery_file_count', 'delivery_file_unattached',
+      'delivery_folder_party', 'get_remote_request', 'list_remote_requests', 'my_remote_requests', 'request_revision',
+      'submit_remote_offer',
     ].sort());
   });
 

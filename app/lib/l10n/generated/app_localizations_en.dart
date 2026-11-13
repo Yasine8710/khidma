@@ -2715,4 +2715,183 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reqFailSubscription =>
       'Your subscription is unpaid: you cannot send offers for now.';
+
+  @override
+  String get projNewTitle => 'Online project';
+
+  @override
+  String get projNewCta => 'Post an online project';
+
+  @override
+  String get projMine => 'My online projects';
+
+  @override
+  String get projFieldTitle => 'Project title';
+
+  @override
+  String get projFieldCategory => 'Type of work';
+
+  @override
+  String get projFieldBrief => 'Brief: describe what you need';
+
+  @override
+  String get projFieldDeliverables => 'Expected deliverables';
+
+  @override
+  String get projDeliverablesHint => 'E.g. logo in PNG and SVG, 3 proposals';
+
+  @override
+  String get projFieldBudgetMin => 'Min budget (TND)';
+
+  @override
+  String get projFieldBudgetMax => 'Max budget (TND)';
+
+  @override
+  String get projFieldDeadline => 'Deadline (optional)';
+
+  @override
+  String get projFieldLink => 'Reference link (https)';
+
+  @override
+  String get projAddLink => 'Add a link';
+
+  @override
+  String get projErrLink => 'Only https:// links are accepted.';
+
+  @override
+  String get projErrBudget => 'The max budget must be at least the min.';
+
+  @override
+  String get projErrRequired => 'At least 3 characters.';
+
+  @override
+  String get projErrBrief => 'At least 10 characters.';
+
+  @override
+  String get projErrCategory => 'Choose a type of work.';
+
+  @override
+  String get projSubmit => 'Post the project';
+
+  @override
+  String get projCreated =>
+      'Project posted. Freelancers can now send you offers.';
+
+  @override
+  String get projEmpty => 'No online projects yet.';
+
+  @override
+  String get projEmptyOpen => 'No open projects right now.';
+
+  @override
+  String get projRemote => 'Remote';
+
+  @override
+  String projBudget(String range) {
+    return 'Budget: $range';
+  }
+
+  @override
+  String projDeadline(String date) {
+    return 'Due before $date';
+  }
+
+  @override
+  String get projDeliverables => 'Deliverables';
+
+  @override
+  String get projLinks => 'References';
+
+  @override
+  String get projTerms =>
+      'Khidma does not hold the money: payment is settled directly between you and the freelancer. Agree on it in the chat and never pay everything in advance.';
+
+  @override
+  String get projOpenTitle => 'Open projects';
+
+  @override
+  String get projOfferTitle => 'Your offer';
+
+  @override
+  String get projOfferPrice => 'Price (TND)';
+
+  @override
+  String get projOfferDays => 'Delivery time (days)';
+
+  @override
+  String get projOfferRevisions => 'Revisions included';
+
+  @override
+  String get projOfferMessage => 'Message (optional)';
+
+  @override
+  String get projOfferSend => 'Send offer';
+
+  @override
+  String get projOfferSent => 'Offer sent.';
+
+  @override
+  String get projErrOffer => 'Price ≥ 1, 1 to 365 days, 0 to 20 revisions.';
+
+  @override
+  String projRevisionsIncluded(int count) {
+    return '$count revision(s) included';
+  }
+
+  @override
+  String get projDeliverTitle => 'Hand in the work';
+
+  @override
+  String get projDeliverNote => 'Delivery message';
+
+  @override
+  String get projDeliverLink => 'Link (Drive, WeTransfer, Figma…)';
+
+  @override
+  String get projDeliverAddPhoto => 'Add an image';
+
+  @override
+  String projDeliverPhotos(int count) {
+    return '$count image(s) attached';
+  }
+
+  @override
+  String get projDeliverSend => 'Hand in';
+
+  @override
+  String get projDelivered => 'Work handed in. The customer will check it.';
+
+  @override
+  String get projDeliverEmpty => 'Add a message, a link or an image.';
+
+  @override
+  String get projDeliveriesTitle => 'Deliveries';
+
+  @override
+  String projDeliveryFile(int n) {
+    return 'File $n';
+  }
+
+  @override
+  String get projNoDelivery => 'Nothing handed in yet.';
+
+  @override
+  String get projRevisionAsk => 'Ask for a revision';
+
+  @override
+  String get projRevisionHint => 'What needs to change';
+
+  @override
+  String projRevisionLeft(int count) {
+    return '$count revision(s) left';
+  }
+
+  @override
+  String get projRevisionSent => 'Revision requested.';
+
+  @override
+  String get projOpenFileFailed => 'The file could not be opened.';
+
+  @override
+  String get projStartJob => 'Start the work';
 }

@@ -1228,5 +1228,102 @@
     }
   },
   "listingPay": "Régler mon abonnement",
-  "reqFailSubscription": "Votre abonnement n’est pas réglé : vous ne pouvez pas envoyer d’offre pour l’instant."
+  "reqFailSubscription": "Votre abonnement n’est pas réglé : vous ne pouvez pas envoyer d’offre pour l’instant.",
+  "projNewTitle": "Projet en ligne",
+  "projNewCta": "Publier un projet en ligne",
+  "projMine": "Mes projets en ligne",
+  "projFieldTitle": "Titre du projet",
+  "projFieldCategory": "Type de travail",
+  "projFieldBrief": "Brief : décrivez le besoin",
+  "projFieldDeliverables": "Livrables attendus",
+  "projDeliverablesHint": "Ex. : logo en PNG et SVG, 3 propositions",
+  "projFieldBudgetMin": "Budget min (TND)",
+  "projFieldBudgetMax": "Budget max (TND)",
+  "projFieldDeadline": "Date limite (facultatif)",
+  "projFieldLink": "Lien de référence (https)",
+  "projAddLink": "Ajouter un lien",
+  "projErrLink": "Seuls les liens https:// sont acceptés.",
+  "projErrBudget": "Le budget max doit être supérieur ou égal au min.",
+  "projErrRequired": "3 caractères minimum.",
+  "projErrBrief": "10 caractères minimum.",
+  "projErrCategory": "Choisissez un type de travail.",
+  "projSubmit": "Publier le projet",
+  "projCreated": "Projet publié. Les freelances peuvent vous faire des offres.",
+  "projEmpty": "Aucun projet en ligne pour l’instant.",
+  "projEmptyOpen": "Aucun projet ouvert pour le moment.",
+  "projRemote": "À distance",
+  "projBudget": "Budget : {range}",
+  "@projBudget": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "projDeadline": "À livrer avant le {date}",
+  "@projDeadline": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "projDeliverables": "Livrables",
+  "projLinks": "Références",
+  "projTerms": "Khidma ne détient pas l’argent : le paiement se règle directement entre vous et le freelance. Mettez-vous d’accord dans la conversation et ne payez jamais tout d’avance.",
+  "projOpenTitle": "Projets ouverts",
+  "projOfferTitle": "Votre offre",
+  "projOfferPrice": "Prix (TND)",
+  "projOfferDays": "Délai de livraison (jours)",
+  "projOfferRevisions": "Révisions incluses",
+  "projOfferMessage": "Message (facultatif)",
+  "projOfferSend": "Envoyer l’offre",
+  "projOfferSent": "Offre envoyée.",
+  "projErrOffer": "Prix ≥ 1, délai de 1 à 365 jours, 0 à 20 révisions.",
+  "projRevisionsIncluded": "{count} révision(s) incluse(s)",
+  "@projRevisionsIncluded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "projDeliverTitle": "Livrer le travail",
+  "projDeliverNote": "Message de livraison",
+  "projDeliverLink": "Lien (Drive, WeTransfer, Figma…)",
+  "projDeliverAddPhoto": "Ajouter une image",
+  "projDeliverPhotos": "{count} image(s) jointe(s)",
+  "@projDeliverPhotos": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "projDeliverSend": "Livrer",
+  "projDelivered": "Travail livré. Le client va vérifier.",
+  "projDeliverEmpty": "Ajoutez un message, un lien ou une image.",
+  "projDeliveriesTitle": "Livraisons",
+  "projDeliveryFile": "Fichier {n}",
+  "@projDeliveryFile": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "projNoDelivery": "Rien n’a encore été livré.",
+  "projRevisionAsk": "Demander une révision",
+  "projRevisionHint": "Ce qu’il faut changer",
+  "projRevisionLeft": "{count} révision(s) restante(s)",
+  "@projRevisionLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "projRevisionSent": "Demande de révision envoyée.",
+  "projOpenFileFailed": "Le fichier n’a pas pu être ouvert.",
+  "projStartJob": "Commencer le travail"
 }

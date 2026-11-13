@@ -29,6 +29,7 @@ describe('limits', () => {
     const img = ['image/jpeg', 'image/png', 'image/webp'];
     assert.deepEqual(got, {
       avatars: [true, 1048576, img],
+      deliveries: [false, 26214400, ['application/pdf', 'application/zip', ...img, 'video/mp4'].sort()],
       'chat-images': [false, 2097152, img],
       'freelance-media': [true, 26214400, [...img, 'video/mp4', 'video/webm'].sort()],
       'payment-proofs': [false, 5242880, ['application/pdf', ...img].sort()],

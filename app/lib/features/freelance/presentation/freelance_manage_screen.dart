@@ -258,6 +258,16 @@ class _EditorState extends ConsumerState<_Editor> {
           alignment: AlignmentDirectional.centerStart,
           child: ProhibitedPolicyLink(),
         ),
+        // Once listed, a freelancer answers remote projects.
+        if (me.isPublished && me.isVerified) ...[
+          const SizedBox(height: AppSpacing.sm),
+          AppButton(
+            label: l10n.projOpenTitle,
+            icon: Icons.public_rounded,
+            variant: AppButtonVariant.secondary,
+            onPressed: () => context.push(AppRoutes.proProjects),
+          ),
+        ],
         const SizedBox(height: AppSpacing.xl),
         SectionTitle(title: l10n.flSectionProfile),
         Form(

@@ -4899,6 +4899,336 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Votre abonnement n’est pas réglé : vous ne pouvez pas envoyer d’offre pour l’instant.'**
   String get reqFailSubscription;
+
+  /// No description provided for @projNewTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Projet en ligne'**
+  String get projNewTitle;
+
+  /// No description provided for @projNewCta.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publier un projet en ligne'**
+  String get projNewCta;
+
+  /// No description provided for @projMine.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes projets en ligne'**
+  String get projMine;
+
+  /// No description provided for @projFieldTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Titre du projet'**
+  String get projFieldTitle;
+
+  /// No description provided for @projFieldCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de travail'**
+  String get projFieldCategory;
+
+  /// No description provided for @projFieldBrief.
+  ///
+  /// In fr, this message translates to:
+  /// **'Brief : décrivez le besoin'**
+  String get projFieldBrief;
+
+  /// No description provided for @projFieldDeliverables.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livrables attendus'**
+  String get projFieldDeliverables;
+
+  /// No description provided for @projDeliverablesHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. : logo en PNG et SVG, 3 propositions'**
+  String get projDeliverablesHint;
+
+  /// No description provided for @projFieldBudgetMin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Budget min (TND)'**
+  String get projFieldBudgetMin;
+
+  /// No description provided for @projFieldBudgetMax.
+  ///
+  /// In fr, this message translates to:
+  /// **'Budget max (TND)'**
+  String get projFieldBudgetMax;
+
+  /// No description provided for @projFieldDeadline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date limite (facultatif)'**
+  String get projFieldDeadline;
+
+  /// No description provided for @projFieldLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien de référence (https)'**
+  String get projFieldLink;
+
+  /// No description provided for @projAddLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un lien'**
+  String get projAddLink;
+
+  /// No description provided for @projErrLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuls les liens https:// sont acceptés.'**
+  String get projErrLink;
+
+  /// No description provided for @projErrBudget.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le budget max doit être supérieur ou égal au min.'**
+  String get projErrBudget;
+
+  /// No description provided for @projErrRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'3 caractères minimum.'**
+  String get projErrRequired;
+
+  /// No description provided for @projErrBrief.
+  ///
+  /// In fr, this message translates to:
+  /// **'10 caractères minimum.'**
+  String get projErrBrief;
+
+  /// No description provided for @projErrCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez un type de travail.'**
+  String get projErrCategory;
+
+  /// No description provided for @projSubmit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Publier le projet'**
+  String get projSubmit;
+
+  /// No description provided for @projCreated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Projet publié. Les freelances peuvent vous faire des offres.'**
+  String get projCreated;
+
+  /// No description provided for @projEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun projet en ligne pour l’instant.'**
+  String get projEmpty;
+
+  /// No description provided for @projEmptyOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun projet ouvert pour le moment.'**
+  String get projEmptyOpen;
+
+  /// No description provided for @projRemote.
+  ///
+  /// In fr, this message translates to:
+  /// **'À distance'**
+  String get projRemote;
+
+  /// No description provided for @projBudget.
+  ///
+  /// In fr, this message translates to:
+  /// **'Budget : {range}'**
+  String projBudget(String range);
+
+  /// No description provided for @projDeadline.
+  ///
+  /// In fr, this message translates to:
+  /// **'À livrer avant le {date}'**
+  String projDeadline(String date);
+
+  /// No description provided for @projDeliverables.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livrables'**
+  String get projDeliverables;
+
+  /// No description provided for @projLinks.
+  ///
+  /// In fr, this message translates to:
+  /// **'Références'**
+  String get projLinks;
+
+  /// No description provided for @projTerms.
+  ///
+  /// In fr, this message translates to:
+  /// **'Khidma ne détient pas l’argent : le paiement se règle directement entre vous et le freelance. Mettez-vous d’accord dans la conversation et ne payez jamais tout d’avance.'**
+  String get projTerms;
+
+  /// No description provided for @projOpenTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Projets ouverts'**
+  String get projOpenTitle;
+
+  /// No description provided for @projOfferTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre offre'**
+  String get projOfferTitle;
+
+  /// No description provided for @projOfferPrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix (TND)'**
+  String get projOfferPrice;
+
+  /// No description provided for @projOfferDays.
+  ///
+  /// In fr, this message translates to:
+  /// **'Délai de livraison (jours)'**
+  String get projOfferDays;
+
+  /// No description provided for @projOfferRevisions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Révisions incluses'**
+  String get projOfferRevisions;
+
+  /// No description provided for @projOfferMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message (facultatif)'**
+  String get projOfferMessage;
+
+  /// No description provided for @projOfferSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer l’offre'**
+  String get projOfferSend;
+
+  /// No description provided for @projOfferSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Offre envoyée.'**
+  String get projOfferSent;
+
+  /// No description provided for @projErrOffer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix ≥ 1, délai de 1 à 365 jours, 0 à 20 révisions.'**
+  String get projErrOffer;
+
+  /// No description provided for @projRevisionsIncluded.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} révision(s) incluse(s)'**
+  String projRevisionsIncluded(int count);
+
+  /// No description provided for @projDeliverTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livrer le travail'**
+  String get projDeliverTitle;
+
+  /// No description provided for @projDeliverNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message de livraison'**
+  String get projDeliverNote;
+
+  /// No description provided for @projDeliverLink.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien (Drive, WeTransfer, Figma…)'**
+  String get projDeliverLink;
+
+  /// No description provided for @projDeliverAddPhoto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une image'**
+  String get projDeliverAddPhoto;
+
+  /// No description provided for @projDeliverPhotos.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} image(s) jointe(s)'**
+  String projDeliverPhotos(int count);
+
+  /// No description provided for @projDeliverSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livrer'**
+  String get projDeliverSend;
+
+  /// No description provided for @projDelivered.
+  ///
+  /// In fr, this message translates to:
+  /// **'Travail livré. Le client va vérifier.'**
+  String get projDelivered;
+
+  /// No description provided for @projDeliverEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez un message, un lien ou une image.'**
+  String get projDeliverEmpty;
+
+  /// No description provided for @projDeliveriesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livraisons'**
+  String get projDeliveriesTitle;
+
+  /// No description provided for @projDeliveryFile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fichier {n}'**
+  String projDeliveryFile(int n);
+
+  /// No description provided for @projNoDelivery.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rien n’a encore été livré.'**
+  String get projNoDelivery;
+
+  /// No description provided for @projRevisionAsk.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demander une révision'**
+  String get projRevisionAsk;
+
+  /// No description provided for @projRevisionHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce qu’il faut changer'**
+  String get projRevisionHint;
+
+  /// No description provided for @projRevisionLeft.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} révision(s) restante(s)'**
+  String projRevisionLeft(int count);
+
+  /// No description provided for @projRevisionSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande de révision envoyée.'**
+  String get projRevisionSent;
+
+  /// No description provided for @projOpenFileFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le fichier n’a pas pu être ouvert.'**
+  String get projOpenFileFailed;
+
+  /// No description provided for @projStartJob.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commencer le travail'**
+  String get projStartJob;
 }
 
 class _AppLocalizationsDelegate

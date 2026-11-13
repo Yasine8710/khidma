@@ -25,6 +25,8 @@ import 'features/notifications/data/supabase_notifications_repository.dart';
 import 'features/offers/application/offers_providers.dart';
 import 'features/offers/data/supabase_offers_repository.dart';
 import 'features/portfolio/application/portfolio_providers.dart';
+import 'features/projects/application/projects_providers.dart';
+import 'features/projects/data/supabase_projects_repository.dart';
 import 'features/requests/application/customer_offers_providers.dart';
 import 'features/reviews/application/reviews_providers.dart';
 import 'features/reviews/data/supabase_reviews_repository.dart';
@@ -112,6 +114,10 @@ Future<void> main() async {
         if (auth.isAvailable)
           freelanceRepositoryProvider.overrideWithValue(
             SupabaseFreelanceRepository(Supabase.instance.client),
+          ),
+        if (auth.isAvailable)
+          projectsRepositoryProvider.overrideWithValue(
+            SupabaseProjectsRepository(Supabase.instance.client),
           ),
       ],
       child: const KhidmaApp(),

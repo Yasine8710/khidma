@@ -56,6 +56,7 @@ class MyOffer {
     required this.createdAt,
     this.message,
     this.estimatedDays,
+    this.remote = false,
   });
 
   final String id;
@@ -66,6 +67,9 @@ class MyOffer {
   final DateTime createdAt;
   final String? message;
   final int? estimatedDays;
+
+  /// On a remote project (opens the project screen, not the local request).
+  final bool remote;
 }
 
 /// A job: an accepted offer.
@@ -77,6 +81,7 @@ class Job {
     required this.priceTnd,
     required this.status,
     required this.createdAt,
+    this.remote = false,
   });
 
   final String id;
@@ -85,6 +90,9 @@ class Job {
   final double priceTnd;
   final BookingStatus status;
   final DateTime createdAt;
+
+  /// A remote project job (handed in through deliveries).
+  final bool remote;
 
   bool get canStart => status == BookingStatus.scheduled;
   bool get canMarkDone => status == BookingStatus.inProgress;

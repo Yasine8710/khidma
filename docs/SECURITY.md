@@ -186,6 +186,14 @@ Known residuals, all waiting on the server-side worker of #32 or a real Supabase
 - Reminders: `service_subscription_reminders()` (service role, daily 07:00 UTC = 08:00 Tunis) sends due-soon (2-5 days left), due-now (0-1), overdue (1-6 days late) and grace-over (7-30 days late), each once per period (dedup key = user + period end day + stage); days are Tunis calendar days. `service_expire_subscriptions()` runs hourly. Both are scheduled by the migration when pg_cron is on.
 - 8 planted bugs (policy, offer trigger, reveal, grace length, UTC days, resent reminder, freelance rule, trial) were all caught by `subscription_enforcement.test.mjs`.
 
+### Remote freelance jobs (#50, migration 2500)
+- A remote project is a quote request of kind `remote`: digital category, brief, deliverables, budget range, deadline, up to 5 https links (checked by `_valid_links` in a table constraint), and no place (a check constraint forbids category/governorate/city on remote rows and remote fields on local rows). Created with `create_remote_request`, sharing the local request limits (5 per hour, 10 open).
+- Local lists and screens (`list_open_requests`, `get_open_request`, `my_quote_requests`, `get_my_quote_request`) now return local requests only; remote ones go through `my_remote_requests`, `list_remote_requests`, `get_remote_request`, which never return the customer id.
+- Only visible freelancers (verified, listed, not suspended, listing allowed) see remote projects and offer on them (`submit_remote_offer`: price, delivery days, 0-20 included revisions). A trigger refuses any offer on a remote project from someone else, whatever function writes it, and refuses revisions on local offers. `accept_offer` checks the freelance listing instead of a published local profile for remote offers.
+- Deliveries: private `deliveries` bucket (25 MB; images, PDF, ZIP, MP4) under `<booking id>/`; only the freelancer of the booking uploads, and only while the job is in progress or waiting; both parties read; a handed-in file cannot be deleted; at most 30 files per job. `deliver_booking` takes a note, an https link and/or files of that booking's folder (never another job's), and moves the job to waiting for the customer (the existing "work done?" notice). `request_revision` returns it to in progress, up to the revisions included in the accepted offer, and posts the request in the conversation. Account deletion queues the delivery files of the person's jobs.
+- The app shows before accepting a remote offer that Khidma holds no money and payment is settled between the parties. The app hands in images (and a link for larger files); the bucket also accepts PDF, ZIP and MP4 for later.
+- 8 planted bugs (offer trigger, local list leak, open bucket, unlimited revisions, cross-job file, http links, customer upload, non-freelancer listing) were all caught by `remote_jobs.test.mjs`.
+
 ## Security audit (#55, 2026-11-13)
 
 ### Threat model (STRIDE)

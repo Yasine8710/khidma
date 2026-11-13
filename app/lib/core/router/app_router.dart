@@ -23,6 +23,8 @@ import '../../features/offers/presentation/my_offers_screen.dart';
 import '../../features/offers/presentation/pro_inbox_screen.dart';
 import '../../features/offers/presentation/pro_request_screen.dart';
 import '../../features/portfolio/presentation/portfolio_screen.dart';
+import '../../features/projects/presentation/customer_project_screens.dart';
+import '../../features/projects/presentation/freelancer_project_screens.dart';
 import '../../features/trust/presentation/verification_screen.dart';
 import '../../features/requests/presentation/new_request_screen.dart';
 import '../../features/requests/presentation/request_detail_screen.dart';
@@ -184,6 +186,29 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.proFreelance,
         builder: (context, state) => const FreelanceManageScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.myProjects,
+        builder: (context, state) => const MyProjectsScreen(),
+      ),
+      // before the :id route, so "new" is never read as an id
+      GoRoute(
+        path: AppRoutes.newProject,
+        builder: (context, state) => const NewProjectScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.project,
+        builder: (context, state) =>
+            ProjectDetailScreen(id: state.pathParameters['id'] ?? ''),
+      ),
+      GoRoute(
+        path: AppRoutes.proProjects,
+        builder: (context, state) => const ProjectInboxScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.proProject,
+        builder: (context, state) =>
+            ProProjectScreen(id: state.pathParameters['id'] ?? ''),
       ),
       if (kShowGallery)
         GoRoute(
