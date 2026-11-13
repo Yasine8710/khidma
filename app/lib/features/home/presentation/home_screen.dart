@@ -262,8 +262,8 @@ class _DemoNote extends StatelessWidget {
   }
 }
 
-/// Artisans | Freelance digital: a segmented control whose brand thumb
-/// slides to the chosen side. Each half is a button announced as selected.
+/// Artisans | Freelance digital: a segmented control whose white thumb
+/// slides along a soft grey track to the chosen side. Each half is a button announced as selected.
 class _WorldToggle extends ConsumerWidget {
   const _WorldToggle({required this.current});
 
@@ -278,11 +278,17 @@ class _WorldToggle extends ConsumerWidget {
     String label(AppWorld w) =>
         w == AppWorld.trades ? l10n.worldTrades : l10n.worldDigital;
 
+    // Soft grey track, white thumb with a faint shadow. In dark mode the
+    // thumb is a lighter step of the track so it still reads as raised.
+    final track = scheme.primaryContainer;
+    final thumb = scheme.brightness == Brightness.dark
+        ? Color.alphaBlend(scheme.onSurface.withValues(alpha: 0.14), track)
+        : scheme.surface;
+
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: scheme.surface,
+        color: track,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: scheme.outlineVariant),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xs),
@@ -300,8 +306,15 @@ class _WorldToggle extends ConsumerWidget {
                   heightFactor: 1,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: scheme.primary,
+                      color: thumb,
                       borderRadius: BorderRadius.circular(AppRadius.sm),
+                      boxShadow: [
+                        BoxShadow(
+                          color: scheme.shadow.withValues(alpha: 0.12),
+                          blurRadius: 3,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -347,7 +360,7 @@ class _WorldToggle extends ConsumerWidget {
                                         : Motion.fast,
                                     style: text.titleSmall!.copyWith(
                                       color: selected
-                                          ? scheme.onPrimary
+                                          ? scheme.onSurface
                                           : scheme.onSurfaceVariant,
                                     ),
                                     child: Text(
@@ -683,9 +696,7 @@ class _HeroCard extends StatelessWidget {
                             padding: const EdgeInsetsDirectional.symmetric(
                               horizontal: AppSpacing.lg,
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(AppRadius.sm),
-                            ),
+                            shape: const StadiumBorder(),
                           ),
                           child: Text(
                             slide.cta,

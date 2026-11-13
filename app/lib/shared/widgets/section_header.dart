@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_spacing.dart';
 import 'app_button.dart';
 
-/// Section title row: the title on the start side, an optional brand text
+/// Section title row: the title on the start side, an optional grey text
 /// link ("Tout voir") on the end side. An optional [kicker] prints a small
 /// muted line above the title; set [rule] to draw a hairline under the row.
 class SectionHeader extends StatelessWidget {
@@ -53,11 +53,22 @@ class SectionHeader extends StatelessWidget {
           Flexible(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 160),
-              child: AppButton(
-                label: actionLabel!,
-                onPressed: onAction,
-                variant: AppButtonVariant.text,
-                expand: false,
+              // Quiet grey link, so it never competes with the title.
+              child: TextButtonTheme(
+                data: TextButtonThemeData(
+                  style: (theme.textButtonTheme.style ?? const ButtonStyle())
+                      .copyWith(
+                        foregroundColor: WidgetStatePropertyAll(
+                          theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                ),
+                child: AppButton(
+                  label: actionLabel!,
+                  onPressed: onAction,
+                  variant: AppButtonVariant.text,
+                  expand: false,
+                ),
               ),
             ),
           ),

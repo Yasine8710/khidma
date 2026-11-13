@@ -324,7 +324,7 @@ class SectionTitle extends StatelessWidget {
                 child: TextButton(
                   onPressed: onAction,
                   style: TextButton.styleFrom(
-                    foregroundColor: scheme.primary,
+                    foregroundColor: scheme.onSurfaceVariant,
                     minimumSize: const Size(48, 40),
                     padding: const EdgeInsetsDirectional.symmetric(
                       horizontal: AppSpacing.sm,
@@ -336,7 +336,7 @@ class SectionTitle extends StatelessWidget {
                     maxLines: 2,
                     textAlign: TextAlign.end,
                     style: text.labelLarge?.copyWith(
-                      color: scheme.primary,
+                      color: scheme.onSurfaceVariant,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
