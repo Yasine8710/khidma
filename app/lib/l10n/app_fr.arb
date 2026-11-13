@@ -1063,5 +1063,25 @@
   "verifFailVerified": "Votre profil est déjà vérifié.",
   "verifFailLimit": "Trop de demandes ces 30 derniers jours. Réessayez plus tard.",
   "verifFailGeneric": "L’envoi a échoué. Vérifiez votre connexion et réessayez.",
-  "verifFailImage": "Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP)."
+  "verifFailImage": "Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).",
+  "reqFilterAll": "Toutes",
+  "reqFilterOpen": "Ouvertes",
+  "reqFilterClosed": "Terminées",
+  "reqFilterEmpty": "Aucune demande dans cette liste.",
+  "reqFormProgress": "{done} sur {total} étapes remplies",
+  "@reqFormProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "chatToday": "Aujourd’hui",
+  "chatYesterday": "Hier",
+  "verifStepSend": "Documents envoyés",
+  "verifStepReview": "Examen par l’équipe",
+  "verifStepBadge": "Badge sur votre profil"
 }

@@ -780,5 +780,15 @@
   "verifFailVerified": "Your profile is already verified.",
   "verifFailLimit": "Too many requests in the last 30 days. Try again later.",
   "verifFailGeneric": "Sending failed. Check your connection and try again.",
-  "verifFailImage": "This file is not a readable photo (JPEG, PNG or WebP)."
+  "verifFailImage": "This file is not a readable photo (JPEG, PNG or WebP).",
+  "reqFilterAll": "All",
+  "reqFilterOpen": "Open",
+  "reqFilterClosed": "Closed",
+  "reqFilterEmpty": "No requests in this list.",
+  "reqFormProgress": "{done} of {total} steps filled in",
+  "chatToday": "Today",
+  "chatYesterday": "Yesterday",
+  "verifStepSend": "Documents sent",
+  "verifStepReview": "Team review",
+  "verifStepBadge": "Badge on your profile"
 }

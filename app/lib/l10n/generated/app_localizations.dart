@@ -4413,6 +4413,66 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).'**
   String get verifFailImage;
+
+  /// No description provided for @reqFilterAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes'**
+  String get reqFilterAll;
+
+  /// No description provided for @reqFilterOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvertes'**
+  String get reqFilterOpen;
+
+  /// No description provided for @reqFilterClosed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminées'**
+  String get reqFilterClosed;
+
+  /// No description provided for @reqFilterEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune demande dans cette liste.'**
+  String get reqFilterEmpty;
+
+  /// No description provided for @reqFormProgress.
+  ///
+  /// In fr, this message translates to:
+  /// **'{done} sur {total} étapes remplies'**
+  String reqFormProgress(int done, int total);
+
+  /// No description provided for @chatToday.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aujourd’hui'**
+  String get chatToday;
+
+  /// No description provided for @chatYesterday.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hier'**
+  String get chatYesterday;
+
+  /// No description provided for @verifStepSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Documents envoyés'**
+  String get verifStepSend;
+
+  /// No description provided for @verifStepReview.
+  ///
+  /// In fr, this message translates to:
+  /// **'Examen par l’équipe'**
+  String get verifStepReview;
+
+  /// No description provided for @verifStepBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Badge sur votre profil'**
+  String get verifStepBadge;
 }
 
 class _AppLocalizationsDelegate

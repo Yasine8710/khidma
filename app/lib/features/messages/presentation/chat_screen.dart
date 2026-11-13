@@ -9,7 +9,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../portfolio/presentation/portfolio_image.dart';
 import '../../requests/domain/requests_domain.dart';
-import '../../requests/presentation/ledger_widgets.dart' show TypeEmpty;
+import '../../requests/presentation/flow_widgets.dart';
 import '../application/messages_providers.dart';
 import '../domain/messages_domain.dart';
 import 'messages_screen.dart' show conversationTitle;
@@ -110,18 +110,35 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       // The banner above says what is wrong and offers a retry.
       list = const SizedBox.shrink();
     } else if (messages.isEmpty && !async.isLoading) {
-      list = TypeEmpty(
+      list = CalmEmpty(
         icon: Icons.chat_bubble_outline_rounded,
         title: l10n.chatEmpty,
-        body: '',
       );
     } else {
+      // Oldest first with a date line where the day changes, then reversed
+      // for the list, which starts at the bottom.
+      final entries = <Object>[];
+      DateTime? day;
+      for (final m in messages) {
+        final local = m.createdAt.toLocal();
+        final d = DateTime(local.year, local.month, local.day);
+        if (day != d) {
+          entries.add(d);
+          day = d;
+        }
+        entries.add(m);
+      }
       list = ListView.builder(
         reverse: true,
-        padding: const EdgeInsetsDirectional.all(AppSpacing.md),
-        itemCount: messages.length,
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        itemCount: entries.length,
         itemBuilder: (context, i) {
-          final m = messages[messages.length - 1 - i];
+          final e = entries[entries.length - 1 - i];
+          if (e is DateTime) return _DayLine(day: e, locale: locale);
+          final m = e as ChatMessage;
           // Messages carry a role: mine is the one written by my side.
           final mine = iAmCustomer != null && m.fromCustomer == iAmCustomer;
           return _Bubble(message: m, mine: mine, locale: locale);
@@ -129,10 +146,22 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       );
     }
 
+    final title = summary == null
+        ? l10n.navMessages
+        : conversationTitle(l10n, summary);
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          summary == null ? l10n.navMessages : conversationTitle(l10n, summary),
+        titleSpacing: 0,
+        title: Row(
+          children: [
+            if (summary != null) ...[
+              PersonAvatar(name: title, size: 36),
+              const SizedBox(width: AppSpacing.md),
+            ],
+            Expanded(
+              child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
+            ),
+          ],
         ),
         actions: [
           ReportButton(
@@ -151,10 +180,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     border: BorderDirectional(
-                      bottom: BorderSide(
-                        color: scheme.onSurface,
-                        width: AppInk.border,
-                      ),
+                      bottom: BorderSide(color: scheme.outlineVariant),
                     ),
                   ),
                   child: Padding(
@@ -228,10 +254,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 decoration: BoxDecoration(
                   color: scheme.surfaceContainerHighest,
                   border: BorderDirectional(
-                    top: BorderSide(
-                      color: scheme.onSurface,
-                      width: AppInk.border,
-                    ),
+                    top: BorderSide(color: scheme.outlineVariant),
                   ),
                 ),
                 child: Padding(
@@ -257,15 +280,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
               )
             else
-              // The composer: a hard-edged paper band under a heavy ink rule.
+              // The composer: a rounded field and a round violet send
+              // button on a white band under a hairline.
               DecoratedBox(
                 decoration: BoxDecoration(
                   color: scheme.surface,
                   border: BorderDirectional(
-                    top: BorderSide(
-                      color: scheme.onSurface,
-                      width: AppInk.border + 1,
-                    ),
+                    top: BorderSide(color: scheme.outlineVariant),
                   ),
                 ),
                 child: Padding(
@@ -280,6 +301,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     children: [
                       IconButton(
                         tooltip: l10n.chatAddImage,
+                        color: scheme.onSurfaceVariant,
                         icon: const Icon(Icons.add_photo_alternate_outlined),
                         onPressed: busy ? null : _sendImage,
                       ),
@@ -298,6 +320,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           }) => null,
                           decoration: InputDecoration(
                             hintText: l10n.chatInputHint,
+                            filled: true,
+                            fillColor: scheme.surfaceContainerHighest,
+                            isDense: true,
+                            contentPadding:
+                                const EdgeInsetsDirectional.symmetric(
+                                  horizontal: AppSpacing.lg,
+                                  vertical: AppSpacing.md,
+                                ),
+                            border: _pill(Colors.transparent),
+                            enabledBorder: _pill(Colors.transparent),
+                            focusedBorder: _pill(scheme.primary),
                           ),
                         ),
                       ),
@@ -306,17 +339,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         tooltip: l10n.chatSend,
                         style: IconButton.styleFrom(
                           minimumSize: const Size(48, 48),
-                          backgroundColor: scheme.primaryContainer,
-                          foregroundColor: scheme.onPrimaryContainer,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppRadius.sm),
-                            side: BorderSide(
-                              color: scheme.onSurface,
-                              width: AppInk.border,
-                            ),
-                          ),
+                          backgroundColor: scheme.primary,
+                          foregroundColor: scheme.onPrimary,
+                          shape: const CircleBorder(),
                         ),
-                        icon: const Icon(Icons.arrow_upward_rounded),
+                        icon: const Icon(Icons.send_rounded),
                         onPressed: busy ? null : _send,
                       ),
                     ],
@@ -324,6 +351,63 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
               ),
           ],
+        ),
+      ),
+    );
+  }
+
+  static OutlineInputBorder _pill(Color c) => OutlineInputBorder(
+    borderRadius: BorderRadius.circular(AppRadius.xl),
+    borderSide: c == Colors.transparent
+        ? BorderSide.none
+        : BorderSide(color: c, width: 1.5),
+  );
+}
+
+/// "Aujourd'hui", "Hier" or the date, centred on a soft pill between the
+/// messages of different days.
+class _DayLine extends StatelessWidget {
+  const _DayLine({required this.day, required this.locale});
+
+  final DateTime day;
+  final Locale locale;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final now = DateTime.now();
+    // Calendar days counted in UTC, so a daylight-saving change cannot make
+    // yesterday look like today.
+    final days = DateTime.utc(
+      now.year,
+      now.month,
+      now.day,
+    ).difference(DateTime.utc(day.year, day.month, day.day)).inDays;
+    final label = switch (days) {
+      0 => l10n.chatToday,
+      1 => l10n.chatYesterday,
+      _ => formatDate(day, locale),
+    };
+    return Padding(
+      padding: const EdgeInsetsDirectional.symmetric(vertical: AppSpacing.md),
+      child: Center(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: scheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(AppRadius.pill),
+          ),
+          child: Padding(
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.xs,
+            ),
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.labelSmall
+                  ?.copyWith(color: scheme.onSurfaceVariant),
+            ),
+          ),
         ),
       ),
     );
@@ -346,13 +430,11 @@ class _Bubble extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    // Mine in the world colour, theirs on paper; both with a heavy ink border
-    // and a hard shadow toward the sender's side.
-    final bg = mine ? scheme.primaryContainer : scheme.surface;
-    final fg = mine ? scheme.onPrimaryContainer : scheme.onSurface;
-    final rtl = Directionality.of(context) == TextDirection.rtl;
-    final dx = (mine != rtl) ? 3.0 : -3.0;
-    const r = Radius.circular(AppRadius.xl);
+    // Mine in violet with white text; theirs white with a hairline.
+    final bg = mine ? scheme.primary : scheme.surface;
+    final fg = mine ? scheme.onPrimary : scheme.onSurface;
+    const r = Radius.circular(AppRadius.lg);
+    const tail = Radius.circular(4);
     final who = mine ? l10n.chatYouSent : l10n.chatThem;
     final body = message.body;
     final image = message.imagePath;
@@ -369,38 +451,27 @@ class _Bubble extends ConsumerWidget {
           container: true,
           label: '$who, ${formatTime(message.createdAt, locale)}',
           child: Container(
-            margin: const EdgeInsetsDirectional.fromSTEB(
-              4,
-              AppSpacing.xs,
-              4,
-              AppSpacing.xs + 3,
-            ),
+            margin: const EdgeInsetsDirectional.symmetric(vertical: 3),
             padding: const EdgeInsetsDirectional.fromSTEB(
               AppSpacing.md,
-              AppSpacing.sm + 2,
-              AppSpacing.md,
               AppSpacing.sm,
+              AppSpacing.md,
+              AppSpacing.sm - 2,
             ),
             decoration: BoxDecoration(
               color: bg,
-              // The corner on the sender's side is squared off.
+              // The corner on the sender's side is tucked in.
               borderRadius: BorderRadiusDirectional.only(
                 topStart: r,
                 topEnd: r,
-                bottomStart: mine ? r : Radius.zero,
-                bottomEnd: mine ? Radius.zero : r,
+                bottomStart: mine ? r : tail,
+                bottomEnd: mine ? tail : r,
               ),
-              border: Border.all(color: scheme.onSurface, width: AppInk.border),
-              boxShadow: [
-                BoxShadow(
-                  color: scheme.onSurface,
-                  offset: Offset(dx, 3),
-                  blurRadius: 0,
-                ),
-              ],
+              border: mine ? null : Border.all(color: scheme.outlineVariant),
             ),
+            // The time sits at the end, under the text.
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (image != null) _ChatImage(path: image),
@@ -411,11 +482,13 @@ class _Bubble extends ConsumerWidget {
                     style: text.bodyLarge?.copyWith(color: fg),
                   ),
                 ],
-                const SizedBox(height: AppSpacing.xs),
+                const SizedBox(height: 2),
                 Text(
                   formatTime(message.createdAt, locale),
                   style: text.labelSmall?.copyWith(
-                    color: mine ? fg : scheme.onSurfaceVariant,
+                    color: mine
+                        ? fg.withValues(alpha: 0.85)
+                        : scheme.onSurfaceVariant,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

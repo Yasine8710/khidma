@@ -2453,4 +2453,36 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get verifFailImage =>
       'Ce fichier n’est pas une photo lisible (JPEG, PNG ou WebP).';
+
+  @override
+  String get reqFilterAll => 'Toutes';
+
+  @override
+  String get reqFilterOpen => 'Ouvertes';
+
+  @override
+  String get reqFilterClosed => 'Terminées';
+
+  @override
+  String get reqFilterEmpty => 'Aucune demande dans cette liste.';
+
+  @override
+  String reqFormProgress(int done, int total) {
+    return '$done sur $total étapes remplies';
+  }
+
+  @override
+  String get chatToday => 'Aujourd’hui';
+
+  @override
+  String get chatYesterday => 'Hier';
+
+  @override
+  String get verifStepSend => 'Documents envoyés';
+
+  @override
+  String get verifStepReview => 'Examen par l’équipe';
+
+  @override
+  String get verifStepBadge => 'Badge sur votre profil';
 }

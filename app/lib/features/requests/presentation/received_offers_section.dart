@@ -9,7 +9,6 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_badge.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/rating_stars.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
@@ -22,7 +21,7 @@ import '../../reviews/presentation/review_widgets.dart';
 import '../application/customer_offers_providers.dart';
 import '../domain/customer_offers_domain.dart';
 import '../domain/requests_domain.dart';
-import 'ledger_widgets.dart';
+import 'flow_widgets.dart';
 import 'requests_texts.dart';
 
 enum _Sort { price, rating, delay }
@@ -244,22 +243,10 @@ class _ReceivedOffersSectionState extends ConsumerState<ReceivedOffersSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Semantics(
-          header: true,
-          child: Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(text: l10n.offersReceived),
-                TextSpan(
-                  text: '  ·  ${l10n.reqOffers(widget.request.offerCount)}',
-                  style: text.bodyMedium?.copyWith(color: muted),
-                ),
-              ],
-            ),
-            style: text.headlineSmall,
-          ),
+        SectionTitle(
+          title: l10n.offersReceived,
+          note: l10n.reqOffers(widget.request.offerCount),
         ),
-        const SizedBox(height: AppSpacing.md),
         body,
       ],
     );
@@ -292,8 +279,8 @@ class _OfferCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context);
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
     final scheme = Theme.of(context).colorScheme;
+    final muted = scheme.onSurfaceVariant;
     final name = pro?.name.isNotEmpty == true
         ? pro!.name
         : l10n.offerProUnknown;
@@ -301,19 +288,16 @@ class _OfferCard extends StatelessWidget {
     final won = offer.status == OfferStatus.accepted;
     final scale = MediaQuery.textScalerOf(context).scale(1);
 
-    // The quoted sum, set large like the total on a printed quote. Prices
-    // read left to right with Western digits in every language.
+    // The quoted price, large and bold. Prices read left to right with
+    // Western digits in every language.
     final price = Directionality(
       textDirection: TextDirection.ltr,
-      child: Text(
-        formatTnd(offer.priceTnd, locale),
-        style: text.headlineMedium,
-      ),
+      child: Text(formatTnd(offer.priceTnd, locale), style: text.headlineSmall),
     );
 
     final who = Row(
       children: [
-        InitialsBlock(name: name, size: 40),
+        PersonAvatar(name: name, size: 44),
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Column(
@@ -321,7 +305,7 @@ class _OfferCard extends StatelessWidget {
             children: [
               Text(
                 name,
-                style: text.titleSmall,
+                style: text.titleMedium,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -342,7 +326,7 @@ class _OfferCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Side by side when there is room; the sum under the name on a
+          // Side by side when there is room; the price under the name on a
           // narrow screen or with large text.
           LayoutBuilder(
             builder: (context, box) => box.maxWidth >= 260 * scale
@@ -365,31 +349,39 @@ class _OfferCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           Wrap(
             spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.xs,
+            runSpacing: AppSpacing.sm,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               if (pro?.isVerified ?? false)
-                LedgerStamp(
+                StatusPill(
                   label: l10n.verified,
-                  tone: BadgeTone.success,
-                  icon: Icons.check_rounded,
+                  tone: BadgeTone.info,
+                  icon: Icons.verified_rounded,
                 ),
               if (isLowest)
-                LedgerStamp(
-                  big: true,
+                StatusPill(
                   label: l10n.offerLowest,
                   tone: BadgeTone.success,
+                  icon: Icons.south_rounded,
                 ),
               if (!offer.isPending)
-                LedgerStamp(
-                  big: true,
+                StatusPill(
                   label: offerStatusLabel(l10n, offer.status),
                   tone: offerStatusTone(offer.status),
                 ),
               if (offer.estimatedDays != null)
-                Text(
-                  l10n.offerDelay(offer.estimatedDays!),
-                  style: text.labelMedium,
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.schedule_rounded, size: 16, color: muted),
+                    const SizedBox(width: AppSpacing.xs),
+                    Flexible(
+                      child: Text(
+                        l10n.offerDelay(offer.estimatedDays!),
+                        style: text.labelMedium,
+                      ),
+                    ),
+                  ],
                 ),
               Text(
                 formatDate(offer.createdAt, locale),
@@ -401,17 +393,17 @@ class _OfferCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             DecoratedBox(
               decoration: BoxDecoration(
-                border: BorderDirectional(
-                  start: BorderSide(color: scheme.onSurface, width: 4),
-                ),
+                color: scheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(AppRadius.md),
               ),
               child: Padding(
-                padding: const EdgeInsetsDirectional.only(start: AppSpacing.md),
+                padding: const EdgeInsetsDirectional.all(AppSpacing.md),
                 child: Text(offer.message!, style: text.bodyMedium),
               ),
             ),
           ],
-          if (live)
+          if (live) ...[
+            const SizedBox(height: AppSpacing.xs),
             Align(
               alignment: AlignmentDirectional.centerStart,
               child: AppButton(
@@ -422,6 +414,7 @@ class _OfferCard extends StatelessWidget {
                 onPressed: onMessage,
               ),
             ),
+          ],
           if (canAct) ...[
             const SizedBox(height: AppSpacing.xs),
             Row(
@@ -449,23 +442,17 @@ class _OfferCard extends StatelessWidget {
       ),
     );
 
-    final card = AppCard(
+    // The accepted offer gets a violet outline, like a selected card.
+    return FlowCard(
+      gap: 0,
       semanticLabel: '$name, ${formatTnd(offer.priceTnd, locale)}',
       onTap: pro == null
           ? null
           : () =>
                 context.push(AppRoutes.professionalPath(offer.professionalId)),
+      borderColor: won ? scheme.primary : null,
+      border: won ? 1.5 : AppInk.border,
       child: slip,
-    );
-    if (!won) return card;
-    // The accepted quote is ruled in ink, like a signed copy.
-    return DecoratedBox(
-      position: DecorationPosition.foreground,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: scheme.onSurface, width: 3),
-      ),
-      child: card,
     );
   }
 }
@@ -558,59 +545,77 @@ class BookingSection extends ConsumerWidget {
     }
 
     final muted = Theme.of(context).colorScheme.onSurfaceVariant;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SizedBox(height: AppSpacing.xl),
-        const LedgerRule(strong: true),
-        const SizedBox(height: AppSpacing.md),
-        Semantics(
-          header: true,
-          child: Text(l10n.bookingTitle, style: text.headlineSmall),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          l10n.jobAgreedPrice(formatTnd(booking.priceTnd, locale)),
-          style: text.bodyMedium?.copyWith(color: muted),
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        if (booking.status == BookingStatus.cancelled)
-          Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: LedgerStamp(
-              big: true,
-              label: jobStatusLabel(l10n, booking.status),
-              tone: jobStatusTone(booking.status),
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(top: AppSpacing.lg),
+      child: FlowCard(
+        gap: 0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                const IconTile(icon: Icons.handyman_outlined, brand: true),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Semantics(
+                        header: true,
+                        child: Text(l10n.bookingTitle, style: text.titleLarge),
+                      ),
+                      Text(
+                        l10n.jobAgreedPrice(
+                          formatTnd(booking.priceTnd, locale),
+                        ),
+                        style: text.bodyMedium?.copyWith(color: muted),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          )
-        else
-          JobTimeline(status: booking.status),
-        if (booking.status == BookingStatus.completed)
-          _ReviewPrompt(bookingId: booking.id, aboutCustomer: false),
-        if (booking.canConfirm) ...[
-          const SizedBox(height: AppSpacing.sm),
-          Text(l10n.bookingWaitingForYou, style: text.bodyMedium),
-          const SizedBox(height: AppSpacing.sm),
-          AppButton(
-            label: l10n.bookingConfirm,
-            isLoading: busy,
-            onPressed: () => run(
-              () => ref
-                  .read(customerOfferActionsProvider.notifier)
-                  .confirm(requestId, booking.id),
-              l10n.bookingConfirmed,
-            ),
-          ),
-        ],
-        if (booking.canCancel) ...[
-          const SizedBox(height: AppSpacing.sm),
-          AppButton(
-            label: l10n.jobCancel,
-            variant: AppButtonVariant.secondary,
-            onPressed: busy ? null : cancel,
-          ),
-        ],
-      ],
+            const SizedBox(height: AppSpacing.md),
+            const Hairline(),
+            const SizedBox(height: AppSpacing.md),
+            if (booking.status == BookingStatus.cancelled)
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: StatusPill(
+                  label: jobStatusLabel(l10n, booking.status),
+                  tone: jobStatusTone(booking.status),
+                ),
+              )
+            else
+              JobTimeline(status: booking.status),
+            if (booking.status == BookingStatus.completed)
+              _ReviewPrompt(bookingId: booking.id, aboutCustomer: false),
+            if (booking.canConfirm) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Text(l10n.bookingWaitingForYou, style: text.bodyMedium),
+              const SizedBox(height: AppSpacing.sm),
+              AppButton(
+                label: l10n.bookingConfirm,
+                isLoading: busy,
+                onPressed: () => run(
+                  () => ref
+                      .read(customerOfferActionsProvider.notifier)
+                      .confirm(requestId, booking.id),
+                  l10n.bookingConfirmed,
+                ),
+              ),
+            ],
+            if (booking.canCancel) ...[
+              const SizedBox(height: AppSpacing.sm),
+              AppButton(
+                label: l10n.jobCancel,
+                variant: AppButtonVariant.secondary,
+                onPressed: busy ? null : cancel,
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }
@@ -633,7 +638,7 @@ class _ReviewPrompt extends ConsumerWidget {
         padding: const EdgeInsetsDirectional.only(top: AppSpacing.sm),
         child: Align(
           alignment: AlignmentDirectional.centerStart,
-          child: LedgerStamp(
+          child: StatusPill(
             label: l10n.reviewDone,
             tone: BadgeTone.success,
             icon: Icons.check_rounded,

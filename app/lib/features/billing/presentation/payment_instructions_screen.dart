@@ -4,8 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../core/motion/motion.dart';
-import '../../requests/presentation/ledger_widgets.dart';
+import '../../requests/presentation/flow_widgets.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../application/billing_providers.dart';
 import '../domain/billing_domain.dart';
@@ -26,7 +25,8 @@ class PaymentInstructionsScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final lang = Localizations.localeOf(context).languageCode;
     final text = Theme.of(context).textTheme;
-    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    final scheme = Theme.of(context).colorScheme;
+    final muted = scheme.onSurfaceVariant;
     final busy = ref.watch(billingActionsProvider);
     final orders = ref.watch(myPaymentOrdersProvider).value;
     final current = orders?.where((o) => o.id == order.id).firstOrNull ?? order;
@@ -64,23 +64,29 @@ class PaymentInstructionsScreen extends ConsumerWidget {
       }
     }
 
+    // One line of the payment details: the label over the value, and a copy
+    // button for what has to be typed elsewhere.
     Widget fact(String label, String value, {bool copy = false}) => Padding(
       padding: const EdgeInsetsDirectional.symmetric(vertical: AppSpacing.md),
       child: Row(
         children: [
-          Text(label, style: text.bodyMedium?.copyWith(color: muted)),
-          const SizedBox(width: AppSpacing.md),
           Expanded(
-            child: Align(
-              alignment: AlignmentDirectional.centerEnd,
-              child: Directionality(
-                textDirection: TextDirection.ltr,
-                child: SelectableText(value, style: text.titleMedium),
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: text.bodySmall?.copyWith(color: muted)),
+                const SizedBox(height: 2),
+                Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: SelectableText(value, style: text.titleMedium),
+                ),
+              ],
             ),
           ),
-          if (copy)
+          if (copy) ...[
+            const SizedBox(width: AppSpacing.sm),
             _CopyButton(value: value, label: '${l10n.billCopy}: $label'),
+          ],
         ],
       ),
     );
@@ -100,25 +106,38 @@ class PaymentInstructionsScreen extends ConsumerWidget {
             ? d?.bank
             : null;
         final d17 = current.method == PaymentMethod.d17 ? d?.d17 : null;
-        if (bank == null && d17 == null) return Text(l10n.billNoDetails);
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const LedgerRule(),
-            if (bank != null) ...[
-              if (bank.name != null) fact(l10n.billBankName, bank.name!),
-              if (bank.name != null) const LedgerRule(),
-              if (bank.holder != null) fact(l10n.billHolder, bank.holder!),
-              if (bank.holder != null) const LedgerRule(),
-              fact(l10n.billRib, bank.rib, copy: true),
-            ],
-            if (d17 != null) ...[
-              fact(l10n.billD17Number, d17.number, copy: true),
-              if (d17.holder != null) const LedgerRule(),
-              if (d17.holder != null) fact(l10n.billHolder, d17.holder!),
-            ],
-            const LedgerRule(),
+        if (bank == null && d17 == null) {
+          return Text(
+            l10n.billNoDetails,
+            style: text.bodyMedium?.copyWith(color: muted),
+          );
+        }
+        final rows = <Widget>[
+          if (bank != null) ...[
+            if (bank.name != null) fact(l10n.billBankName, bank.name!),
+            if (bank.holder != null) fact(l10n.billHolder, bank.holder!),
+            fact(l10n.billRib, bank.rib, copy: true),
           ],
+          if (d17 != null) ...[
+            fact(l10n.billD17Number, d17.number, copy: true),
+            if (d17.holder != null) fact(l10n.billHolder, d17.holder!),
+          ],
+        ];
+        return FlowCard(
+          gap: 0,
+          padding: const EdgeInsetsDirectional.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.xs,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var i = 0; i < rows.length; i++) ...[
+                if (i > 0) const Hairline(),
+                rows[i],
+              ],
+            ],
+          ),
         );
       },
     );
@@ -134,101 +153,112 @@ class PaymentInstructionsScreen extends ConsumerWidget {
             AppSpacing.xl,
           ),
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    paymentMethodText(l10n, current.method),
-                    style: text.headlineSmall,
+            // How, its status, and the sum due on a soft violet panel.
+            FlowCard(
+              gap: AppSpacing.md,
+              child: Row(
+                children: [
+                  IconTile(
+                    icon: current.method == PaymentMethod.d17
+                        ? Icons.smartphone_outlined
+                        : Icons.account_balance_outlined,
+                    seed: current.method.index,
                   ),
-                ),
-                LedgerStamp(
-                  big: true,
-                  label: orderStatusText(l10n, current.status),
-                  tone: orderTone(current.status),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            // The sum due, as one big ruled price block.
-            Padding(
-              padding: const EdgeInsetsDirectional.only(
-                end: AppInk.offset,
-                bottom: AppInk.offset,
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          paymentMethodText(l10n, current.method),
+                          style: text.titleLarge,
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        StatusPill(
+                          label: orderStatusText(l10n, current.status),
+                          tone: orderTone(current.status),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              child: StickerBox(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.billAmount,
-                      style: text.titleMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                      ),
+            ),
+            FlowCard(
+              index: 1,
+              gap: 0,
+              color: scheme.primaryContainer,
+              border: 0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.billAmount,
+                    style: text.bodyMedium?.copyWith(
+                      color: scheme.onPrimaryContainer,
                     ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Container(
-                      height: 3,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Text(
-                          formatTndAmount(
-                            current.amountMillimes,
-                            languageCode: lang,
-                          ),
-                          style: text.displayMedium?.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onPrimaryContainer,
-                          ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Text(
+                        formatTndAmount(
+                          current.amountMillimes,
+                          languageCode: lang,
+                        ),
+                        style: text.displaySmall?.copyWith(
+                          color: scheme.onPrimaryContainer,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: AppSpacing.xl),
-            WorkOrderHeading(number: 1, title: l10n.billReference),
-            Row(
-              children: [
-                Expanded(
-                  child: Directionality(
-                    textDirection: TextDirection.ltr,
-                    child: SelectableText(
-                      current.reference,
-                      style: text.displaySmall,
+            SectionTitle(
+              title: l10n.billReference,
+              note: l10n.billReferenceHint,
+            ),
+            FlowCard(
+              gap: 0,
+              padding: const EdgeInsetsDirectional.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.md,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: SelectableText(
+                        current.reference,
+                        style: text.headlineSmall,
+                      ),
                     ),
                   ),
-                ),
-                _CopyButton(
-                  value: current.reference,
-                  label: '${l10n.billCopy}: ${l10n.billReference}',
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              l10n.billReferenceHint,
-              style: text.bodyMedium?.copyWith(color: muted),
+                  const SizedBox(width: AppSpacing.sm),
+                  _CopyButton(
+                    value: current.reference,
+                    label: '${l10n.billCopy}: ${l10n.billReference}',
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: AppSpacing.xl),
-            WorkOrderHeading(number: 2, title: l10n.billPayTo),
+            SectionTitle(title: l10n.billPayTo),
             accounts,
             const SizedBox(height: AppSpacing.xl),
-            if (awaiting)
+            if (awaiting) ...[
               Semantics(
                 liveRegion: true,
                 child: Text(l10n.billAwaitingBody, style: text.bodyMedium),
               ),
+              const SizedBox(height: AppSpacing.md),
+            ],
             if (open) ...[
               if (!awaiting)
                 AppButton(
@@ -250,6 +280,7 @@ class PaymentInstructionsScreen extends ConsumerWidget {
   }
 }
 
+/// A round soft violet copy button with a spoken name.
 class _CopyButton extends StatelessWidget {
   const _CopyButton({required this.value, required this.label});
 
@@ -259,18 +290,15 @@ class _CopyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
     return IconButton(
       tooltip: label,
       style: IconButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.sm),
-          side: BorderSide(
-            color: Theme.of(context).colorScheme.onSurface,
-            width: AppInk.border,
-          ),
-        ),
+        backgroundColor: scheme.primaryContainer,
+        foregroundColor: scheme.onPrimaryContainer,
+        shape: const CircleBorder(),
       ),
-      icon: const Icon(Icons.copy_outlined),
+      icon: const Icon(Icons.copy_rounded, size: 20),
       onPressed: () async {
         final messenger = ScaffoldMessenger.of(context);
         await Clipboard.setData(ClipboardData(text: value));

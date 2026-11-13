@@ -15,17 +15,18 @@ import '../../../shared/widgets/app_text_field.dart';
 import '../../marketplace/application/home_providers.dart';
 import '../../marketplace/application/marketplace_providers.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
+import '../../marketplace/presentation/category_icon.dart';
 import '../../portfolio/domain/portfolio_domain.dart';
 import '../../portfolio/presentation/portfolio_screen.dart'
     show portfolioFailureText;
 import '../application/requests_providers.dart';
 import '../domain/requests_domain.dart';
-import 'ledger_widgets.dart';
+import 'flow_widgets.dart';
 import 'requests_texts.dart';
 
-/// Ask for a quote, laid out as a numbered work order: service, the need,
-/// where, when, photos; the send button stays at the bottom. Everything
-/// typed stays on screen if sending fails.
+/// Ask for a quote in numbered steps (service, the need, where, when,
+/// photos) under a thin progress bar; the send button stays at the bottom.
+/// Everything typed stays on screen if sending fails.
 class NewRequestScreen extends ConsumerStatefulWidget {
   const NewRequestScreen({super.key, this.categoryId});
 
@@ -50,6 +51,18 @@ class _NewRequestScreenState extends ConsumerState<NewRequestScreen> {
   bool _picking = false;
   String? _error;
   bool _placeInitialised = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // The progress bar follows what is typed.
+    _title.addListener(_onTyped);
+    _description.addListener(_onTyped);
+  }
+
+  void _onTyped() {
+    if (mounted) setState(() {});
+  }
 
   @override
   void dispose() {
@@ -143,6 +156,16 @@ class _NewRequestScreenState extends ConsumerState<NewRequestScreen> {
     context.pushReplacement(AppRoutes.requestPath(created.id));
   }
 
+  /// Required parts filled in: service, title, description, governorate.
+  int get _requiredDone => [
+    _category != null,
+    RequestRules.titleOk(_title.text),
+    RequestRules.descriptionOk(_description.text),
+    _governorate != null,
+  ].where((ok) => ok).length;
+
+  static const _requiredTotal = 4;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -164,8 +187,14 @@ class _NewRequestScreenState extends ConsumerState<NewRequestScreen> {
       _city = place?.cityId;
     }
 
+    final done = _requiredDone;
     const gap = SizedBox(height: AppSpacing.lg);
     const section = SizedBox(height: AppSpacing.xl);
+    Widget label(String s) => Padding(
+      padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
+      child: ExcludeSemantics(child: Text(s, style: text.titleSmall)),
+    );
+
     return Scaffold(
       appBar: AppBar(title: Text(l10n.reqNew)),
       body: SafeArea(
@@ -174,6 +203,19 @@ class _NewRequestScreenState extends ConsumerState<NewRequestScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // A thin bar: how much of what is required is filled in.
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                  AppSpacing.gutter,
+                  AppSpacing.xs,
+                  AppSpacing.gutter,
+                  AppSpacing.sm,
+                ),
+                child: _ProgressBar(
+                  value: done / _requiredTotal,
+                  label: l10n.reqFormProgress(done, _requiredTotal),
+                ),
+              ),
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsetsDirectional.fromSTEB(
@@ -187,10 +229,11 @@ class _NewRequestScreenState extends ConsumerState<NewRequestScreen> {
                     children: [
                       _PrivacyNote(text: l10n.reqFormPrivacy),
                       section,
-                      WorkOrderHeading(
+                      _StepHeading(
                         number: 1,
                         title: l10n.flowSecService,
                         note: l10n.reqFormCategory,
+                        done: _category != null,
                       ),
                       _CategoryGrid(
                         categories: categories,
@@ -213,7 +256,13 @@ class _NewRequestScreenState extends ConsumerState<NewRequestScreen> {
                           ),
                         ),
                       section,
-                      WorkOrderHeading(number: 2, title: l10n.flowSecNeed),
+                      _StepHeading(
+                        number: 2,
+                        title: l10n.flowSecNeed,
+                        done:
+                            RequestRules.titleOk(_title.text) &&
+                            RequestRules.descriptionOk(_description.text),
+                      ),
                       AppTextField(
                         label: l10n.reqFormTitle,
                         hint: l10n.reqFormTitleHint,
@@ -260,51 +309,62 @@ class _NewRequestScreenState extends ConsumerState<NewRequestScreen> {
                         },
                       ),
                       section,
-                      WorkOrderHeading(number: 3, title: l10n.flowSecWhere),
-                      DropdownButtonFormField<int>(
-                        initialValue: _governorate,
-                        isExpanded: true,
-                        decoration: InputDecoration(
-                          labelText: l10n.regGovernorate,
-                          errorText: _governorateError
-                              ? l10n.reqErrGovernorate
-                              : null,
+                      _StepHeading(
+                        number: 3,
+                        title: l10n.flowSecWhere,
+                        done: _governorate != null,
+                      ),
+                      label(l10n.regGovernorate),
+                      Semantics(
+                        label: l10n.regGovernorate,
+                        child: DropdownButtonFormField<int>(
+                          initialValue: _governorate,
+                          isExpanded: true,
+                          decoration: InputDecoration(
+                            errorText: _governorateError
+                                ? l10n.reqErrGovernorate
+                                : null,
+                          ),
+                          items: [
+                            for (final g in governorates)
+                              DropdownMenuItem(
+                                value: g.id,
+                                child: Text(g.nameFor(locale)),
+                              ),
+                          ],
+                          onChanged: (v) => setState(() {
+                            if (v != _governorate) _city = null;
+                            _governorate = v;
+                            _governorateError = false;
+                          }),
                         ),
-                        items: [
-                          for (final g in governorates)
-                            DropdownMenuItem(
-                              value: g.id,
-                              child: Text(g.nameFor(locale)),
-                            ),
-                        ],
-                        onChanged: (v) => setState(() {
-                          if (v != _governorate) _city = null;
-                          _governorate = v;
-                          _governorateError = false;
-                        }),
                       ),
                       gap,
-                      DropdownButtonFormField<int?>(
-                        key: ValueKey(_governorate),
-                        initialValue: _city,
-                        isExpanded: true,
-                        decoration: InputDecoration(labelText: l10n.regCity),
-                        items: [
-                          for (final c in cities)
-                            DropdownMenuItem<int?>(
-                              value: c.id,
-                              child: Text(c.nameFor(locale)),
-                            ),
-                        ],
-                        onChanged: _governorate == null
-                            ? null
-                            : (v) => setState(() => _city = v),
+                      label(l10n.regCity),
+                      Semantics(
+                        label: l10n.regCity,
+                        child: DropdownButtonFormField<int?>(
+                          key: ValueKey(_governorate),
+                          initialValue: _city,
+                          isExpanded: true,
+                          items: [
+                            for (final c in cities)
+                              DropdownMenuItem<int?>(
+                                value: c.id,
+                                child: Text(c.nameFor(locale)),
+                              ),
+                          ],
+                          onChanged: _governorate == null
+                              ? null
+                              : (v) => setState(() => _city = v),
+                        ),
                       ),
                       section,
-                      WorkOrderHeading(
+                      _StepHeading(
                         number: 4,
                         title: l10n.flowSecWhen,
                         note: l10n.reqFormNeededBy,
+                        done: _neededBy != null,
                       ),
                       Wrap(
                         spacing: AppSpacing.sm,
@@ -329,13 +389,14 @@ class _NewRequestScreenState extends ConsumerState<NewRequestScreen> {
                         ],
                       ),
                       section,
-                      WorkOrderHeading(
+                      _StepHeading(
                         number: 5,
                         title: l10n.flowSecPhotos,
                         note: l10n.reqFormPhotosCount(
                           _photos.length,
                           maxRequestPhotos,
                         ),
+                        done: _photos.isNotEmpty,
                       ),
                       if (_photos.isNotEmpty) ...[
                         Wrap(
@@ -371,15 +432,13 @@ class _NewRequestScreenState extends ConsumerState<NewRequestScreen> {
                   ),
                 ),
               ),
-              // The send bar stays put under a rule while the form scrolls.
+              // The send bar stays put under a hairline while the form
+              // scrolls.
               DecoratedBox(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
+                  color: scheme.surface,
                   border: BorderDirectional(
-                    top: BorderSide(
-                      color: scheme.onSurface,
-                      width: AppInk.border + 1,
-                    ),
+                    top: BorderSide(color: scheme.outlineVariant),
                   ),
                 ),
                 child: Padding(
@@ -422,7 +481,106 @@ class _NewRequestScreenState extends ConsumerState<NewRequestScreen> {
   }
 }
 
-/// The privacy promise, set like a printed note at the head of the form.
+/// A thin rounded progress bar that eases to its new value (at once with
+/// Reduce Motion). Read as "2 of 4 steps filled in".
+class _ProgressBar extends StatelessWidget {
+  const _ProgressBar({required this.value, required this.label});
+
+  final double value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget bar(double v) => ClipRRect(
+      borderRadius: BorderRadius.circular(AppRadius.pill),
+      child: LinearProgressIndicator(value: v, minHeight: 4),
+    );
+    return Semantics(
+      label: label,
+      excludeSemantics: true,
+      child: Motion.reduced(context)
+          ? bar(value)
+          : TweenAnimationBuilder<double>(
+              tween: Tween(end: value),
+              duration: Motion.base,
+              curve: Motion.enter,
+              builder: (context, v, _) => bar(v),
+            ),
+    );
+  }
+}
+
+/// A numbered step of the form: a small circle with the number (a check
+/// once the step is filled in), the title, and an optional muted note.
+class _StepHeading extends StatelessWidget {
+  const _StepHeading({
+    required this.number,
+    required this.title,
+    required this.done,
+    this.note,
+  });
+
+  final int number;
+  final String title;
+  final bool done;
+  final String? note;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.md),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ExcludeSemantics(
+            child: AnimatedContainer(
+              duration: Motion.reduced(context) ? Duration.zero : Motion.base,
+              width: 28,
+              height: 28,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: done ? scheme.primary : scheme.primaryContainer,
+              ),
+              child: done
+                  ? Icon(Icons.check_rounded, size: 18, color: scheme.onPrimary)
+                  : Text(
+                      '$number',
+                      textScaler: TextScaler.noScaling,
+                      style: text.labelLarge?.copyWith(
+                        color: scheme.onPrimaryContainer,
+                      ),
+                    ),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Semantics(
+                  header: true,
+                  child: Text(title, style: text.titleMedium),
+                ),
+                if (note != null)
+                  Text(
+                    note!,
+                    style: text.bodySmall?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The privacy promise at the head of the form, on a soft violet panel.
 class _PrivacyNote extends StatelessWidget {
   const _PrivacyNote({required this.text});
 
@@ -433,26 +591,25 @@ class _PrivacyNote extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: scheme.surface,
-        border: BorderDirectional(
-          start: BorderSide(color: scheme.onSurface, width: 8),
-          top: BorderSide(color: scheme.onSurface, width: AppInk.border),
-          end: BorderSide(color: scheme.onSurface, width: AppInk.border),
-          bottom: BorderSide(color: scheme.onSurface, width: AppInk.border),
-        ),
+        color: scheme.primaryContainer,
+        borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Padding(
         padding: const EdgeInsetsDirectional.all(AppSpacing.md),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.lock_outline_rounded, size: 18, color: scheme.onSurface),
+            Icon(
+              Icons.lock_outline_rounded,
+              size: 18,
+              color: scheme.onPrimaryContainer,
+            ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
                 text,
                 style: Theme.of(context).textTheme.bodySmall
-                    ?.copyWith(color: scheme.onSurfaceVariant),
+                    ?.copyWith(color: scheme.onPrimaryContainer),
               ),
             ),
           ],
@@ -462,8 +619,9 @@ class _PrivacyNote extends StatelessWidget {
   }
 }
 
-/// The service picker: a ruled grid of framed boxes, two per line (one on a
-/// very narrow screen). The chosen one is inked in, with a check.
+/// The service picker: tiles two per line (one on a very narrow screen),
+/// each with its tinted icon. The chosen one gets a violet outline, a soft
+/// violet fill and a check.
 class _CategoryGrid extends StatelessWidget {
   const _CategoryGrid({
     required this.categories,
@@ -542,44 +700,49 @@ class _CategoryBox extends StatelessWidget {
       label: name,
       excludeSemantics: true,
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsetsDirectional.only(
-          end: AppInk.offset,
-          bottom: AppInk.offset,
-        ),
-        child: Pressable(
-          haptic: false,
-          button: false,
-          onTap: () {
-            AppHaptics.selection();
-            onTap();
-          },
-          child: StickerBox(
+      child: Pressable(
+        haptic: false,
+        button: false,
+        onTap: () {
+          AppHaptics.selection();
+          onTap();
+        },
+        child: AnimatedContainer(
+          duration: Motion.reduced(context) ? Duration.zero : Motion.fast,
+          constraints: const BoxConstraints(minHeight: 56),
+          padding: const EdgeInsetsDirectional.all(AppSpacing.sm),
+          decoration: BoxDecoration(
             color: selected ? scheme.primaryContainer : scheme.surface,
-            radius: AppRadius.sm,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 52),
-              child: Padding(
-                padding: const EdgeInsetsDirectional.all(AppSpacing.sm),
-                child: Row(
-                  children: [
-                    InitialsBlock(name: name, size: 34),
-                    const SizedBox(width: AppSpacing.sm),
-                    Expanded(
-                      child: Text(
-                        name,
-                        style: Theme.of(context).textTheme.labelMedium
-                            ?.copyWith(color: fg),
-                      ),
-                    ),
-                    if (selected) ...[
-                      const SizedBox(width: AppSpacing.xs),
-                      Icon(Icons.check_rounded, size: 18, color: fg),
-                    ],
-                  ],
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            border: Border.all(
+              color: selected ? scheme.primary : scheme.outlineVariant,
+              width: selected ? 1.5 : 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              IconTile(
+                icon: categoryIcon(category.icon),
+                seed: category.id,
+                size: 36,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  name,
+                  style: Theme.of(context).textTheme.labelMedium
+                      ?.copyWith(color: fg),
                 ),
               ),
-            ),
+              if (selected) ...[
+                const SizedBox(width: AppSpacing.xs),
+                Icon(
+                  Icons.check_circle_rounded,
+                  size: 18,
+                  color: scheme.primary,
+                ),
+              ],
+            ],
           ),
         ),
       ),
@@ -608,25 +771,18 @@ class _PhotoTile extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          DecoratedBox(
-            position: DecorationPosition.foreground,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppRadius.sm),
-              border: Border.all(color: scheme.onSurface, width: AppInk.border),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppRadius.sm),
-              child: Semantics(
-                image: true,
-                label: l10n.portfolioPhotoOf(index, 0),
-                excludeSemantics: true,
-                child: Image.memory(
-                  photo.bytes,
-                  fit: BoxFit.cover,
-                  cacheWidth: 264,
-                  errorBuilder: (_, _, _) =>
-                      ColoredBox(color: scheme.surfaceContainerHighest),
-                ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            child: Semantics(
+              image: true,
+              label: l10n.portfolioPhotoOf(index, 0),
+              excludeSemantics: true,
+              child: Image.memory(
+                photo.bytes,
+                fit: BoxFit.cover,
+                cacheWidth: 264,
+                errorBuilder: (_, _, _) =>
+                    ColoredBox(color: scheme.surfaceContainerHighest),
               ),
             ),
           ),
@@ -637,10 +793,14 @@ class _PhotoTile extends StatelessWidget {
               tooltip: l10n.reqFormRemovePhoto(index),
               iconSize: 16,
               style: IconButton.styleFrom(
-                backgroundColor: scheme.onSurface,
-                foregroundColor: scheme.surface,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                minimumSize: const Size(30, 30),
+                fixedSize: const Size(30, 30),
+                padding: EdgeInsets.zero,
+                tapTargetSize: MaterialTapTargetSize.padded,
+                backgroundColor: scheme.surface,
+                foregroundColor: scheme.onSurface,
+                shape: CircleBorder(
+                  side: BorderSide(color: scheme.outlineVariant),
                 ),
               ),
               icon: const Icon(Icons.close_rounded),

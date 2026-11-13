@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/motion/motion.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../auth/presentation/signed_out_prompt.dart';
+import '../../requests/presentation/flow_widgets.dart';
 import '../application/notifications_providers.dart';
 import '../domain/notifications_domain.dart';
 
@@ -54,73 +54,80 @@ class NotificationSettingsScreen extends ConsumerWidget {
       );
     } else if (prefs != null) {
       Widget toggle(
-        int index,
+        IconData icon,
+        int seed,
         String title,
         bool value,
         ValueChanged<bool> onChanged,
-      ) => StaggerIn(
-        index: index,
-        child: Padding(
-          padding: const EdgeInsetsDirectional.only(
-            end: AppInk.offset,
-            bottom: AppInk.offset + AppSpacing.md,
+      ) => Material(
+        type: MaterialType.transparency,
+        child: SwitchListTile(
+          contentPadding: const EdgeInsetsDirectional.symmetric(
+            horizontal: AppSpacing.lg,
           ),
-          child: StickerBox(
-            color: value ? scheme.primaryContainer : scheme.surface,
-            child: Material(
-              type: MaterialType.transparency,
-              child: SwitchListTile(
-                contentPadding: const EdgeInsetsDirectional.symmetric(
-                  horizontal: AppSpacing.md,
-                ),
-                minTileHeight: 64,
-                title: Text(
-                  title,
-                  style: text.titleMedium?.copyWith(
-                    color: value ? scheme.onPrimaryContainer : scheme.onSurface,
-                  ),
-                ),
-                value: value,
-                onChanged: onChanged,
-              ),
-            ),
-          ),
+          minTileHeight: 64,
+          shape: const RoundedRectangleBorder(),
+          secondary: IconTile(icon: icon, seed: seed, size: 40),
+          title: Text(title, style: text.titleSmall),
+          value: value,
+          onChanged: onChanged,
         ),
       );
       body = ListView(
         padding: const EdgeInsetsDirectional.all(AppSpacing.gutter),
         children: [
-          Text(l10n.notifIntro, style: text.bodyLarge?.copyWith(color: muted)),
-          const SizedBox(height: AppSpacing.md),
+          Text(l10n.notifIntro, style: text.bodyMedium?.copyWith(color: muted)),
           if (!pushAvailable) ...[
-            Text(
-              l10n.notifNoPush,
-              style: text.bodySmall?.copyWith(color: muted),
-            ),
             const SizedBox(height: AppSpacing.md),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(AppRadius.md),
+              ),
+              child: Padding(
+                padding: const EdgeInsetsDirectional.all(AppSpacing.md),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.info_outline_rounded, size: 18, color: muted),
+                    const SizedBox(width: AppSpacing.sm),
+                    Expanded(
+                      child: Text(
+                        l10n.notifNoPush,
+                        style: text.bodySmall?.copyWith(color: muted),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
-          const SizedBox(height: AppSpacing.sm),
-          // Ink switches on ruled rows: "on" is not the screen's action, so
-          // it is not terracotta.
-          Theme(
-            data: Theme.of(context).copyWith(switchTheme: _inkSwitch(scheme)),
+          const SizedBox(height: AppSpacing.lg),
+          // One grouped card, like the phone's own settings.
+          FlowCard(
+            padding: EdgeInsetsDirectional.zero,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 toggle(
+                  Icons.local_offer_outlined,
                   0,
                   l10n.notifOffers,
                   prefs.offers,
                   (v) => _change(context, ref, prefs.copyWith(offers: v)),
                 ),
+                const Hairline(indent: AppSpacing.lg + 40 + AppSpacing.lg),
                 toggle(
-                  1,
+                  Icons.chat_bubble_outline_rounded,
+                  5,
                   l10n.notifMessages,
                   prefs.messages,
                   (v) => _change(context, ref, prefs.copyWith(messages: v)),
                 ),
+                const Hairline(indent: AppSpacing.lg + 40 + AppSpacing.lg),
                 toggle(
-                  2,
+                  Icons.handyman_outlined,
+                  4,
                   l10n.notifJobs,
                   prefs.jobs,
                   (v) => _change(context, ref, prefs.copyWith(jobs: v)),
@@ -147,16 +154,4 @@ class NotificationSettingsScreen extends ConsumerWidget {
       body: SafeArea(child: body),
     );
   }
-
-  static SwitchThemeData _inkSwitch(ColorScheme cs) => SwitchThemeData(
-    thumbColor: WidgetStateProperty.resolveWith(
-      (s) => s.contains(WidgetState.selected) ? cs.surface : cs.onSurface,
-    ),
-    trackColor: WidgetStateProperty.resolveWith(
-      (s) => s.contains(WidgetState.selected)
-          ? cs.onSurface
-          : cs.surfaceContainerHighest,
-    ),
-    trackOutlineColor: WidgetStateProperty.all(cs.onSurface),
-  );
 }

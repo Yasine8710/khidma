@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/format/digits.dart';
-import '../../../core/motion/motion.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -15,9 +14,9 @@ import '../../../shared/widgets/error_state.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../messages/application/messages_providers.dart';
 import '../../requests/domain/requests_domain.dart';
-import '../../requests/presentation/ledger_widgets.dart';
+import '../../requests/presentation/flow_widgets.dart';
 import '../../requests/presentation/request_detail_screen.dart'
-    show RequestPhotoStrip, WorkOrderHeader;
+    show RequestHeaderCard, RequestPhotos;
 import '../application/offers_providers.dart';
 import '../domain/offers_domain.dart';
 import 'offers_texts.dart';
@@ -47,10 +46,9 @@ class ProRequestScreen extends ConsumerWidget {
         ),
       );
     } else {
-      body = TypeEmpty(
+      body = CalmEmpty(
         icon: Icons.assignment_late_outlined,
         title: l10n.reqNotFound,
-        body: '',
       );
     }
     return Scaffold(
@@ -82,7 +80,7 @@ class _Body extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          WorkOrderHeader(
+          RequestHeaderCard(
             id: request.id,
             title: request.title,
             description: request.description,
@@ -102,29 +100,23 @@ class _Body extends ConsumerWidget {
             ),
             style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
           ),
-          RequestPhotoStrip(requestId: request.id),
+          RequestPhotos(requestId: request.id),
           const SizedBox(height: AppSpacing.xl),
-          // The quote being written, on its own framed slip.
-          Padding(
-            padding: const EdgeInsetsDirectional.only(
-              end: AppInk.offset,
-              bottom: AppInk.offset,
-            ),
-            child: StickerBox(
-              padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Semantics(
-                    header: true,
-                    child: Text(l10n.offerTitle, style: text.headlineSmall),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  const LedgerRule(strong: true),
-                  const SizedBox(height: AppSpacing.lg),
-                  _OfferGate(request: request),
-                ],
-              ),
+          // The quote being written, on its own card.
+          FlowCard(
+            gap: 0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Semantics(
+                  header: true,
+                  child: Text(l10n.offerTitle, style: text.titleLarge),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                const Hairline(),
+                const SizedBox(height: AppSpacing.lg),
+                _OfferGate(request: request),
+              ],
             ),
           ),
         ],
@@ -268,7 +260,6 @@ class _OfferSectionState extends ConsumerState<_OfferSection> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final locale = Localizations.localeOf(context);
     final text = Theme.of(context).textTheme;
     final busy = ref.watch(offerActionsProvider);
     final status = widget.request.myOfferStatus;
@@ -291,8 +282,7 @@ class _OfferSectionState extends ConsumerState<_OfferSection> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LedgerStamp(
-            big: true,
+          StatusPill(
             label: offerStatusLabel(l10n, OfferStatus.accepted),
             tone: BadgeTone.success,
             icon: Icons.check_rounded,
@@ -312,8 +302,7 @@ class _OfferSectionState extends ConsumerState<_OfferSection> {
           if (status != null)
             Align(
               alignment: AlignmentDirectional.centerStart,
-              child: LedgerStamp(
-                big: true,
+              child: StatusPill(
                 label: l10n.offerYours(offerStatusLabel(l10n, status)),
                 tone: offerStatusTone(status),
               ),
@@ -393,7 +382,6 @@ class _OfferSectionState extends ConsumerState<_OfferSection> {
               onPressed: busy ? null : () => _withdraw(mine),
             ),
           ],
-          if (locale.languageCode == 'ar') const SizedBox.shrink(),
         ],
       ),
     );

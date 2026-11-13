@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_spacing.dart';
-import '../../requests/presentation/ledger_widgets.dart' show LedgerRule;
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../../requests/domain/requests_domain.dart';
+import '../../requests/presentation/flow_widgets.dart' show FlowCard, Hairline;
 import '../application/trust_providers.dart';
 import '../domain/trust_domain.dart';
 
@@ -147,18 +147,11 @@ class _ReportSheetState extends ConsumerState<_ReportSheet> {
             style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
           ),
           const SizedBox(height: AppSpacing.md),
-          const LedgerRule(strong: true),
-          // Reasons as ruled form lines, ticked in ink: the send button is the
-          // sheet's one terracotta action.
-          Theme(
-            data: Theme.of(context).copyWith(
-              radioTheme: RadioThemeData(
-                fillColor: WidgetStateProperty.resolveWith(
-                  (s) => s.contains(WidgetState.selected)
-                      ? scheme.onSurface
-                      : scheme.outline,
-                ),
-              ),
+          // Reasons as a grouped list of radio rows.
+          FlowCard(
+            gap: 0,
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.xs,
             ),
             child: RadioGroup<ReportReason>(
               groupValue: _reason,
@@ -166,20 +159,24 @@ class _ReportSheetState extends ConsumerState<_ReportSheet> {
                 _reason = v;
                 _reasonError = false;
               }),
-              child: Column(
-                children: [
-                  for (final r in ReportReason.values) ...[
-                    RadioListTile<ReportReason>(
-                      value: r,
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(reportReasonLabel(l10n, r)),
-                    ),
-                    const LedgerRule(),
+              child: Material(
+                type: MaterialType.transparency,
+                child: Column(
+                  children: [
+                    for (final r in ReportReason.values) ...[
+                      if (r.index > 0) const Hairline(),
+                      RadioListTile<ReportReason>(
+                        value: r,
+                        shape: const RoundedRectangleBorder(),
+                        title: Text(reportReasonLabel(l10n, r)),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           ),
+          const SizedBox(height: AppSpacing.sm),
           if (_reasonError)
             Padding(
               padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm),
