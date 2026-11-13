@@ -155,6 +155,16 @@ Known residuals, all waiting on the server-side worker of #32 or a real Supabase
 - The remaining `npm audit` findings are dev-only tooling (vitest worker and vite dev server): they cannot run in production, and tests only load our own code.
 - Concurrency fixes (review pair lock, verification file locks, upload quota lock) are checked structurally; a true parallel test needs a real Postgres.
 
+### Trust v2: scam reports, suspension, badge rules (#54, migration 2000)
+- Reports also cover an offer (only the customer who received it) and one message (only the other member of the conversation). New reasons: `pay_outside`, `no_show`. Evidence is text only (500 chars); no extra files are stored.
+- Each report records its subject (the person it is about). Limits against weaponised reporting: 10 reports per reporter per 24 h, one open report per target, at most 3 reports by one person on the same subject per 30 days. The queue sorts by distinct reporters on the subject; 3 or more in 30 days sets `flagged`. Nothing is suspended automatically.
+- `admin_suspend(user, days | null, reason, report?)`: unpublishes the profile and freelance listing, withdraws pending offers and, when started from a report, closes every open report on that person. The reason is shown to the professional. Triggers on `quote_offers`, `conversations` and `messages` refuse new rows from a suspended professional, whatever function writes them. Booked jobs keep their chat for the customer.
+- A timed suspension ends on its own: writes are allowed again once the time is up, the owner's `my_account_status()` lifts it, and `service_lift_expired_suspensions()` (service role, every 15 minutes) clears the rest. Lifting never republishes. System lifts are not written to the admin audit log (it records admin actions only).
+- Appeals: one open appeal at a time, a week's wait after a rejection, decided in the admin panel (Appeals tab) and audited.
+- Reporters get an outcome notice (`report_actioned` or `report_dismissed`) with an empty payload: never the note or what was done. Account notices use the `account` category, which ignores notification preferences.
+- Badge: verification is valid 365 days (`verified_until`, a Tunis date, public). `badge_valid()` gates the search output and freelance visibility, the app hides a badge past its date, and `service_expire_verifications()` (service role, daily) turns expired ones back to unverified with a notice. Admins can revoke a badge (`revoked`, reason required, audited). The profile shows "Identity verified, valid until ..."; no document data is ever shown.
+- Owner step: enable `pg_cron` (Database > Extensions) **before** running migration 2000 so the two jobs are scheduled; otherwise schedule both `service_*` functions with any daily or 15-minute cron.
+
 ### Operational notes
 - The phone-reveal rate limit takes a per-caller advisory lock before counting, so concurrent requests cannot all pass; true concurrency can only be exercised on a real Postgres.
 - The Supabase SDK's own debug logger is disabled; the app prints only error types, and only in debug builds.

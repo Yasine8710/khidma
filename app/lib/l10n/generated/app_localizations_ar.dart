@@ -2545,4 +2545,72 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get welcomeTradeVideo => 'محرّرة فيديو';
+
+  @override
+  String get reportReasonPayOutside => 'طلب الدفع مسبقًا أو خارج التطبيق';
+
+  @override
+  String get reportReasonNoShow => 'لم يحضر';
+
+  @override
+  String get reportMessageAction => 'الإبلاغ عن هذه الرسالة';
+
+  @override
+  String get reportOfferAction => 'الإبلاغ عن هذا العرض';
+
+  @override
+  String get chatSafetyTip =>
+      'لا تدفع مسبقًا أبدًا. احتفظ باتفاقاتك داخل خدمة.';
+
+  @override
+  String get failSuspended => 'حسابك معلّق: هذا الإجراء غير ممكن.';
+
+  @override
+  String get suspendedTitle => 'الحساب معلّق';
+
+  @override
+  String suspendedUntil(String date) {
+    return 'ملفك مخفي حتى $date. لا يمكنك إرسال عروض أو رسائل.';
+  }
+
+  @override
+  String get suspendedIndefinite =>
+      'ملفك مخفي حتى قرار الفريق. لا يمكنك إرسال عروض أو رسائل.';
+
+  @override
+  String suspendedReason(String reason) {
+    return 'السبب: $reason';
+  }
+
+  @override
+  String get appealAction => 'تقديم طعن';
+
+  @override
+  String get appealHint => 'اشرح لماذا هذا التعليق خطأ.';
+
+  @override
+  String get appealTooShort => 'اكتب 10 أحرف على الأقل.';
+
+  @override
+  String get appealSend => 'إرسال الطعن';
+
+  @override
+  String get appealSent => 'تم إرسال الطعن. سيراجعه الفريق.';
+
+  @override
+  String get appealPending => 'طعنك قيد المراجعة.';
+
+  @override
+  String get appealRejected => 'رُفض طعنك الأخير.';
+
+  @override
+  String get appealFailRate => 'انتظر أسبوعًا بعد الرفض قبل طعن جديد.';
+
+  @override
+  String get appealFailGeneric => 'تعذّر إرسال الطعن. حاول مجددًا.';
+
+  @override
+  String verifiedUntil(String date) {
+    return 'هوية موثّقة، صالحة حتى $date';
+  }
 }

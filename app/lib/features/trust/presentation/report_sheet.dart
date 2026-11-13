@@ -17,6 +17,8 @@ String reportReasonLabel(AppLocalizations l10n, ReportReason r) => switch (r) {
   ReportReason.scam => l10n.reportReasonScam,
   ReportReason.inappropriate => l10n.reportReasonInappropriate,
   ReportReason.other => l10n.reportReasonOther,
+  ReportReason.payOutside => l10n.reportReasonPayOutside,
+  ReportReason.noShow => l10n.reportReasonNoShow,
 };
 
 String reportFailureText(AppLocalizations l10n, RequestsFailure f) =>

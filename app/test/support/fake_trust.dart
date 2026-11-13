@@ -10,6 +10,8 @@ class FakeTrustRepository implements TrustRepository {
     : info = info ?? const VerificationInfo(status: VerificationStatus.none);
 
   VerificationInfo info;
+  AccountStatus account = AccountStatus.none;
+  final appeals = <String>[];
   final reports = <(ReportTarget, String, ReportReason, String?)>[];
   final submitted = <List<PreparedPhoto>>[];
   int cancels = 0;
@@ -39,6 +41,21 @@ class FakeTrustRepository implements TrustRepository {
 
   @override
   Future<VerificationInfo> myVerification() async => info;
+
+  @override
+  Future<AccountStatus> myAccountStatus() async => account;
+
+  @override
+  Future<void> submitAppeal(String message) async {
+    appeals.add(message);
+    await _maybeFail();
+    account = AccountStatus(
+      suspended: account.suspended,
+      suspendedUntil: account.suspendedUntil,
+      reason: account.reason,
+      appeal: AppealStatus.open,
+    );
+  }
 
   @override
   Future<void> submitVerification(List<PreparedPhoto> documents) async {

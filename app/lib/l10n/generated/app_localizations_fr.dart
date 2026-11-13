@@ -2585,4 +2585,77 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get welcomeTradeVideo => 'Monteuse vidéo';
+
+  @override
+  String get reportReasonPayOutside =>
+      'Demande de paiement d’avance ou hors de l’app';
+
+  @override
+  String get reportReasonNoShow => 'Ne s’est pas présenté';
+
+  @override
+  String get reportMessageAction => 'Signaler ce message';
+
+  @override
+  String get reportOfferAction => 'Signaler cette offre';
+
+  @override
+  String get chatSafetyTip =>
+      'Ne payez jamais d’avance. Gardez vos accords dans Khidma.';
+
+  @override
+  String get failSuspended =>
+      'Votre compte est suspendu : cette action n’est pas possible.';
+
+  @override
+  String get suspendedTitle => 'Compte suspendu';
+
+  @override
+  String suspendedUntil(String date) {
+    return 'Votre profil est masqué jusqu’au $date. Vous ne pouvez pas envoyer d’offres ni de messages.';
+  }
+
+  @override
+  String get suspendedIndefinite =>
+      'Votre profil est masqué jusqu’à la décision de l’équipe. Vous ne pouvez pas envoyer d’offres ni de messages.';
+
+  @override
+  String suspendedReason(String reason) {
+    return 'Motif : $reason';
+  }
+
+  @override
+  String get appealAction => 'Faire un recours';
+
+  @override
+  String get appealHint =>
+      'Expliquez pourquoi cette suspension est une erreur.';
+
+  @override
+  String get appealTooShort => 'Écrivez au moins 10 caractères.';
+
+  @override
+  String get appealSend => 'Envoyer le recours';
+
+  @override
+  String get appealSent => 'Recours envoyé. L’équipe va l’examiner.';
+
+  @override
+  String get appealPending => 'Votre recours est en cours d’examen.';
+
+  @override
+  String get appealRejected => 'Votre dernier recours a été refusé.';
+
+  @override
+  String get appealFailRate =>
+      'Attendez une semaine après un refus avant un nouveau recours.';
+
+  @override
+  String get appealFailGeneric =>
+      'Le recours n’a pas pu être envoyé. Réessayez.';
+
+  @override
+  String verifiedUntil(String date) {
+    return 'Identité vérifiée, valable jusqu’au $date';
+  }
 }

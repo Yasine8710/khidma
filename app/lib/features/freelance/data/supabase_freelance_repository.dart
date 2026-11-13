@@ -103,7 +103,7 @@ class SupabaseFreelanceRepository implements FreelanceRepository {
       'languages, years_experience, starting_price_millimes, price_unit, '
       'availability, is_published, rating_avg, review_count';
   static const _withPro =
-      '$_cols, professional_profiles(avatar_path, verification_status)';
+      '$_cols, professional_profiles(avatar_path, verification_status, verified_until)';
 
   @override
   Future<List<DigitalCategory>> categories() => _guard(() async {
@@ -487,9 +487,9 @@ class SupabaseFreelanceRepository implements FreelanceRepository {
         (a) => a.name == r['availability'],
         orElse: () => Availability.offline,
       ),
-      verification: Verification.values.firstWhere(
-        (v) => v.name == pro?['verification_status'],
-        orElse: () => Verification.unverified,
+      verification: parseVerification(
+        pro?['verification_status'],
+        pro?['verified_until'],
       ),
       rating: (r['rating_avg'] as num?)?.toDouble() ?? 0,
       reviewCount: (r['review_count'] as num?)?.toInt() ?? 0,

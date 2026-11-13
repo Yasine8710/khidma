@@ -18,6 +18,8 @@ import '../../offers/presentation/offers_texts.dart';
 import '../../messages/application/messages_providers.dart';
 import '../../reviews/application/reviews_providers.dart';
 import '../../reviews/presentation/review_widgets.dart';
+import '../../trust/domain/trust_domain.dart';
+import '../../trust/presentation/report_sheet.dart';
 import '../application/customer_offers_providers.dart';
 import '../domain/customer_offers_domain.dart';
 import '../domain/requests_domain.dart';
@@ -386,6 +388,12 @@ class _OfferCard extends StatelessWidget {
               Text(
                 formatDate(offer.createdAt, locale),
                 style: text.bodySmall?.copyWith(color: muted),
+              ),
+              // The customer can report a suspicious offer (e.g. pay first).
+              ReportButton(
+                target: ReportTarget.offer,
+                targetId: offer.id,
+                compact: true,
               ),
             ],
           ),

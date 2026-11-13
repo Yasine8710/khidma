@@ -4641,6 +4641,126 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Monteuse vidéo'**
   String get welcomeTradeVideo;
+
+  /// No description provided for @reportReasonPayOutside.
+  ///
+  /// In fr, this message translates to:
+  /// **'Demande de paiement d’avance ou hors de l’app'**
+  String get reportReasonPayOutside;
+
+  /// No description provided for @reportReasonNoShow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ne s’est pas présenté'**
+  String get reportReasonNoShow;
+
+  /// No description provided for @reportMessageAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Signaler ce message'**
+  String get reportMessageAction;
+
+  /// No description provided for @reportOfferAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Signaler cette offre'**
+  String get reportOfferAction;
+
+  /// No description provided for @chatSafetyTip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ne payez jamais d’avance. Gardez vos accords dans Khidma.'**
+  String get chatSafetyTip;
+
+  /// No description provided for @failSuspended.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre compte est suspendu : cette action n’est pas possible.'**
+  String get failSuspended;
+
+  /// No description provided for @suspendedTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte suspendu'**
+  String get suspendedTitle;
+
+  /// No description provided for @suspendedUntil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre profil est masqué jusqu’au {date}. Vous ne pouvez pas envoyer d’offres ni de messages.'**
+  String suspendedUntil(String date);
+
+  /// No description provided for @suspendedIndefinite.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre profil est masqué jusqu’à la décision de l’équipe. Vous ne pouvez pas envoyer d’offres ni de messages.'**
+  String get suspendedIndefinite;
+
+  /// No description provided for @suspendedReason.
+  ///
+  /// In fr, this message translates to:
+  /// **'Motif : {reason}'**
+  String suspendedReason(String reason);
+
+  /// No description provided for @appealAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faire un recours'**
+  String get appealAction;
+
+  /// No description provided for @appealHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expliquez pourquoi cette suspension est une erreur.'**
+  String get appealHint;
+
+  /// No description provided for @appealTooShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'Écrivez au moins 10 caractères.'**
+  String get appealTooShort;
+
+  /// No description provided for @appealSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer le recours'**
+  String get appealSend;
+
+  /// No description provided for @appealSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recours envoyé. L’équipe va l’examiner.'**
+  String get appealSent;
+
+  /// No description provided for @appealPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre recours est en cours d’examen.'**
+  String get appealPending;
+
+  /// No description provided for @appealRejected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre dernier recours a été refusé.'**
+  String get appealRejected;
+
+  /// No description provided for @appealFailRate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Attendez une semaine après un refus avant un nouveau recours.'**
+  String get appealFailRate;
+
+  /// No description provided for @appealFailGeneric.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le recours n’a pas pu être envoyé. Réessayez.'**
+  String get appealFailGeneric;
+
+  /// No description provided for @verifiedUntil.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identité vérifiée, valable jusqu’au {date}'**
+  String verifiedUntil(String date);
 }
 
 class _AppLocalizationsDelegate

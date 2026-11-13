@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/format/dates.dart';
 import '../../../core/motion/motion.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -200,7 +201,9 @@ class _Page extends ConsumerWidget {
           // Only a real verification is ever shown.
           if (p.isVerified)
             InfoPill(
-              label: l10n.docsVerified,
+              label: p.verifiedUntil == null
+                  ? l10n.docsVerified
+                  : l10n.verifiedUntil(formatDate(p.verifiedUntil!, locale)),
               icon: Icons.verified_user_outlined,
             ),
           AvailabilityPill(availability: p.availability),

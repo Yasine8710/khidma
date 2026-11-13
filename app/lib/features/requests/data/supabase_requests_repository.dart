@@ -59,6 +59,8 @@ RequestsFailure mapRequestsException(Object error) {
         if (m.contains('invalid_transition')) {
           return RequestsFailure.invalidTransition;
         }
+        if (m.contains('not_suspended')) return RequestsFailure.invalidInput;
+        if (m.contains('suspended')) return RequestsFailure.suspended;
         return RequestsFailure.unknown;
     }
     return RequestsFailure.unknown;

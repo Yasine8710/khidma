@@ -2,6 +2,8 @@ import '../../trust/domain/trust_domain.dart';
 import '../../trust/presentation/report_sheet.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/format/dates.dart';
@@ -44,6 +46,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }) => switch (f) {
     RequestsFailure.rateLimited => l10n.chatRateLimited,
     RequestsFailure.notOpen => l10n.chatClosed,
+    RequestsFailure.suspended => l10n.failSuspended,
     _ => photo ? l10n.chatPhotoFailed : l10n.chatSendFailed,
   };
 
@@ -235,6 +238,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ),
                 ),
               ),
+            const _SafetyTip(),
             Expanded(child: list),
             if (_error != null)
               Semantics(
@@ -414,6 +418,85 @@ class _DayLine extends StatelessWidget {
   }
 }
 
+/// A standing reminder at the top of every conversation.
+class _SafetyTip extends StatelessWidget {
+  const _SafetyTip();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest,
+        border: BorderDirectional(
+          bottom: BorderSide(color: scheme.outlineVariant),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: AppSpacing.gutter,
+          vertical: AppSpacing.sm,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.shield_outlined,
+              size: 18,
+              color: scheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                l10n.chatSafetyTip,
+                style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Long-press menu on the other side's message: copy it or report it.
+Future<void> _showMessageMenu(BuildContext context, ChatMessage message) {
+  final l10n = AppLocalizations.of(context);
+  final body = message.body;
+  return showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    useSafeArea: true,
+    builder: (sheet) => Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (body != null && body.isNotEmpty)
+          ListTile(
+            leading: const Icon(Icons.copy_outlined),
+            title: Text(l10n.billCopy),
+            onTap: () {
+              Clipboard.setData(ClipboardData(text: body));
+              Navigator.of(sheet).pop();
+            },
+          ),
+        ListTile(
+          leading: const Icon(Icons.flag_outlined),
+          title: Text(l10n.reportMessageAction),
+          onTap: () {
+            Navigator.of(sheet).pop();
+            showReportSheet(
+              context,
+              target: ReportTarget.message,
+              targetId: '${message.id}',
+            );
+          },
+        ),
+      ],
+    ),
+  );
+}
+
 class _Bubble extends ConsumerWidget {
   const _Bubble({
     required this.message,
@@ -450,49 +533,61 @@ class _Bubble extends ConsumerWidget {
         child: Semantics(
           container: true,
           label: '$who, ${formatTime(message.createdAt, locale)}',
-          child: Container(
-            margin: const EdgeInsetsDirectional.symmetric(vertical: 3),
-            padding: const EdgeInsetsDirectional.fromSTEB(
-              AppSpacing.md,
-              AppSpacing.sm,
-              AppSpacing.md,
-              AppSpacing.sm - 2,
-            ),
-            decoration: BoxDecoration(
-              color: bg,
-              // The corner on the sender's side is tucked in.
-              borderRadius: BorderRadiusDirectional.only(
-                topStart: r,
-                topEnd: r,
-                bottomStart: mine ? r : tail,
-                bottomEnd: mine ? tail : r,
+          customSemanticsActions: mine
+              ? null
+              : {
+                  CustomSemanticsAction(label: l10n.reportMessageAction): () =>
+                      _showMessageMenu(context, message),
+                },
+          child: GestureDetector(
+            onLongPress: mine ? null : () => _showMessageMenu(context, message),
+            child: Container(
+              margin: const EdgeInsetsDirectional.symmetric(vertical: 3),
+              padding: const EdgeInsetsDirectional.fromSTEB(
+                AppSpacing.md,
+                AppSpacing.sm,
+                AppSpacing.md,
+                AppSpacing.sm - 2,
               ),
-              border: mine ? null : Border.all(color: scheme.outlineVariant),
-            ),
-            // The time sits at the end, under the text.
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (image != null) _ChatImage(path: image),
-                if (body != null && body.isNotEmpty) ...[
-                  if (image != null) const SizedBox(height: AppSpacing.sm),
-                  SelectableText(
-                    body,
-                    style: text.bodyLarge?.copyWith(color: fg),
+              decoration: BoxDecoration(
+                color: bg,
+                // The corner on the sender's side is tucked in.
+                borderRadius: BorderRadiusDirectional.only(
+                  topStart: r,
+                  topEnd: r,
+                  bottomStart: mine ? r : tail,
+                  bottomEnd: mine ? tail : r,
+                ),
+                border: mine ? null : Border.all(color: scheme.outlineVariant),
+              ),
+              // The time sits at the end, under the text.
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (image != null) _ChatImage(path: image),
+                  if (body != null && body.isNotEmpty) ...[
+                    if (image != null) const SizedBox(height: AppSpacing.sm),
+                    if (mine)
+                      SelectableText(
+                        body,
+                        style: text.bodyLarge?.copyWith(color: fg),
+                      )
+                    else
+                      Text(body, style: text.bodyLarge?.copyWith(color: fg)),
+                  ],
+                  const SizedBox(height: 2),
+                  Text(
+                    formatTime(message.createdAt, locale),
+                    style: text.labelSmall?.copyWith(
+                      color: mine
+                          ? fg.withValues(alpha: 0.85)
+                          : scheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
-                const SizedBox(height: 2),
-                Text(
-                  formatTime(message.createdAt, locale),
-                  style: text.labelSmall?.copyWith(
-                    color: mine
-                        ? fg.withValues(alpha: 0.85)
-                        : scheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),

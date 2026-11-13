@@ -158,7 +158,7 @@ class SupabaseMarketplaceRepository implements MarketplaceRepository {
         .select(
           'user_id, business_name, primary_category_id, description, years_experience, '
           'governorate_id, city_id, neighborhood_id, latitude, longitude, availability, '
-          'verification_status, rating_avg, review_count, avatar_path',
+          'verification_status, verified_until, rating_avg, review_count, avatar_path',
         )
         .eq('user_id', id)
         .eq('is_published', true)
@@ -169,7 +169,7 @@ class SupabaseMarketplaceRepository implements MarketplaceRepository {
   static const _summaryCols =
       'user_id, business_name, primary_category_id, description, years_experience, '
       'governorate_id, city_id, neighborhood_id, latitude, longitude, availability, '
-      'verification_status, rating_avg, review_count, avatar_path';
+      'verification_status, verified_until, rating_avg, review_count, avatar_path';
 
   @override
   Future<List<ProfessionalSummary>> professionals(List<String> ids) =>
@@ -255,14 +255,17 @@ class SupabaseMarketplaceRepository implements MarketplaceRepository {
       (a) => a.name == r['availability'],
       orElse: () => Availability.offline,
     ),
-    verification: Verification.values.firstWhere(
-      (v) => v.name == r['verification_status'],
-      orElse: () => Verification.unverified,
+    verification: parseVerification(
+      r['verification_status'],
+      r['verified_until'],
     ),
     rating: (r['rating_avg'] as num?)?.toDouble() ?? 0,
     reviewCount: (r['review_count'] as int?) ?? 0,
     distanceKm: (r['distance_km'] as num?)?.toDouble(),
     avatarUrl: _avatarUrl(r['avatar_path'] as String?),
+    verifiedUntil: r['verified_until'] is String
+        ? DateTime.tryParse(r['verified_until'] as String)
+        : null,
   );
 
   String? _avatarUrl(String? path) => path == null || path.isEmpty

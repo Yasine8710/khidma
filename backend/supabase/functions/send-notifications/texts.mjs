@@ -6,6 +6,8 @@ export const LANGUAGES = ['fr', 'ar', 'en'];
 export const KINDS = [
   'offer_received', 'offer_accepted', 'message',
   'job_started', 'job_done', 'job_completed', 'job_cancelled',
+  'report_actioned', 'report_dismissed', 'account_suspended', 'account_restored',
+  'appeal_rejected', 'verification_expired',
 ];
 
 const TEXTS = {
@@ -44,6 +46,36 @@ const TEXTS = {
     ar: ['أُلغي العمل', 'ألغى الطرف الآخر العمل.'],
     en: ['Job cancelled', 'The other party cancelled the job.'],
   },
+  report_actioned: {
+    fr: ['Signalement traité', 'Merci. Nous avons pris des mesures suite à votre signalement.'],
+    ar: ['تمت معالجة البلاغ', 'شكرًا. اتخذنا إجراءً بعد بلاغك.'],
+    en: ['Report handled', 'Thank you. We took action after your report.'],
+  },
+  report_dismissed: {
+    fr: ['Signalement examiné', 'Merci. Après examen, aucune mesure n’a été nécessaire.'],
+    ar: ['تمت مراجعة البلاغ', 'شكرًا. بعد المراجعة، لم يكن أي إجراء ضروريًا.'],
+    en: ['Report reviewed', 'Thank you. After review, no action was needed.'],
+  },
+  account_suspended: {
+    fr: ['Compte suspendu', 'Votre profil professionnel est suspendu. Ouvrez l’app pour voir pourquoi.'],
+    ar: ['تم تعليق الحساب', 'تم تعليق ملفك المهني. افتح التطبيق لمعرفة السبب.'],
+    en: ['Account suspended', 'Your professional profile is suspended. Open the app to see why.'],
+  },
+  account_restored: {
+    fr: ['Suspension levée', 'Votre profil peut de nouveau être publié.'],
+    ar: ['تم رفع التعليق', 'يمكنك نشر ملفك من جديد.'],
+    en: ['Suspension lifted', 'Your profile can be published again.'],
+  },
+  appeal_rejected: {
+    fr: ['Recours refusé', 'Votre recours a été examiné et refusé.'],
+    ar: ['رُفض الطعن', 'تمت مراجعة طعنك ورفضه.'],
+    en: ['Appeal rejected', 'Your appeal was reviewed and rejected.'],
+  },
+  verification_expired: {
+    fr: ['Badge expiré', 'Votre vérification a expiré. Renouvelez-la pour retrouver le badge.'],
+    ar: ['انتهت صلاحية الشارة', 'انتهت صلاحية التحقق. جدّده لاستعادة الشارة.'],
+    en: ['Badge expired', 'Your verification expired. Renew it to get the badge back.'],
+  },
 };
 
 /** The title and body for a kind, in `language` (French when unknown). */
@@ -70,6 +102,12 @@ export function notificationRoute(kind, payload) {
     case 'job_completed':
     case 'job_cancelled':
       return '/pro/jobs';
+    case 'account_suspended':
+    case 'account_restored':
+    case 'appeal_rejected':
+      return '/pro';
+    case 'verification_expired':
+      return '/pro/verification';
     default:
       return '/home';
   }

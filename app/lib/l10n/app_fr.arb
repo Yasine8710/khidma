@@ -1136,5 +1136,46 @@
   "welcomeTradeElectrician": "Électricien",
   "welcomeTradeDeveloper": "Développeuse",
   "welcomeTradeCarpenter": "Menuisier",
-  "welcomeTradeVideo": "Monteuse vidéo"
+  "welcomeTradeVideo": "Monteuse vidéo",
+  "reportReasonPayOutside": "Demande de paiement d’avance ou hors de l’app",
+  "reportReasonNoShow": "Ne s’est pas présenté",
+  "reportMessageAction": "Signaler ce message",
+  "reportOfferAction": "Signaler cette offre",
+  "chatSafetyTip": "Ne payez jamais d’avance. Gardez vos accords dans Khidma.",
+  "failSuspended": "Votre compte est suspendu : cette action n’est pas possible.",
+  "suspendedTitle": "Compte suspendu",
+  "suspendedUntil": "Votre profil est masqué jusqu’au {date}. Vous ne pouvez pas envoyer d’offres ni de messages.",
+  "@suspendedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "suspendedIndefinite": "Votre profil est masqué jusqu’à la décision de l’équipe. Vous ne pouvez pas envoyer d’offres ni de messages.",
+  "suspendedReason": "Motif : {reason}",
+  "@suspendedReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "appealAction": "Faire un recours",
+  "appealHint": "Expliquez pourquoi cette suspension est une erreur.",
+  "appealTooShort": "Écrivez au moins 10 caractères.",
+  "appealSend": "Envoyer le recours",
+  "appealSent": "Recours envoyé. L’équipe va l’examiner.",
+  "appealPending": "Votre recours est en cours d’examen.",
+  "appealRejected": "Votre dernier recours a été refusé.",
+  "appealFailRate": "Attendez une semaine après un refus avant un nouveau recours.",
+  "appealFailGeneric": "Le recours n’a pas pu être envoyé. Réessayez.",
+  "verifiedUntil": "Identité vérifiée, valable jusqu’au {date}",
+  "@verifiedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  }
 }

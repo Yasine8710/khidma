@@ -121,13 +121,33 @@ export type VerificationRow = {
 };
 export type ReportRow = {
   id: string;
-  target_type: 'professional' | 'review' | 'conversation';
+  target_type: 'professional' | 'review' | 'conversation' | 'freelancer' | 'testimonial' | 'offer' | 'message';
   target_id: string;
+  message_id: number | null;
+  /** Who the report is about (null when unknown). */
+  subject_id: string | null;
   reason: string;
   details: string | null;
   status: string;
   created_at: string;
   reports_on_target: number;
+  /** Different people who reported the same subject in the last 30 days. */
+  subject_reporters_30d: number;
+  /** 3+ different reporters in 30 days: review first (never an automatic ban). */
+  flagged: boolean;
+  subject_is_professional: boolean;
+  subject_suspended: boolean;
+};
+export type AppealRow = {
+  id: string;
+  professional_id: string;
+  business_name: string | null;
+  message: string;
+  status: string;
+  created_at: string;
+  suspended_until: string | null;
+  suspension_reason: string | null;
+  decision_note: string | null;
 };
 export type PaymentOrderRow = {
   id: string;
@@ -198,6 +218,8 @@ export function createApi(rpc: Rpc) {
     reports: (status: string, offset: number) =>
       call<ReportRow[]>('admin_list_reports', { p_status: status, ...page(offset) }),
     reportContext: (id: string) => call<Record<string, unknown>>('admin_report_context', { p_report: id }),
+    appeals: (status: string, offset: number) =>
+      call<AppealRow[]>('admin_list_appeals', { p_status: status, ...page(offset) }),
     paymentOrders: (status: string, offset: number) =>
       call<PaymentOrderRow[]>('admin_list_payment_orders', { p_status: status, ...page(offset) }),
     audit: (offset: number) => call<AuditRow[]>('admin_audit_log_page', page(offset)),
@@ -214,6 +236,13 @@ export function createApi(rpc: Rpc) {
       call<void>('admin_handle_report', { p_report: id, p_status: status, p_note: note?.trim() || null }),
     setSuspended: (user: string, suspended: boolean, reason?: string) =>
       call<void>('admin_set_suspended', { p_user: user, p_suspended: suspended, p_reason: reason?.trim() || null }),
+    /** Suspends for [days] (null = until lifted); from a report, closes every open report on the person. */
+    suspend: (user: string, days: number | null, reason: string, report?: string) =>
+      call<void>('admin_suspend', { p_user: user, p_days: days, p_reason: reason.trim(), p_report: report ?? null }),
+    decideAppeal: (id: string, lift: boolean, note?: string) =>
+      call<void>('admin_decide_appeal', { p_appeal: id, p_lift: lift, p_note: note?.trim() || null }),
+    revokeVerification: (user: string, reason: string) =>
+      call<void>('admin_revoke_verification', { p_user: user, p_reason: reason.trim() }),
     setReviewStatus: (id: string, status: 'published' | 'hidden', note?: string) =>
       call<void>('admin_set_review_status', { p_review: id, p_status: status, p_note: note?.trim() || null }),
     upsertCategory: (c: CategoryInput) =>

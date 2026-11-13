@@ -17,6 +17,7 @@ import '../../billing/presentation/billing_tile.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
 import '../../marketplace/presentation/professional_card.dart';
 import '../../profile/presentation/avatar_editor.dart';
+import '../../trust/presentation/suspension_card.dart';
 import '../application/professional_providers.dart';
 import '../domain/professional_domain.dart';
 import 'registration_screen.dart' show failureText, gapText;
@@ -127,6 +128,7 @@ class _BodyState extends ConsumerState<_Body> {
       // One short page: built whole, so every section (and its data) loads
       // when the board opens, not when it is scrolled to.
       children: [
+        const SuspensionCard(),
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

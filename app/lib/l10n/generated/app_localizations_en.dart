@@ -2557,4 +2557,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcomeTradeVideo => 'Video editor';
+
+  @override
+  String get reportReasonPayOutside =>
+      'Asked to pay in advance or outside the app';
+
+  @override
+  String get reportReasonNoShow => 'Did not show up';
+
+  @override
+  String get reportMessageAction => 'Report this message';
+
+  @override
+  String get reportOfferAction => 'Report this offer';
+
+  @override
+  String get chatSafetyTip =>
+      'Never pay in advance. Keep your agreements in Khidma.';
+
+  @override
+  String get failSuspended =>
+      'Your account is suspended: this is not possible.';
+
+  @override
+  String get suspendedTitle => 'Account suspended';
+
+  @override
+  String suspendedUntil(String date) {
+    return 'Your profile is hidden until $date. You cannot send offers or messages.';
+  }
+
+  @override
+  String get suspendedIndefinite =>
+      'Your profile is hidden until the team decides. You cannot send offers or messages.';
+
+  @override
+  String suspendedReason(String reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String get appealAction => 'Appeal';
+
+  @override
+  String get appealHint => 'Explain why this suspension is a mistake.';
+
+  @override
+  String get appealTooShort => 'Write at least 10 characters.';
+
+  @override
+  String get appealSend => 'Send appeal';
+
+  @override
+  String get appealSent => 'Appeal sent. The team will review it.';
+
+  @override
+  String get appealPending => 'Your appeal is being reviewed.';
+
+  @override
+  String get appealRejected => 'Your last appeal was rejected.';
+
+  @override
+  String get appealFailRate =>
+      'Wait a week after a rejection before appealing again.';
+
+  @override
+  String get appealFailGeneric => 'The appeal could not be sent. Try again.';
+
+  @override
+  String verifiedUntil(String date) {
+    return 'Identity verified, valid until $date';
+  }
 }

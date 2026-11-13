@@ -13,7 +13,7 @@ function Context({ report }: { report: ReportRow }) {
   const [images, setImages] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const isChat = report.target_type === 'conversation';
+  const isChat = report.target_type === 'conversation' || report.target_type === 'message';
 
   if (!ctx) {
     return (
@@ -46,6 +46,7 @@ function Context({ report }: { report: ReportRow }) {
         <ol>
           {messages.map((m, i) => (
             <li key={i}>
+              {m['id'] === ctx['reported_message_id'] && <Badge tone="bad">reported</Badge>}{' '}
               <strong>{m['sender_is_customer'] ? 'Customer' : 'Professional'}:</strong>{' '}
               {typeof m['body'] === 'string' ? m['body'] : m['image_path'] ? '[image]' : ''}
             </li>
@@ -94,6 +95,11 @@ export function Reports() {
     await api.handleReport(r.id, s, note);
     paged.reload();
   };
+  // One step from the queue: suspends the person and closes all their open reports.
+  const suspend = (r: ReportRow, days: number | null) => async (reason: string) => {
+    await api.suspend(r.subject_id!, days, reason, r.id);
+    paged.reload();
+  };
 
   return (
     <div>
@@ -110,7 +116,20 @@ export function Reports() {
         rowKey={(r) => r.id}
         empty={`No ${status} reports.`}
         columns={[
-          { header: 'About', cell: (r) => `${r.target_type} ${shortId(r.target_id)}` },
+          { header: 'About', cell: (r) => `${r.target_type} ${shortId(r.target_id)}${r.message_id ? ` #${r.message_id}` : ''}` },
+          {
+            header: 'Person',
+            cell: (r) =>
+              r.subject_id ? (
+                <span className="stack">
+                  {shortId(r.subject_id)}
+                  {r.flagged && <Badge tone="bad">flagged: {r.subject_reporters_30d} reporters</Badge>}
+                  {r.subject_suspended && <Badge tone="warn">suspended</Badge>}
+                </span>
+              ) : (
+                '—'
+              ),
+          },
           { header: 'Reason', cell: (r) => r.reason },
           { header: 'Details', cell: (r) => r.details ?? '—' },
           { header: 'Reports on it', cell: (r) => (r.reports_on_target > 1 ? <Badge tone="warn">{r.reports_on_target}</Badge> : r.reports_on_target) },
@@ -125,6 +144,12 @@ export function Reports() {
                   <>
                     <NoteAction label="Action taken" prompt="What was done (optional)" onSubmit={handle(r, 'actioned')} />
                     <NoteAction label="Dismiss" prompt="Why (optional)" onSubmit={handle(r, 'dismissed')} />
+                    {r.subject_id && r.subject_is_professional && !r.subject_suspended && (
+                      <>
+                        <NoteAction label="Suspend 7 days" prompt="Reason (shown to the professional)" danger required onSubmit={suspend(r, 7)} />
+                        <NoteAction label="Suspend until lifted" prompt="Reason (shown to the professional)" danger required onSubmit={suspend(r, null)} />
+                      </>
+                    )}
                   </>
                 )}
               </div>
