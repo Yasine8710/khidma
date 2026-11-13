@@ -202,10 +202,13 @@ class _StaggerInState extends State<StaggerIn>
       _c.value = 1;
       return;
     }
-    final delay = Duration(
-      milliseconds: widget.stepMs * widget.index.clamp(0, widget.maxSteps),
-    );
-    Future<void>.delayed(delay, () {
+    final ms = widget.stepMs * widget.index.clamp(0, widget.maxSteps);
+    // The first item starts at once: no zero-length timer left pending.
+    if (ms == 0) {
+      _c.forward();
+      return;
+    }
+    Future<void>.delayed(Duration(milliseconds: ms), () {
       if (mounted) _c.forward();
     });
   }

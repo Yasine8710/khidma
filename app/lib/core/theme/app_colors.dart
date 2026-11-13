@@ -58,12 +58,12 @@ abstract final class AppColors {
     Color(0xFF251E33),
   ];
 
-  /// Avatar colours for initials (white text on all of them).
+  /// Avatar colours for initials (white text >= 4.5:1 on all of them).
   static const avatars = <Color>[
     Color(0xFF2F6FDB),
-    Color(0xFFD97706),
+    Color(0xFFB45309),
     Color(0xFF9333EA),
-    Color(0xFF0F9D58),
+    Color(0xFF15803D),
     Color(0xFFDB2777),
     Color(0xFF0E7490),
   ];
