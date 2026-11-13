@@ -174,6 +174,11 @@ Known residuals, all waiting on the server-side worker of #32 or a real Supabase
 - Corrective actions, reason required and audited: `admin_extend_subscription(user, 1-60 days)` (extend grace, comp a month; starts a subscription on the cheapest plan if there is none) and `admin_set_subscription_status(user, active | cancelled)` (reactivating is refused once the period is over: extend instead).
 - All refuse non-admins and visitors (admin_billing tests and the rls_matrix admin sweep). Admin panel: Billing tab.
 
+### Payment proofs and decision notices (#63, migration 2300)
+- A professional may attach up to 3 receipt photos to their own unpaid D17 or bank-transfer order (`attach_payment_proof`). Files live in the private `payment-proofs` bucket (5 MB, images and PDF, 20 files per person) under `<uid>/`; only the owner reads them through Storage; an attached file cannot be deleted (it is the payment record); account deletion queues them for the cleanup worker.
+- Admins see receipts only through the admin-media signer (`kind: payment`), which first calls the audited `admin_payment_proofs`; links last 2 minutes.
+- A trigger on `payment_orders` queues exactly one notice when an order becomes paid or rejected, whoever decided (admin or Flouci callback). The push says only "confirmed" or "refused"; the owner reads the admin's note in the app (`admin_note` is now readable on their own orders).
+
 ## Security audit (#55, 2026-11-13)
 
 ### Threat model (STRIDE)
@@ -246,6 +251,7 @@ Dependabot (`.github/dependabot.yml`) opens weekly update PRs for pub, admin, ba
 | A9 | info | Release builds not obfuscated | open: with #31 |
 | A10 | info | Concurrency (advisory-lock races) cannot be exercised on PGlite | open: needs a real Postgres run (#6) |
 | A11 | info | CI cannot run (GitHub billing lock, #5), so the suites run locally only | open: owner |
+| A12 | medium | The rls_matrix write check read `rowCount`, which PGlite does not set, so "stranger updates touch 0 rows" passed without checking | fixed 2026-11-13 (`affectedRows`; the stranger's own rows excluded); planted update-all and delete-all policies are now caught |
 
 ## Abuse protection and operations (#56)
 

@@ -7,6 +7,8 @@ const id = '3f2b8c1e-5d4a-4b7e-9c0d-1a2b3c4d5e6f';
 test('requests: only the two kinds with a uuid id', () => {
   assert.deepEqual(parseRequest({ kind: 'verification', id }), { kind: 'verification', id });
   assert.deepEqual(parseRequest({ kind: 'chat', id }), { kind: 'chat', id });
+  assert.deepEqual(parseRequest({ kind: 'payment', id }), { kind: 'payment', id });
+  assert.equal(parseRequest({ kind: 'toString', id }), null, 'prototype keys are not kinds');
   for (const bad of [null, 'x', {}, { kind: 'other', id }, { kind: 'chat', id: 'nope' }, { kind: 'chat', id: `${id}/../x` }, { kind: 'chat' }, { id }, { kind: 'chat', id: 5 }]) {
     assert.equal(parseRequest(bad), null, JSON.stringify(bad));
   }
@@ -15,6 +17,7 @@ test('requests: only the two kinds with a uuid id', () => {
 test('buckets are fixed per kind and links are short-lived', () => {
   assert.equal(KINDS.verification.bucket, 'verification-docs');
   assert.equal(KINDS.chat.bucket, 'chat-images');
+  assert.equal(KINDS.payment.bucket, 'payment-proofs');
   for (const k of Object.values(KINDS)) assert.ok(k.seconds <= 300);
 });
 

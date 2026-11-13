@@ -31,6 +31,7 @@ describe('limits', () => {
       avatars: [true, 1048576, img],
       'chat-images': [false, 2097152, img],
       'freelance-media': [true, 26214400, [...img, 'video/mp4', 'video/webm'].sort()],
+      'payment-proofs': [false, 5242880, ['application/pdf', ...img].sort()],
       portfolio: [true, 2097152, img],
       'request-photos': [false, 2097152, img],
       'verification-docs': [false, 5242880, ['application/pdf', ...img].sort()],

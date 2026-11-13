@@ -132,6 +132,43 @@ function PaymentSettings() {
   );
 }
 
+/** Receipts attached by the professional; each look is logged. */
+function Proofs({ orderId }: { orderId: string }) {
+  const { media } = useServices();
+  const [urls, setUrls] = useState<string[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  if (urls === null) {
+    return (
+      <div>
+        <button
+          type="button"
+          onClick={async () => {
+            setError(null);
+            try {
+              setUrls(await media.paymentProofs(orderId));
+            } catch (e) {
+              setError(errorMessage(e));
+            }
+          }}
+        >
+          View receipts (logged)
+        </button>
+        {error && <ErrorBox message={error} />}
+      </div>
+    );
+  }
+  if (urls.length === 0) return <p className="muted">No receipt attached.</p>;
+  return (
+    <>
+      {urls.map((u, i) => (
+        <a key={u} href={u} target="_blank" rel="noreferrer noopener" className="doc-link">
+          Receipt {i + 1} (opens for 2 minutes)
+        </a>
+      ))}
+    </>
+  );
+}
+
 export function Payments() {
   const { api } = useServices();
   const [status, setStatus] = useState<(typeof STATUSES)[number]>('awaiting_confirmation');
@@ -164,6 +201,7 @@ export function Payments() {
             cell: (r) =>
               (r.status === 'awaiting_confirmation' || r.status === 'pending') && r.method !== 'flouci' ? (
                 <div className="stack">
+                  <Proofs orderId={r.id} />
                   <ConfirmPayment order={r} onDone={paged.reload} />
                   <NoteAction
                     label="Reject"

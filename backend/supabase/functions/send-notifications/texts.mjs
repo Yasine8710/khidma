@@ -8,6 +8,7 @@ export const KINDS = [
   'job_started', 'job_done', 'job_completed', 'job_cancelled',
   'report_actioned', 'report_dismissed', 'account_suspended', 'account_restored',
   'appeal_rejected', 'verification_expired', 'listing_held', 'listing_released',
+  'payment_confirmed', 'payment_rejected',
 ];
 
 const TEXTS = {
@@ -86,6 +87,16 @@ const TEXTS = {
     ar: ['تم رفع الحظر عن إعلانك', 'يمكنك نشر إعلانك الحر من جديد.'],
     en: ['Listing unlocked', 'You can publish your freelance listing again.'],
   },
+  payment_confirmed: {
+    fr: ['Paiement confirmé', 'Votre abonnement est actif. Merci !'],
+    ar: ['تم تأكيد الدفع', 'اشتراكك مفعّل. شكرًا!'],
+    en: ['Payment confirmed', 'Your subscription is active. Thank you!'],
+  },
+  payment_rejected: {
+    fr: ['Paiement refusé', 'Nous n’avons pas pu confirmer votre paiement. Ouvrez l’app pour voir pourquoi.'],
+    ar: ['رُفض الدفع', 'لم نتمكن من تأكيد دفعتك. افتح التطبيق لمعرفة السبب.'],
+    en: ['Payment refused', 'We could not confirm your payment. Open the app to see why.'],
+  },
 };
 
 /** The title and body for a kind, in `language` (French when unknown). */
@@ -121,6 +132,9 @@ export function notificationRoute(kind, payload) {
     case 'listing_held':
     case 'listing_released':
       return '/pro/freelance';
+    case 'payment_confirmed':
+    case 'payment_rejected':
+      return '/pro/billing';
     default:
       return '/home';
   }

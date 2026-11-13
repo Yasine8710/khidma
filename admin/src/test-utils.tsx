@@ -25,6 +25,7 @@ export function fakeMedia(over: Partial<Media> = {}): Media {
   return {
     verificationDocuments: vi.fn().mockResolvedValue([]),
     chatImages: vi.fn().mockResolvedValue([]),
+    paymentProofs: vi.fn().mockResolvedValue([]),
     ...over,
   };
 }

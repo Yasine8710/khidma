@@ -52,6 +52,16 @@ class PaymentInstructionsScreen extends ConsumerWidget {
       }
     }
 
+    Future<void> attachProof() async {
+      final failure = await ref
+          .read(billingActionsProvider.notifier)
+          .attachProof(current);
+      if (!context.mounted) return;
+      if (failure != null && failure != BillingFailure.busy) {
+        await say(billingFailureText(l10n, failure));
+      }
+    }
+
     Future<void> cancel() async {
       final failure = await ref
           .read(billingActionsProvider.notifier)
@@ -259,6 +269,21 @@ class PaymentInstructionsScreen extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.md),
             ],
+            if (current.status == OrderStatus.rejected &&
+                (current.adminNote ?? '').isNotEmpty) ...[
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  l10n.billRejectedNote(current.adminNote!),
+                  style: text.bodyMedium?.copyWith(color: scheme.error),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+            ],
+            if (open && current.isManual) ...[
+              _ProofRow(orderId: current.id, busy: busy, onAttach: attachProof),
+              const SizedBox(height: AppSpacing.md),
+            ],
             if (open) ...[
               if (!awaiting)
                 AppButton(
@@ -346,6 +371,43 @@ class _PaidDialogState extends State<_PaidDialog> {
         TextButton(
           onPressed: () => Navigator.of(context).pop(_note.text.trim()),
           child: Text(l10n.billSend),
+        ),
+      ],
+    );
+  }
+}
+
+/// Receipts attached so far, and the button to add one (up to 3).
+class _ProofRow extends ConsumerWidget {
+  const _ProofRow({
+    required this.orderId,
+    required this.busy,
+    required this.onAttach,
+  });
+
+  final String orderId;
+  final bool busy;
+  final VoidCallback onAttach;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final text = Theme.of(context).textTheme;
+    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    final count = ref.watch(paymentProofCountProvider(orderId)).value ?? 0;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          count == 0 ? l10n.billProofHint : l10n.billProofCount(count),
+          style: text.bodySmall?.copyWith(color: muted),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        AppButton(
+          label: l10n.billAttachProof,
+          icon: Icons.receipt_long_rounded,
+          variant: AppButtonVariant.secondary,
+          onPressed: busy || count >= maxPaymentProofs ? null : onAttach,
         ),
       ],
     );

@@ -13,6 +13,7 @@ String billingFailureText(AppLocalizations l10n, BillingFailure f) =>
       BillingFailure.flouciUnavailable => l10n.billFlouciUnavailable,
       BillingFailure.cannotOpen => l10n.billCannotOpen,
       BillingFailure.forbidden => l10n.billNotProBody,
+      BillingFailure.limitReached => l10n.billProofLimit,
       BillingFailure.busy || BillingFailure.unknown => l10n.billErrUnknown,
     };
 

@@ -850,5 +850,10 @@
   "flPolicyLink": "عرض الخدمات الممنوعة",
   "flOnHoldTitle": "سحب الفريق إعلانك",
   "flOnHoldReason": "السبب: {reason}. صحّح إعلانك ثم اتصل بالدعم لإعادة نشره.",
-  "flErrOnHold": "إعلانك مسحوب: لا يمكن نشره حاليًا."
+  "flErrOnHold": "إعلانك مسحوب: لا يمكن نشره حاليًا.",
+  "billAttachProof": "إرفاق إثبات الدفع",
+  "billProofHint": "اختياري: صورة الوصل تساعد على التأكيد بسرعة أكبر.",
+  "billProofCount": "تم إرفاق {count} من 3 إثباتات.",
+  "billProofLimit": "أرفقت 3 إثباتات بالفعل.",
+  "billRejectedNote": "رُفض الدفع: {note}"
 }

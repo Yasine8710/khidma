@@ -1,3 +1,5 @@
+import '../../portfolio/domain/portfolio_domain.dart' show PreparedPhoto;
+
 /// Why a billing call failed. Never carries server text.
 enum BillingFailure {
   network,
@@ -15,9 +17,15 @@ enum BillingFailure {
 
   /// The Flouci function answered "not configured" (503).
   flouciUnavailable,
+
+  /// Already 3 proofs on this order.
+  limitReached,
   busy,
   unknown,
 }
+
+/// Most proofs one order can carry (also enforced by the database).
+const maxPaymentProofs = 3;
 
 class BillingError implements Exception {
   const BillingError(this.failure);
@@ -102,6 +110,7 @@ class PaymentOrder {
     this.payerNote,
     this.createdAt,
     this.paidAt,
+    this.adminNote,
   });
 
   final String id;
@@ -115,6 +124,12 @@ class PaymentOrder {
   final String? payerNote;
   final DateTime? createdAt;
   final DateTime? paidAt;
+
+  /// Why an admin refused the payment (only for [OrderStatus.rejected]).
+  final String? adminNote;
+
+  /// D17 and bank transfers are checked by hand, so they take proofs.
+  bool get isManual => method != PaymentMethod.flouci;
 }
 
 enum SubscriptionState { active, pastDue, expired, cancelled }
@@ -183,6 +198,12 @@ abstract interface class BillingRepository {
   Future<void> cancel(String orderId);
 
   Future<PaymentInstructions> instructions();
+
+  /// Uploads a receipt photo and attaches it to the caller's unpaid manual
+  /// order. The file is removed again when attaching fails.
+  Future<void> attachProof(String orderId, PreparedPhoto photo);
+
+  Future<int> proofCount(String orderId);
 }
 
 /// Used when no backend is configured: every call fails honestly.
@@ -208,4 +229,9 @@ class NotConfiguredBillingRepository implements BillingRepository {
   Future<void> cancel(String orderId) async => _fail();
   @override
   Future<PaymentInstructions> instructions() async => _fail();
+  @override
+  Future<void> attachProof(String orderId, PreparedPhoto photo) async =>
+      _fail();
+  @override
+  Future<int> proofCount(String orderId) async => _fail();
 }

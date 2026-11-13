@@ -312,6 +312,8 @@ export type Api = ReturnType<typeof createApi>;
 export type Media = {
   verificationDocuments: (requestId: string) => Promise<string[]>;
   chatImages: (reportId: string) => Promise<string[]>;
+  /** Receipts a professional attached to a manual payment (view is logged). */
+  paymentProofs: (orderId: string) => Promise<string[]>;
 };
 
 export type MediaFetch = (url: string, init: { method: string; headers: Record<string, string>; body: string }) => Promise<{
@@ -341,5 +343,6 @@ export function createMedia(baseUrl: string, token: () => Promise<string | null>
   return {
     verificationDocuments: (requestId) => call({ kind: 'verification', id: requestId }),
     chatImages: (reportId) => call({ kind: 'chat', id: reportId }),
+    paymentProofs: (orderId) => call({ kind: 'payment', id: orderId }),
   };
 }

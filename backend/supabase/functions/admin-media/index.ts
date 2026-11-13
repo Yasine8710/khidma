@@ -1,5 +1,5 @@
-// Signs short-lived links to identity documents and reported chat images for
-// the admin dashboard.
+// Signs short-lived links to identity documents, reported chat images and
+// payment proofs for the admin dashboard.
 //
 // Admins have no Storage access of their own. This function first calls the
 // audited database function *as the caller* (so is_admin() and the second
@@ -37,6 +37,10 @@ Deno.serve(async (req) => {
   let paths: string[];
   if (parsed.kind === 'verification') {
     const { data, error } = await caller.rpc('admin_verification_documents', { p_request: parsed.id });
+    if (error) return reply(error.code === '42501' ? 403 : 400, { error: 'refused' });
+    paths = safePaths((data as { path: string }[]).map((r) => r.path));
+  } else if (parsed.kind === 'payment') {
+    const { data, error } = await caller.rpc('admin_payment_proofs', { p_order: parsed.id });
     if (error) return reply(error.code === '42501' ? 403 : 400, { error: 'refused' });
     paths = safePaths((data as { path: string }[]).map((r) => r.path));
   } else {

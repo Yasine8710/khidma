@@ -81,6 +81,8 @@ describe('createMedia', () => {
     expect(JSON.parse(init.body)).toEqual({ kind: 'verification', id: 'req1' });
     await media.chatImages('rep1');
     expect(JSON.parse(fetcher.mock.calls[1]![1].body)).toEqual({ kind: 'chat', id: 'rep1' });
+    await media.paymentProofs('ord1');
+    expect(JSON.parse(fetcher.mock.calls[2]![1].body)).toEqual({ kind: 'payment', id: 'ord1' });
   });
 
   it('refuses without a session, and on bad or failed answers', async () => {

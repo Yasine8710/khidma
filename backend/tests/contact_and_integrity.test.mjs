@@ -253,6 +253,9 @@ describe('sequence and function exposure', () => {
       // admin billing
       'admin_billing_detail', 'admin_billing_summary', 'admin_extend_subscription', 'admin_list_subscriptions',
       'admin_set_subscription_status',
+      // payment proofs
+      'admin_payment_proofs', 'attach_payment_proof', 'my_payment_proof_count', 'my_payment_proof_file_count',
+      'payment_proof_unattached',
     ].sort());
   });
 

@@ -1196,5 +1196,24 @@
       }
     }
   },
-  "flErrOnHold": "Votre annonce est retirée : elle ne peut pas être publiée pour l’instant."
+  "flErrOnHold": "Votre annonce est retirée : elle ne peut pas être publiée pour l’instant.",
+  "billAttachProof": "Joindre un justificatif",
+  "billProofHint": "Facultatif : une photo du reçu aide à confirmer plus vite.",
+  "billProofCount": "{count} sur 3 justificatifs joints.",
+  "@billProofCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "billProofLimit": "Vous avez déjà joint 3 justificatifs.",
+  "billRejectedNote": "Paiement refusé : {note}",
+  "@billRejectedNote": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:khidma/features/billing/domain/billing_domain.dart';
+import 'package:khidma/features/portfolio/domain/portfolio_domain.dart';
 
 const standardPlan = SubscriptionPlan(
   code: 'standard',
@@ -51,6 +52,7 @@ class FakeBillingRepository implements BillingRepository {
   final linkCalls = <String>[];
   final sent = <(String, String?)>[];
   final cancelled = <String>[];
+  final proofs = <String, int>{};
   Uri link = Uri.parse('https://pay.flouci.example/abc');
 
   Future<void> _pre() async {
@@ -143,4 +145,17 @@ class FakeBillingRepository implements BillingRepository {
 
   @override
   Future<PaymentInstructions> instructions() async => paymentInstructions;
+
+  @override
+  Future<void> attachProof(String orderId, PreparedPhoto photo) async {
+    await _pre();
+    final n = proofs[orderId] ?? 0;
+    if (n >= maxPaymentProofs) {
+      throw const BillingError(BillingFailure.limitReached);
+    }
+    proofs[orderId] = n + 1;
+  }
+
+  @override
+  Future<int> proofCount(String orderId) async => proofs[orderId] ?? 0;
 }

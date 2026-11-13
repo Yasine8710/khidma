@@ -2703,4 +2703,24 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get flErrOnHold =>
       'Votre annonce est retirée : elle ne peut pas être publiée pour l’instant.';
+
+  @override
+  String get billAttachProof => 'Joindre un justificatif';
+
+  @override
+  String get billProofHint =>
+      'Facultatif : une photo du reçu aide à confirmer plus vite.';
+
+  @override
+  String billProofCount(int count) {
+    return '$count sur 3 justificatifs joints.';
+  }
+
+  @override
+  String get billProofLimit => 'Vous avez déjà joint 3 justificatifs.';
+
+  @override
+  String billRejectedNote(String note) {
+    return 'Paiement refusé : $note';
+  }
 }

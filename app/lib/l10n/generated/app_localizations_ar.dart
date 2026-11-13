@@ -2656,4 +2656,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get flErrOnHold => 'إعلانك مسحوب: لا يمكن نشره حاليًا.';
+
+  @override
+  String get billAttachProof => 'إرفاق إثبات الدفع';
+
+  @override
+  String get billProofHint =>
+      'اختياري: صورة الوصل تساعد على التأكيد بسرعة أكبر.';
+
+  @override
+  String billProofCount(int count) {
+    return 'تم إرفاق $count من 3 إثباتات.';
+  }
+
+  @override
+  String get billProofLimit => 'أرفقت 3 إثباتات بالفعل.';
+
+  @override
+  String billRejectedNote(String note) {
+    return 'رُفض الدفع: $note';
+  }
 }

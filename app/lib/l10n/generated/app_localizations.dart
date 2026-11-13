@@ -4833,6 +4833,36 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Votre annonce est retirée : elle ne peut pas être publiée pour l’instant.'**
   String get flErrOnHold;
+
+  /// No description provided for @billAttachProof.
+  ///
+  /// In fr, this message translates to:
+  /// **'Joindre un justificatif'**
+  String get billAttachProof;
+
+  /// No description provided for @billProofHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Facultatif : une photo du reçu aide à confirmer plus vite.'**
+  String get billProofHint;
+
+  /// No description provided for @billProofCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} sur 3 justificatifs joints.'**
+  String billProofCount(int count);
+
+  /// No description provided for @billProofLimit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez déjà joint 3 justificatifs.'**
+  String get billProofLimit;
+
+  /// No description provided for @billRejectedNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement refusé : {note}'**
+  String billRejectedNote(String note);
 }
 
 class _AppLocalizationsDelegate

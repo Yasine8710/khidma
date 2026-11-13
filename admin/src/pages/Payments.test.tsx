@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { ApiError, createApi, formatTnd, type PaymentOrderRow, type Rpc } from '../lib/api';
-import { fakeApi, renderWith } from '../test-utils';
+import { fakeApi, fakeMedia, renderWith } from '../test-utils';
 import { Payments, validateSetting } from './Payments';
 
 const order = (over: Partial<PaymentOrderRow> = {}): PaymentOrderRow => ({
@@ -40,6 +40,22 @@ describe('Payments', () => {
     expect(screen.getByText('20 TND')).toBeInTheDocument();
     expect(screen.getByText('Envoye le 12')).toBeInTheDocument();
     expect(paymentOrders).toHaveBeenCalledWith('awaiting_confirmation', 0);
+  });
+
+  it('receipts load only on request and open as short-lived links', async () => {
+    const paymentProofs = vi.fn().mockResolvedValue(['https://x.supabase.co/sign/a', 'https://x.supabase.co/sign/b']);
+    renderWith(<Payments />, { api: fakeApi({ paymentOrders: vi.fn().mockResolvedValue([order()]) }), media: fakeMedia({ paymentProofs }) });
+    await screen.findByText('KH-A1B2C3');
+    expect(paymentProofs).not.toHaveBeenCalled();
+    await userEvent.setup().click(screen.getByRole('button', { name: 'View receipts (logged)' }));
+    expect(await screen.findByRole('link', { name: 'Receipt 2 (opens for 2 minutes)' })).toHaveAttribute('href', 'https://x.supabase.co/sign/b');
+    expect(paymentProofs).toHaveBeenCalledWith('o1');
+  });
+
+  it('an order without receipts says so', async () => {
+    renderWith(<Payments />, { api: fakeApi({ paymentOrders: vi.fn().mockResolvedValue([order()]) }) });
+    await userEvent.setup().click(await screen.findByRole('button', { name: 'View receipts (logged)' }));
+    expect(await screen.findByText('No receipt attached.')).toBeInTheDocument();
   });
 
   it('confirming asks first, then calls the function and reloads', async () => {

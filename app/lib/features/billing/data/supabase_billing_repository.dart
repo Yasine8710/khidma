@@ -1,8 +1,14 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
+import '../../portfolio/data/supabase_portfolio_repository.dart'
+    show randomFileId;
+import '../../portfolio/domain/portfolio_domain.dart' show PreparedPhoto;
 import '../domain/billing_domain.dart';
+
+const paymentProofsBucket = 'payment-proofs';
 
 /// Maps Supabase errors to a [BillingFailure]. Server messages are read to
 /// tell known tags apart and are never forwarded.
@@ -29,9 +35,13 @@ BillingFailure mapBillingException(Object error) {
       case 'P0002':
         return BillingFailure.notFound;
       case 'P0001':
-        return error.message.contains('rate_limited')
-            ? BillingFailure.rateLimited
-            : BillingFailure.invalid;
+        if (error.message.contains('rate_limited')) {
+          return BillingFailure.rateLimited;
+        }
+        if (error.message.contains('limit_reached')) {
+          return BillingFailure.limitReached;
+        }
+        return BillingFailure.invalid;
       case '23514':
       case '22001':
         return BillingFailure.invalid;
@@ -48,9 +58,55 @@ BillingFailure mapBillingException(Object error) {
 /// Plans, orders and the subscription of the signed-in professional. Row Level
 /// Security and the `*_payment_*` functions decide what the caller may do.
 class SupabaseBillingRepository implements BillingRepository {
-  SupabaseBillingRepository(this._client);
+  SupabaseBillingRepository(
+    this._client, {
+    String? Function()? userId,
+    this._random,
+  }) : _userId = userId ?? (() => _client.auth.currentUser?.id);
 
   final sb.SupabaseClient _client;
+  final String? Function() _userId;
+  final Random? _random;
+
+  @override
+  Future<void> attachProof(String orderId, PreparedPhoto photo) =>
+      _guard(() async {
+        final uid = _userId();
+        if (uid == null) throw const BillingError(BillingFailure.notSignedIn);
+        final bucket = _client.storage.from(paymentProofsBucket);
+        // The name is chosen first, so a lost answer can still be cleaned up.
+        final path = '$uid/${randomFileId(_random)}.jpg';
+        try {
+          await bucket.uploadBinary(
+            path,
+            photo.bytes,
+            fileOptions: const sb.FileOptions(
+              contentType: 'image/jpeg',
+              upsert: false,
+            ),
+          );
+          await _client.rpc(
+            'attach_payment_proof',
+            params: {'p_order': orderId, 'p_path': path},
+          );
+        } catch (_) {
+          // Not attached: do not leave the receipt behind. An attached file
+          // cannot be removed (the database refuses), which is right.
+          try {
+            await bucket.remove([path]);
+          } catch (_) {}
+          rethrow;
+        }
+      });
+
+  @override
+  Future<int> proofCount(String orderId) => _guard(() async {
+    final n = await _client.rpc(
+      'my_payment_proof_count',
+      params: {'p_order': orderId},
+    );
+    return n is num ? n.toInt() : 0;
+  });
 
   Future<T> _guard<T>(Future<T> Function() run) async {
     try {
@@ -78,6 +134,7 @@ class SupabaseBillingRepository implements BillingRepository {
         payerNote: r['payer_note'] as String?,
         createdAt: _date(r['created_at']),
         paidAt: _date(r['paid_at']),
+        adminNote: r['admin_note'] as String?,
       );
 
   @override
@@ -125,7 +182,7 @@ class SupabaseBillingRepository implements BillingRepository {
         .from('payment_orders')
         .select(
           'id, plan_code, amount_millimes, method, status, reference, '
-          'payer_note, created_at, paid_at',
+          'payer_note, created_at, paid_at, admin_note',
         )
         .order('created_at', ascending: false)
         .limit(50);

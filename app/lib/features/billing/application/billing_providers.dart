@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../marketplace/application/contact_providers.dart'
     show urlOpenerProvider;
+import '../../portfolio/application/portfolio_providers.dart';
+import '../../portfolio/domain/portfolio_domain.dart';
 import '../domain/billing_domain.dart';
 
 /// Overridden in `main()` with the Supabase repository when a backend is
@@ -35,6 +37,14 @@ final paymentInstructionsProvider = _perAccount((r) => r.instructions());
 
 /// Creates orders and reports payments. The state is true while a call runs,
 /// so a double tap cannot send two.
+/// How many proofs the caller attached to one of their orders.
+final paymentProofCountProvider = FutureProvider.autoDispose
+    .family<int, String>(
+      retry: (n, e) => null,
+      (ref, orderId) =>
+          ref.watch(billingRepositoryProvider).proofCount(orderId),
+    );
+
 final billingActionsProvider = NotifierProvider<BillingActions, bool>(
   BillingActions.new,
 );
@@ -94,6 +104,25 @@ class BillingActions extends Notifier<bool> {
       return null;
     }, (f) => f);
     if (failure == null) _reload();
+    return failure;
+  }
+
+  /// Picks a receipt photo and attaches it. Null when it worked or the person
+  /// cancelled the picker.
+  Future<BillingFailure?> attachProof(PaymentOrder order) async {
+    final failure = await _run<BillingFailure?>((r) async {
+      final bytes = await ref.read(photoPickerProvider).pick();
+      if (bytes == null) return null;
+      final PreparedPhoto photo;
+      try {
+        photo = await ref.read(photoPreparerProvider)(bytes);
+      } on PortfolioError {
+        return BillingFailure.invalid;
+      }
+      await r.attachProof(order.id, photo);
+      return null;
+    }, (f) => f);
+    if (ref.mounted) ref.invalidate(paymentProofCountProvider(order.id));
     return failure;
   }
 

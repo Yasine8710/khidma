@@ -27,6 +27,7 @@ const TABLES = {
   storage_cleanup_queue: 'closed', admin_audit_log: 'closed', admin_users: 'closed',
   verification_requests: 'closed', verification_documents: 'closed', reports: 'closed',
   admin_config: 'closed', payment_events: 'closed', payment_settings: 'closed', suspension_appeals: 'closed',
+  payment_proofs: 'closed',
 };
 
 /** For "public" tables: the column naming the owner, to look for a hidden owner's rows. */
@@ -63,7 +64,7 @@ const COLUMN_GRANTS = {
   'neighborhoods anon SELECT': 'city_id id name_ar name_en name_fr',
   'neighborhoods authenticated SELECT': 'city_id id name_ar name_en name_fr',
   'notification_preferences authenticated SELECT': 'jobs messages offers updated_at user_id',
-  'payment_orders authenticated SELECT': 'amount_millimes created_at currency id method paid_at payer_note plan_code reference status',
+  'payment_orders authenticated SELECT': 'admin_note amount_millimes created_at currency id method paid_at payer_note plan_code reference status',
   'portfolio_items anon SELECT': 'caption created_at id path professional_id',
   'portfolio_items authenticated INSERT': 'caption created_at id path professional_id',
   'portfolio_items authenticated SELECT': 'caption created_at id path professional_id',
@@ -96,7 +97,7 @@ const COLUMN_GRANTS = {
 
 const count = async (client, sql, args = []) => Number((await client.query(sql, args)).rows[0].n);
 const outcome = (promise) =>
-  promise.then((r) => ({ ok: true, rows: r.rowCount ?? r.rows.length }), (e) => ({ ok: false, code: e.code }));
+  promise.then((r) => ({ ok: true, rows: r.affectedRows ?? r.rows.length }), (e) => ({ ok: false, code: e.code }));
 
 async function pro(db, publish = true) {
   const id = await createUser(db);
@@ -167,6 +168,8 @@ describe('RLS and API pen-test across every table', () => {
     await call(c, 'select public.reveal_professional_contact($1)', p);
     await call(c, 'select public.report_content($1, $2, $3)', 'professional', p, 'spam');
     ids.order = (await call(p, 'select * from public.create_payment_order($1, $2)', 'standard', 'bank_transfer')).id;
+    await user(db, p).query(`insert into storage.objects (bucket_id, name, owner) values ('payment-proofs', $1, $2)`, [`${p}/proof.jpg`, p]);
+    await call(p, 'select public.attach_payment_proof($1, $2)', ids.order, `${p}/proof.jpg`);
     await db.query(`insert into public.subscriptions (user_id, plan_code, status, current_period_end) values ($1, 'standard', 'active', now() + interval '30 days')`, [p]);
     await db.query(`insert into public.payment_events (provider, event_id) values ('test', $1)`, [randomUUID()]);
     await db.query(`insert into public.storage_cleanup_queue (bucket_id, name) values ('portfolio', 'gone.jpg')`);
@@ -265,7 +268,10 @@ describe('RLS and API pen-test across every table', () => {
         group by 1, 2`)).rows;
     for (const g of grants) {
       for (const col of g.cols.split(',')) {
-        const r = await outcome(user(db, s).query(`update public.${g.table_name} set ${col} = ${col}`));
+        // the stranger's own account rows are theirs to edit
+        const self = { profiles: 'id', customer_profiles: 'user_id' }[g.table_name];
+        const where = self ? ` where ${self} <> $1` : '';
+        const r = await outcome(user(db, s).query(`update public.${g.table_name} set ${col} = ${col}${where}`, self ? [s] : []));
         assert.ok(r.ok ? r.rows === 0 : r.code === DENIED, `${g.table_name}.${col}: ${JSON.stringify(r)}`);
       }
     }

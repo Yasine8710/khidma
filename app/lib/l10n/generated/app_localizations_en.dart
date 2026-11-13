@@ -2673,4 +2673,24 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get flErrOnHold =>
       'Your listing is taken down: it cannot be published for now.';
+
+  @override
+  String get billAttachProof => 'Attach a receipt';
+
+  @override
+  String get billProofHint =>
+      'Optional: a photo of the receipt helps us confirm faster.';
+
+  @override
+  String billProofCount(int count) {
+    return '$count of 3 receipts attached.';
+  }
+
+  @override
+  String get billProofLimit => 'You already attached 3 receipts.';
+
+  @override
+  String billRejectedNote(String note) {
+    return 'Payment refused: $note';
+  }
 }
