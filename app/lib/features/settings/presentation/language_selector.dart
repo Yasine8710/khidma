@@ -11,9 +11,13 @@ import '../../../shared/widgets/aligned_text.dart';
 /// Language list as a settings-style group: one white card, a row per
 /// language, the chosen one on soft grey with a brand check.
 /// Each option is labelled in its own language so users can always find
-/// theirs. Reused by onboarding and by Profile settings.
+/// theirs. Reused by the welcome screen's language sheet and by Profile
+/// settings. [onSelected] runs after a language is applied (e.g. to close
+/// the sheet).
 class LanguageSelector extends ConsumerWidget {
-  const LanguageSelector({super.key});
+  const LanguageSelector({super.key, this.onSelected});
+
+  final ValueChanged<Locale>? onSelected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,6 +48,7 @@ class LanguageSelector extends ConsumerWidget {
                   onTap: () {
                     AppHaptics.selection();
                     ref.read(localeProvider.notifier).setLocale(options[i].$1);
+                    onSelected?.call(options[i].$1);
                   },
                 ),
               ],

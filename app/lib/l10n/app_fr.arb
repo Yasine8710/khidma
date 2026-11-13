@@ -1106,5 +1106,35 @@
         "type": "int"
       }
     }
-  }
+  },
+  "welcomeHeadlineStart": "Trouvez un",
+  "welcomeHeadlineEnd": "près de chez vous.",
+  "welcomeWordPlumber": "plombier",
+  "welcomeWordElectrician": "électricien",
+  "welcomeWordDeveloper": "développeur",
+  "welcomeWordDesigner": "designer",
+  "welcomeWordCarpenter": "menuisier",
+  "welcomeHeadlineA11y": "Trouvez un plombier, un électricien, un développeur, un designer ou un menuisier près de chez vous.",
+  "@welcomeHeadlineA11y": {
+    "description": "The rotating welcome headline, read once by screen readers."
+  },
+  "welcomeSubtitle": "Comparez les devis, discutez et réservez, partout en Tunisie.",
+  "welcomeTrust": "Artisans et freelances vérifiés",
+  "welcomeHaveAccount": "J'ai déjà un compte",
+  "welcomeLegal": "En continuant, vous acceptez les conditions d'utilisation.",
+  "welcomeLanguageButton": "Langue : {language}",
+  "@welcomeLanguageButton": {
+    "description": "Semantics label of the language button on the welcome screen.",
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeTradePlumber": "Plombier",
+  "welcomeTradeDesigner": "Designer UI",
+  "welcomeTradeElectrician": "Électricien",
+  "welcomeTradeDeveloper": "Développeuse",
+  "welcomeTradeCarpenter": "Menuisier",
+  "welcomeTradeVideo": "Monteuse vidéo"
 }

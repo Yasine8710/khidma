@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:khidma/core/storage/preferences_provider.dart';
 import 'package:khidma/app.dart';
+import 'package:khidma/core/motion/ambient_motion.dart';
 import 'package:khidma/features/auth/application/auth_providers.dart';
 import 'package:khidma/features/auth/domain/auth_domain.dart';
 
@@ -26,6 +27,8 @@ Future<ProviderContainer> pumpApp(
   AuthRepository? auth,
   ProfileRepository? profiles,
   List<Override> overrides = const [],
+  bool ambientMotion = false,
+  bool settle = true,
 }) async {
   // Tests start past onboarding unless they say otherwise.
   SharedPreferences.setMockInitialValues({'onboardingSeen': true, ...prefs});
@@ -38,6 +41,8 @@ Future<ProviderContainer> pumpApp(
       profileRepositoryProvider.overrideWithValue(
         profiles ?? FakeProfileRepository(),
       ),
+      // The welcome screen's endless rows would never let the app settle.
+      if (!ambientMotion) ambientMotionProvider.overrideWithValue(false),
       ...overrides,
     ],
   );
@@ -45,7 +50,11 @@ Future<ProviderContainer> pumpApp(
   await tester.pumpWidget(
     UncontrolledProviderScope(container: container, child: const KhidmaApp()),
   );
-  await tester.pumpAndSettle();
+  if (settle) {
+    await tester.pumpAndSettle();
+  } else {
+    await tester.pump();
+  }
   return container;
 }
 

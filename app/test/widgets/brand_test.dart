@@ -50,7 +50,13 @@ void main() {
         contains('adaptive_icon_background: "${_hex(AppColors.brand)}"'),
       );
       expect(pubspec, contains('color: "${_hex(AppColors.ground)}"'));
-      for (final old in ['#B0432A', '#F4EFE6', '#F5C400', '#5B3CC4', '#FAF9FC']) {
+      for (final old in [
+        '#B0432A',
+        '#F4EFE6',
+        '#F5C400',
+        '#5B3CC4',
+        '#FAF9FC',
+      ]) {
         expect(pubspec, isNot(contains(old)), reason: old);
       }
     });

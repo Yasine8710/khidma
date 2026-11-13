@@ -2485,4 +2485,64 @@ class AppLocalizationsAr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get welcomeHeadlineStart => 'اعثر على';
+
+  @override
+  String get welcomeHeadlineEnd => 'قريب منك.';
+
+  @override
+  String get welcomeWordPlumber => 'سبّاك';
+
+  @override
+  String get welcomeWordElectrician => 'كهربائي';
+
+  @override
+  String get welcomeWordDeveloper => 'مطوّر';
+
+  @override
+  String get welcomeWordDesigner => 'مصمّم';
+
+  @override
+  String get welcomeWordCarpenter => 'نجّار';
+
+  @override
+  String get welcomeHeadlineA11y =>
+      'اعثر على سبّاك أو كهربائي أو مطوّر أو مصمّم أو نجّار قريب منك.';
+
+  @override
+  String get welcomeSubtitle => 'قارن العروض وتحدّث واحجز، في كل أنحاء تونس.';
+
+  @override
+  String get welcomeTrust => 'حرفيون ومستقلّون موثَّقون';
+
+  @override
+  String get welcomeHaveAccount => 'لديّ حساب بالفعل';
+
+  @override
+  String get welcomeLegal => 'بالمتابعة، أنت توافق على شروط الاستخدام.';
+
+  @override
+  String welcomeLanguageButton(String language) {
+    return 'اللغة: $language';
+  }
+
+  @override
+  String get welcomeTradePlumber => 'سبّاك';
+
+  @override
+  String get welcomeTradeDesigner => 'مصمّمة واجهات';
+
+  @override
+  String get welcomeTradeElectrician => 'كهربائي';
+
+  @override
+  String get welcomeTradeDeveloper => 'مطوّرة';
+
+  @override
+  String get welcomeTradeCarpenter => 'نجّار';
+
+  @override
+  String get welcomeTradeVideo => 'محرّرة فيديو';
 }

@@ -2523,4 +2523,66 @@ class AppLocalizationsFr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get welcomeHeadlineStart => 'Trouvez un';
+
+  @override
+  String get welcomeHeadlineEnd => 'près de chez vous.';
+
+  @override
+  String get welcomeWordPlumber => 'plombier';
+
+  @override
+  String get welcomeWordElectrician => 'électricien';
+
+  @override
+  String get welcomeWordDeveloper => 'développeur';
+
+  @override
+  String get welcomeWordDesigner => 'designer';
+
+  @override
+  String get welcomeWordCarpenter => 'menuisier';
+
+  @override
+  String get welcomeHeadlineA11y =>
+      'Trouvez un plombier, un électricien, un développeur, un designer ou un menuisier près de chez vous.';
+
+  @override
+  String get welcomeSubtitle =>
+      'Comparez les devis, discutez et réservez, partout en Tunisie.';
+
+  @override
+  String get welcomeTrust => 'Artisans et freelances vérifiés';
+
+  @override
+  String get welcomeHaveAccount => 'J\'ai déjà un compte';
+
+  @override
+  String get welcomeLegal =>
+      'En continuant, vous acceptez les conditions d\'utilisation.';
+
+  @override
+  String welcomeLanguageButton(String language) {
+    return 'Langue : $language';
+  }
+
+  @override
+  String get welcomeTradePlumber => 'Plombier';
+
+  @override
+  String get welcomeTradeDesigner => 'Designer UI';
+
+  @override
+  String get welcomeTradeElectrician => 'Électricien';
+
+  @override
+  String get welcomeTradeDeveloper => 'Développeuse';
+
+  @override
+  String get welcomeTradeCarpenter => 'Menuisier';
+
+  @override
+  String get welcomeTradeVideo => 'Monteuse vidéo';
 }

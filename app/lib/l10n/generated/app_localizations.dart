@@ -4527,6 +4527,120 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{count, plural, =1{1 an} other{{count} ans}}'**
   String yearsShort(int count);
+
+  /// No description provided for @welcomeHeadlineStart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trouvez un'**
+  String get welcomeHeadlineStart;
+
+  /// No description provided for @welcomeHeadlineEnd.
+  ///
+  /// In fr, this message translates to:
+  /// **'près de chez vous.'**
+  String get welcomeHeadlineEnd;
+
+  /// No description provided for @welcomeWordPlumber.
+  ///
+  /// In fr, this message translates to:
+  /// **'plombier'**
+  String get welcomeWordPlumber;
+
+  /// No description provided for @welcomeWordElectrician.
+  ///
+  /// In fr, this message translates to:
+  /// **'électricien'**
+  String get welcomeWordElectrician;
+
+  /// No description provided for @welcomeWordDeveloper.
+  ///
+  /// In fr, this message translates to:
+  /// **'développeur'**
+  String get welcomeWordDeveloper;
+
+  /// No description provided for @welcomeWordDesigner.
+  ///
+  /// In fr, this message translates to:
+  /// **'designer'**
+  String get welcomeWordDesigner;
+
+  /// No description provided for @welcomeWordCarpenter.
+  ///
+  /// In fr, this message translates to:
+  /// **'menuisier'**
+  String get welcomeWordCarpenter;
+
+  /// The rotating welcome headline, read once by screen readers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trouvez un plombier, un électricien, un développeur, un designer ou un menuisier près de chez vous.'**
+  String get welcomeHeadlineA11y;
+
+  /// No description provided for @welcomeSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comparez les devis, discutez et réservez, partout en Tunisie.'**
+  String get welcomeSubtitle;
+
+  /// No description provided for @welcomeTrust.
+  ///
+  /// In fr, this message translates to:
+  /// **'Artisans et freelances vérifiés'**
+  String get welcomeTrust;
+
+  /// No description provided for @welcomeHaveAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'J\'ai déjà un compte'**
+  String get welcomeHaveAccount;
+
+  /// No description provided for @welcomeLegal.
+  ///
+  /// In fr, this message translates to:
+  /// **'En continuant, vous acceptez les conditions d\'utilisation.'**
+  String get welcomeLegal;
+
+  /// Semantics label of the language button on the welcome screen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Langue : {language}'**
+  String welcomeLanguageButton(String language);
+
+  /// No description provided for @welcomeTradePlumber.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plombier'**
+  String get welcomeTradePlumber;
+
+  /// No description provided for @welcomeTradeDesigner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Designer UI'**
+  String get welcomeTradeDesigner;
+
+  /// No description provided for @welcomeTradeElectrician.
+  ///
+  /// In fr, this message translates to:
+  /// **'Électricien'**
+  String get welcomeTradeElectrician;
+
+  /// No description provided for @welcomeTradeDeveloper.
+  ///
+  /// In fr, this message translates to:
+  /// **'Développeuse'**
+  String get welcomeTradeDeveloper;
+
+  /// No description provided for @welcomeTradeCarpenter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Menuisier'**
+  String get welcomeTradeCarpenter;
+
+  /// No description provided for @welcomeTradeVideo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Monteuse vidéo'**
+  String get welcomeTradeVideo;
 }
 
 class _AppLocalizationsDelegate

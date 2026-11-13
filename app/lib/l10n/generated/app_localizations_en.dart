@@ -2496,4 +2496,65 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get welcomeHeadlineStart => 'Find';
+
+  @override
+  String get welcomeHeadlineEnd => 'near you.';
+
+  @override
+  String get welcomeWordPlumber => 'a plumber';
+
+  @override
+  String get welcomeWordElectrician => 'an electrician';
+
+  @override
+  String get welcomeWordDeveloper => 'a developer';
+
+  @override
+  String get welcomeWordDesigner => 'a designer';
+
+  @override
+  String get welcomeWordCarpenter => 'a carpenter';
+
+  @override
+  String get welcomeHeadlineA11y =>
+      'Find a plumber, an electrician, a developer, a designer or a carpenter near you.';
+
+  @override
+  String get welcomeSubtitle =>
+      'Compare quotes, chat and book, anywhere in Tunisia.';
+
+  @override
+  String get welcomeTrust => 'Verified tradespeople and freelancers';
+
+  @override
+  String get welcomeHaveAccount => 'I already have an account';
+
+  @override
+  String get welcomeLegal => 'By continuing, you accept the terms of use.';
+
+  @override
+  String welcomeLanguageButton(String language) {
+    return 'Language: $language';
+  }
+
+  @override
+  String get welcomeTradePlumber => 'Plumber';
+
+  @override
+  String get welcomeTradeDesigner => 'UI designer';
+
+  @override
+  String get welcomeTradeElectrician => 'Electrician';
+
+  @override
+  String get welcomeTradeDeveloper => 'Developer';
+
+  @override
+  String get welcomeTradeCarpenter => 'Carpenter';
+
+  @override
+  String get welcomeTradeVideo => 'Video editor';
 }
