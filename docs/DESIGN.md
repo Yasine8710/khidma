@@ -1,8 +1,8 @@
 # Khidma design
 
-Approved by the owner on 2026-11-12 from rendered mockups ("violet", Home +
-pro profile). Replaces the earlier "Atelier" and "Signal" looks, which were
-rejected as over-designed. Read this before touching any screen.
+Approved by the owner on 2026-11-13 from rendered mockups and videos
+("1 noir & blanc"). Replaces "Atelier", "Signal" and the violet look, all
+rejected (violet read as AI-made). Read this before touching any screen.
 
 ## Idea
 Khidma should feel like the service apps people already trust (TaskRabbit,
@@ -14,15 +14,18 @@ app. Real photos of pros' work come later; until then placeholders are soft
 tinted tiles with a line icon (never AI images).
 
 ## Colour (lib/core/theme/app_colors.dart)
-One brand colour, violet `#5B3CC4` (dark mode: `#A493F0`). Background
-`#FAF9FC`, cards white, text `#1B1530`, secondary text `#6E6A80`, hairlines
-`#ECE9F3`. Soft violet `#EEE9FB` for chips, selected rows, profile header.
-Stars `#F5A524`. Category / placeholder tiles use `AppColors.tint(i, b)`,
-initials avatars `AppColors.avatar(i)` (white text).
-Use `Theme.of(context).colorScheme` roles: `primary` (violet), `onPrimary`,
-`primaryContainer`/`onPrimaryContainer` (soft violet + its text), `surface`
-(cards), `onSurface`, `onSurfaceVariant` (secondary text), `outlineVariant`
-(hairlines/card borders), `surfaceContainerHighest` (inputs, inset blocks),
+Black and white, like Uber/Bolt. Actions, the active tab and hero cards are
+black `#141414` with white text (dark mode: inverted, `#F2F2F2` with black
+text). Background and cards white, text `#141414`, secondary text `#6B6B6B`,
+hairlines `#EAEAEA`, soft grey `#F2F2F2` for chips, the segmented-control
+track, selected rows and the profile header band. Category / placeholder
+tiles are one quiet grey (`AppColors.tint`); icons carry the meaning.
+Colour comes only from content: initials avatars `AppColors.avatar(i)`,
+stars `#E8A317`, the green verified tick `AppColors.success`, status pills.
+Section links ("Tout voir") are grey or black, never coloured.
+Use `Theme.of(context).colorScheme` roles: `primary` (black), `onPrimary`,
+`primaryContainer`/`onPrimaryContainer` (soft grey + ink), `surface`,
+`onSurface`, `onSurfaceVariant`, `outlineVariant`, `surfaceContainerHighest`,
 `tertiary` (stars), `error`. Never hard-code a colour.
 
 ## Type (lib/core/theme/app_typography.dart)
@@ -37,22 +40,22 @@ Radii (`AppRadius`): 10 chips/small tiles, 14 inputs/buttons, 18 cards, 24
 sheets and hero cards, pill for chips/badges. Cards: white, 1 px
 `outlineVariant` border, no shadow (`StickerBox`, `AppCard`); an optional
 very soft shadow (`StickerBox(elevated: true)`) only for floating things.
-Buttons: filled violet 52 px high, radius 14; secondary = white with hairline.
+Buttons: filled black 52 px high, radius 14; secondary = white with hairline.
 Avatars are circles. Icons: Material rounded/outlined line icons.
 
 ## Layout (from the approved mockup)
 - Screen gutter 20. Section title row: title left, "Tout voir" link right.
-- **Tab bar** (`AppBottomNav`): 5 tabs, icon + label, active in violet with
-  filled icon: Accueil, Explorer, Demandes, Messages, Profil.
+- **Tab bar** (`AppBottomNav`): 5 tabs, icon + label, active in black, bold,
+  with a filled icon: Accueil, Explorer, Demandes, Messages, Profil.
 - **Home**: location row (label "Votre position" + city with pin, bell button
-  on the end), segmented toggle **Artisans | Freelance digital** (violet
-  filled thumb that slides), search field with a violet filter button, a
-  promo/hero card carousel (violet card, white text, one action, page dots),
-  "Catégories" as 4 tinted icon tiles per row, "Pros près de vous" as a
+  on the end), segmented toggle **Artisans | Freelance digital** (white thumb
+  sliding on a soft grey track), search field with a black filter button, a
+  promo/hero card carousel (black card, white text, one action, page dots),
+  "Catégories" as 4 grey icon tiles per row, "Pros près de vous" as a
   horizontal list of cards (image area on top with a heart button, initials
   avatar + name + verified badge + trade/years, star rating with count and
   "dès N DT").
-- **Pro / freelancer profile**: soft violet header band with back / share /
+- **Pro / freelancer profile**: soft grey header band with back / share /
   heart round buttons, large circular avatar overlapping it, name + verified
   badge, trade · city, pills (Documents vérifiés / Identité vérifiée, response
   time), a 3-column stats card (Note, Avis, Expérience), tabs (Services,
@@ -67,6 +70,16 @@ Avatars are circles. Icons: Material rounded/outlined line icons.
 - Trades vs digital: trades show documents/experience ("Documents vérifiés",
   "8 ans"); digital freelancers show identity verification only ("Identité
   vérifiée"), skills chips and portfolio.
+
+## First screen (onboarding)
+A single welcome screen, no slides: logo top-start, language button
+top-end (globe + current language, opens a sheet FR / العربية / EN),
+three rows of service chips and pro chips scrolling slowly in alternate
+directions (fading at the edges), the headline "Trouvez un [word] près de
+chez vous." where the word rotates (plombier, électricien, développeur,
+designer, menuisier), one line of subtitle, a trust line (no invented
+numbers), then "Commencer" (enters the app) and "J'ai déjà un compte"
+(login). Elements fade up in a short cascade on open.
 
 ## Motion (lib/core/motion/motion.dart)
 Quiet, quick (150-380 ms), never blocking:

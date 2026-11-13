@@ -142,7 +142,7 @@ class InitialsAvatar extends StatelessWidget {
   }
 }
 
-/// The small violet "verified" tick shown after a name. Read as "Verified".
+/// The small green "verified" tick shown after a name. Read as "Verified".
 class VerifiedTick extends StatelessWidget {
   const VerifiedTick({super.key, this.size = 18});
 
@@ -155,7 +155,9 @@ class VerifiedTick extends StatelessWidget {
     child: Icon(
       Icons.verified_rounded,
       size: size,
-      color: Theme.of(context).colorScheme.primary,
+      color: Theme.of(context).brightness == Brightness.dark
+          ? AppColors.darkSuccess
+          : AppColors.success,
     ),
   );
 }
@@ -199,7 +201,7 @@ class NameLine extends StatelessWidget {
   }
 }
 
-/// A soft violet pill with a line icon: a fact about a person ("Documents
+/// A soft grey pill with a line icon: a fact about a person ("Documents
 /// vérifiés", "Disponible"). Never a control.
 class InfoPill extends StatelessWidget {
   const InfoPill({super.key, required this.label, this.icon, this.dot});
@@ -666,7 +668,7 @@ class RoundControl extends StatelessWidget {
   }
 }
 
-/// The top of a profile: a soft violet band with round controls (back on the
+/// The top of a profile: a soft grey band with round controls (back on the
 /// start side, [actions] on the end), a large circular avatar overlapping its
 /// lower edge, then the name with its verified tick, a subtitle and pills.
 /// Full bleed: place it outside any horizontal padding.

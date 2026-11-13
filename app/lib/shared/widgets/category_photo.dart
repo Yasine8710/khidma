@@ -140,7 +140,7 @@ class GlyphTile extends StatelessWidget {
 }
 
 /// A category as a tile: a soft tinted rounded square with its icon, and the
-/// name under it. [selected] adds a violet edge, a check and a violet name.
+/// name under it. [selected] adds a brand edge, a check and a brand name.
 class CategoryTile extends StatelessWidget {
   const CategoryTile({
     super.key,

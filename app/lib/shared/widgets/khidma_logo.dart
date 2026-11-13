@@ -4,7 +4,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 
-/// The Khidma mark: a violet rounded square with a white "K" drawn in three
+/// The Khidma mark: a brand rounded square with a white "K" drawn in three
 /// round-capped strokes. The same drawing as the app icon and the SVG
 /// (`scripts/make_brand_assets.py`, same geometry). Brand colours are fixed,
 /// not themed, so the mark looks the same everywhere.
@@ -13,7 +13,7 @@ class KhidmaMark extends StatelessWidget {
 
   final double size;
 
-  /// Square colour; defaults to the brand violet.
+  /// Square colour; defaults to the brand brand.
   final Color? color;
 
   @override
@@ -23,7 +23,7 @@ class KhidmaMark extends StatelessWidget {
         dimension: size,
         child: CustomPaint(
           painter: KhidmaMarkPainter(
-            block: color ?? AppColors.violet,
+            block: color ?? AppColors.brand,
             glyph: AppColors.paper,
           ),
         ),
@@ -132,7 +132,7 @@ class KhidmaLogo extends StatelessWidget {
   }
 }
 
-/// The mark on a soft violet rounded tile, like the icon tiles elsewhere.
+/// The mark on a soft grey rounded tile, like the icon tiles elsewhere.
 class KhidmaMarkBadge extends StatelessWidget {
   const KhidmaMarkBadge({super.key, this.size = 96});
 

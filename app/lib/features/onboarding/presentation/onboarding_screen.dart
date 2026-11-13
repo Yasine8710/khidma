@@ -189,7 +189,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 }
 
-/// Page dots: the current page is a short violet pill, the others small
+/// Page dots: the current page is a short brand pill, the others small
 /// soft dots. Follows the reading direction.
 class _Dots extends StatelessWidget {
   const _Dots({required this.count, required this.index});

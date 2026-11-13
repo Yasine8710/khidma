@@ -9,7 +9,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/aligned_text.dart';
 
 /// Language list as a settings-style group: one white card, a row per
-/// language, the chosen one on soft violet with a violet check.
+/// language, the chosen one on soft grey with a brand check.
 /// Each option is labelled in its own language so users can always find
 /// theirs. Reused by onboarding and by Profile settings.
 class LanguageSelector extends ConsumerWidget {

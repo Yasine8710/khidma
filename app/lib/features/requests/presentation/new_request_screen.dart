@@ -580,7 +580,7 @@ class _StepHeading extends StatelessWidget {
   }
 }
 
-/// The privacy promise at the head of the form, on a soft violet panel.
+/// The privacy promise at the head of the form, on a soft grey panel.
 class _PrivacyNote extends StatelessWidget {
   const _PrivacyNote({required this.text});
 
@@ -620,8 +620,8 @@ class _PrivacyNote extends StatelessWidget {
 }
 
 /// The service picker: tiles two per line (one on a very narrow screen),
-/// each with its tinted icon. The chosen one gets a violet outline, a soft
-/// violet fill and a check.
+/// each with its tinted icon. The chosen one gets a brand outline, a soft
+/// brand fill and a check.
 class _CategoryGrid extends StatelessWidget {
   const _CategoryGrid({
     required this.categories,

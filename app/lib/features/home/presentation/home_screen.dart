@@ -262,7 +262,7 @@ class _DemoNote extends StatelessWidget {
   }
 }
 
-/// Artisans | Freelance digital: a segmented control whose violet thumb
+/// Artisans | Freelance digital: a segmented control whose brand thumb
 /// slides to the chosen side. Each half is a button announced as selected.
 class _WorldToggle extends ConsumerWidget {
   const _WorldToggle({required this.current});
@@ -374,7 +374,7 @@ class _WorldToggle extends ConsumerWidget {
   }
 }
 
-/// A field-like button that opens search, and the violet filter button.
+/// A field-like button that opens search, and the brand filter button.
 class _SearchRow extends StatelessWidget {
   const _SearchRow({required this.world});
 
@@ -469,7 +469,7 @@ class _Slide {
   final VoidCallback onTap;
 }
 
-/// Short promos on violet cards, one action each, with page dots. Advances
+/// Short promos on brand cards, one action each, with page dots. Advances
 /// by itself every 5 s, pauses while touched, and stays put with Reduce
 /// Motion (it can still be swiped).
 class _HeroCarousel extends StatefulWidget {

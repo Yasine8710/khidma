@@ -85,7 +85,7 @@ class _Option extends StatelessWidget {
       label: '$title. $body',
       excludeSemantics: true,
       onTap: onTap,
-      // A soft card: soft violet with a violet edge and a filled radio when
+      // A soft card: soft grey with a brand edge and a filled radio when
       // chosen.
       child: Pressable(
         onTap: onTap,

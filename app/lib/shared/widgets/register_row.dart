@@ -62,7 +62,7 @@ class RegisterRow extends StatelessWidget {
   /// Chevron on tappable rows without a [trailing] widget.
   final bool showChevron;
 
-  /// Index into [AppColors.tint] for the icon tile; null = soft violet.
+  /// Index into [AppColors.tint] for the icon tile; null = soft grey.
   final int? tint;
 
   @override

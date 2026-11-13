@@ -280,7 +280,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
               )
             else
-              // The composer: a rounded field and a round violet send
+              // The composer: a rounded field and a round brand send
               // button on a white band under a hairline.
               DecoratedBox(
                 decoration: BoxDecoration(
@@ -430,7 +430,7 @@ class _Bubble extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    // Mine in violet with white text; theirs white with a hairline.
+    // Mine in brand with white text; theirs white with a hairline.
     final bg = mine ? scheme.primary : scheme.surface;
     final fg = mine ? scheme.onPrimary : scheme.onSurface;
     const r = Radius.circular(AppRadius.lg);

@@ -5,8 +5,8 @@ import '../../core/motion/motion.dart';
 import '../../core/theme/app_spacing.dart';
 
 /// Selectable filter chip (category, price range, availability...): a pill.
-/// Unselected = white with a hairline; selected = soft violet with violet
-/// text, a violet edge and a check (so the state never rests on colour
+/// Unselected = white with a hairline; selected = soft grey with brand
+/// text, a brand edge and a check (so the state never rests on colour
 /// alone). At least 40 high visually and 48x48 to hit; grows with text size.
 class AppChip extends StatelessWidget {
   const AppChip({

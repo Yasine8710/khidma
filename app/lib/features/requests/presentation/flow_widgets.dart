@@ -143,7 +143,7 @@ class IconTile extends StatelessWidget {
   final int seed;
   final double size;
 
-  /// Soft violet instead of a category tint.
+  /// Soft brand instead of a category tint.
   final bool brand;
 
   @override
@@ -347,7 +347,7 @@ class FactRows extends StatelessWidget {
   }
 }
 
-/// An unread count: a small violet pill with white digits.
+/// An unread count: a small brand pill with white digits.
 class UnreadBadge extends StatelessWidget {
   const UnreadBadge({super.key, required this.count});
 
@@ -375,7 +375,7 @@ class UnreadBadge extends StatelessWidget {
 }
 
 /// A job's steps as a vertical track: a circle per step joined by a thin
-/// line, done steps checked in violet, the current one ringed, its label in
+/// line, done steps checked in brand, the current one ringed, its label in
 /// bold. Each label appears once.
 class StepTimeline extends StatelessWidget {
   const StepTimeline({
@@ -499,7 +499,7 @@ class StepTrack extends StatelessWidget {
   }
 }
 
-/// One step marker: violet with a check when done, a violet ring when it is
+/// One step marker: brand with a check when done, a brand ring when it is
 /// the current step, a grey ring otherwise.
 class StepDot extends StatelessWidget {
   const StepDot({

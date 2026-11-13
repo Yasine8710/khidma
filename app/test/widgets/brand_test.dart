@@ -35,7 +35,7 @@ void main() {
 
     test('SVG mark uses the theme brand colors (violet square, white K)', () {
       final svg = File('assets/brand/logo-mark.svg').readAsStringSync();
-      expect(svg.toUpperCase(), contains(_hex(AppColors.violet)));
+      expect(svg.toUpperCase(), contains(_hex(AppColors.brand)));
       expect(svg.toUpperCase(), contains(_hex(AppColors.paper)));
       // No trace of the rejected Signal / terracotta identities.
       for (final old in ['#F5C400', '#0E0E0E', '#B0432A']) {
@@ -47,7 +47,7 @@ void main() {
       final pubspec = File('pubspec.yaml').readAsStringSync();
       expect(
         pubspec,
-        contains('adaptive_icon_background: "${_hex(AppColors.violet)}"'),
+        contains('adaptive_icon_background: "${_hex(AppColors.brand)}"'),
       );
       expect(pubspec, contains('color: "${_hex(AppColors.ground)}"'));
       for (final old in ['#B0432A', '#F4EFE6', '#F5C400']) {

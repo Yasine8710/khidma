@@ -113,7 +113,7 @@ class AvatarEditor extends ConsumerWidget {
               PositionedDirectional(
                 end: 0,
                 bottom: 0,
-                // A small violet camera dot: says "you can change this"
+                // A small brand camera dot: says "you can change this"
                 // without competing with the screen's main action.
                 child: Container(
                   width: badge,

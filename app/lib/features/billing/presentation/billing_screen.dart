@@ -239,7 +239,7 @@ class _RadioMark extends StatelessWidget {
 }
 
 /// A plan to choose: name and period with a radio mark, the price large and
-/// bold. The chosen plan gets a violet outline and a soft violet fill.
+/// bold. The chosen plan gets a brand outline and a soft grey fill.
 class _PlanCard extends StatelessWidget {
   const _PlanCard({
     required this.selected,

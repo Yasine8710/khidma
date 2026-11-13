@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_spacing.dart';
 import 'app_button.dart';
 
-/// Section title row: the title on the start side, an optional violet text
+/// Section title row: the title on the start side, an optional brand text
 /// link ("Tout voir") on the end side. An optional [kicker] prints a small
 /// muted line above the title; set [rule] to draw a hairline under the row.
 class SectionHeader extends StatelessWidget {

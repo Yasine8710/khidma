@@ -7,8 +7,8 @@ import '../../l10n/generated/app_localizations.dart';
 
 enum AppButtonVariant { primary, secondary, text }
 
-/// The app's button: filled violet (primary, 52 high, radius 14), white with
-/// a hairline (secondary), or a plain violet text link (text). Buttons shrink
+/// The app's button: filled brand (primary, 52 high, radius 14), white with
+/// a hairline (secondary), or a plain brand text link (text). Buttons shrink
 /// slightly while pressed. While [isLoading] it ignores taps (it stays a
 /// disabled button for assistive tech) but keeps its colours, and its
 /// spinner announces "loading". The label stays visible so the width does not

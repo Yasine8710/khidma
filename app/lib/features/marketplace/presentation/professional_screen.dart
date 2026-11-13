@@ -25,7 +25,7 @@ import 'marketplace_failure_view.dart';
 import 'professional_card.dart';
 import 'sectioned_profile.dart';
 
-/// A professional's page: a soft violet band with round controls and the
+/// A professional's page: a soft grey band with round controls and the
 /// avatar overlapping it, name, trade and city, pills, a stats card, then
 /// Services / Réalisations / Avis / À propos as tabs over one scroll, and
 /// contact. A sticky bar keeps "Contact" and "Demander un devis" in reach.

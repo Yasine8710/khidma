@@ -442,7 +442,7 @@ class _OfferCard extends StatelessWidget {
       ),
     );
 
-    // The accepted offer gets a violet outline, like a selected card.
+    // The accepted offer gets a brand outline, like a selected card.
     return FlowCard(
       gap: 0,
       semanticLabel: '$name, ${formatTnd(offer.priceTnd, locale)}',

@@ -153,7 +153,7 @@ class PaymentInstructionsScreen extends ConsumerWidget {
             AppSpacing.xl,
           ),
           children: [
-            // How, its status, and the sum due on a soft violet panel.
+            // How, its status, and the sum due on a soft grey panel.
             FlowCard(
               gap: AppSpacing.md,
               child: Row(
@@ -280,7 +280,7 @@ class PaymentInstructionsScreen extends ConsumerWidget {
   }
 }
 
-/// A round soft violet copy button with a spoken name.
+/// A round soft grey copy button with a spoken name.
 class _CopyButton extends StatelessWidget {
   const _CopyButton({required this.value, required this.label});
 

@@ -74,7 +74,7 @@ class EmptyState extends StatelessWidget {
   }
 }
 
-/// The picture above a state's title: a line icon in a soft violet circle.
+/// The picture above a state's title: a line icon in a soft grey circle.
 /// Photos are no longer shipped, so a given [photo] is ignored. Decoration
 /// only.
 class StateVisual extends StatelessWidget {

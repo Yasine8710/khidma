@@ -6,7 +6,7 @@ import 'app_colors.dart';
 import 'app_spacing.dart';
 import 'app_typography.dart';
 
-/// The Khidma theme: calm light surfaces, one violet brand colour, soft
+/// The Khidma theme: white surfaces, black actions, soft
 /// rounded cards with hairline borders, the platform font. [world] is kept
 /// for API compatibility; both worlds share the brand colour.
 abstract final class AppTheme {
@@ -25,10 +25,10 @@ abstract final class AppTheme {
     final muted = dark ? AppColors.darkMuted : AppColors.muted;
     final rule = dark ? AppColors.darkRule : AppColors.rule;
     final control = dark ? AppColors.darkControl : AppColors.control;
-    final brand = dark ? AppColors.violetLight : AppColors.violet;
+    final brand = dark ? AppColors.brandLight : AppColors.brand;
     final onBrand = dark ? AppColors.ink : Colors.white;
-    final soft = dark ? AppColors.darkVioletSoft : AppColors.violetSoft;
-    final onSoft = dark ? AppColors.darkInk : AppColors.violetDark;
+    final soft = dark ? AppColors.darkBrandSoft : AppColors.brandSoft;
+    final onSoft = dark ? AppColors.darkInk : AppColors.brandDark;
 
     final cs = ColorScheme(
       brightness: b,
@@ -63,7 +63,7 @@ abstract final class AppTheme {
       shadow: Colors.black,
       inverseSurface: dark ? AppColors.darkInk : AppColors.ink,
       onInverseSurface: dark ? AppColors.ink : AppColors.paper,
-      inversePrimary: dark ? AppColors.violet : AppColors.violetLight,
+      inversePrimary: dark ? AppColors.brand : AppColors.brandLight,
     );
 
     // Component themes (buttons, chips, inputs...) take these styles as they

@@ -20,10 +20,10 @@ class AppBadge extends StatelessWidget {
   });
 
   /// Shown only when an admin has verified the professional. Callers must
-  /// not render it from unverified data. Violet, with a check seal.
+  /// not render it from unverified data. Green, with a check seal.
   factory AppBadge.verified(BuildContext context) => AppBadge(
     label: AppLocalizations.of(context).verified,
-    tone: BadgeTone.info,
+    tone: BadgeTone.success,
     icon: Icons.verified_rounded,
   );
 
