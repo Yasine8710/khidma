@@ -9,6 +9,7 @@ export const KINDS = [
   'report_actioned', 'report_dismissed', 'account_suspended', 'account_restored',
   'appeal_rejected', 'verification_expired', 'listing_held', 'listing_released',
   'payment_confirmed', 'payment_rejected',
+  'subscription_due_soon', 'subscription_due_now', 'subscription_overdue', 'subscription_grace_over',
 ];
 
 const TEXTS = {
@@ -97,6 +98,26 @@ const TEXTS = {
     ar: ['رُفض الدفع', 'لم نتمكن من تأكيد دفعتك. افتح التطبيق لمعرفة السبب.'],
     en: ['Payment refused', 'We could not confirm your payment. Open the app to see why.'],
   },
+  subscription_due_soon: {
+    fr: ['Abonnement bientôt à renouveler', 'Votre abonnement se termine dans quelques jours.'],
+    ar: ['اقترب موعد تجديد الاشتراك', 'ينتهي اشتراكك خلال أيام قليلة.'],
+    en: ['Subscription ends soon', 'Your subscription ends in a few days.'],
+  },
+  subscription_due_now: {
+    fr: ['Abonnement à renouveler', 'Votre abonnement se termine aujourd’hui ou demain.'],
+    ar: ['جدّد اشتراكك', 'ينتهي اشتراكك اليوم أو غدًا.'],
+    en: ['Renew your subscription', 'Your subscription ends today or tomorrow.'],
+  },
+  subscription_overdue: {
+    fr: ['Abonnement en retard', 'Réglez votre abonnement pour garder votre profil visible.'],
+    ar: ['الاشتراك متأخر', 'سدّد اشتراكك ليبقى ملفك ظاهرًا.'],
+    en: ['Subscription overdue', 'Pay your subscription to keep your profile visible.'],
+  },
+  subscription_grace_over: {
+    fr: ['Délai de paiement dépassé', 'Votre profil peut être masqué. Il réapparaît dès le paiement.'],
+    ar: ['انتهت مهلة الدفع', 'قد يُخفى ملفك. يعود للظهور فور الدفع.'],
+    en: ['Payment grace period over', 'Your profile may be hidden. It shows again as soon as you pay.'],
+  },
 };
 
 /** The title and body for a kind, in `language` (French when unknown). */
@@ -134,6 +155,10 @@ export function notificationRoute(kind, payload) {
       return '/pro/freelance';
     case 'payment_confirmed':
     case 'payment_rejected':
+    case 'subscription_due_soon':
+    case 'subscription_due_now':
+    case 'subscription_overdue':
+    case 'subscription_grace_over':
       return '/pro/billing';
     default:
       return '/home';

@@ -2693,4 +2693,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String billRejectedNote(String note) {
     return 'Payment refused: $note';
   }
+
+  @override
+  String get listingHiddenTitle => 'Profile hidden';
+
+  @override
+  String get listingHiddenBody =>
+      'Your subscription is unpaid: customers no longer see your profile and you cannot send offers. Jobs in progress go on. Your profile shows again as soon as you pay.';
+
+  @override
+  String get listingTrialTitle => 'Free trial';
+
+  @override
+  String listingTrialBody(String date) {
+    return 'Your profile is visible for free until $date. Subscribe before then to stay visible.';
+  }
+
+  @override
+  String get listingPay => 'Pay my subscription';
+
+  @override
+  String get reqFailSubscription =>
+      'Your subscription is unpaid: you cannot send offers for now.';
 }

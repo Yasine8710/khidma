@@ -2676,4 +2676,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String billRejectedNote(String note) {
     return 'رُفض الدفع: $note';
   }
+
+  @override
+  String get listingHiddenTitle => 'ملفك مخفي';
+
+  @override
+  String get listingHiddenBody =>
+      'اشتراكك غير مسدّد: لم يعد الزبائن يرون ملفك ولا يمكنك إرسال عروض. أعمالك الجارية مستمرة. يعود الملف للظهور فور الدفع.';
+
+  @override
+  String get listingTrialTitle => 'فترة تجربة مجانية';
+
+  @override
+  String listingTrialBody(String date) {
+    return 'ملفك ظاهر مجانًا حتى $date. اشترك قبل ذلك ليبقى ظاهرًا.';
+  }
+
+  @override
+  String get listingPay => 'سدّد اشتراكي';
+
+  @override
+  String get reqFailSubscription =>
+      'اشتراكك غير مسدّد: لا يمكنك إرسال عرض حاليًا.';
 }

@@ -222,7 +222,7 @@ describe('sequence and function exposure', () => {
     assert.deepEqual(r.rows.filter((x) => x.public_x || x.default_acl).map((x) => x.proname), [], 'PUBLIC / default ACL');
     const anonCan = r.rows.filter((x) => x.anon_x).map((x) => x.proname).sort();
     const authCan = r.rows.filter((x) => x.auth_x).map((x) => x.proname).sort();
-    assert.deepEqual(anonCan, ['badge_valid', 'freelancer_is_visible', 'is_admin', 'search_normalize', 'search_professionals', 'submit_testimonial', 'tunis_today']);
+    assert.deepEqual(anonCan, ['badge_valid', 'freelancer_is_visible', 'is_admin', 'listing_allowed', 'search_normalize', 'search_professionals', 'submit_testimonial', 'tunis_today']);
     assert.deepEqual(authCan, [
       'accept_offer', 'admin_set_review_status', 'become_professional', 'can_view_request_photos', 'cancel_booking',
       'cancel_quote_request', 'chat_file_unsent', 'chat_folder_member', 'chat_folder_writable', 'chat_image_count', 'confirm_booking_completed',
@@ -256,6 +256,8 @@ describe('sequence and function exposure', () => {
       // payment proofs
       'admin_payment_proofs', 'attach_payment_proof', 'my_payment_proof_count', 'my_payment_proof_file_count',
       'payment_proof_unattached',
+      // subscription enforcement
+      'admin_billing_config', 'admin_set_billing_config', 'listing_allowed', 'my_listing_status',
     ].sort());
   });
 

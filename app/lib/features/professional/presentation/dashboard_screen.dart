@@ -14,6 +14,7 @@ import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../billing/presentation/billing_tile.dart';
+import '../../billing/presentation/listing_status_card.dart';
 import '../../marketplace/domain/marketplace_domain.dart';
 import '../../marketplace/presentation/professional_card.dart';
 import '../../profile/presentation/avatar_editor.dart';
@@ -129,6 +130,7 @@ class _BodyState extends ConsumerState<_Body> {
       // when the board opens, not when it is scrolled to.
       children: [
         const SuspensionCard(),
+        const ListingStatusCard(),
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

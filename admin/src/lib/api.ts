@@ -147,6 +147,7 @@ export type BillingSummary = {
   orders_waiting: number;
   orders_waiting_48h: number;
 };
+export type BillingConfig = { enforce_subscriptions: boolean; free_trial_days: number };
 export type SubscriptionRow = {
   user_id: string;
   business_name: string | null;
@@ -253,6 +254,10 @@ export function createApi(rpc: Rpc) {
     billingSummary: () => call<BillingSummary>('admin_billing_summary'),
     subscriptions: (status: string | null, offset: number) =>
       call<SubscriptionRow[]>('admin_list_subscriptions', { p_status: status, ...page(offset) }),
+    billingConfig: () => call<BillingConfig>('admin_billing_config'),
+    /** The visibility rule: hide unpaid profiles (after the free trial). Audited. */
+    setBillingConfig: (enforce: boolean, trialDays: number, reason: string) =>
+      call<void>('admin_set_billing_config', { p_enforce: enforce, p_trial_days: trialDays, p_reason: reason.trim() }),
     billingDetail: (user: string) => call<BillingDetail>('admin_billing_detail', { p_user: user }),
     /** Extend grace or comp a period (1-60 days, reason required, audited). */
     extendSubscription: (user: string, days: number, reason: string) =>

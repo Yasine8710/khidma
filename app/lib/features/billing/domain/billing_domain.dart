@@ -134,6 +134,28 @@ class PaymentOrder {
 
 enum SubscriptionState { active, pastDue, expired, cancelled }
 
+/// Whether customers can see the professional right now. Only meaningful when
+/// [enforced]: otherwise everyone is listed whatever they paid.
+class ListingStatus {
+  const ListingStatus({
+    required this.enforced,
+    required this.listed,
+    this.trialEndsAt,
+    this.paidUntil,
+  });
+
+  final bool enforced;
+  final bool listed;
+  final DateTime? trialEndsAt;
+  final DateTime? paidUntil;
+
+  /// Hidden from search, profile pages and new offers until paid.
+  bool get hidden => enforced && !listed;
+
+  /// Listed thanks to the free trial (nothing paid yet).
+  bool get onTrial => enforced && listed && paidUntil == null;
+}
+
 class MySubscription {
   const MySubscription({
     required this.planCode,
@@ -204,6 +226,8 @@ abstract interface class BillingRepository {
   Future<void> attachProof(String orderId, PreparedPhoto photo);
 
   Future<int> proofCount(String orderId);
+
+  Future<ListingStatus?> listingStatus();
 }
 
 /// Used when no backend is configured: every call fails honestly.
@@ -234,4 +258,6 @@ class NotConfiguredBillingRepository implements BillingRepository {
       _fail();
   @override
   Future<int> proofCount(String orderId) async => _fail();
+  @override
+  Future<ListingStatus?> listingStatus() async => null;
 }

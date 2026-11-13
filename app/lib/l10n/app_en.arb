@@ -855,5 +855,11 @@
   "billProofHint": "Optional: a photo of the receipt helps us confirm faster.",
   "billProofCount": "{count} of 3 receipts attached.",
   "billProofLimit": "You already attached 3 receipts.",
-  "billRejectedNote": "Payment refused: {note}"
+  "billRejectedNote": "Payment refused: {note}",
+  "listingHiddenTitle": "Profile hidden",
+  "listingHiddenBody": "Your subscription is unpaid: customers no longer see your profile and you cannot send offers. Jobs in progress go on. Your profile shows again as soon as you pay.",
+  "listingTrialTitle": "Free trial",
+  "listingTrialBody": "Your profile is visible for free until {date}. Subscribe before then to stay visible.",
+  "listingPay": "Pay my subscription",
+  "reqFailSubscription": "Your subscription is unpaid: you cannot send offers for now."
 }

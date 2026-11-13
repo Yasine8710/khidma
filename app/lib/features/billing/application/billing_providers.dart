@@ -33,6 +33,9 @@ final mySubscriptionProvider = _perAccount((r) => r.mySubscription());
 
 final myPaymentOrdersProvider = _perAccount((r) => r.myOrders());
 
+/// Whether customers can see the signed-in professional (subscription rule).
+final myListingStatusProvider = _perAccount((r) => r.listingStatus());
+
 final paymentInstructionsProvider = _perAccount((r) => r.instructions());
 
 /// Creates orders and reports payments. The state is true while a call runs,

@@ -1215,5 +1215,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "listingHiddenTitle": "Profil masqué",
+  "listingHiddenBody": "Votre abonnement n’est pas réglé : les clients ne voient plus votre profil et vous ne pouvez pas envoyer d’offres. Vos chantiers en cours continuent. Le profil réapparaît dès le paiement.",
+  "listingTrialTitle": "Essai gratuit",
+  "listingTrialBody": "Votre profil est visible gratuitement jusqu’au {date}. Abonnez-vous avant pour rester visible.",
+  "@listingTrialBody": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "listingPay": "Régler mon abonnement",
+  "reqFailSubscription": "Votre abonnement n’est pas réglé : vous ne pouvez pas envoyer d’offre pour l’instant."
 }

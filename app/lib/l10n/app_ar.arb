@@ -855,5 +855,11 @@
   "billProofHint": "اختياري: صورة الوصل تساعد على التأكيد بسرعة أكبر.",
   "billProofCount": "تم إرفاق {count} من 3 إثباتات.",
   "billProofLimit": "أرفقت 3 إثباتات بالفعل.",
-  "billRejectedNote": "رُفض الدفع: {note}"
+  "billRejectedNote": "رُفض الدفع: {note}",
+  "listingHiddenTitle": "ملفك مخفي",
+  "listingHiddenBody": "اشتراكك غير مسدّد: لم يعد الزبائن يرون ملفك ولا يمكنك إرسال عروض. أعمالك الجارية مستمرة. يعود الملف للظهور فور الدفع.",
+  "listingTrialTitle": "فترة تجربة مجانية",
+  "listingTrialBody": "ملفك ظاهر مجانًا حتى {date}. اشترك قبل ذلك ليبقى ظاهرًا.",
+  "listingPay": "سدّد اشتراكي",
+  "reqFailSubscription": "اشتراكك غير مسدّد: لا يمكنك إرسال عرض حاليًا."
 }

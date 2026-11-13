@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { errorMessage, formatTnd, type BillingDetail, type SubscriptionRow } from '../lib/api';
+import { useState, type FormEvent } from 'react';
+import { errorMessage, formatTnd, type BillingConfig, type BillingDetail, type SubscriptionRow } from '../lib/api';
 import { useLoad, usePaged } from '../lib/hooks';
 import { useServices } from '../lib/services';
 import { Badge, ErrorBox, NoteAction, PagedTable, shortDate } from '../components/ui';
@@ -46,6 +46,66 @@ function Detail({ user }: { user: string }) {
         </li>
       ))}
     </ol>
+  );
+}
+
+/** The switch that hides unpaid profiles, and the free trial length. */
+function VisibilityRule() {
+  const { api } = useServices();
+  const cfg = useLoad(() => api.billingConfig(), [api]);
+  if (cfg.error) return <ErrorBox message={cfg.error} onRetry={cfg.reload} />;
+  if (!cfg.data) return null;
+  return <RuleForm key={JSON.stringify(cfg.data)} current={cfg.data} onSaved={cfg.reload} />;
+}
+
+function RuleForm({ current, onSaved }: { current: BillingConfig; onSaved: () => void }) {
+  const { api } = useServices();
+  const [enforce, setEnforce] = useState(current.enforce_subscriptions);
+  const [trial, setTrial] = useState(String(current.free_trial_days));
+  const [reason, setReason] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const days = Number(trial);
+  const valid = Number.isInteger(days) && days >= 0 && days <= 365 && reason.trim() !== '';
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!valid || busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await api.setBillingConfig(enforce, days, reason);
+      setReason('');
+      onSaved();
+    } catch (err) {
+      setError(errorMessage(err));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <form className="card" onSubmit={submit} aria-label="Visibility rule">
+      <h3>Visibility rule</h3>
+      <p className="muted">
+        {current.enforce_subscriptions
+          ? `On: unpaid profiles are hidden after ${current.free_trial_days} free days and 7 days of grace.`
+          : 'Off: every published profile is listed, paid or not.'}
+      </p>
+      <label>
+        <input type="checkbox" checked={enforce} onChange={(e) => setEnforce(e.target.checked)} /> Hide unpaid profiles
+      </label>
+      <label>
+        Free trial (days)
+        <input type="number" min={0} max={365} value={trial} onChange={(e) => setTrial(e.target.value)} />
+      </label>
+      <label>
+        Why this change (audit log)
+        <input value={reason} maxLength={300} onChange={(e) => setReason(e.target.value)} />
+      </label>
+      <button type="submit" disabled={!valid || busy}>
+        Save rule
+      </button>
+      {error && <ErrorBox message={error} />}
+    </form>
   );
 }
 
@@ -102,6 +162,7 @@ export function Billing() {
           </li>
         </ul>
       )}
+      <VisibilityRule />
       <div className="row" role="group" aria-label="Status">
         {STATUSES.map((x) => (
           <button key={x} type="button" aria-pressed={status === x} onClick={() => setStatus(x)}>

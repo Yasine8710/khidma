@@ -64,4 +64,26 @@ describe('Billing', () => {
     expect(await screen.findByText(/KH-ABC123/)).toBeInTheDocument();
     expect(billingDetail).toHaveBeenCalledWith('u1');
   });
+
+  it('the visibility rule needs a reason and valid days, then saves and reloads', async () => {
+    const billingConfig = vi.fn().mockResolvedValue({ enforce_subscriptions: false, free_trial_days: 30 });
+    const setBillingConfig = vi.fn().mockResolvedValue(undefined);
+    renderWith(<Billing />, {
+      api: fakeApi({ billingSummary: vi.fn().mockResolvedValue(summary), subscriptions: vi.fn().mockResolvedValue([]), billingConfig, setBillingConfig }),
+    });
+    const user = userEvent.setup();
+    expect(await screen.findByText(/Off: every published profile is listed/)).toBeInTheDocument();
+    await user.click(screen.getByLabelText('Hide unpaid profiles'));
+    const save = screen.getByRole('button', { name: 'Save rule' });
+    expect(save).toBeDisabled();
+    await user.clear(screen.getByLabelText('Free trial (days)'));
+    await user.type(screen.getByLabelText('Free trial (days)'), '400');
+    await user.type(screen.getByLabelText('Why this change (audit log)'), 'Lancement');
+    expect(save).toBeDisabled();
+    await user.clear(screen.getByLabelText('Free trial (days)'));
+    await user.type(screen.getByLabelText('Free trial (days)'), '14');
+    await user.click(save);
+    await waitFor(() => expect(setBillingConfig).toHaveBeenCalledWith(true, 14, 'Lancement'));
+    await waitFor(() => expect(billingConfig).toHaveBeenCalledTimes(2));
+  });
 });

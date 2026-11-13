@@ -359,7 +359,7 @@ describe('RLS and API pen-test across every table', () => {
   test('IDOR: a stranger calling id-taking functions with real ids gets nothing and changes nothing', async () => {
     // Predicates and public lookups that may answer (false/null/public data) instead of failing.
     const answers = new Set([
-      'freelancer_is_visible', 'has_offered_on', 'is_request_owner', 'owns_open_request', 'can_view_request_photos',
+      'freelancer_is_visible', 'listing_allowed', 'has_offered_on', 'is_request_owner', 'owns_open_request', 'can_view_request_photos',
       'is_conversation_member', 'chat_folder_member', 'chat_folder_writable', 'chat_image_count',
       'reveal_professional_contact', 'reveal_freelancer_contact', 'request_photo_is_locked',
     ]);
@@ -384,7 +384,7 @@ describe('RLS and API pen-test across every table', () => {
         const values = rows.flatMap((row) => Object.values(row)).filter((v) => v !== null && v !== false && v !== 0 && v !== '');
         if (values.length > 0 && !answers.has(fn)) leaks.push(`${fn}(${id === p ? 'p' : id === c ? 'c' : 'id'}) -> ${JSON.stringify(rows)}`);
         // membership predicates must say no to a stranger (visibility and reveals are public by design)
-        if (answers.has(fn) && !['freelancer_is_visible', 'reveal_professional_contact', 'reveal_freelancer_contact'].includes(fn) && values.length > 0) {
+        if (answers.has(fn) && !['freelancer_is_visible', 'listing_allowed', 'reveal_professional_contact', 'reveal_freelancer_contact'].includes(fn) && values.length > 0) {
           leaks.push(`${fn} answered true for a stranger`);
         }
       }

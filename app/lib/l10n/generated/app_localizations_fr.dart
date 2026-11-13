@@ -2723,4 +2723,26 @@ class AppLocalizationsFr extends AppLocalizations {
   String billRejectedNote(String note) {
     return 'Paiement refusé : $note';
   }
+
+  @override
+  String get listingHiddenTitle => 'Profil masqué';
+
+  @override
+  String get listingHiddenBody =>
+      'Votre abonnement n’est pas réglé : les clients ne voient plus votre profil et vous ne pouvez pas envoyer d’offres. Vos chantiers en cours continuent. Le profil réapparaît dès le paiement.';
+
+  @override
+  String get listingTrialTitle => 'Essai gratuit';
+
+  @override
+  String listingTrialBody(String date) {
+    return 'Votre profil est visible gratuitement jusqu’au $date. Abonnez-vous avant pour rester visible.';
+  }
+
+  @override
+  String get listingPay => 'Régler mon abonnement';
+
+  @override
+  String get reqFailSubscription =>
+      'Votre abonnement n’est pas réglé : vous ne pouvez pas envoyer d’offre pour l’instant.';
 }

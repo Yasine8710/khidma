@@ -53,6 +53,7 @@ class FakeBillingRepository implements BillingRepository {
   final sent = <(String, String?)>[];
   final cancelled = <String>[];
   final proofs = <String, int>{};
+  ListingStatus? listing;
   Uri link = Uri.parse('https://pay.flouci.example/abc');
 
   Future<void> _pre() async {
@@ -158,4 +159,7 @@ class FakeBillingRepository implements BillingRepository {
 
   @override
   Future<int> proofCount(String orderId) async => proofs[orderId] ?? 0;
+
+  @override
+  Future<ListingStatus?> listingStatus() async => listing;
 }

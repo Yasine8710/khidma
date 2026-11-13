@@ -100,6 +100,18 @@ class SupabaseBillingRepository implements BillingRepository {
       });
 
   @override
+  Future<ListingStatus?> listingStatus() => _guard(() async {
+    final j = await _client.rpc('my_listing_status');
+    if (j is! Map<String, dynamic>) return null;
+    return ListingStatus(
+      enforced: j['enforced'] == true,
+      listed: j['listed'] != false,
+      trialEndsAt: _date(j['trial_ends_at']),
+      paidUntil: _date(j['paid_until']),
+    );
+  });
+
+  @override
   Future<int> proofCount(String orderId) => _guard(() async {
     final n = await _client.rpc(
       'my_payment_proof_count',

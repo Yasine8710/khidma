@@ -4863,6 +4863,42 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Paiement refusé : {note}'**
   String billRejectedNote(String note);
+
+  /// No description provided for @listingHiddenTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil masqué'**
+  String get listingHiddenTitle;
+
+  /// No description provided for @listingHiddenBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre abonnement n’est pas réglé : les clients ne voient plus votre profil et vous ne pouvez pas envoyer d’offres. Vos chantiers en cours continuent. Le profil réapparaît dès le paiement.'**
+  String get listingHiddenBody;
+
+  /// No description provided for @listingTrialTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essai gratuit'**
+  String get listingTrialTitle;
+
+  /// No description provided for @listingTrialBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre profil est visible gratuitement jusqu’au {date}. Abonnez-vous avant pour rester visible.'**
+  String listingTrialBody(String date);
+
+  /// No description provided for @listingPay.
+  ///
+  /// In fr, this message translates to:
+  /// **'Régler mon abonnement'**
+  String get listingPay;
+
+  /// No description provided for @reqFailSubscription.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre abonnement n’est pas réglé : vous ne pouvez pas envoyer d’offre pour l’instant.'**
+  String get reqFailSubscription;
 }
 
 class _AppLocalizationsDelegate

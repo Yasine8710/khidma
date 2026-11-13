@@ -179,6 +179,13 @@ Known residuals, all waiting on the server-side worker of #32 or a real Supabase
 - Admins see receipts only through the admin-media signer (`kind: payment`), which first calls the audited `admin_payment_proofs`; links last 2 minutes.
 - A trigger on `payment_orders` queues exactly one notice when an order becomes paid or rejected, whoever decided (admin or Flouci callback). The push says only "confirmed" or "refused"; the owner reads the admin's note in the app (`admin_note` is now readable on their own orders).
 
+### Subscription enforcement (#64, migration 2400)
+- Off by default (`admin_config.enforce_subscriptions`); admins switch it and set the free trial (`free_trial_days`, default 30) with `admin_set_billing_config` (reason required, audited) from the Billing tab.
+- When on, `listing_allowed(user)` decides visibility: a subscription active or past_due that ended less than 7 days ago, or a profile younger than the trial. It is part of the `professional_profiles` read policy, so search, profile pages, services, areas, portfolio and favorites follow it without client filtering; the privileged phone reveal and freelance visibility check it explicitly; a trigger refuses new offers (`subscription_required`). The owner and admins always see the profile. Hiding is a read rule: nothing is unpublished, and a payment shows the profile again at once.
+- Accepted jobs are unaffected: bookings, chats and reviews do not check listing status (tested end to end with a hidden professional).
+- Reminders: `service_subscription_reminders()` (service role, daily 07:00 UTC = 08:00 Tunis) sends due-soon (2-5 days left), due-now (0-1), overdue (1-6 days late) and grace-over (7-30 days late), each once per period (dedup key = user + period end day + stage); days are Tunis calendar days. `service_expire_subscriptions()` runs hourly. Both are scheduled by the migration when pg_cron is on.
+- 8 planted bugs (policy, offer trigger, reveal, grace length, UTC days, resent reminder, freelance rule, trial) were all caught by `subscription_enforcement.test.mjs`.
+
 ## Security audit (#55, 2026-11-13)
 
 ### Threat model (STRIDE)
